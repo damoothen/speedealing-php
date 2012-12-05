@@ -887,6 +887,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     print '<script type="text/javascript">' . "\n";
                     //print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
                     print 'var urlSaveInPlace = \'core/ajax/saveinplace.php\';' . "\n";
+                    print 'var urlAddInPlace = \'core/ajax/addinplace.php\';' . "\n";
                     print 'var tagSaveInPlace = \'core/ajax/savetaghandler.php\';' . "\n";
                     print 'var urlLoadInPlace = \'core/ajax/loadinplace.php\';' . "\n";
                     print 'var tagLoadInPlace = \'core/ajax/loadtaghandler.php\';' . "\n";
@@ -1527,7 +1528,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
             <script src="theme/symeos/js/s_scripts.js"></script>
             <script src="theme/symeos/js/symeos.js"></script>
 
-                                                                                                                                                                    <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+            <script src="theme/symeos/js/developr.input.js"></script>
             <script src="theme/symeos/js/developr.message.js"></script>
             <script src="theme/symeos/js/developr.modal.js"></script>
             <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1546,7 +1547,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
                 // Call template init (optional, but faster if called manually)
                 $.template.init();
-                $(".chzn-select").chosen();
 
                 // Favicon count
                 Tinycon.setBubble(<?php echo $count_icon; ?>);

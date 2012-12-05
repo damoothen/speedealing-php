@@ -482,18 +482,18 @@ abstract class nosqlDocument extends CommonObject {
             return null;
 
         if (count($this->fk_extrafields->createList)) {
-            print '<form id="' . $ref_css . '_formAddNewRow" title="' . $title . '">';
-
+            print '<form id="' . $ref_css . '_formAddNewRow" class="block" title="' . $title . '">';
+            //print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+            print '<input type="hidden" name="json" id="json" value="add" />';
+            print '<input type="hidden" name="class" id="class" value="' . get_class($this) . '" />';
             foreach ($this->fk_extrafields->createList as $aRow) {
+                print '<p class="button-height block-label">';
                 $label = $langs->trans($this->fk_extrafields->fields->$aRow->label);
                 if (empty($label))
                     $label = $langs->trans($aRow);
-                print '<label for = "' . $aRow . '">' . $label . '</label><br />';
-                if (count($this->fk_extrafields->fields->$aRow->values) || isset($this->fk_extrafields->fields->$aRow->view))
-                    print $this->select_fk_extrafields($aRow, $aRow);
-                else
-                    print '<input type = "text" name = "' . $aRow . '" id = "' . $aRow . '" class = "required" rel = "0" />';
-                print '<br/>';
+                print '<label for = "' . $aRow . '" class="label">' . $label . '</label>';
+                print $this->select_fk_extrafields($aRow, $aRow, null, true, 40, "full-width");
+                print '</p>';
             }
             print '</form>';
 
@@ -638,13 +638,14 @@ abstract class nosqlDocument extends CommonObject {
                                     "fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
             <?php else : ?>
                                     "fnDrawCallback": function () {
-                                            prth_stickyFooter.resize();
-                                        }
+                                        prth_stickyFooter.resize();
+                                    }
             <?php endif; ?>
         <?php endif; ?>
         <?php if ($user->rights->$class->edit) : ?>
                         }).makeEditable({
                             sUpdateURL: urlSaveInPlace,
+                            sAddURL: urlAddInPlace,
                             "aoColumns": [<?php
             $nb = count($obj->aoColumns);
             foreach ($obj->aoColumns as $i => $aRow) {
@@ -654,7 +655,7 @@ abstract class nosqlDocument extends CommonObject {
 
                 if (!empty($idx) && $aRow->editable && isset($this->fk_extrafields->fields->$idx->type)) {
                     print "{";
-                    print "event:'click',";
+                    //print "event:'click',";
                     print "indicator: indicatorInPlace,";
                     print "tooltip: tooltipInPlace,";
                     print "placeholder : '',";
@@ -688,12 +689,31 @@ abstract class nosqlDocument extends CommonObject {
                                                     "key": "editval_<?php echo $idx; ?>"
                                                 };
                                             },<?php
+                    if (isset($this->fk_extrafields->fields->$idx->validate)) {
+                        print 'oValidationOptions : { rules:{ value: {';
+
+                        foreach ($this->fk_extrafields->fields->$idx->validate as $key => $value)
+                            if ($key != "cssclass")
+                                print $key . ":" . $value . ",";
+
+                        print '} } },';
+                        if (isset($this->fk_extrafields->fields->$idx->validate->cssclass))
+                            print 'cssclass: "' . $this->fk_extrafields->fields->$idx->validate->cssclass . '",';
+                    }
                     print "},";
                 } else
                     print "null,";
             }
             ?>
                         ],
+                        fnOnNewRowPosted: function(data) {
+                            var rtn = oTable.fnAddData(JSON.parse(data));
+                            return true;
+                        },
+                        fnOnAdding: function() {
+                            oTable.fnDraw(false);
+                            return true;
+                        },
                         oAddNewRowButtonOptions: { 
                             icons: { primary: 'ui-icon-plus' }
                         },
@@ -701,7 +721,7 @@ abstract class nosqlDocument extends CommonObject {
                             icons: { primary: 'ui-icon-trash' }
                         },
                         oAddNewRowOkButtonOptions: {
-                            label: "<?php echo $langs->trans("Confirm"); ?>",
+                            label: "<?php echo $langs->trans("Create"); ?>",
                             icons: { primary: 'ui-icon-check' },
                             name: "action",
                             value: "add-new"
@@ -1121,41 +1141,41 @@ abstract class nosqlDocument extends CommonObject {
      * @param	$url	string		url of the create page
      * @return string
      */
-    public function buttonCreate($url) {
-        global $langs;
+    /* public function buttonCreate($url) {
+      global $langs;
 
-        print '<a href="#fd_input" class="gh_button pill icon add" id="fd3">' . $langs->trans("Create") . '</a>';
-        ?>
-        <div style="display:none">
-            <div id="inlineDialog">
-                <div id="fd_input">
-                    <div class="fd3_pane">
-                        <form action="<?php echo $url; ?>" class="nice" style="width:220px">
-                            <label><?php echo $this->fk_extrafields->labelCreate; ?></label>
-                            <input type="text" class="input-text fd3_name_input expand" name="id" />
-                            <a href="#" class="gh_button small pill fd3_submit">Create</a>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <?php ?>
-        <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-            $("#fd3").fancybox({
-                'overlayOpacity'	: '0.2',
-                'transitionIn'		: 'elastic',
-                'transitionOut'		: 'fade',
-                'onCleanup'			: function() {
-                    if($('.fd3_pane:first').is(':hidden')){$('.fd3_pane').toggle();$.fancybox.resize();}
-                    $('.fd3_pane label.error').remove();
-                }
-            });
-        });
-        </script>
-        <?php
-        return 1;
-    }
+      print '<a href="#fd_input" class="gh_button pill icon add" id="fd3">' . $langs->trans("Create") . '</a>';
+      ?>
+      <div style="display:none">
+      <div id="inlineDialog">
+      <div id="fd_input">
+      <div class="fd3_pane">
+      <form action="<?php echo $url; ?>" class="nice" style="width:220px">
+      <label><?php echo $this->fk_extrafields->labelCreate; ?></label>
+      <input type="text" class="input-text fd3_name_input expand" name="id" />
+      <a href="#" class="gh_button small pill fd3_submit">Create</a>
+      </form>
+      </div>
+      </div>
+      </div>
+      </div>
+      <?php ?>
+      <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+      $("#fd3").fancybox({
+      'overlayOpacity'	: '0.2',
+      'transitionIn'		: 'elastic',
+      'transitionOut'		: 'fade',
+      'onCleanup'			: function() {
+      if($('.fd3_pane:first').is(':hidden')){$('.fd3_pane').toggle();$.fancybox.resize();}
+      $('.fd3_pane label.error').remove();
+      }
+      });
+      });
+      </script>
+      <?php
+      return 1;
+      } */
 
     /**
      * Compare function for sorting two aaData rows in datatable
@@ -1269,9 +1289,10 @@ abstract class nosqlDocument extends CommonObject {
      * 		@param		string		$value          if needed : value of the key
      * 		@param		int		$lengh          max number of characters in label select
      * 		@param		boolean         $returnIndex    return index or value from select
+     *          @param          string          $cssClass       Specific css class for input "ex. full-width"
      * 		@return		string		String with URL
      */
-    function select_fk_extrafields($key, $htmlname, $value = null, $returnIndex = true, $lengh = 40) {
+    function select_fk_extrafields($key, $htmlname, $value = null, $returnIndex = true, $lengh = 40, $cssClass = "") {
         global $langs, $mysoc;
 
         $aRow = $this->fk_extrafields->fields->$key;
@@ -1281,79 +1302,93 @@ abstract class nosqlDocument extends CommonObject {
         else
             $title = $langs->trans($key);
 
-        if (GETPOST($htmlname))
-            $selected = GETPOST($htmlname);
-        elseif (!empty($value)) // Using value from the function
-            $selected = $value;
-        else
-            $selected = $this->$key;
+        switch ($aRow->type) {
+            case "select" :
 
-        $rtr = "";
-        $rtr.= '<select data-placeholder="' . $title . '&hellip;" class="chzn-select expand" id="' . $htmlname . '" name="' . $htmlname . '" >';
-        if (isset($aRow->class)) { // Is an object
-            $class = $aRow->class;
-            $object = new $class($this->db);
+                if (GETPOST($htmlname))
+                    $selected = GETPOST($htmlname);
+                elseif (!empty($value)) // Using value from the function
+                    $selected = $value;
+                else
+                    $selected = $this->$key;
 
-            $params = array();
-            if (count($aRow->params))
-                foreach ($aRow->params as $idx => $row) {
-                    eval("\$row = $row;");
-                    if (!empty($row))
-                        $params[$idx] = $row;
-                }
-            try {
-                $result = $object->getView($aRow->view, $params);
-            } catch (Exception $e) {
-                $this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
-                dol_print_error($this->db, $this->error);
-                return 0;
-            }
+                $rtr = "";
+                $rtr.= '<select data-placeholder="' . $title . '&hellip;" class="select ' . $aRow->validate->cssclass . '" id="' . $htmlname . '" name="' . $htmlname . '">';
+                if (isset($aRow->class)) { // Is an object
+                    $class = $aRow->class;
+                    $object = new $class($this->db);
 
-            $aRow->values[0] = new stdClass();
-            $aRow->values[0]->label = "";
-            $aRow->values[0]->enable = true;
-
-            foreach ($result->rows as $row) {
-                $aRow->values[$row->value->_id] = new stdClass();
-                $aRow->values[$row->value->_id]->label = $row->value->name;
-                $aRow->values[$row->value->_id]->enable = true;
-            }
-
-            $selected = $this->$key->id; // Index of key
-        }
-
-        if (empty($selected)) {
-            if (!empty($aRow->default))
-                eval('$selected = ' . $aRow->default . ';');
-        }
-
-
-        if (count($aRow->values))
-            foreach ($aRow->values as $idx => $row) {
-                if ($row->enable) {
-                    if ($returnIndex)
-                        $rtr.= '<option value="' . $idx . '"';
-                    else
-                        $rtr.= '<option value="' . $row->label . '"';
-
-                    if ($returnIndex) {
-                        if ($selected == $idx)
-                            $rtr.= ' selected="selected"';
-                    } else {
-                        if ($selected == $row->label)
-                            $rtr.= ' selected="selected"';
+                    $params = array();
+                    if (count($aRow->params))
+                        foreach ($aRow->params as $idx => $row) {
+                            eval("\$row = $row;");
+                            if (!empty($row))
+                                $params[$idx] = $row;
+                        }
+                    try {
+                        $result = $object->getView($aRow->view, $params);
+                    } catch (Exception $e) {
+                        $this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+                        dol_print_error($this->db, $this->error);
+                        return 0;
                     }
 
-                    $rtr.= '>';
+                    $aRow->values[0] = new stdClass();
+                    $aRow->values[0]->label = "";
+                    $aRow->values[0]->enable = true;
 
-                    if (isset($row->label))
-                        $rtr.= dol_trunc($langs->trans($row->label), $lengh);
-                    else
-                        $rtr.= dol_trunc($langs->trans($idx), $lengh);
-                    $rtr.='</option>';
+                    foreach ($result->rows as $row) {
+                        $aRow->values[$row->value->_id] = new stdClass();
+                        $aRow->values[$row->value->_id]->label = $row->value->name;
+                        $aRow->values[$row->value->_id]->enable = true;
+                    }
+
+                    $selected = $this->$key->id; // Index of key
                 }
-            }
-        $rtr.= '</select>';
+
+                if (empty($selected)) {
+                    if (!empty($aRow->default))
+                        eval('$selected = ' . $aRow->default . ';');
+                }
+
+
+                if (count($aRow->values))
+                    foreach ($aRow->values as $idx => $row) {
+                        if ($row->enable) {
+                            if ($returnIndex)
+                                $rtr.= '<option value="' . $idx . '"';
+                            else
+                                $rtr.= '<option value="' . $row->label . '"';
+
+                            if ($returnIndex) {
+                                if ($selected == $idx)
+                                    $rtr.= ' selected="selected"';
+                            } else {
+                                if ($selected == $row->label)
+                                    $rtr.= ' selected="selected"';
+                            }
+
+                            $rtr.= '>';
+
+                            if (isset($row->label))
+                                $rtr.= dol_trunc($langs->trans($row->label), $lengh);
+                            else
+                                $rtr.= dol_trunc($langs->trans($idx), $lengh);
+                            $rtr.='</option>';
+                        }
+                    }
+                $rtr.= '</select>';
+
+                break;
+
+            case "text":
+                $rtr .= '<input type="text" name="' . $htmlname . '" id="' . $htmlname . '" class="input ' . $cssClass . " " . $aRow->validate->cssclass . '" value="' . $this->$key . '" placeholder="' . $title . '"/>';
+                break;
+
+            case "textarea":
+                $rtr .= '<textarea name="' . $htmlname . '" id="' . $htmlname . '" class="input ' . $cssClass . " " . $aRow->validate->cssclass . '" placeholder="' . $title . '">' . $this->$key . '</textarea>';
+                break;
+        }
 
         return $rtr;
     }

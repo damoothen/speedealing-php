@@ -1,6 +1,7 @@
 <?php
 
-/* Copyright (C) 2011-2012 Regis Houssin  <regis@dolibarr.fr>
+/* Copyright (C) 2011-2012 Regis Houssin    <regis@dolibarr.fr>
+ * Copyright (C) 2011-2012 Herve Prot       <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,9 +45,7 @@ top_httphead();
 //error_log(print_r($_GET, true));
 
 if (!empty($json) && !empty($id) && !empty($class)) {
-    $res = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
-    if (!$res) // old dolibarr
-        dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+    dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
 
     $object = new $class($db);
 

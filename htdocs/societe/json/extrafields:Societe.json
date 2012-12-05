@@ -1,12 +1,16 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "94-3fac10dd41ad741591666424b411f835",
+   "_rev": "95-0587e4ec5a68a5f10436ca2cb91cb00b",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
        "companies",
        "bills",
        "compta"
+   ],
+   "createList": [
+       "name",
+       "Status"
    ],
    "longList": [
        "code_client",
