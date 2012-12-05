@@ -476,15 +476,19 @@ class User extends nosqlDocument {
         }
 
         //print_r($this->rights);
-        
+
         // Convert for old right definition
         if($this->rights->societe->creer)
             $this->rights->societe->edit = true;
         if($this->rights->societe->supprimer)
             $this->rights->societe->delete = true;
         if($this->rights->societe->contact->creer)
+        	if (! is_object($this->rights->contact))
+        		$this->rights->contact = new stdClass(); // For avoid error
             $this->rights->contact->edit = true;
         if($this->rights->societe->contact->supprimer)
+        	if (! is_object($this->rights->contact))
+        		$this->rights->contact = new stdClass(); // For avoid error
             $this->rights->contact->delete = true;
         if($this->rights->agenda->myactions->create)
             $this->rights->agenda->edit = true;
@@ -494,8 +498,8 @@ class User extends nosqlDocument {
             $this->rights->commande->edit = true;
         if($this->rights->commande->supprimer)
             $this->rights->commande->delete = true;
-        
-        
+
+
 
         if (!$moduletag) {
             // Si module etait non defini, alors on a tout charge, on peut donc considerer
