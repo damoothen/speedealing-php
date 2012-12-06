@@ -89,5 +89,6 @@
   </exec>
  </target>
 
- <target name="hudson" depends="clean,phpunit,phpcs,parallelTasks"/>
+ <!-- <target name="hudson" depends="clean,phpunit,phpcs,parallelTasks"/> -->
+ <target name="hudson" depends="clean,phpcs,parallelTasks"/>
 </project>
