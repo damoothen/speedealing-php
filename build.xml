@@ -8,7 +8,7 @@
  <target name="clean">
   <!-- Clean up -->
   <delete dir="${basedir}/hudson"/>
-  <delete dir="${basedir}/generatedJUnitFiles"/>
+  <!-- <delete dir="${basedir}/generatedJUnitFiles"/> -->
 
   <!-- Create build directories -->
   <mkdir dir="${basedir}/hudson/doxygen"/>
