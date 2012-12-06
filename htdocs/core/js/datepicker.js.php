@@ -1,6 +1,7 @@
 <?php
-/* Copyright (C) 2011 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2011 Regis Houssin         <regis@dolibarr.fr>
+ * Copyright (C) 2011 Laurent Destailleur   <eldy@users.sourceforge.net>
+ * Copyright (C) 2012 Herve Prot            <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,11 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
-/**
- * \file       htdocs/core/js/datepicker.js.php
- * \brief      File that include javascript functions for datepickers
  */
 
 //if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled cause need to load personalized language

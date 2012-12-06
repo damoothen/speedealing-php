@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "95-0587e4ec5a68a5f10436ca2cb91cb00b",
+   "_rev": "108-a1b78c6c88e5d3000c6daed2b0303b86",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -10,7 +10,11 @@
    ],
    "createList": [
        "name",
-       "Status"
+       "Status",
+       "commercial_id",
+       "address",
+       "zip",
+       "town"
    ],
    "longList": [
        "code_client",
@@ -30,8 +34,9 @@
            "type": "text",
            "length": 60,
            "enable": true,
+           "label": "Company",
            "validate": {
-               "required": true,
+               "cssclass": "required",
                "minlength": 3
            }
        },
@@ -74,6 +79,7 @@
        },
        "address": {
            "type": "textarea",
+           "label": "Address",
            "cols": 40,
            "rows": 3,
            "enable": true,
@@ -131,8 +137,9 @@
            "enable": true
        },
        "phone": {
-           "type": "AC_TEL",
+           "type": "text",
            "ico": "AC_TEL",
+           "label": "Phone",
            "enable": true,
            "aoColumns": {
                "sClass": "center",
@@ -142,17 +149,24 @@
            "mask": "+99 9 99 99 99 99"
        },
        "fax": {
-           "type": "AC_FAX",
+           "type": "text",
+           "label": "Fax",
            "ico": "AC_FAX",
            "enable": true,
            "mask": "+99 9 99 99 99 99"
        },
        "email": {
-           "type": "AC_EMAIL",
+           "type": "text",
            "ico": "AC_EMAIL",
            "enable": true,
+           "label": "EMail",
            "validate": {
-               "email": true
+               "cssclass": "email"
+           },
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "editable": true
            }
        },
        "url": {
@@ -161,7 +175,7 @@
            "site": "www",
            "enable": true,
            "validate": {
-               "url": true
+               "cssclass": "url"
            }
        },
        "idprof1": {
@@ -293,9 +307,10 @@
            "label": "ZoneGeo",
            "enable": true,
            "aoColumns": {
-               "sClass": "center dol_select",
+               "sClass": "center",
                "bSearchable": true,
-               "bVisible": true
+               "bVisible": true,
+               "editable": true
            },
            "view": "listZoneGeo",
            "getkey": true,

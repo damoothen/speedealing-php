@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Commande",
-   "_rev": "9-ee70c801d6b5b2e886b913f58258bf50",
+   "_rev": "10-ae3f2c67dc8bb3a83b70ba87e1a4d64a",
    "class": "extrafields",
    "ico": "16-Document.png",
    "langs": [
@@ -105,6 +105,16 @@
            "type": "text",
            "enable": true,
            "label": "RefCustomer"
+       },
+       "date": {
+           "type": "date",
+           "enable": true,
+           "label": "Date"
+       },
+       "date_livraison": {
+           "type": "date",
+           "enable": true,
+           "label": "DateEnd"
        }
    }
 }

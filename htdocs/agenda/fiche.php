@@ -671,7 +671,7 @@ if ($action == 'create') {
 
     // Societe, contact
     print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionOnCompany") . '</td><td>';
-    if (!empty($socid)) {
+    /*if (!empty($socid)) {
         $societe = new Societe($db);
         $societe->fetch($socid);
         if ($societe->class == "Societe")
@@ -683,10 +683,10 @@ if ($action == 'create') {
             print $societe->getNomUrl(1);
         }
         print '<input type="hidden" name="socid" value="' . $socid . '">';
-    } else {
+    } else {*/
         print $object->select_fk_extrafields("societe", 'socid');
         //print $form->select_company('', 'socid', '', 1, 1);
-    }
+    //}
     print '</td></tr>';
 
     // If company is forced, we propose contacts (may be contact is also forced)

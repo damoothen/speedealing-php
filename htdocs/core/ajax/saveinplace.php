@@ -65,8 +65,11 @@ if (!empty($key) && !empty($id) && !empty($class)) {
     if (count($object->fk_extrafields->langs))
         foreach ($object->fk_extrafields->langs as $row)
             $langs->load($row);
+    
+    if($type=="select" && empty($value))
+        $value=""; // remove 0
 
-    if (isset($object->fk_extrafields->fields->$key->class) && $type=="select") {
+    if (isset($object->fk_extrafields->fields->$key->class) && $type == "select") {
         $class_tmp = $object->fk_extrafields->fields->$key->class;
         $old_value = $value;
         $value = new stdClass();
@@ -79,6 +82,13 @@ if (!empty($key) && !empty($id) && !empty($class)) {
         } catch (Exception $e) {
             $value = new stdClass();
         }
+    }
+
+    if ($type == "date") {
+        $res = setlocale(LC_TIME, 'fr_FR.UTF8', 'fra');
+        $date = $value;
+        $value = str_replace("/", '-', $value); // 01/12/2012 -> 01-12-2012
+        $value = strtotime($value);
     }
 
     try {
@@ -97,12 +107,15 @@ if (!empty($key) && !empty($id) && !empty($class)) {
         elseif ($type == 'textarea')
             $value = dol_nl2br($value);
 
-        echo $object->print_fk_extrafields($key);
-
-        exit;
+        error_log($object->print_fk_extrafields($key));
+        if ($type == 'date')
+            echo $date;
+        else
+            echo $object->print_fk_extrafields($key);
     } catch (Exception $exc) {
         error_log($exc->getMessage());
-        exit;
     }
+
+    exit;
 }
 ?>

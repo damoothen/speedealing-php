@@ -662,6 +662,7 @@ abstract class nosqlDocument extends CommonObject {
                     print "submit: submitInPlace,";
                     print "onblur: 'cancel',";
                     print "height: '14px',";
+                    //print 'ajaxoptions: {"dataType":"json"},';
                     switch ($this->fk_extrafields->fields->$idx->type) {
                         case "select" :
                             print "type: 'select',";
@@ -678,6 +679,10 @@ abstract class nosqlDocument extends CommonObject {
                         case "text":
                             print "type: 'text',";
                             break;
+                        case "date":
+                            print "type: 'datepicker',";
+                            print "cancel: cancelInPlace,";
+                            break;
                         default :
                             print "type: 'text',";
                             break;
@@ -688,7 +693,13 @@ abstract class nosqlDocument extends CommonObject {
                                                     "type": "<?php echo $this->fk_extrafields->fields->$idx->type; ?>",
                                                     "key": "editval_<?php echo $idx; ?>"
                                                 };
-                                            },<?php
+                                            },
+                       callback: function(sValue, y) {
+                                //var aPos = oTable.fnGetPosition( this );
+                                //oTable.fnAddData( sValue, aPos[0], aPos[1] ); // doesn't work with server-side
+                                //oTable.fnDraw();
+                                $(this).html(sValue);
+                            },<?php
                     if (isset($this->fk_extrafields->fields->$idx->validate)) {
                         print 'oValidationOptions : { rules:{ value: {';
 
@@ -1001,13 +1012,14 @@ abstract class nosqlDocument extends CommonObject {
 					var stat = obj.aData.' . $key . ';
 					if(stat === undefined)
 						stat = "' . $this->fk_extrafields->fields->$key->default . '";';
-                foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow) {
+                
+                foreach ($this->fk_extrafields->fields->$key->values as $key1 => $aRow) {
                     if (isset($aRow->label))
-                        $rtr.= 'status["' . $key . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
+                        $rtr.= 'status["' . $key1 . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
                     else
-                        $rtr.= 'status["' . $key . '"]= new Array("' . $langs->trans($key) . '","' . $aRow->cssClass . '");';
+                        $rtr.= 'status["' . $key1 . '"]= new Array("' . $langs->trans($key1) . '","' . $aRow->cssClass . '");';
                     if (isset($aRow->dateEnd)) {
-                        $rtr.= 'expire["' . $key . '"]="' . $aRow->dateEnd . '";';
+                        $rtr.= 'expire["' . $key1 . '"]="' . $aRow->dateEnd . '";';
                     }
                 }
 

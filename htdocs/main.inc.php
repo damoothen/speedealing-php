@@ -962,7 +962,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 }
 
                 // Add datepicker default options
-                //print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
+                print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
+                
                 //print '<link rel="stylesheet" href="theme/pertho_sample/foundation/stylesheets/foundation.css">';
                 print '<!-- jquery UI -->';
                 print '<link rel="stylesheet" href="includes/jquery/plugins/jQueryUI/css/Aristo/Aristo.css" media="all" />';
