@@ -519,9 +519,9 @@ abstract class nosqlDocument extends CommonObject {
 
         $class = strtolower(get_class($this));
         ?><script type="text/javascript" charset="utf-8">
-                    $(document).ready(function() {
-                        var oTable = $('#<?php echo $ref_css ?>').dataTable( {
-                            "aoColumns" : [
+            $(document).ready(function() {
+                var oTable = $('#<?php echo $ref_css ?>').dataTable( {
+                    "aoColumns" : [
         <?php
         $nb = count($obj->aoColumns);
         foreach ($obj->aoColumns as $i => $aRow):
@@ -694,12 +694,12 @@ abstract class nosqlDocument extends CommonObject {
                                                     "key": "editval_<?php echo $idx; ?>"
                                                 };
                                             },
-                       callback: function(sValue, y) {
-                                //var aPos = oTable.fnGetPosition( this );
-                                //oTable.fnAddData( sValue, aPos[0], aPos[1] ); // doesn't work with server-side
-                                //oTable.fnDraw();
-                                $(this).html(sValue);
-                            },<?php
+                                            callback: function(sValue, y) {
+                                                //var aPos = oTable.fnGetPosition( this );
+                                                //oTable.fnAddData( sValue, aPos[0], aPos[1] ); // doesn't work with server-side
+                                                //oTable.fnDraw();
+                                                $(this).html(sValue);
+                                            },<?php
                     if (isset($this->fk_extrafields->fields->$idx->validate)) {
                         print 'oValidationOptions : { rules:{ value: {';
 
@@ -1012,7 +1012,7 @@ abstract class nosqlDocument extends CommonObject {
 					var stat = obj.aData.' . $key . ';
 					if(stat === undefined)
 						stat = "' . $this->fk_extrafields->fields->$key->default . '";';
-                
+
                 foreach ($this->fk_extrafields->fields->$key->values as $key1 => $aRow) {
                     if (isset($aRow->label))
                         $rtr.= 'status["' . $key1 . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
@@ -1400,6 +1400,16 @@ abstract class nosqlDocument extends CommonObject {
             case "textarea":
                 $rtr .= '<textarea name="' . $htmlname . '" id="' . $htmlname . '" class="input ' . $cssClass . " " . $aRow->validate->cssclass . '" placeholder="' . $title . '">' . $this->$key . '</textarea>';
                 break;
+
+            case "date":
+                $rtr .= '<input type="text" class="input ' . $cssClass . " " . $aRow->validate->cssclass . '" name="' . $htmlname . '" id="' . $htmlname . '" value="' . $this->print_fk_extrafields($key) . '" placeholder="' . $title . '"/>';
+                $rtr .= '<script>$("input#' . $htmlname . '").datepicker();</script>';
+                break;
+            
+             case "datetime":
+                $rtr .= '<input type="text" class="input ' . $cssClass . " " . $aRow->validate->cssclass . '" name="' . $htmlname . '" id="' . $htmlname . '" value="' . $this->print_fk_extrafields($key) . '" placeholder="' . $title . '"/>';
+                $rtr .= '<script>$("input#' . $htmlname . '").datetimepicker();</script>';
+                break;
         }
 
         return $rtr;
@@ -1432,11 +1442,24 @@ abstract class nosqlDocument extends CommonObject {
             return $this->LibStatus($value, array("key" => $key));
         }
 
-        if (isset($aRow->values->$value->label)) {
-            $out.= $langs->trans($aRow->values->$value->label);
-        } else {
-            if (!is_array($value))
-                $out.= $langs->trans($value);
+        switch ($aRow->type) {
+            case "select":
+                if (isset($aRow->values->$value->label)) {
+                    $out.= $langs->trans($aRow->values->$value->label);
+                } else {
+                    if (!is_array($value))
+                        $out.= $langs->trans($value);
+                }
+                break;
+            case "text":
+                $out.= $value;
+                break;
+            case "date":
+                $out .= dol_print_date($value,"%d/%m/%Y");
+                break;
+             case "datetime":
+                $out .= dol_print_date($value,"%d/%m/%Y");
+                break;
         }
 
         return $out;

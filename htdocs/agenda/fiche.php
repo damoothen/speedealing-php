@@ -27,24 +27,24 @@ require '../main.inc.php';
 
 require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/agenda/lib/agenda.lib.php';
-if (! class_exists('Agenda'))
-	require DOL_DOCUMENT_ROOT . '/agenda/class/agenda.class.php';
-if (! class_exists('Contact'))
-	require DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
-if (! class_exists('User'))
-	require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
-if (! class_exists('FormActions'))
-	require DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
-if (! empty($conf->propal->enabled) && ! class_exists('Propal'))
-	require DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php';
-if (! empty($conf->project->enabled)) {
-	require_once DOL_DOCUMENT_ROOT . '/core/lib/project.lib.php';
-	if (! class_exists('User'))
-		require DOL_DOCUMENT_ROOT . '/projet/class/project.class.php';
+if (!class_exists('Agenda'))
+    require DOL_DOCUMENT_ROOT . '/agenda/class/agenda.class.php';
+if (!class_exists('Contact'))
+    require DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
+if (!class_exists('User'))
+    require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
+if (!class_exists('FormActions'))
+    require DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
+if (!empty($conf->propal->enabled) && !class_exists('Propal'))
+    require DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php';
+if (!empty($conf->project->enabled)) {
+    require_once DOL_DOCUMENT_ROOT . '/core/lib/project.lib.php';
+    if (!class_exists('User'))
+        require DOL_DOCUMENT_ROOT . '/projet/class/project.class.php';
 }
-if (! empty($conf->lead->enabled)) {
-	dol_include_once("/lead/class/lead.class.php");
-	dol_include_once("/lead/lib/lead.lib.php");
+if (!empty($conf->lead->enabled)) {
+    dol_include_once("/lead/class/lead.class.php");
+    dol_include_once("/lead/lib/lead.lib.php");
 }
 
 
@@ -440,9 +440,8 @@ if ($action == 'create') {
 
     print start_box($title, "twelve", $object->fk_extrafields->ico, false);
 
-    if ($conf->use_javascript_ajax) {
-        print "\n" . '<script type="text/javascript" language="javascript">';
-        print 'jQuery(document).ready(function () {
+    print "\n" . '<script type="text/javascript" language="javascript">';
+    print 'jQuery(document).ready(function () {
                      function setdatefields()
                      {
                             if (jQuery("#fullday:checked").val() == null)
@@ -485,9 +484,9 @@ if ($action == 'create') {
                         else jQuery("#dateend").removeClass("fieldrequired");
                    });
                })';
-        print '</script>' . "\n";
-        print "\n" . '<script type="text/javascript" language="javascript">';
-        print 'jQuery(document).ready(function () {
+    print '</script>' . "\n";
+    print "\n" . '<script type="text/javascript" language="javascript">';
+    print 'jQuery(document).ready(function () {
                      function settype()
                      {
                             var typeselected=jQuery("#actioncode option:selected").val();
@@ -525,41 +524,40 @@ if ($action == 'create') {
                         settype();
                     });
                })';
-        print '</script>' . "\n";
-        /*  print "\n".'<script type="text/javascript" language="javascript">';
-          print 'jQuery(document).ready(function () {
-          function setday()
-          {
-          if ($("#ap").val()!="")
-          {
-          $("#p2").val($("#ap").val());
-          }
-          }
-          setday();
-          jQuery("#p2").click(function() {
-          setday();
-          });
-          })';
-          print '</script>'."\n";
-          print "\n".'<script type="text/javascript" language="javascript">';
-          print 'jQuery(document).ready(function () {
-          function sethour()
-          {
-          var hour=parseInt($(".fulldaystarthour option:selected").val());
-          hour=hour+1;
-          var strhour=hour.toString(10)
-          if(strhour.length==1)
-          $(".fulldayendhour").val(0+strhour);
-          else
-          $(".fulldayendhour").val(strhour);
-          }
-          sethour();
-          jQuery(".fulldaystarthour").click(function() {
-          sethour();
-          });
-          })';
-          print '</script>'."\n"; */
-    }
+    print '</script>' . "\n";
+    /*  print "\n".'<script type="text/javascript" language="javascript">';
+      print 'jQuery(document).ready(function () {
+      function setday()
+      {
+      if ($("#ap").val()!="")
+      {
+      $("#p2").val($("#ap").val());
+      }
+      }
+      setday();
+      jQuery("#p2").click(function() {
+      setday();
+      });
+      })';
+      print '</script>'."\n";
+      print "\n".'<script type="text/javascript" language="javascript">';
+      print 'jQuery(document).ready(function () {
+      function sethour()
+      {
+      var hour=parseInt($(".fulldaystarthour option:selected").val());
+      hour=hour+1;
+      var strhour=hour.toString(10)
+      if(strhour.length==1)
+      $(".fulldayendhour").val(0+strhour);
+      else
+      $(".fulldayendhour").val(strhour);
+      }
+      sethour();
+      jQuery(".fulldaystarthour").click(function() {
+      sethour();
+      });
+      })';
+      print '</script>'."\n"; */
 
     print '<form name="formaction" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
     print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
@@ -671,21 +669,20 @@ if ($action == 'create') {
 
     // Societe, contact
     print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionOnCompany") . '</td><td>';
-    /*if (!empty($socid)) {
-        $societe = new Societe($db);
-        $societe->fetch($socid);
-        if ($societe->class == "Societe")
-            print $societe->getNomUrl(1);
-        else { // Is a contact
-            $object->contact->id = $socid;
-            $socid = $societe->societe->id;
-            $societe->fetch($socid);
-            print $societe->getNomUrl(1);
-        }
-        print '<input type="hidden" name="socid" value="' . $socid . '">';
-    } else {*/
-        print $object->select_fk_extrafields("societe", 'socid');
-        //print $form->select_company('', 'socid', '', 1, 1);
+    /* if (!empty($socid)) {
+      $societe = new Societe($db);
+      $societe->fetch($socid);
+      if ($societe->class == "Societe")
+      print $societe->getNomUrl(1);
+      else { // Is a contact
+      $object->contact->id = $socid;
+      $socid = $societe->societe->id;
+      $societe->fetch($socid);
+      print $societe->getNomUrl(1);
+      }
+      print '<input type="hidden" name="socid" value="' . $socid . '">';
+      } else { */
+    print $object->select_fk_extrafields("societe", 'socid');
     //}
     print '</td></tr>';
 
@@ -835,9 +832,8 @@ if ($id) {
     }
 
     if ($action == 'edit') {
-        if ($conf->use_javascript_ajax) {
-            print "\n" . '<script type="text/javascript" language="javascript">';
-            print 'jQuery(document).ready(function () {
+        print "\n" . '<script type="text/javascript" language="javascript">';
+        print 'jQuery(document).ready(function () {
                          function setdatefields()
                          {
                                 if (jQuery("#fullday:checked").val() == null)
@@ -866,9 +862,9 @@ if ($id) {
                             setdatefields();
                         });
                    })';
-            print '</script>' . "\n";
-            print "\n" . '<script type="text/javascript" language="javascript">';
-            print 'jQuery(document).ready(function () {
+        print '</script>' . "\n";
+        print "\n" . '<script type="text/javascript" language="javascript">';
+        print 'jQuery(document).ready(function () {
                      function settype()
                      {
                             var typeselected=jQuery("#actioncode").val();
@@ -906,8 +902,7 @@ if ($id) {
                         settype();
                     });
                })';
-            print '</script>' . "\n";
-        }
+        print '</script>' . "\n";
 
         // Fiche action en mode edition
         print '<form name="formaction" action="' . $_SERVER["PHP_SELF"] . '" method="post">';
@@ -958,6 +953,10 @@ if ($id) {
         else
             $form->select_date($datef, 'p2', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
         print '</td></tr>';
+
+        /*print '<tr id="jqend"><td>' . $langs->trans("DateActionEnd") . '</td><td>';
+        print $object->select_fk_extrafields('datef', 'datef');
+        print '</td></tr>';*/
 
         // duration task
         print '<tr id="jqduration"><td>' . $langs->trans("Duration") . '</td><td colspan="3">';

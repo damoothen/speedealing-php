@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Agenda",
-   "_rev": "28-672eaefad10100fde06bf463b9d8c1cd",
+   "_rev": "29-adf360ae0a5da1663355d4749346209a",
    "class": "extrafields",
    "ico": "16-Month-Calendar.png",
    "langs": [
@@ -75,12 +75,12 @@
            "settype": "int"
        },
        "datep": {
-           "type": "date",
+           "type": "datetime",
            "enable": true,
            "settype": "int"
        },
        "datef": {
-           "type": "date",
+           "type": "datetime",
            "enable": true,
            "settype": "int"
        },

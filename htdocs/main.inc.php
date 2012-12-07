@@ -907,7 +907,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>' . "\n";
                     print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>' . "\n";
                     print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>' . "\n";
-                    print '<script type="text/javascript" src="includes/lib/chosen/chosen.jquery.min.js"></script>' . "\n";
+                    print '<script type="text/javascript" src="includes/jquery/plugins/timepicker/jquery-ui-timepicker-addon.js"></script>' . "\n";
+                    print '<script type="text/javascript" src="includes/jquery/plugins/timepicker/localization/jquery-ui-timepicker-' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
                     print '<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>' . "\n";
                     print '<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>' . "\n";
                     print '<script type="text/javascript" src="includes/jquery/plugins/spinner/ui.spinner.min.js"></script>' . "\n";
@@ -975,8 +976,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 print '<link rel="stylesheet" href="includes/jquery/plugins/fullcalendar/fullcalendar.css" media="all" />';
                 print '<!-- tooltips -->';
                 print '<link rel="stylesheet" href="includes/jquery/plugins/qtip2/jquery.qtip.min.css" />';
-                print '<!-- chosen (select element extended) -->';
-                print '<link rel="stylesheet" href="includes/jquery/plugins/chosen/chosen.css" media="all" />';
+                //print '<!-- chosen (select element extended) -->';
+                //print '<link rel="stylesheet" href="includes/jquery/plugins/chosen/chosen.css" media="all" />';
                 print '<!-- datatables -->';
                 print '<link rel="stylesheet" href="includes/jquery/plugins/datatables/css/demo_table_jui.css" media="all" />';
                 print '<!-- main styles -->';

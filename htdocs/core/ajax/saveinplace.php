@@ -86,7 +86,6 @@ if (!empty($key) && !empty($id) && !empty($class)) {
 
     if ($type == "date") {
         $res = setlocale(LC_TIME, 'fr_FR.UTF8', 'fra');
-        $date = $value;
         $value = str_replace("/", '-', $value); // 01/12/2012 -> 01-12-2012
         $value = strtotime($value);
     }
@@ -108,10 +107,7 @@ if (!empty($key) && !empty($id) && !empty($class)) {
             $value = dol_nl2br($value);
 
         error_log($object->print_fk_extrafields($key));
-        if ($type == 'date')
-            echo $date;
-        else
-            echo $object->print_fk_extrafields($key);
+        echo $object->print_fk_extrafields($key);
     } catch (Exception $exc) {
         error_log($exc->getMessage());
     }
