@@ -94,8 +94,9 @@ if ($action == 'add_right' && $caneditperms) {
         $fuser->record();
     } catch (Exception $e) {
         $mesg = $e->getMessage();
+        setEventMessage($mesg, 'errors');
     }
-    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
     exit;
 }
 
@@ -107,8 +108,9 @@ if ($action == 'remove_right' && $caneditperms) {
         $fuser->record();
     } catch (Exception $e) {
         $mesg = $e->getMessage();
+        setEventMessage($mesg, 'errors');
     }
-    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
     exit;
 }
 
@@ -122,18 +124,20 @@ if ($action == 'confirm_disable' && $confirm == "yes" && $candisableuser) {
 }
 if ($action == 'confirm_enable' && $confirm == "yes" && $candisableuser) {
     if ($id <> $user->id) {
-        $message = '';
+
+    	$error=0;
 
         $edituser->fetch($id);
 
         if (!empty($conf->file->main_limit_users)) {
             $nb = $edituser->getNbOfUsers("active", 1);
             if ($nb >= $conf->file->main_limit_users) {
-                $message = '<div class="error">' . $langs->trans("YourQuotaOfUsersIsReached") . '</div>';
+            	setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
+            	$error++;
             }
         }
 
-        if (!$message) {
+        if (! $error) {
             $edituser->setstatus(1);
             Header("Location: " . $_SERVER['PHP_SELF'] . '?id=' . $id);
             exit;
@@ -147,7 +151,7 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
         $result = $edituser->delete();
         if ($result < 0) {
             $langs->load("errors");
-            $message = '<div class="error">' . $langs->trans("ErrorUserCannotBeDelete") . '</div>';
+            setEventMessage($langs->trans("ErrorUserCannotBeDelete"), 'errors');
         } else {
             Header("Location: index.php");
             exit;
@@ -157,25 +161,28 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
 
 // Action ajout user
 if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser)) && !$_POST["cancel"]) {
-    $message = "";
+    $error=0;
     if (!$_POST["nom"]) {
-        $message = '<div class="error">' . $langs->trans("NameNotDefined") . '</div>';
+    	setEventMessage($langs->trans("NameNotDefined"), 'errors');
+    	$error++;
         $action = "create"; // Go back to create page
     }
     if (!$_POST["login"]) {
-        $message = '<div class="error">' . $langs->trans("LoginNotDefined") . '</div>';
+    	setEventMessage($langs->trans("LoginNotDefined"), 'errors');
+    	$error++;
         $action = "create"; // Go back to create page
     }
 
     if (!empty($conf->file->main_limit_users) && $action == 'add') { // If option to limit users is set
         $nb = $edituser->getNbOfUsers("active", 1);
         if ($nb >= $conf->file->main_limit_users) {
-            $message = '<div class="error">' . $langs->trans("YourQuotaOfUsersIsReached") . '</div>';
+        	setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
+        	$error++;
             $action = "create"; // Go back to create page
         }
     }
 
-    if (!$message) {
+    if (! $error) {
         if ($action == "update")
             $edituser->fetch($id);
 
@@ -219,10 +226,10 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
         } else {
             $langs->load("errors");
             if (is_array($edituser->errors) && count($edituser->errors))
-                $message = '<div class="error">' . join('<br>', $langs->trans($edituser->errors)) . '</div>';
+            	setEventMessage(join('<br>', $langs->trans($edituser->errors)), 'errors');
             else
-                $message = '<div class="error">' . $langs->trans($edituser->error) . '</div>';
-            print $edituser->error;
+            	setEventMessage($langs->trans($edituser->error), 'errors');
+            //print $edituser->error;
             if ($action == "add")
                 $action = "create"; // Go back to create page
             if ($action == "update")
@@ -463,8 +470,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             if ($ret == 'html')
                 print '<br>';
         }
-
-        dol_htmloutput_mesg($message);
 
         /*
          * Fiche en mode visu

@@ -826,13 +826,13 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
         $format = '%Y-%m-%dT%H:%M:%SZ';   // DATETIME RFC3339
 
 
-        
+
 // If date undefined or "", we return ""
     if (dol_strlen($time) == 0)
         return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
 
 
-        
+
 //print 'x'.$time;
 
     if (preg_match('/%b/i', $format)) {  // There is some text to translate
@@ -2358,7 +2358,7 @@ function end_box() {
  */
 function print_fiche_titre($title, $showDate = false) {
 	global $langs;
-	
+
 	if ($showDate)
 		$now = dol_now();
 	?>
@@ -2700,7 +2700,7 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
         elseif (is_numeric($rounding))
             $nbofdectoround = $rounding;  // For admin info page
 
-            
+
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
         if (dol_strlen($nbofdectoround))
             $amount = round($amount, $nbofdectoround); // $nbofdectoround can be 0.
@@ -3087,7 +3087,7 @@ function dol_mkdir($dir, $dataroot = '') {
             continue; // Si chemin Windows incomplet, on poursuit par rep suivant
 
 
-            
+
 // Attention, le is_dir() peut echouer bien que le rep existe.
         // (ex selon config de open_basedir)
         if ($ccdir) {
@@ -3243,17 +3243,17 @@ function dol_delaccents($str, $encoding='utf-8')
 {
     // transformer les caractères accentués en entités HTML
     $str = htmlentities($str, ENT_NOQUOTES, $encoding);
- 
+
     // remplacer les entités HTML pour avoir juste le premier caractères non accentués
     // Exemple : "&ecute;" => "e", "&Ecute;" => "E", "Ã " => "a" ...
     $str = preg_replace('#&([A-za-z])(?:acute|grave|cedil|circ|orn|ring|slash|th|tilde|uml);#', '\1', $str);
- 
+
     // Remplacer les ligatures tel que : Œ, Æ ...
     // Exemple "Å“" => "oe"
     $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str);
     // Supprimer tout le reste
     $str = preg_replace('#&[^;]+;#', '', $str);
- 
+
     return $str;
 }
 
@@ -3559,17 +3559,25 @@ function get_date_range($date_start, $date_end, $format = '', $outputlangs = '')
 }
 
 /**
- * 	Set event message in dol_events session
+ *	Set event message in dol_events session
  *
- * 	@param	string	$mesgstring		 Message
- *  @param  string	$style           Which style to use ('mesgs', 'warnings', 'errors')
+ *	@param	mixed	$mesgs			Message string or array
+ *  @param  string	$style      	Which style to use ('mesgs', 'warnings', 'errors')
  *  @return	void
  *  @see	dol_htmloutput_events
  */
-function setEventMessage($mesgstring, $style = 'mesgs') {
-    if (!in_array($style, array('mesgs', 'warnings', 'errors')))
-        dol_print_error('', 'Bad parameter for setEventMessage');
-    $_SESSION['dol_events'][$style][] = $mesgstring;
+function setEventMessage($mesgs, $style='mesgs') {
+	if (! in_array((string) $style, array('mesgs','warnings','errors')))
+		dol_print_error('','Bad parameter for setEventMessage');
+	if (! is_array($mesgs))	{	// If mesgs is a string
+		if (! empty($mesgs))
+			$_SESSION['dol_events'][$style][] = $mesgs;
+	} else {					// If mesgs is an array
+		foreach($mesgs as $mesg) {
+			if (! empty($mesg))
+				$_SESSION['dol_events'][$style][] = $mesg;
+		}
+	}
 }
 
 /**

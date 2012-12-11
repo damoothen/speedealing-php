@@ -214,7 +214,7 @@ if (!defined('NOREQUIREAJAX'))
 
 
 
-    
+
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
     dol_syslog("main.inc: A previous install or upgrade was not complete. Redirect to install page.", LOG_WARNING);
@@ -329,7 +329,7 @@ if (!defined('NOLOGIN')) {
             $langs->load('errors');
 
 
-            //$_SESSION["dol_loginmesg"] = 
+            //$_SESSION["dol_loginmesg"] =
             //}
             //if ($resultFetchUser < 0) {
             $user->trigger_mesg = 'SessionExpire - login=' . $login;
@@ -962,7 +962,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
                 // Add datepicker default options
                 print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
-                
+
                 //print '<link rel="stylesheet" href="theme/pertho_sample/foundation/stylesheets/foundation.css">';
                 print '<!-- jquery UI -->';
                 print '<link rel="stylesheet" href="includes/jquery/plugins/jQueryUI/css/Aristo/Aristo.css" media="all" />';
@@ -1498,6 +1498,10 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
          */
         function llxFooter() {
             global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache, $count_icon;
+
+            // Global html output events ($mesgs, $errors, $warnings)
+            dol_htmloutput_events();
+
             ?>
         </section>
 
@@ -1550,7 +1554,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
                 // Favicon count
                 Tinycon.setBubble(<?php echo $count_icon; ?>);
-                                                                                                                                                                                                                                            					
+
             </script>
 
             <script>
