@@ -943,7 +943,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</tr>';
 
             // Firstname
-            print "<tr>" . '<td valign="top">' . $langs->trans("Firstname") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("Firstname") . '</td>';
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid) {
                 print '<input size="30" type="text" class="flat" name="prenom" value="' . $fuser->Firstname . '">';
@@ -954,7 +954,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Login
-            print "<tr>" . '<td valign="top"><span class="fieldrequired">' . $langs->trans("Login") . '</span></td>';
+            print '<tr><td valign="top"><span class="fieldrequired">' . $langs->trans("Login") . '</span></td>';
             print '<td>';
             if (!$user->name) {
                 print '<input size="12" maxlength="24" type="text" class="flat" name="login" value="' . $fuser->name . '">';
@@ -999,7 +999,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Tel pro
-            print "<tr>" . '<td valign="top">' . $langs->trans("PhonePro") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("PhonePro") . '</td>';
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid) {
                 print '<input size="20" type="text" name="PhonePro" class="flat" value="' . $fuser->PhonePro . '">';
@@ -1010,7 +1010,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Tel mobile
-            print "<tr>" . '<td valign="top">' . $langs->trans("PhoneMobile") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("PhoneMobile") . '</td>';
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid) {
                 print '<input size="20" type="text" name="PhoneMobile" class="flat" value="' . $fuser->PhoneMobile . '">';
@@ -1021,7 +1021,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Fax
-            print "<tr>" . '<td valign="top">' . $langs->trans("Fax") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("Fax") . '</td>';
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid) {
                 print '<input size="20" type="text" name="office_fax" class="flat" value="' . $fuser->Fax . '">';
@@ -1032,7 +1032,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // EMail
-            print "<tr>" . '<td valign="top" class="fieldrequired">' . $langs->trans("EMail") . '</td>';
+            print '<tr><td valign="top" class="fieldrequired">' . $langs->trans("EMail") . '</td>';
             print '<td>';
             if ($caneditfield && $fuser->Status == "DISABLE") {
                 print '<input size="40" type="text" name="email" class="flat" value="' . $fuser->email . '">';
@@ -1043,7 +1043,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Signature
-            print "<tr>" . '<td valign="top">' . $langs->trans("Signature") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("Signature") . '</td>';
             print '<td>';
             print '<textarea name="Signature" rows="5" cols="90">' . dol_htmlentitiesbr_decode($fuser->Signature) . '</textarea>';
             print '</td></tr>';
@@ -1058,7 +1058,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             // Module Webcalendar
             if ($conf->webcalendar->enabled) {
                 $langs->load("other");
-                print "<tr>" . '<td valign="top">' . $langs->trans("LoginWebcal") . '</td>';
+                print '<tr><td valign="top">' . $langs->trans("LoginWebcal") . '</td>';
                 print '<td>';
                 if ($caneditfield)
                     print '<input size="30" type="text" class="flat" name="webcal_login" value="' . $fuser->webcal_login . '">';
