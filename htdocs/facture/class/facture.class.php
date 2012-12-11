@@ -1854,6 +1854,10 @@ class Facture extends nosqlDocument {
         } else {
             $pu = $pu_ttc;
         }
+        
+        // Si avoir, quantité négatitve
+        if ($this->type == 'INVOICE_AVOIR')
+            $qty = -$qty;
 
         if ($this->Status == "DRAFT") {
             // Calcul du total TTC et de la TVA pour la ligne a partir de
@@ -3312,6 +3316,19 @@ class Facture extends nosqlDocument {
         if (!empty($result->rows)) {
             foreach ($result->rows as $f) {
                 $options .= '<option value="' . $f->value->_id . '">' . $f->value->ref . '</option>';
+            }
+        }
+        return $options;
+    }
+    
+    public function selectAvoirableInvoiceOptions($socid){
+        $options = '';
+        $result = $this->getView('listAvoirableInvoicesPerSociete', array('key' => $socid));
+        if (!empty($result->rows)) {
+            foreach ($result->rows as $f) {
+                $tmp = new Facture($this->db);
+                $tmp->fetch($f->value->_id);
+                $options .= '<option value="' . $f->value->_id . '">' . $f->value->ref . ' ( ' . $tmp->getExtraFieldLabel('Status') . ')</option>';
             }
         }
         return $options;

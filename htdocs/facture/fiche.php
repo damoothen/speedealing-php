@@ -157,6 +157,62 @@ else if ($action == 'add' && $user->rights->facture->creer) {
         }
     }
     
+    // Credit note invoice
+    if ($_POST['type'] == "INVOICE_AVOIR") {
+        if (empty($_POST['fac_avoir'])) {
+            $error++;
+            $mesgs[] = '<div class="error">' . $langs->trans("ErrorFieldRequired", $langs->trans("CorrectInvoice")) . '</div>';
+        }
+
+        $datefacture = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
+        if (empty($datefacture)) {
+            $error++;
+            $mesgs[] = '<div class="error">' . $langs->trans("ErrorFieldRequired", $langs->trans("Date")) . '</div>';
+        }
+
+        if (!$error) {
+            // Si facture avoir
+            $datefacture = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
+
+            //$result=$object->fetch($_POST['fac_avoir']);
+
+            $object->socid = $_POST['socid'];
+            $object->number = $_POST['facnumber'];
+            $object->date = $datefacture;
+            $object->note_public = trim($_POST['note_public']);
+            $object->note = trim($_POST['note']);
+            $object->ref_client = $_POST['ref_client'];
+            $object->ref_int = $_POST['ref_int'];
+            $object->modelpdf = $_POST['model'];
+            $object->fk_project = $_POST['projectid'];
+            $object->cond_reglement_code = null;
+            $object->mode_reglement_code = $_POST['mode_reglement_code'];
+            $object->remise_absolue = $_POST['remise_absolue'];
+            $object->remise_percent = $_POST['remise_percent'];
+
+            // Proprietes particulieres a facture avoir
+            $object->fk_facture_source = $_POST['fac_avoir'];
+            $object->type = "INVOICE_AVOIR";
+
+            $id = $object->create($user);
+
+             if (!empty($id)) {
+                header('Location: ' . $_SERVER["PHP_SELF"] . '?id=' . $id);
+                exit;
+            }
+            // Add predefined lines
+//            for ($i = 1; $i <= $NBLINES; $i++) {
+//                if ($_POST['idprod' . $i]) {
+//                    $product = new Product($db);
+//                    $product->fetch($_POST['idprod' . $i]);
+//                    $startday = dol_mktime(12, 0, 0, $_POST['date_start' . $i . 'month'], $_POST['date_start' . $i . 'day'], $_POST['date_start' . $i . 'year']);
+//                    $endday = dol_mktime(12, 0, 0, $_POST['date_end' . $i . 'month'], $_POST['date_end' . $i . 'day'], $_POST['date_end' . $i . 'year']);
+//                    $result = $object->addline($id, $product->description, $product->price, $_POST['qty' . $i], $product->tva_tx, $product->localtax1_tx, $product->localtax2_tx, $_POST['idprod' . $i], $_POST['remise_percent' . $i], $startday, $endday, 0, 0, '', $product->price_base_type, $product->price_ttc, $product->type);
+//                }
+//            }
+        }
+    }
+    
     // Standard or deposit or proforma invoice
     if (($_POST['type'] == "INVOICE_STANDARD" || $_POST['type'] == "INVOICE_DEPOSIT" || $_POST['type'] == 4) && $_POST['fac_rec'] <= 0) {
 
@@ -1057,8 +1113,9 @@ if ($action == 'create' && $user->rights->facture->creer) {
     print '</td></tr>' . "\n";
 
     // Credit note
+    $optionsav = $object->selectAvoirableInvoiceOptions($socid);
     print '<tr height="18"><td valign="middle">';
-    print '<input type="radio" name="type" value="2"' . (GETPOST('type') == 2 ? ' checked=true' : '');
+    print '<input type="radio" name="type" value="INVOICE_AVOIR"' . (GETPOST('type') == "INVOICE_AVOIR" ? ' checked=true' : '');
     if (!$optionsav)
         print ' disabled="disabled"';
     print '>';
@@ -1282,8 +1339,8 @@ else {
             // Validate
             if ($object->Status == "DRAFT" && count($object->lines) > 0 &&
                     (
-                    (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == "INVOICE_REPLACEMENT" || $object->type == 4) && (!empty($conf->global->FACTURE_ENABLE_NEGATIVE) || $object->total_ttc >= 0))
-                    || ($object->type == 2 && $object->total_ttc <= 0))
+                    (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == "INVOICE_REPLACEMENT" ) && (!empty($conf->global->FACTURE_ENABLE_NEGATIVE) || $object->total_ttc >= 0))
+                    || ($object->type == "INVOICE_AVOIR" && $object->total_ttc <= 0))
             ) {
                 if ($user->rights->facture->valider) {
                     print '<p class="button-height right">';

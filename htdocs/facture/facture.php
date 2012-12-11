@@ -1587,45 +1587,45 @@ if ($action == 'create') {
     print '</tr>' . "\n";
 
     // Type de facture
-//    $facids=$facturestatic->list_replacable_invoices($soc->id);
-//    if ($facids < 0)
-//    {
-//        dol_print_error($db,$facturestatic);
-//        exit;
-//    }
-//    $options="";
-//    foreach ($facids as $facparam)
-//    {
-//        $options.='<option value="'.$facparam['id'].'"';
-//        if ($facparam['id'] == $_POST['fac_replacement']) $options.=' selected="selected"';
-//        $options.='>'.$facparam['ref'];
-//        //$options.=' ('.$facturestatic->LibStatut(0,$facparam['status']).')';
-//        $options.='</option>';
-//    }
-//
-//    $facids=$facturestatic->list_qualified_avoir_invoices($soc->id);
-//    if ($facids < 0)
-//    {
-//        dol_print_error($db,$facturestatic);
-//        exit;
-//    }
-//    $optionsav="";
-//    $newinvoice_static=new Facture($db);
-//    foreach ($facids as $key => $valarray)
-//    {
-//        $newinvoice_static->id=$key;
-//        $newinvoice_static->ref=$valarray['ref'];
-//        $newinvoice_static->statut=$valarray['status'];
-//        $newinvoice_static->type=$valarray['type'];
-//        $newinvoice_static->paye=$valarray['paye'];
-//
-//        $optionsav.='<option value="'.$key.'"';
-//        if ($key == $_POST['fac_avoir']) $optionsav.=' selected="selected"';
-//        $optionsav.='>';
-//        $optionsav.=$newinvoice_static->ref;
-//        //$optionsav.=' ('.$newinvoice_static->getLibStatut(1,$valarray['paymentornot']).')';
-//        $optionsav.='</option>';
-//    }
+    $facids=$facturestatic->list_replacable_invoices($soc->id);
+    if ($facids < 0)
+    {
+        dol_print_error($db,$facturestatic);
+        exit;
+    }
+    $options="";
+    foreach ($facids as $facparam)
+    {
+        $options.='<option value="'.$facparam['id'].'"';
+        if ($facparam['id'] == $_POST['fac_replacement']) $options.=' selected="selected"';
+        $options.='>'.$facparam['ref'];
+        //$options.=' ('.$facturestatic->LibStatut(0,$facparam['status']).')';
+        $options.='</option>';
+    }
+
+    $facids=$facturestatic->list_qualified_avoir_invoices($soc->id);
+    if ($facids < 0)
+    {
+        dol_print_error($db,$facturestatic);
+        exit;
+    }
+    $optionsav="";
+    $newinvoice_static=new Facture($db);
+    foreach ($facids as $key => $valarray)
+    {
+        $newinvoice_static->id=$key;
+        $newinvoice_static->ref=$valarray['ref'];
+        $newinvoice_static->statut=$valarray['status'];
+        $newinvoice_static->type=$valarray['type'];
+        $newinvoice_static->paye=$valarray['paye'];
+
+        $optionsav.='<option value="'.$key.'"';
+        if ($key == $_POST['fac_avoir']) $optionsav.=' selected="selected"';
+        $optionsav.='>';
+        $optionsav.=$newinvoice_static->ref;
+        //$optionsav.=' ('.$newinvoice_static->getLibStatut(1,$valarray['paymentornot']).')';
+        $optionsav.='</option>';
+    }
 
     print '<tr><td valign="top" class="fieldrequired">' . $langs->trans('Type') . '</td><td colspan="2">';
     print '<table class="nobordernopadding">' . "\n";
