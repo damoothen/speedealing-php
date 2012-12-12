@@ -1464,64 +1464,64 @@ if ($action != 'presend') {
         // Validate
         if ($object->Status == "DRAFT" && $user->rights->propal->valider) {
             if (count($object->lines) > 0)
-                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
+                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
             else
-                print '<a class="butActionRefused" href="#">' . $langs->trans('Validate') . '</a>';
+                print '<a class="buttonRefused" href="#">' . $langs->trans('Validate') . '</a>';
         }
 
         // Edit
         if ($object->Status == "OPENED" && $user->rights->propal->creer) {
-            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
+            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
         }
 
         // ReOpen
         if ((in_array($object->Status, array('SIGNED', 'NOT_SIGNED'))) && $user->rights->propal->cloturer) {
-            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=reopen' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#reopen') . '"';
+            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=reopen' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#reopen') . '"';
             print '>' . $langs->trans('ReOpen') . '</a>';
         }
 
         // Send
         if ($object->Status == "OPENED" || $object->statut == 2) {
             if (empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->propal->propal_advance->send) {
-                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
+                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
             }
             else
-                print '<a class="butActionRefused" href="#">' . $langs->trans('SendByMail') . '</a>';
+                print '<a class="buttonRefused" href="#">' . $langs->trans('SendByMail') . '</a>';
         }
 
         // Create an order
         if (!empty($conf->commande->enabled) && $object->Status == "SIGNED" && $user->societe_id == 0) {
             if ($user->rights->commande->creer) {
-                print '<a class="butAction" href="' . DOL_URL_ROOT . '/commande/commande.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddOrder") . '</a>';
+                print '<a class="button" href="' . DOL_URL_ROOT . '/commande/commande.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddOrder") . '</a>';
             }
         }
 
         // Create an invoice and classify billed
         if ($object->Status == "SIGNED" && $user->societe_id == 0) {
             if (!empty($conf->facture->enabled) && $user->rights->facture->creer) {
-                print '<a class="butAction" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddBill") . '</a>';
+                print '<a class="button" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddBill") . '</a>';
             }
 
             $arraypropal = $object->getInvoiceArrayList();
             if (is_array($arraypropal) && count($arraypropal) > 0) {
-                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled&amp;socid=' . $object->socid . '">' . $langs->trans("ClassifyBilled") . '</a>';
+                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled&amp;socid=' . $object->socid . '">' . $langs->trans("ClassifyBilled") . '</a>';
             }
         }
 
         // Close
         if ($object->Status == "OPENED" && $user->rights->propal->cloturer) {
-            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=statut' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#close') . '"';
+            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=statut' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#close') . '"';
             print '>' . $langs->trans('Close') . '</a>';
         }
 
         // Clone
         if ($user->rights->propal->creer) {
-            print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=' . $object->element . '">' . $langs->trans("ToClone") . '</a>';
+            print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=' . $object->element . '">' . $langs->trans("ToClone") . '</a>';
         }
 
         // Delete
         if ($user->rights->propal->supprimer) {
-            print '<a class="butActionDelete" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete"';
+            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete"';
             print '>' . $langs->trans('Delete') . '</a>';
         }
     }
