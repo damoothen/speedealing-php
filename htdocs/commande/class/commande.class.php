@@ -95,6 +95,8 @@ class Commande extends nosqlDocument {
      */
     function __construct($db) {
         parent::__construct($db);
+        
+        $this->no_save[] = 'thirdparty';
 
         $this->fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields->fetch(get_class($this));
@@ -1265,7 +1267,9 @@ class Commande extends nosqlDocument {
 //                $this->db->rollback();
 //                return -2;
 //            }
+            return 1;
         }
+        return -1;
     }
 
     /**

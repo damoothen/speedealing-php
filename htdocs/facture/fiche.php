@@ -792,7 +792,7 @@ else if ($action == 'confirm_converttoreduc' && $confirm == 'yes' && $user->righ
 
         // Insert one discount by VAT rate category
         $discount = new DiscountAbsolute($db);
-        if ($object->type == 2)
+        if ($object->type == "INVOICE_AVOIR")
             $discount->description = '(CREDIT_NOTE)';
         elseif ($object->type == "INVOICE_DEPOSIT")
             $discount->description = '(DEPOSIT)';
@@ -1254,14 +1254,18 @@ else {
             }
             
             // Reverse back money or convert to reduction
-            if ($object->type == "INVOICE_DEPOSIT" || $object->type == 3) {
+            if ($object->type == "INVOICE_DEPOSIT" || $object->type == "INVOICE_AVOIR") {
                 // For credit note only
-                if ($object->type == 2 && $object->statut == 1 && $object->paye == 0 && $user->rights->facture->paiement) {
-                    print '<a class="butAction" href="paiement.php?facid=' . $object->id . '&amp;action=create">' . $langs->trans('DoPaymentBack') . '</a>';
+                if ($object->type == "INVOICE_AVOIR" && $object->Status == "NOT_PAID" && $object->getSommePaiement() == 0 && $user->rights->facture->paiement) {
+                    print '<p class="button-height right">';
+                    print '<a class="button" href="/compta/paiement.php?id=' . $object->id . '&amp;action=create">' . $langs->trans('DoPaymentBack') . '</a>';
+                    print '</p>';
                 }
                 // For credit note
-                if ($object->type == 2 && $object->statut == 1 && $object->paye == 0 && $user->rights->facture->creer && $object->getSommePaiement() == 0) {
-                    print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?facid=' . $object->id . '&amp;action=converttoreduc">' . $langs->trans('ConvertToReduc') . '</a>';
+                if ($object->type == "INVOICE_AVOIR" && $object->Status == "NOT_PAID" && $object->getSommePaiement() == 0 && $user->rights->facture->creer) {
+                    print '<p class="button-height right">';
+                    print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=converttoreduc">' . $langs->trans('ConvertToReduc') . '</a>';
+                    print '</p>';
                 }
                 // For deposit invoice
                 if ($object->type == "INVOICE_DEPOSIT" && $object->Status == "STARTED" && $resteapayer == 0 && $user->rights->facture->creer) {

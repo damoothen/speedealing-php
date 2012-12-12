@@ -1492,7 +1492,7 @@ if ($action != 'presend') {
         // Create an order
         if (!empty($conf->commande->enabled) && $object->Status == "SIGNED" && $user->societe_id == 0) {
             if ($user->rights->commande->creer) {
-                print '<a class="butAction" href="' . DOL_URL_ROOT . '/commande/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddOrder") . '</a>';
+                print '<a class="butAction" href="' . DOL_URL_ROOT . '/commande/commande.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddOrder") . '</a>';
             }
         }
 
