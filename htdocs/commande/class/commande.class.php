@@ -2621,7 +2621,7 @@ class Commande extends nosqlDocument {
         if (!empty($conf->expedition->enabled) && ($option == 1 || $option == 2))
             $url = DOL_URL_ROOT . '/expedition/shipment.php?id=' . $this->id;
         else
-            $url = DOL_URL_ROOT . '/commande/fiche.php?id=' . $this->id;
+            $url = DOL_URL_ROOT . '/commande/commande.php?id=' . $this->id;
 
         if ($short)
             return $url;
@@ -3165,6 +3165,70 @@ class Commande extends nosqlDocument {
             <?php
         }
     }
+    
+    public function getLinkedObject(){
+        
+        $objects = array();
+        
+        // Object stored in $this->linked_objects;
+        foreach ($this->linked_objects as $obj) {
+            switch ($obj->type) {
+                case 'propal': 
+                    $classname = 'Propal';
+                    dol_include_once('propal/class/propal.class.php');
+                    break;
+            }
+            $tmp = new $classname($this->db);
+            $tmp->fetch($obj->id);
+            $objects[$obj->type][] = $tmp;
+        }
+        
+        return $objects;
+        
+    }
+    
+    public function printLinkedObjects(){
+        
+        global $langs;
+        
+        $objects = $this->getLinkedObject();
+       
+        // Displaying linked propals
+        if (isset($objects['propal'])) {
+            $this->printLinkedObjectsType('propal', $objects['propal']);
+        }
+        
+    }
+    
+    public function printLinkedObjectsType($type, $data){
+        
+        global $langs; 
+        
+        $title = 'LinkedObjects';
+        if ($type == 'propal')
+            $title = 'LinkedProposals';
+        
+            print start_box($langs->trans($title), "six", $this->fk_extrafields->ico, false);
+            print '<table id="tablelines" class="noborder" width="100%">';
+            print '<tr>';
+            print '<th align="left">' . $langs->trans('Ref') . '</th>';
+            print '<th align="left">' . $langs->trans('Date') . '</th>';
+            print '<th align="left">' . $langs->trans('PriceHT') . '</th>';
+            print '<th align="left">' . $langs->trans('Status') . '</th>';
+            print '</tr>';
+            foreach ($data as $p) {
+                print '<tr>';
+                print '<td>' . $p->getNomUrl(1) . '</td>';
+                print '<td>' . dol_print_date($p->date) . '</td>';
+                print '<td>' . price($p->total_ht) . '</td>';
+                print '<td>' . $p->getExtraFieldLabel('Status') . '</td>';
+                print '</tr>';
+            }
+            print '</table>';
+            print end_box();
+
+    }
+    
 
 }
 

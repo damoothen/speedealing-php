@@ -86,6 +86,8 @@ if (!empty($id)) {
     $object->getLinesArray();
 }
 
+//echo '<pre>' . print_r($object->getLinkedObject(), true) . '</pre>';die;
+
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 $hookmanager=new HookManager($db);
@@ -136,7 +138,8 @@ if ($action == 'add' && $user->rights->commande->creer) {
         $object->origin_id = $_POST['originid'];
 
         // Possibility to add external linked objects with hooks
-        $object->linked_objects[$object->origin] = $object->origin_id;
+//        $object->linked_objects[$object->origin] = $object->origin_id;
+        $object->linked_objects[] = array('type' => $object->origin, 'id' => $object->origin_id);
         if (is_array($_POST['other_linked_objects']) && ! empty($_POST['other_linked_objects']))
         {
         	$object->linked_objects = array_merge($object->linked_objects, $_POST['other_linked_objects']);
@@ -1364,16 +1367,17 @@ else {
         /*
          * Linked object block
          */
-        $somethingshown = $object->showLinkedObjectBlock();
-
-        print '</td><td valign="top" width="50%">';
+        //$somethingshown = $object->showLinkedObjectBlock();
+        $object->printLinkedObjects();
+        
+//        print '</td><td valign="top" width="50%">';
 
         // List of actions on element
 //				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
 //				$formactions=new FormActions($db);
 //				$somethingshown=$formactions->showactions($object,'order',$socid);
 
-        print '</td></tr>';
+//        print '</td></tr></table>';
     }
     
 }

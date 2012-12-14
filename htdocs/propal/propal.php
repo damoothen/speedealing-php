@@ -1384,7 +1384,7 @@ print end_box();
  * Lines
  */
 
-print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
+print start_box($titre, "six", $object->fk_extrafields->ico, false);
 
 if (!empty($conf->use_javascript_ajax) && $object->statut == 0) {
     include DOL_DOCUMENT_ROOT . '/core/tpl/ajaxrow.tpl.php';
@@ -1423,8 +1423,9 @@ if ($object->Status == "DRAFT" && $user->rights->propal->creer) {
 
 print '</table>';
 
-print '</div>';
-print "\n";
+
+
+print end_box();
 
 if ($action == 'statut') {
     /*
@@ -1531,8 +1532,8 @@ if ($action != 'presend') {
 }
 
 if ($action != 'presend') {
-    print '<table width="100%"><tr><td width="100%" valign="top">';
-    print '<a name="builddoc"></a>'; // ancre
+//    print '<table width="100%"><tr><td width="100%" valign="top">';
+//    print '<a name="builddoc"></a>'; // ancre
 
 
     /*
@@ -1552,7 +1553,8 @@ if ($action != 'presend') {
     /*
      * Linked object block
      */
-    $somethingshown = $object->showLinkedObjectBlock();
+    $object->printLinkedObjects();
+//    $somethingshown = $object->showLinkedObjectBlock();
 
 //    print '</td><td valign="top" width="50%">';
 //
@@ -1561,7 +1563,7 @@ if ($action != 'presend') {
 //    $formactions = new FormActions($db);
 //    $somethingshown = $formactions->showactions($object, 'propal', $socid);
 
-    print '</td></tr></table>';
+//    print '</td></tr></table>';
 }
 
 
@@ -1644,7 +1646,6 @@ if ($action == 'presend') {
 
 
 // End of page
-end_box();
 print '</div>';
 print '</div>';
 llxFooter();

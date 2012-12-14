@@ -2286,7 +2286,7 @@ class Propal extends nosqlDocument {
 
         $result = '';
         if ($option == '') {
-            $lien = '<a href="' . DOL_URL_ROOT . '/comm/propal.php?id=' . $this->id . $get_params . '">';
+            $lien = '<a href="' . DOL_URL_ROOT . '/propal/propal.php?id=' . $this->id . $get_params . '">';
         }
         if ($option == 'compta') {   // deprecated
             $lien = '<a href="' . DOL_URL_ROOT . '/comm/propal.php?id=' . $this->id . $get_params . '">';
@@ -2295,7 +2295,7 @@ class Propal extends nosqlDocument {
             $lien = '<a href="' . DOL_URL_ROOT . '/expedition/propal.php?id=' . $this->id . $get_params . '">';
         }
         if ($option == 'document') {
-            $lien = '<a href="' . DOL_URL_ROOT . '/comm/propal/document.php?id=' . $this->id . $get_params . '">';
+            $lien = '<a href="' . DOL_URL_ROOT . '/propal/document.php?id=' . $this->id . $get_params . '">';
         }
         $lienfin = '</a>';
 
@@ -2448,6 +2448,88 @@ class Propal extends nosqlDocument {
         $this->record();
         return 1;
     }
+    
+    public function getLinkedObject(){
+        
+        $objects = array();
+        
+        /* No variable $linked_objects ?
+         * 
+         * 
+        // Object stored in $this->linked_objects;
+        foreach ($this->linked_objects as $obj) {
+            switch ($obj->type) {
+                case 'commande': 
+                    $classname = 'Commande';
+                    dol_include_once('commande/class/commande.class.php');
+                    break;
+            }
+            $tmp = new $classname($this->db);
+            $tmp->fetch($obj->id);
+            $objects[$obj->type][] = $tmp;
+        }
+         * 
+         */
+        
+        // Objects that refer current propal in their $linked_objects variable.
+        $res = $this->getView('listLinkedObjects', array('key' => $this->id));
+        if (count($res->rows) > 0) {
+            foreach( $res->rows as $r) {
+                $classname = $r->value->class;
+                if ($classname == 'Commande')
+                    require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
+                $obj = new $classname($this->db);
+                $obj->fetch($r->value->id);
+                $objects[strtolower($classname)][] = $obj;
+            }
+        }
+        
+        return $objects;
+        
+    }
+    
+    public function printLinkedObjects(){
+        
+        global $langs;
+        
+        $objects = $this->getLinkedObject();
+       
+        // Displaying linked propals
+        if (isset($objects['commande'])) {
+            $this->printLinkedObjectsType('commande', $objects['commande']);
+        }
+        
+    }
+    
+    public function printLinkedObjectsType($type, $data){
+        
+        global $langs; 
+        
+        $title = 'LinkedObjects';
+        if ($type == 'commande')
+            $title = 'LinkedOrders';
+        
+        print start_box($langs->trans($title), "six", $this->fk_extrafields->ico, false);
+        print '<table id="tablelines" class="noborder" width="100%">';
+        print '<tr>';
+        print '<th align="left">' . $langs->trans('Ref') . '</th>';
+        print '<th align="left">' . $langs->trans('Date') . '</th>';
+        print '<th align="left">' . $langs->trans('PriceHT') . '</th>';
+        print '<th align="left">' . $langs->trans('Status') . '</th>';
+        print '</tr>';
+        foreach ($data as $p) {
+            print '<tr>';
+            print '<td>' . $p->getNomUrl(1) . '</td>';
+            print '<td>' . dol_print_date($p->date) . '</td>';
+            print '<td>' . price($p->total_ht) . '</td>';
+            print '<td>' . $p->getExtraFieldLabel('Status') . '</td>';
+            print '</tr>';
+        }
+        print '</table>';
+        print end_box();
+
+    }
+    
 
 }
 
