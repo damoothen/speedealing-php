@@ -477,25 +477,27 @@ class User extends nosqlDocument {
         //print_r($this->rights);
 
         // Convert for old right definition
-        if($this->rights->societe->creer)
+        if (! empty($this->rights->societe->creer))
             $this->rights->societe->edit = true;
-        if($this->rights->societe->supprimer)
+        if (! empty($this->rights->societe->supprimer))
             $this->rights->societe->delete = true;
-        if($this->rights->societe->contact->creer)
+        if (! empty($this->rights->societe->contact->creer)) {
         	if (! is_object($this->rights->contact))
         		$this->rights->contact = new stdClass(); // For avoid error
             $this->rights->contact->edit = true;
-        if($this->rights->societe->contact->supprimer)
+        }
+        if (! empty($this->rights->societe->contact->supprimer)) {
         	if (! is_object($this->rights->contact))
         		$this->rights->contact = new stdClass(); // For avoid error
             $this->rights->contact->delete = true;
-        if($this->rights->agenda->myactions->create)
+        }
+        if (! empty($this->rights->agenda->myactions->create))
             $this->rights->agenda->edit = true;
-        if($this->rights->agenda->myactions->delete)
+        if (! empty($this->rights->agenda->myactions->delete))
             $this->rights->agenda->delete = true;
-        if($this->rights->commande->creer)
+        if (! empty($this->rights->commande->creer))
             $this->rights->commande->edit = true;
-        if($this->rights->commande->supprimer)
+        if (! empty($this->rights->commande->supprimer))
             $this->rights->commande->delete = true;
 
 
