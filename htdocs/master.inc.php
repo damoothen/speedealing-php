@@ -30,7 +30,8 @@
 /*
  * Create $conf object
  */
-require_once(DOL_DOCUMENT_ROOT . "/core/class/conf.class.php");
+if (! class_exists('Conf'))
+	require DOL_DOCUMENT_ROOT . '/core/class/conf.class.php';
 
 $conf = new Conf();
 // Identifiant propres au serveur couchdb
@@ -78,25 +79,26 @@ if (defined('TEST_DB_FORCE_TYPE'))
     $conf->db->type = constant('TEST_DB_FORCE_TYPE');
 
 // Chargement des includes principaux de librairies communes
-if (!defined('NOREQUIREUSER'))
-    require_once(DOL_DOCUMENT_ROOT . "/user/class/user.class.php");  // Need 500ko memory
+if (! defined('NOREQUIREUSER')) {
+	if (! class_exists('User'))
+		require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';  // Need 500ko memory
+}
 
 
-
-
-
-    
 // For couchdb
-
-require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couch.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchClient.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
+if (! class_exists('couch'))
+	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couch.php';
+if (! class_exists('couchClient'))
+	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
+if (! class_exists('nosqlDocument'))
+	require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
 
 /*
  * Creation objet $langs (must be before all other code)
  */
-if (!defined('NOREQUIRETRAN')) {
-    require_once(DOL_DOCUMENT_ROOT . "/core/class/translate.class.php");
+if (! defined('NOREQUIRETRAN')) {
+	if (! class_exists('Translate'))
+		require DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
     $langs = new Translate('', $conf); // A mettre apres lecture de la conf
 }
 
