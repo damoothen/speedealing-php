@@ -57,7 +57,7 @@
                },
                "ST_DISABLE": {
                    "enable": true,
-                   "cssClass": "blue-gardient"
+                   "cssClass": "blue-gradient"
                },
                "ST_OUT": {
                    "enable": true,

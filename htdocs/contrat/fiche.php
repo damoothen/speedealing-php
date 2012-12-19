@@ -5,18 +5,17 @@
  * Copyright (C) 2006		Andre Cianfarani		<acianfa@free.fr>
  * Copyright (C) 2010-2012	Juanjo Menent			<jmenent@2byte.es>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -219,7 +218,7 @@ if ($action == 'update')
     $object->fk_project     = trim($_POST["projectid"]);
     $object->remise_percent = trim($_POST["remise_percent"]);
     $object->id             = $contratid;
-    
+
     // Get extra fields
     foreach($_POST as $key => $value)
     {
@@ -746,75 +745,76 @@ if ($action == 'create')
 }
 elseif ($action == 'edit')
 {
-        /*
-         * Edition
-         */
-        print_fiche_titre($langs->trans("EditContract"));
+	/*
+	 * Edition
+	 */
+	print_fiche_titre($langs->trans("EditContract"));
 
-        if ($contratid)
-        {
-            dol_fiche_head($head, $a, $langs->trans("AddContract"), 0, 'contract');
+	if ($contratid)
+	{
+		dol_fiche_head($head, $a, $langs->trans("AddContract"), 0, 'contract');
 
-    dol_htmloutput_errors($mesg,'');
+	    dol_htmloutput_errors($mesg,'');
 
-    $object->date_contrat = dol_now();
-    $object->fetch($contratid);
-    
-    $soc=new Societe($db);
-    $soc->fetch($object->socid);
+	    $object->date_contrat = dol_now();
+	    $object->fetch($contratid);
 
-    print '<form name="contrat" action="'.$_SERVER["PHP_SELF"].'" method="post">';
-    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	    $soc=new Societe($db);
+	    $soc->fetch($object->socid);
 
-    print '<input type="hidden" name="action" value="update">';
-    print '<input type="hidden" name="id" value="'.$object->id.'">'."\n";
-    print '<input type="hidden" name="remise_percent" value="0">';
+	    print '<form name="contrat" action="'.$_SERVER["PHP_SELF"].'" method="post">';
+	    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 
-    print '<table class="border" width="100%">';
+	    print '<input type="hidden" name="action" value="update">';
+	    print '<input type="hidden" name="id" value="'.$object->id.'">'."\n";
+	    print '<input type="hidden" name="remise_percent" value="0">';
 
-    // Ref
-    print '<tr><td>'.$langs->trans("Ref").'</td>';
-    print '<td>'.$object->ref.'</td></tr>';
+	    print '<table class="border" width="100%">';
 
-    // Customer
-    print '<tr><td>'.$langs->trans("Customer").'</td><td>'.$soc->getNomUrl(1).'</td></tr>';
+	    // Ref
+	    print '<tr><td>'.$langs->trans("Ref").'</td>';
+	    print '<td>'.$object->ref.'</td></tr>';
 
-    // Ligne info remises tiers
-    print '<tr><td>'.$langs->trans('Discount').'</td><td>';
-    if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",$soc->remise_client);
-    else print $langs->trans("CompanyHasNoRelativeDiscount");
-    $absolute_discount=$soc->getAvailableDiscounts();
-    print '. ';
-    if ($absolute_discount) print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->trans("Currency".$conf->monnaie));
-    else print $langs->trans("CompanyHasNoAbsoluteDiscount");
-    print '.';
-    print '</td></tr>';
-    
-    // Commercial suivi
-    //print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPFOLL").'</span></td><td>';
-    //print $form->select_users(GETPOST("commercial_suivi_id")?GETPOST("commercial_suivi_id"):$user->id,'commercial_suivi_id',1,'');
-    //print '</td></tr>';
+	    // Customer
+	    print '<tr><td>'.$langs->trans("Customer").'</td><td>'.$soc->getNomUrl(1).'</td></tr>';
 
-    // Commercial signature
-    //print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPSIGN").'</span></td><td>';
-    //print $form->select_users(GETPOST("commercial_signature_id")?GETPOST("commercial_signature_id"):$user->id,'commercial_signature_id',1,'');
-    //print '</td></tr>';
+	    // Ligne info remises tiers
+	    print '<tr><td>'.$langs->trans('Discount').'</td><td>';
+	    if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",$soc->remise_client);
+	    else print $langs->trans("CompanyHasNoRelativeDiscount");
+	    $absolute_discount=$soc->getAvailableDiscounts();
+	    print '. ';
+	    if ($absolute_discount) print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->trans("Currency".$conf->monnaie));
+	    else print $langs->trans("CompanyHasNoAbsoluteDiscount");
+	    print '.';
+	    print '</td></tr>';
 
-    print '<tr><td><span class="fieldrequired">'.$langs->trans("Date").'</span></td><td>';
-    $form->select_date($datecontrat,'',0,0,'',"contrat");
-    print "</td></tr>";
-    
-    // Other attributes
-    $parameters=array('colspan' => ' colspan="3"');
-    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+	    // Commercial suivi
+	    //print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPFOLL").'</span></td><td>';
+	    //print $form->select_users(GETPOST("commercial_suivi_id")?GETPOST("commercial_suivi_id"):$user->id,'commercial_suivi_id',1,'');
+	    //print '</td></tr>';
 
-    print "</table>\n";
+	    // Commercial signature
+	    //print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPSIGN").'</span></td><td>';
+	    //print $form->select_users(GETPOST("commercial_signature_id")?GETPOST("commercial_signature_id"):$user->id,'commercial_signature_id',1,'');
+	    //print '</td></tr>';
 
-    print '<br><center><input type="submit" class="button" value="'.$langs->trans("Create").'"></center>';
+	    print '<tr><td><span class="fieldrequired">'.$langs->trans("Date").'</span></td><td>';
+	    $form->select_date($datecontrat,'',0,0,'',"contrat");
+	    print "</td></tr>";
 
-    print "</form>\n";
+	    // Other attributes
+	    $parameters=array('colspan' => ' colspan="3"');
+	    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 
-    dol_fiche_end();
+	    print "</table>\n";
+
+	    print '<br><center><input type="submit" class="button" value="'.$langs->trans("Create").'"></center>';
+
+	    print "</form>\n";
+
+	    dol_fiche_end();
+	}
 }
 else
 /* *************************************************************************** */
@@ -931,8 +931,8 @@ else
         // Date
         print '<tr><td>'.$langs->trans("Date").'</td>';
         print '<td colspan="3">'.dol_print_date($object->date_contrat,"dayhour")."</td></tr>\n";
-        
-        // Other attributes                
+
+        // Other attributes
         $parameters=array('id'=>$object->id, 'colspan' => ' colspan="3"');
         $reshook=$hookmanager->executeHooks('showOutputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 
@@ -1559,7 +1559,7 @@ else
         }
 
         print '<table width="100%"><tr><td width="50%" valign="top">';
-        
+
         /*
          * Documents generes
          */

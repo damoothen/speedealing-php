@@ -7,18 +7,17 @@
  * Copyright (C) 2005      Lionel Cousteix      <etm_ltd@tiscali.co.uk>
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 require '../main.inc.php';
@@ -95,8 +94,9 @@ if ($action == 'add_right' && $caneditperms) {
         $fuser->record();
     } catch (Exception $e) {
         $mesg = $e->getMessage();
+        setEventMessage($mesg, 'errors');
     }
-    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
     exit;
 }
 
@@ -108,8 +108,9 @@ if ($action == 'remove_right' && $caneditperms) {
         $fuser->record();
     } catch (Exception $e) {
         $mesg = $e->getMessage();
+        setEventMessage($mesg, 'errors');
     }
-    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id);
     exit;
 }
 
@@ -123,18 +124,20 @@ if ($action == 'confirm_disable' && $confirm == "yes" && $candisableuser) {
 }
 if ($action == 'confirm_enable' && $confirm == "yes" && $candisableuser) {
     if ($id <> $user->id) {
-        $message = '';
+
+    	$error=0;
 
         $edituser->fetch($id);
 
         if (!empty($conf->file->main_limit_users)) {
             $nb = $edituser->getNbOfUsers("active", 1);
             if ($nb >= $conf->file->main_limit_users) {
-                $message = '<div class="error">' . $langs->trans("YourQuotaOfUsersIsReached") . '</div>';
+            	setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
+            	$error++;
             }
         }
 
-        if (!$message) {
+        if (! $error) {
             $edituser->setstatus(1);
             Header("Location: " . $_SERVER['PHP_SELF'] . '?id=' . $id);
             exit;
@@ -148,7 +151,7 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
         $result = $edituser->delete();
         if ($result < 0) {
             $langs->load("errors");
-            $message = '<div class="error">' . $langs->trans("ErrorUserCannotBeDelete") . '</div>';
+            setEventMessage($langs->trans("ErrorUserCannotBeDelete"), 'errors');
         } else {
             Header("Location: index.php");
             exit;
@@ -158,25 +161,28 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
 
 // Action ajout user
 if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser)) && !$_POST["cancel"]) {
-    $message = "";
+    $error=0;
     if (!$_POST["nom"]) {
-        $message = '<div class="error">' . $langs->trans("NameNotDefined") . '</div>';
+    	setEventMessage($langs->trans("NameNotDefined"), 'errors');
+    	$error++;
         $action = "create"; // Go back to create page
     }
     if (!$_POST["login"]) {
-        $message = '<div class="error">' . $langs->trans("LoginNotDefined") . '</div>';
+    	setEventMessage($langs->trans("LoginNotDefined"), 'errors');
+    	$error++;
         $action = "create"; // Go back to create page
     }
 
     if (!empty($conf->file->main_limit_users) && $action == 'add') { // If option to limit users is set
         $nb = $edituser->getNbOfUsers("active", 1);
         if ($nb >= $conf->file->main_limit_users) {
-            $message = '<div class="error">' . $langs->trans("YourQuotaOfUsersIsReached") . '</div>';
+        	setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
+        	$error++;
             $action = "create"; // Go back to create page
         }
     }
 
-    if (!$message) {
+    if (! $error) {
         if ($action == "update")
             $edituser->fetch($id);
 
@@ -220,10 +226,10 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
         } else {
             $langs->load("errors");
             if (is_array($edituser->errors) && count($edituser->errors))
-                $message = '<div class="error">' . join('<br>', $langs->trans($edituser->errors)) . '</div>';
+            	setEventMessage(join('<br>', $langs->trans($edituser->errors)), 'errors');
             else
-                $message = '<div class="error">' . $langs->trans($edituser->error) . '</div>';
-            print $edituser->error;
+            	setEventMessage($langs->trans($edituser->error), 'errors');
+            //print $edituser->error;
             if ($action == "add")
                 $action = "create"; // Go back to create page
             if ($action == "update")
@@ -464,8 +470,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             if ($ret == 'html')
                 print '<br>';
         }
-
-        dol_htmloutput_mesg($message);
 
         /*
          * Fiche en mode visu
@@ -944,7 +948,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</tr>';
 
             // Firstname
-            print "<tr>" . '<td valign="top">' . $langs->trans("Firstname") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("Firstname") . '</td>';
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid) {
                 print '<input size="30" type="text" class="flat" name="prenom" value="' . $fuser->Firstname . '">';
@@ -955,7 +959,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Login
-            print "<tr>" . '<td valign="top"><span class="fieldrequired">' . $langs->trans("Login") . '</span></td>';
+            print '<tr><td valign="top"><span class="fieldrequired">' . $langs->trans("Login") . '</span></td>';
             print '<td>';
             if (!$user->name) {
                 print '<input size="12" maxlength="24" type="text" class="flat" name="login" value="' . $fuser->name . '">';
@@ -1000,7 +1004,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Tel pro
-            print "<tr>" . '<td valign="top">' . $langs->trans("PhonePro") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("PhonePro") . '</td>';
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid) {
                 print '<input size="20" type="text" name="PhonePro" class="flat" value="' . $fuser->PhonePro . '">';
@@ -1011,7 +1015,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Tel mobile
-            print "<tr>" . '<td valign="top">' . $langs->trans("PhoneMobile") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("PhoneMobile") . '</td>';
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid) {
                 print '<input size="20" type="text" name="PhoneMobile" class="flat" value="' . $fuser->PhoneMobile . '">';
@@ -1022,7 +1026,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Fax
-            print "<tr>" . '<td valign="top">' . $langs->trans("Fax") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("Fax") . '</td>';
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid) {
                 print '<input size="20" type="text" name="office_fax" class="flat" value="' . $fuser->Fax . '">';
@@ -1033,7 +1037,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // EMail
-            print "<tr>" . '<td valign="top" class="fieldrequired">' . $langs->trans("EMail") . '</td>';
+            print '<tr><td valign="top" class="fieldrequired">' . $langs->trans("EMail") . '</td>';
             print '<td>';
             if ($caneditfield && $fuser->Status == "DISABLE") {
                 print '<input size="40" type="text" name="email" class="flat" value="' . $fuser->email . '">';
@@ -1044,7 +1048,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</td></tr>';
 
             // Signature
-            print "<tr>" . '<td valign="top">' . $langs->trans("Signature") . '</td>';
+            print '<tr><td valign="top">' . $langs->trans("Signature") . '</td>';
             print '<td>';
             print '<textarea name="Signature" rows="5" cols="90">' . dol_htmlentitiesbr_decode($fuser->Signature) . '</textarea>';
             print '</td></tr>';
@@ -1059,7 +1063,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             // Module Webcalendar
             if ($conf->webcalendar->enabled) {
                 $langs->load("other");
-                print "<tr>" . '<td valign="top">' . $langs->trans("LoginWebcal") . '</td>';
+                print '<tr><td valign="top">' . $langs->trans("LoginWebcal") . '</td>';
                 print '<td>';
                 if ($caneditfield)
                     print '<input size="30" type="text" class="flat" name="webcal_login" value="' . $fuser->webcal_login . '">';
