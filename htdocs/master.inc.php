@@ -25,7 +25,9 @@
  */
 
 //require_once("filefunc.inc.php");	// May have been already require by main.inc.php. But may not by scripts.
-
+/*error_reporting(E_ALL);
+ini_set('display_errors', true);
+ini_set('html_errors', false);*/
 
 /*
  * Create $conf object
