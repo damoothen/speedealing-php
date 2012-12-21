@@ -1819,7 +1819,7 @@ class Facture extends nosqlDocument {
     function addline($facid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1 = 0, $txlocaltax2 = 0, $fk_product = 0, $remise_percent = 0, $date_start = '', $date_end = '', $ventil = 0, $info_bits = 0, $fk_remise_except = '', $price_base_type = 'HT', $pu_ttc = 0, $type = 0, $rang = -1, $special_code = 0, $origin = '', $origin_id = 0, $fk_parent_line = 0, $fk_fournprice = null, $pa_ht = 0, $label = '') {
         dol_syslog(get_class($this) . "::Addline facid=$facid,desc=$desc,pu_ht=$pu_ht,qty=$qty,txtva=$txtva, txlocaltax1=$txlocaltax1, txlocaltax2=$txlocaltax2, fk_product=$fk_product,remise_percent=$remise_percent,date_start=$date_start,date_end=$date_end,ventil=$ventil,info_bits=$info_bits,fk_remise_except=$fk_remise_except,price_base_type=$price_base_type,pu_ttc=$pu_ttc,type=$type", LOG_DEBUG);
         include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
-
+        
         // Clean parameters
         if (empty($remise_percent))
             $remise_percent = 0;
@@ -3343,6 +3343,71 @@ class Facture extends nosqlDocument {
         return $facture;
         
     }
+    
+    
+        public function getLinkedObject(){
+        
+        $objects = array();
+        
+        // Object stored in $this->linked_objects;
+        foreach ($this->linked_objects as $obj) {
+            switch ($obj->type) {
+                case 'commande': 
+                    $classname = 'Commande';
+                    require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
+                    break;
+            }
+            $tmp = new $classname($this->db);
+            $tmp->fetch($obj->id);
+            $objects[$obj->type][] = $tmp;
+        }
+        
+        return $objects;
+        
+    }
+    
+    public function printLinkedObjects(){
+        
+        global $langs;
+        
+        $objects = $this->getLinkedObject();
+       
+        // Displaying linked propals
+        if (isset($objects['commande'])) {
+            $this->printLinkedObjectsType('commande', $objects['commande']);
+        }
+        
+    }
+    
+    public function printLinkedObjectsType($type, $data){
+        
+        global $langs; 
+        
+        $title = 'LinkedObjects';
+        if ($type == 'commande')
+            $title = 'LinkedOrders';
+        
+            print start_box($langs->trans($title), "six", $this->fk_extrafields->ico, false);
+            print '<table id="tablelines" class="noborder" width="100%">';
+            print '<tr>';
+            print '<th align="left">' . $langs->trans('Ref') . '</th>';
+            print '<th align="left">' . $langs->trans('Date') . '</th>';
+            print '<th align="left">' . $langs->trans('PriceHT') . '</th>';
+            print '<th align="left">' . $langs->trans('Status') . '</th>';
+            print '</tr>';
+            foreach ($data as $p) {
+                print '<tr>';
+                print '<td>' . $p->getNomUrl(1) . '</td>';
+                print '<td>' . dol_print_date($p->date) . '</td>';
+                print '<td>' . price($p->total_ht) . '</td>';
+                print '<td>' . $p->getExtraFieldLabel('Status') . '</td>';
+                print '</tr>';
+            }
+            print '</table>';
+            print end_box();
+
+    }
+
 
 }
 

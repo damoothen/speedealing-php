@@ -800,8 +800,6 @@ class Propal extends nosqlDocument {
         $error = 0;
         $now = dol_now();
 
-        $this->db->begin();
-
         // Load source object
         $objFrom = dol_clone($this);
 
@@ -811,8 +809,8 @@ class Propal extends nosqlDocument {
         if (!empty($socid) && $socid != $this->socid) {
             if ($objsoc->fetch($socid) > 0) {
                 $this->socid = $objsoc->id;
-                $this->cond_reglement_id = (!empty($objsoc->cond_reglement_id) ? $objsoc->cond_reglement_id : 0);
-                $this->mode_reglement_id = (!empty($objsoc->mode_reglement_id) ? $objsoc->mode_reglement_id : 0);
+                $this->cond_reglement_code = (!empty($objsoc->cond_reglement_code) ? $objsoc->cond_reglement_code : 'AV_NOW');
+                $this->mode_reglement_code = (!empty($objsoc->mode_reglement_code) ? $objsoc->mode_reglement_code : 'TIP');
                 $this->fk_project = '';
                 $this->fk_delivery_address = '';
             }
@@ -822,10 +820,12 @@ class Propal extends nosqlDocument {
             $objsoc->fetch($this->socid);
         }
 
-        $this->id = 0;
-        $this->statut = 0;
+        unset($this->id);
+        unset($this->_id);
+        unset($this->_rev);
+        $this->Status = 'DRAFT';
 
-        if (empty($conf->global->PROPALE_ADDON) || !is_readable(DOL_DOCUMENT_ROOT . "/core/modules/propale/" . $conf->global->PROPALE_ADDON . ".php")) {
+        if (empty($conf->global->PROPALE_ADDON) || !is_readable(DOL_DOCUMENT_ROOT . "/propal/core/modules/propale/" . $conf->global->PROPALE_ADDON . ".php")) {
             $this->error = 'ErrorSetupNotComplete';
             return -1;
         }
@@ -839,14 +839,14 @@ class Propal extends nosqlDocument {
         $this->ref_client = '';
 
         // Set ref
-        require_once DOL_DOCUMENT_ROOT . "/core/modules/propale/" . $conf->global->PROPALE_ADDON . '.php';
+        require_once DOL_DOCUMENT_ROOT . "/propal/core/modules/propale/" . $conf->global->PROPALE_ADDON . '.php';
         $obj = $conf->global->PROPALE_ADDON;
         $modPropale = new $obj;
         $this->ref = $modPropale->getNextValue($objsoc, $this);
 
         // Create clone
         $result = $this->create($user);
-        if ($result < 0)
+        if (!empty($result))
             $error++;
 
         if (!$error) {
@@ -872,10 +872,8 @@ class Propal extends nosqlDocument {
 
         // End
         if (!$error) {
-            $this->db->commit();
             return $this->id;
         } else {
-            $this->db->rollback();
             return -1;
         }
     }
@@ -2494,7 +2492,7 @@ class Propal extends nosqlDocument {
         
         $objects = $this->getLinkedObject();
        
-        // Displaying linked propals
+        // Displaying linked orders
         if (isset($objects['commande'])) {
             $this->printLinkedObjectsType('commande', $objects['commande']);
         }

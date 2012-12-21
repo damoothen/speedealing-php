@@ -3183,6 +3183,19 @@ class Commande extends nosqlDocument {
             $objects[$obj->type][] = $tmp;
         }
         
+        // Objects that refer current propal in their $linked_objects variable.
+        $res = $this->getView('listLinkedObjects', array('key' => $this->id));
+        if (count($res->rows) > 0) {
+            foreach( $res->rows as $r) {
+                $classname = $r->value->class;
+                if ($classname == 'Facture')
+                    require_once(DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php');
+                $obj = new $classname($this->db);
+                $obj->fetch($r->value->id);
+                $objects[strtolower($classname)][] = $obj;
+            }
+        }
+        
         return $objects;
         
     }
@@ -3192,10 +3205,15 @@ class Commande extends nosqlDocument {
         global $langs;
         
         $objects = $this->getLinkedObject();
-       
+        
         // Displaying linked propals
         if (isset($objects['propal'])) {
             $this->printLinkedObjectsType('propal', $objects['propal']);
+        }
+        
+        // Displaying linked invoices
+        if (isset($objects['facture'])) {
+            $this->printLinkedObjectsType('facture', $objects['facture']);
         }
         
     }
@@ -3207,6 +3225,9 @@ class Commande extends nosqlDocument {
         $title = 'LinkedObjects';
         if ($type == 'propal')
             $title = 'LinkedProposals';
+        else if ($type == 'facture')
+            $title = 'LinkedInvoices';
+
         
             print start_box($langs->trans($title), "six", $this->fk_extrafields->ico, false);
             print '<table id="tablelines" class="noborder" width="100%">';

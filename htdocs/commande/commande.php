@@ -166,7 +166,7 @@ if ($action == 'add' && $user->rights->commande->creer) {
 
                 for ($i=0;$i<$num;$i++)
                 {
-                    $desc=($lines[$i]->desc?$lines[$i]->desc:$lines[$i]->libelle);
+                    $desc=($lines[$i]->description?$lines[$i]->description:$lines[$i]->libelle);
                     $product_type=($lines[$i]->product_type?$lines[$i]->product_type:0);
 
                     // Dates
@@ -1077,17 +1077,6 @@ else {
                 }
             }
 
-            // Create bill and Classify billed
-
-            if (!empty($conf->facture->enabled) && $object->Status == "TO_BILL") {
-                if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
-                    print '<a class="butAction" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("CreateBill") . '</a>';
-                }
-                if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
-                    print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans("ClassifyBilled") . '</a>';
-                }
-            }
-            
             // Delete order
             if ($user->rights->commande->supprimer) {
                 if ($numshipping == 0) {
@@ -1112,24 +1101,13 @@ else {
                 print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("ToClone") . '</a>';
                 print "</p>";
             }
-            
-            // Create bill and Classify billed
-
-//            if (!empty($conf->facture->enabled) && $object->Status == "TO_BILL") {
-//                if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
-//                    print '<a class="butAction" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("CreateBill") . '</a>';
-//                }
-//                if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
-//                    print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans("ClassifyBilled") . '</a>';
-//                }
-//            }
-            
+                        
             // Classify billed
-            if ($object->Status == "TO_BILL" && $user->rights->commande->cloturer) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans('ClassifyBilled') . '</a>';
-                print "</p>";                
-            }
+//            if ($object->Status == "TO_BILL" && $user->rights->commande->cloturer) {
+//                print '<p class="button-height right">';
+//                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans('ClassifyBilled') . '</a>';
+//                print "</p>";                
+//            }
             
             // Set to shipped (Close)
             if (($object->Status == "VALIDATED" || $object->Status == "IN_PROCESS") && $user->rights->commande->cloturer) {
@@ -1149,7 +1127,7 @@ else {
             if (!empty($conf->facture->enabled) && !in_array($object->Status, array("DRAFT", "CANCELED", "PROCESSED"))) {
                 if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
                     print '<p class="button-height right">';
-                    print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("CreateBill") . '</a>';
+                    print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("CreateBill") . '</a>';
                     print "</p>";
                 }
                 if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
