@@ -132,7 +132,7 @@ class User extends nosqlDocument {
         if ($conf->Couchdb->name == '_users') {
             require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
 
-            $user_config = new UserAdmin($db);
+            $user_config = new UserAdmin($this->db);
             $user_config->fetch("org.couchdb.user:" . $login); // Load for default entity
             $user_config->LastConnection = $user_config->NewConnection;
             $user_config->NewConnection = dol_now();
