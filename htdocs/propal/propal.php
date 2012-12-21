@@ -1244,7 +1244,13 @@ if ($action != 'editconditions' && $object->Status == "DRAFT")
 print '</tr></table>';
 print '</td><td colspan="3">';
 if ($action == 'editconditions') {
-    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'cond_reglement_id');
+//    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'cond_reglement_id');
+    print '<form name="editconditions" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
+    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+    print '<input type="hidden" name="action" value="setconditions">';
+    print $object->select_fk_extrafields("cond_reglement_code", "cond_reglement_code", $object->cond_reglement_code);
+    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
+    print '</form>';
 } else {
 //    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'none');
     print $object->getExtraFieldLabel('cond_reglement_code');

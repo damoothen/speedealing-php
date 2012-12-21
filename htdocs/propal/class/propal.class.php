@@ -1907,6 +1907,21 @@ class Propal extends nosqlDocument {
             return -2;
         }
     }
+    
+        /**
+     * 	Change payment terms
+     *
+     * 	@param	string $code_reglement_code 	Code of new payment term
+     * 	@return int						>0 si ok, <0 si ko
+     */
+    function setPaymentTerms($cond_reglement_code) {
+        if ($this->Status == "DRAFT") {
+            $this->cond_reglement_code = $cond_reglement_code;
+            $this->record();
+            return 1;
+        }
+        return -2;
+    }
 
     /**
      * 	Change payment methods
