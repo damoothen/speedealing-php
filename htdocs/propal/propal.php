@@ -1079,16 +1079,16 @@ if ($action != 'presend') {
         }
 
         // Create an invoice and classify billed
-        if ($object->Status == "SIGNED" && $user->societe_id == 0) {
-            if (!empty($conf->facture->enabled) && $user->rights->facture->creer) {
-                print '<a class="button" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddBill") . '</a>';
-            }
-
-            $arraypropal = $object->getInvoiceArrayList();
-            if (is_array($arraypropal) && count($arraypropal) > 0) {
-                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled&amp;socid=' . $object->socid . '">' . $langs->trans("ClassifyBilled") . '</a>';
-            }
-        }
+//        if ($object->Status == "SIGNED" && $user->societe_id == 0) {
+//            if (!empty($conf->facture->enabled) && $user->rights->facture->creer) {
+//                print '<a class="button" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddBill") . '</a>';
+//            }
+//
+//            $arraypropal = $object->getInvoiceArrayList();
+//            if (is_array($arraypropal) && count($arraypropal) > 0) {
+//                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled&amp;socid=' . $object->socid . '">' . $langs->trans("ClassifyBilled") . '</a>';
+//            }
+//        }
 
         // Close
         if ($object->Status == "OPENED" && $user->rights->propal->cloturer) {
@@ -1096,10 +1096,10 @@ if ($action != 'presend') {
             print '>' . $langs->trans('Close') . '</a>';
         }
 
-        // Clone
-        if ($user->rights->propal->creer) {
-            print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=' . $object->element . '">' . $langs->trans("ToClone") . '</a>';
-        }
+//        // Clone
+//        if ($user->rights->propal->creer) {
+//            print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=' . $object->element . '">' . $langs->trans("ToClone") . '</a>';
+//        }
 
         // Delete
         if ($user->rights->propal->supprimer) {

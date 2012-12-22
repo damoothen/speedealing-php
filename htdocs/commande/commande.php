@@ -862,7 +862,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
             $objectsrc->fetch_thirdparty();
 
             $projectid          = (!empty($objectsrc->fk_project)?$object->fk_project:'');
-            $ref_client         = (!empty($objectsrc->ref_client)?$object->ref_client:'');
+            $ref_client         = (!empty($objectsrc->ref_client)?$objectsrc->ref_client:'');
 
             $soc = $objectsrc->thirdparty;
             $cond_reglement_code	= (!empty($objectsrc->cond_reglement_code)?$objectsrc->cond_reglement_code:(!empty($soc->cond_reglement_code)?$soc->cond_reglement_code:'RECEP'));
@@ -898,7 +898,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 
     // Reference client
     print '<tr><td>'.$langs->trans('RefCustomer').'</td><td colspan="2">';
-    print '<input type="text" name="ref_client" value="' . $object->ref_client . '"></td>';
+    print '<input type="text" name="ref_client" value="' . $ref_client . '"></td>';
     print '</tr>';
     
     // Client
@@ -928,22 +928,22 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     
     // Conditions de reglement
     print '<tr><td nowrap="nowrap">'.$langs->trans('PaymentConditionsShort').'</td><td colspan="2">';
-    print $object->select_fk_extrafields('cond_reglement_code', 'cond_reglement_code', $object->cond_reglement_code);
+    print $object->select_fk_extrafields('cond_reglement_code', 'cond_reglement_code', $cond_reglement_code);
     print '</td></tr>';
     
     // Delivery delay
     print '<tr><td>'.$langs->trans('AvailabilityPeriod').'</td><td colspan="2">';
-    print $object->select_fk_extrafields('availability_code', 'availability_code', $object->availability_code);
+    print $object->select_fk_extrafields('availability_code', 'availability_code', $availability_code);
     print '</td></tr>';
     
     // Mode de reglement
     print '<tr><td nowrap="nowrap">'.$langs->trans('PaymentMode').'</td><td colspan="2">';
-    print $object->select_fk_extrafields('mode_reglement_code', 'mode_reglement_code', $object->mode_reglement_code);
+    print $object->select_fk_extrafields('mode_reglement_code', 'mode_reglement_code', $mode_reglement_code);
     print '</td></tr>';
 
     // What trigger creation
     print '<tr><td>'.$langs->trans('Source').'</td><td colspan="2">';
-    print $object->select_fk_extrafields('demand_reason_code', 'demand_reason_code', $object->demand_reason_code);
+    print $object->select_fk_extrafields('demand_reason_code', 'demand_reason_code', $demand_reason_code);
     print '</td></tr>';
                 
     // Project
@@ -982,7 +982,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     print '<tr>';
     print '<td class="border" valign="top">'.$langs->trans('NotePublic').'</td>';
     print '<td valign="top" colspan="2">';
-    $doleditor = new DolEditor('note_public', $object->note, '', 80, 'dolibarr_notes', 'In', 0, false, true, ROWS_3, 70);
+    $doleditor = new DolEditor('note_public', $note_public, '', 80, 'dolibarr_notes', 'In', 0, false, true, ROWS_3, 70);
     print $doleditor->Create(1);
     print '</td></tr>';
     
@@ -991,7 +991,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
         print '<tr>';
         print '<td class="border" valign="top">'.$langs->trans('NotePrivate').'</td>';
         print '<td valign="top" colspan="2">';
-        $doleditor=new DolEditor('note', $object->note, '', 80, 'dolibarr_notes', 'In', 0, false, true, ROWS_3, 70);
+        $doleditor=new DolEditor('note', $note_private, '', 80, 'dolibarr_notes', 'In', 0, false, true, ROWS_3, 70);
         print $doleditor->Create(1);
         print '</td></tr>';
     }
@@ -1096,11 +1096,11 @@ else {
             }
             
             // Clone
-            if ($user->rights->commande->creer) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("ToClone") . '</a>';
-                print "</p>";
-            }
+//            if ($user->rights->commande->creer) {
+//                print '<p class="button-height right">';
+//                print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("ToClone") . '</a>';
+//                print "</p>";
+//            }
                         
             // Classify billed
 //            if ($object->Status == "TO_BILL" && $user->rights->commande->cloturer) {
