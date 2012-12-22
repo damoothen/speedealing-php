@@ -975,6 +975,191 @@ else if ($action == "setabsolutediscount" && $user->rights->facture->creer) {
 }
 
 
+
+/*
+ * Add file in email form
+ */
+if (GETPOST('addfile')) {
+    require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
+
+    // Set tmp user directory
+    $vardir = $conf->user->dir_output . "/" . $user->id;
+    $upload_dir_tmp = $vardir . '/temp';
+
+    dol_add_file_process($upload_dir_tmp, 0, 0);
+    $action = 'presend';
+}
+
+/*
+ * Remove file in email form
+ */
+if (!empty($_POST['removedfile'])) {
+    require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
+
+    // Set tmp user directory
+    $vardir = $conf->user->dir_output . "/" . $user->id;
+    $upload_dir_tmp = $vardir . '/temp';
+
+    // TODO Delete only files that was uploaded from email form
+    dol_remove_file_process($_POST['removedfile'], 0);
+    $action = 'presend';
+}
+
+/*
+ * Send mail
+ */
+if (($action == 'send' || $action == 'relance') && !$_POST['addfile'] && !$_POST['removedfile'] && !$_POST['cancel']) {
+    $langs->load('mails');
+
+    $actiontypecode = '';
+    $subject = '';
+    $actionmsg = '';
+    $actionmsg2 = '';
+
+    $result = $object->fetch($id);
+    $result = $object->fetch_thirdparty();
+
+    if ($result > 0) {
+//        $ref = dol_sanitizeFileName($object->ref);
+//        $file = $conf->facture->dir_output . '/' . $ref . '/' . $ref . '.pdf';
+//        if (is_readable($file))
+//        {
+        if ($_POST['sendto']) {
+            // Le destinataire a ete fourni via le champ libre
+            $sendto = $_POST['sendto'];
+            $sendtoid = 0;
+        } elseif ($_POST['receiver'] != '-1') {
+            // Recipient was provided from combo list
+            if ($_POST['receiver'] == 'thirdparty') { // Id of third party
+                $sendto = $object->client->email;
+                $sendtoid = 0;
+            } else { // Id du contact
+                $sendto = $object->client->contact_get_property($_POST['receiver'], 'email');
+                $sendtoid = $_POST['receiver'];
+            }
+        }
+
+        if (dol_strlen($sendto)) {
+            $langs->load("commercial");
+
+            $from = $_POST['fromname'] . ' <' . $_POST['frommail'] . '>';
+            $replyto = $_POST['replytoname'] . ' <' . $_POST['replytomail'] . '>';
+            $message = $_POST['message'];
+            $sendtocc = $_POST['sendtocc'];
+            $deliveryreceipt = $_POST['deliveryreceipt'];
+
+            if ($action == 'send') {
+                if (dol_strlen($_POST['subject']))
+                    $subject = $_POST['subject'];
+                else
+                    $subject = $langs->transnoentities('Bill') . ' ' . $object->ref;
+                $actiontypecode = 'AC_FAC';
+                $actionmsg = $langs->transnoentities('MailSentBy') . ' ' . $from . ' ' . $langs->transnoentities('To') . ' ' . $sendto . ".\n";
+                if ($message) {
+                    $actionmsg.=$langs->transnoentities('MailTopic') . ": " . $subject . "\n";
+                    $actionmsg.=$langs->transnoentities('TextUsedInTheMessageBody') . ":\n";
+                    $actionmsg.=$message;
+                }
+                //$actionmsg2=$langs->transnoentities('Action'.$actiontypecode);
+            }
+            if ($action == 'relance') {
+                if (dol_strlen($_POST['subject']))
+                    $subject = $_POST['subject'];
+                else
+                    $subject = $langs->transnoentities('Relance facture ' . $object->ref);
+                $actiontypecode = 'AC_FAC';
+                $actionmsg = $langs->transnoentities('MailSentBy') . ' ' . $from . ' ' . $langs->transnoentities('To') . ' ' . $sendto . ".\n";
+                if ($message) {
+                    $actionmsg.=$langs->transnoentities('MailTopic') . ": " . $subject . "\n";
+                    $actionmsg.=$langs->transnoentities('TextUsedInTheMessageBody') . ":\n";
+                    $actionmsg.=$message;
+                }
+                //$actionmsg2=$langs->transnoentities('Action'.$actiontypecode);
+            }
+
+            // Create form object
+            include_once DOL_DOCUMENT_ROOT . '/core/class/html.formmail.class.php';
+            $formmail = new FormMail($db);
+
+            $attachedfiles = $formmail->get_attached_files();
+            $filepath = $attachedfiles['paths'];
+            $filename = $attachedfiles['names'];
+            $mimetype = $attachedfiles['mimes'];
+
+            // Send mail
+            require_once DOL_DOCUMENT_ROOT . '/core/class/CMailFile.class.php';
+            $mailfile = new CMailFile($subject, $sendto, $from, $message, $filepath, $mimetype, $filename, $sendtocc, '', $deliveryreceipt, -1);
+            if ($mailfile->error) {
+                $mesgs[] = '<div class="error">' . $mailfile->error . '</div>';
+            } else {
+                $result = $mailfile->sendfile();
+                if ($result) {
+                    $error = 0;
+
+                    // Initialisation donnees
+                    $object->sendtoid = $sendtoid;
+                    $object->actiontypecode = $actiontypecode;
+                    $object->actionmsg = $actionmsg;  // Long text
+                    $object->actionmsg2 = $actionmsg2; // Short text
+                    $object->fk_element = $object->id;
+                    $object->elementtype = $object->element;
+
+                    // Appel des triggers
+                    include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+                    $interface = new Interfaces($db);
+                    $result = $interface->run_triggers('BILL_SENTBYMAIL', $object, $user, $langs, $conf);
+                    if ($result < 0) {
+                        $error++;
+                        $this->errors = $interface->errors;
+                    }
+                    // Fin appel triggers
+
+                    if ($error) {
+                        dol_print_error($db);
+                    } else {
+                        // Redirect here
+                        // This avoid sending mail twice if going out and then back to page
+                        $mesg = $langs->trans('MailSuccessfulySent', $mailfile->getValidAddress($from, 2), $mailfile->getValidAddress($sendto, 2));
+                        setEventMessage($mesg);
+                        header('Location: ' . $_SERVER["PHP_SELF"] . '?facid=' . $object->id);
+                        exit;
+                    }
+                } else {
+                    $langs->load("other");
+                    $mesg = '<div class="error">';
+                    if ($mailfile->error) {
+                        $mesg.=$langs->trans('ErrorFailedToSendMail', $from, $sendto);
+                        $mesg.='<br>' . $mailfile->error;
+                    } else {
+                        $mesg.='No mail sent. Feature is disabled by option MAIN_DISABLE_ALL_MAILS';
+                    }
+                    $mesg.='</div>';
+                    $mesgs[] = $mesg;
+                }
+            }
+            /*            }
+              else
+              {
+              $langs->load("other");
+              $mesgs[]='<div class="error">'.$langs->trans('ErrorMailRecipientIsEmpty').'</div>';
+              dol_syslog('Recipient email is empty');
+              } */
+        } else {
+            $langs->load("errors");
+            $mesgs[] = '<div class="error">' . $langs->trans('ErrorCantReadFile', $file) . '</div>';
+            dol_syslog('Failed to read file: ' . $file);
+        }
+    } else {
+        $langs->load("other");
+        $mesgs[] = '<div class="error">' . $langs->trans('ErrorFailedToReadEntity', $langs->trans("Invoice")) . '</div>';
+        dol_syslog('Impossible de lire les donnees de la facture. Le fichier facture n\'a peut-etre pas ete genere.');
+    }
+
+    $action = 'presend';
+}
+
+
+
 /* View ********************************************************************* */
 
 $form = new Form($db);
@@ -1541,6 +1726,10 @@ else {
                 }
             }
             
+               // Send by mail
+                if (($object->Status != "DRAFT")) {
+                    print '<a class="button icon-mail" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';                      
+                }
 
             // Validate
             if ($object->Status == "DRAFT" && count($object->lines) > 0 &&
@@ -1851,7 +2040,102 @@ else {
     print $formfile->showdocuments('facture', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $soc->default_lang, $hookmanager);
     $somethingshown = $formfile->numoffiles;
     print end_box();
+    
+    if ($action == 'presend') {
+        
+            /*
+             * Affiche formulaire mail
+             */
+
+            // By default if $action=='presend'
+            $titreform = 'SendBillByMail';
+            $topicmail = 'SendBillRef';
+            $action = 'send';
+            $modelmail = 'facture_send';
+
+            if ($action == 'prerelance') { // For backward compatibility
+                $titrefrom = 'SendReminderBillByMail';
+                $topicmail = 'SendReminderBillRef';
+                $action = 'relance';
+                $modelmail = 'facture_relance';
+            }
+
+            $ref = dol_sanitizeFileName($object->ref);
+            include_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
+            $fileparams = dol_most_recent_file($conf->facture->dir_output . '/' . $ref);
+            $file = $fileparams['fullname'];
+
+            // Build document if it not exists
+            if (!$file || !is_readable($file)) {
+                // Define output language
+                $outputlangs = $langs;
+                $newlang = '';
+                if ($conf->global->MAIN_MULTILANGS && empty($newlang) && !empty($_REQUEST['lang_id']))
+                    $newlang = $_REQUEST['lang_id'];
+                if ($conf->global->MAIN_MULTILANGS && empty($newlang))
+                    $newlang = $object->client->default_lang;
+                if (!empty($newlang)) {
+                    $outputlangs = new Translate("", $conf);
+                    $outputlangs->setDefaultLang($newlang);
+                }
+
+                $result = facture_pdf_create($db, $object, GETPOST('model') ? GETPOST('model') : $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                if ($result <= 0) {
+                    dol_print_error($db, $result);
+                    exit;
+                }
+                $fileparams = dol_most_recent_file($conf->facture->dir_output . '/' . $ref);
+                $file = $fileparams['fullname'];
+            }
+
+            print '<br>';
+            print_titre($langs->trans($titreform));
+
+            // Cree l'objet formulaire mail
+            include_once DOL_DOCUMENT_ROOT . '/core/class/html.formmail.class.php';
+            $formmail = new FormMail($db);
+            $formmail->fromtype = 'user';
+            $formmail->fromid = $user->id;
+            $formmail->fromname = $user->getFullName($langs);
+            $formmail->frommail = $user->email;
+            $formmail->withfrom = 1;
+            $formmail->withto = empty($_POST["sendto"]) ? 1 : $_POST["sendto"];
+            $formmail->withtosocid = $soc->id;
+            $formmail->withtocc = 1;
+            $formmail->withtoccsocid = 0;
+            $formmail->withtoccc = $conf->global->MAIN_EMAIL_USECCC;
+            $formmail->withtocccsocid = 0;
+            $formmail->withtopic = $langs->transnoentities($topicmail, '__FACREF__');
+            $formmail->withfile = 2;
+            $formmail->withbody = 1;
+            $formmail->withdeliveryreceipt = 1;
+            $formmail->withcancel = 1;
+            // Tableau des substitutions
+            $formmail->substit['__FACREF__'] = $object->ref;
+            $formmail->substit['__SIGNATURE__'] = $user->signature;
+            $formmail->substit['__PERSONALIZED__'] = '';
+            // Tableau des parametres complementaires du post
+            $formmail->param['action'] = $action;
+            $formmail->param['models'] = $modelmail;
+            $formmail->param['facid'] = $object->id;
+            $formmail->param['returnurl'] = $_SERVER["PHP_SELF"] . '?id=' . $object->id;
+
+            // Init list of files
+            if (GETPOST("mode") == 'init') {
+                $formmail->clear_attached_files();
+                $formmail->add_attached_files($file, basename($file), dol_mimetype($file));
+            }
+
+            $formmail->show_form();
+
+            print '<br>';
+    
+        
+    }
+    
 }
+
+
 
 print '</div>';
 print '</div>';
