@@ -4,6 +4,7 @@
  * Copyright (c) 2005      Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (c) 2011      Juanjo Menent		<jmenent@2byte.es>
+ * Copyright (c) 2011      David Moothen		<dmoothen@websitti.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,21 +25,17 @@
  * 	\ingroup    propales
  * 	\brief      Fichier de la classe de gestion des stats des propales
  */
-include_once DOL_DOCUMENT_ROOT . '/core/class/commoninvoicestats.class.php';
-include_once DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php';
+include_once DOL_DOCUMENT_ROOT . '/core/class/stats.class.php';
 
 /**
  * 	\class      PropaleStats
- * 	\brief      Classe permettant la gestion des stats des propales
+ * 	\brief      Classe permettant la gestion des stats pour les modules de facturation
  */
-class PropaleStats extends CommonInvoiceStats {
+class CommonInvoiceStats extends Stats {
 
-    public $table_element;
+    public $element;
     var $socid;
     var $userid;
-    var $from;
-    var $field;
-    var $where;
 
     /**
      * Constructor
@@ -53,24 +50,34 @@ class PropaleStats extends CommonInvoiceStats {
         $this->db = $db;
         $this->socid = $socid;
         $this->userid = $userid;
-        $this->element = 'Propal';
 
-//        $object = new Propal($this->db);
-//
-//        $this->from = MAIN_DB_PREFIX . $object->table_element . " as p";
-//        $this->from.= ", " . MAIN_DB_PREFIX . "societe as s";
-//
-//        $this->field = 'total_ht';
-//
-//        $this->where.= " fk_statut > 0";
-//        $this->where.= " AND p.fk_soc = s.rowid AND p.entity = " . $conf->entity;
-//        if (!$user->rights->societe->client->voir && !$user->societe_id)
-//            $this->where .= " AND p.fk_soc = sc.fk_soc AND sc.fk_user = " . $user->id;
-//        if ($this->socid) {
-//            $this->where .= " AND p.fk_soc = " . $this->socid;
-//        }
-//        if ($this->userid > 0)
-//            $this->where.=' AND fk_user_author = ' . $this->userid;
+    }
+    
+    public function count($timestampStart, $timestampEnd){
+        
+        $object = new $this->element($this->db);
+        $res = $object->getView('countByDate', array('startkey' => $timestampStart, 'endkey' => $timestampEnd));
+        if (empty($res->rows)) return 0;
+        return $res->rows[0]->value;
+        
+    }
+    
+    public function amount($timestampStart, $timestampEnd){
+        
+        $object = new $this->element($this->db);
+        $res = $object->getView('amountByDate', array('startkey' => $timestampStart, 'endkey' => $timestampEnd));
+        if (empty($res->rows)) return 0;
+        return $res->rows[0]->value;
+        
+    }
+    
+    public function average($timestampStart, $timestampEnd){
+        
+        $object = new $this->element($this->db);
+        $res = $object->getView('averageByDate', array('startkey' => $timestampStart, 'endkey' => $timestampEnd));
+        if (empty($res->rows)) return 0;
+        return $res->rows[0]->value;
+        
     }
 
     /**
@@ -79,10 +86,21 @@ class PropaleStats extends CommonInvoiceStats {
      * @param	int		$year	year for stats
      * @return	array			array with number by month
      */
-//    function getNbByMonth($year) {
-//        
-//        global $user;
-//
+    function getNbByMonth($year) {
+        global $user;
+
+        $data = array();
+        for ($i = 1; $i < 13; $i++) {
+            $timestampStart = dol_mktime(0, 0, 0, $i, 1, $year);
+            $nbDays = date('t', $timestampStart);
+            $timestampEnd = dol_mktime(0, 0, 0, $i, $nbDays, $year);
+            $nbElements = $this->count($timestampStart, $timestampEnd);
+            $month=dol_print_date(dol_mktime(12,0,0,$i,1,$year),"%b");
+            $month=dol_substr($month,0,3);
+            $data[$i-1] = array(ucfirst($month), $nbElements);
+        }
+        return $data;
+
 //        $sql = "SELECT date_format(p.datep,'%m') as dm, count(*)";
 //        $sql.= " FROM " . $this->from;
 //        if (!$user->rights->societe->client->voir && !$user->societe_id)
@@ -93,7 +111,7 @@ class PropaleStats extends CommonInvoiceStats {
 //        $sql.= $this->db->order('dm', 'DESC');
 //
 //        return $this->_getNbByMonth($year, $sql);
-//    }
+    }
 
     /**
      * Return propals number by year
@@ -121,9 +139,21 @@ class PropaleStats extends CommonInvoiceStats {
      * @param	int		$year	year for stats
      * @return	array			array with number by month
      */
-//    function getAmountByMonth($year) {
-//        global $user;
-//
+    function getAmountByMonth($year) {
+        global $user;
+        
+        $data = array();
+        for ($i = 1; $i < 13; $i++) {
+            $timestampStart = dol_mktime(0, 0, 0, $i, 1, $year);
+            $nbDays = date('t', $timestampStart);
+            $timestampEnd = dol_mktime(0, 0, 0, $i, $nbDays, $year);
+            $amount = $this->amount($timestampStart, $timestampEnd);
+            $month=dol_print_date(dol_mktime(12,0,0,$i,1,$year),"%b");
+            $month=dol_substr($month,0,3);
+            $data[$i-1] = array(ucfirst($month), $amount);
+        }
+        return $data;
+
 //        $sql = "SELECT date_format(p.datep,'%m') as dm, sum(p." . $this->field . ")";
 //        $sql.= " FROM " . $this->from;
 //        if (!$user->rights->societe->client->voir && !$user->societe_id)
@@ -134,7 +164,7 @@ class PropaleStats extends CommonInvoiceStats {
 //        $sql.= $this->db->order('dm', 'DESC');
 //
 //        return $this->_getAmountByMonth($year, $sql);
-//    }
+    }
 
     /**
      * Return the propals amount average by month for a year
@@ -142,9 +172,21 @@ class PropaleStats extends CommonInvoiceStats {
      * @param	int		$year	year for stats
      * @return	array			array with number by month
      */
-//    function getAverageByMonth($year) {
-//        global $user;
-//
+    function getAverageByMonth($year) {
+        global $user;
+
+        $data = array();
+        for ($i = 1; $i < 13; $i++) {
+            $timestampStart = dol_mktime(0, 0, 0, $i, 1, $year);
+            $nbDays = date('t', $timestampStart);
+            $timestampEnd = dol_mktime(0, 0, 0, $i, $nbDays, $year);
+            $average = $this->average($timestampStart, $timestampEnd);
+            $month=dol_print_date(dol_mktime(12,0,0,$i,1,$year),"%b");
+            $month=dol_substr($month,0,3);
+            $data[$i-1] = array(ucfirst($month), $average);
+        }
+        return $data;
+        
 //        $sql = "SELECT date_format(p.datep,'%m') as dm, avg(p." . $this->field . ")";
 //        $sql.= " FROM " . $this->from;
 //        if (!$user->rights->societe->client->voir && !$this->socid)
@@ -155,16 +197,42 @@ class PropaleStats extends CommonInvoiceStats {
 //        $sql.= $this->db->order('dm', 'DESC');
 //
 //        return $this->_getAverageByMonth($year, $sql);
-//    }
+    }
 
     /**
      * 	Return nb, total and average
      * 	
      * 	@return	array	Array of values
      */
-//    function getAllByYear() {
-//        global $user;
-//
+    function getAllByYear() {
+        global $user;
+        
+        $data = array();
+
+        // get year of oldest element
+        $object = new $this->element($this->db);
+        $res = $object->getView('listByDate', array('limit' => 1));
+        if (empty($res->rows)) return $data;
+
+        $tmp = $res->rows[0]->key;
+        $year = date('Y', $tmp);
+        for ($i = date('Y'); $i >= $year; $i--) {
+            $timestampStart = dol_mktime(0, 0, 0, 1, 1, $i);
+            $timestampEnd = dol_mktime(23, 59, 59, 12, 31, $i);
+            $count = $this->count($timestampStart, $timestampEnd);
+            $amount = $this->amount($timestampStart, $timestampEnd);
+            $average = $this->average($timestampStart, $timestampEnd);
+            $tab = array(
+                'year' =>$i, 
+                'nb' =>$count, 
+                'total' => $amount, 
+                'avg' =>$average
+            );
+            $data[] = $tab;
+        }
+                
+        return $data;
+
 //        $sql = "SELECT date_format(p.datep,'%Y') as year, count(*) as nb, sum(" . $this->field . ") as total, avg(" . $this->field . ") as avg";
 //        $sql.= " FROM " . $this->from;
 //        if (!$user->rights->societe->client->voir && !$this->socid)
@@ -174,7 +242,7 @@ class PropaleStats extends CommonInvoiceStats {
 //        $sql.= $this->db->order('year', 'DESC');
 //
 //        return $this->_getAllByYear($sql);
-//    }
+    }
 
 }
 

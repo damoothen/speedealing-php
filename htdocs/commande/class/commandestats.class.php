@@ -23,7 +23,7 @@
  *       \ingroup    commandes
  *       \brief      Fichier de la classe de gestion des stats des commandes
  */
-include_once DOL_DOCUMENT_ROOT . '/core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT . '/core/class/commoninvoicestats.class.php';
 include_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
 include_once DOL_DOCUMENT_ROOT . '/fourn/class/fournisseur.commande.class.php';
 
@@ -31,9 +31,9 @@ include_once DOL_DOCUMENT_ROOT . '/fourn/class/fournisseur.commande.class.php';
 /**
  *    Class to manage order statistics
  */
-class CommandeStats extends Stats
+class CommandeStats extends CommonInvoiceStats
 {
-	public $table_element;
+	public $element = 'Commande';
 
 	var $socid;
     var $userid;
@@ -60,30 +60,30 @@ class CommandeStats extends Stats
 		$this->socid = $socid;
         $this->userid = $userid;
 
-		if ($mode == 'customer')
-		{
-			$object=new Commande($this->db);
-			$this->from = MAIN_DB_PREFIX.$object->table_element." as c";
-			$this->from.= ", ".MAIN_DB_PREFIX."societe as s";
-			$this->field='total_ht';
-			$this->where.= " c.fk_statut > 0";    // Not draft and not cancelled
-		}
-		if ($mode == 'supplier')
-		{
-			$object=new CommandeFournisseur($this->db);
-			$this->from = MAIN_DB_PREFIX.$object->table_element." as c";
-			$this->from.= ", ".MAIN_DB_PREFIX."societe as s";
-			$this->field='total_ht';
-			$this->where.= " c.fk_statut > 2";    // Only approved & ordered
-		}
-		$this->where.= " AND c.fk_soc = s.rowid AND c.entity = ".$conf->entity;
-
-		if (!$user->rights->societe->client->voir && !$this->socid) $this->where .= " AND c.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
-		if($this->socid)
-		{
-			$this->where .= " AND c.fk_soc = ".$this->socid;
-		}
-        if ($this->userid > 0) $this->where.=' AND c.fk_user_author = '.$this->userid;
+//		if ($mode == 'customer')
+//		{
+//			$object=new Commande($this->db);
+//			$this->from = MAIN_DB_PREFIX.$object->table_element." as c";
+//			$this->from.= ", ".MAIN_DB_PREFIX."societe as s";
+//			$this->field='total_ht';
+//			$this->where.= " c.fk_statut > 0";    // Not draft and not cancelled
+//		}
+//		if ($mode == 'supplier')
+//		{
+//			$object=new CommandeFournisseur($this->db);
+//			$this->from = MAIN_DB_PREFIX.$object->table_element." as c";
+//			$this->from.= ", ".MAIN_DB_PREFIX."societe as s";
+//			$this->field='total_ht';
+//			$this->where.= " c.fk_statut > 2";    // Only approved & ordered
+//		}
+//		$this->where.= " AND c.fk_soc = s.rowid AND c.entity = ".$conf->entity;
+//
+//		if (!$user->rights->societe->client->voir && !$this->socid) $this->where .= " AND c.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
+//		if($this->socid)
+//		{
+//			$this->where .= " AND c.fk_soc = ".$this->socid;
+//		}
+//        if ($this->userid > 0) $this->where.=' AND c.fk_user_author = '.$this->userid;
 	}
 
 	/**
@@ -92,21 +92,21 @@ class CommandeStats extends Stats
 	 * @param	int		$year	year for stats
 	 * @return	array			array with number by month
 	 */
-	function getNbByMonth($year)
-	{
-		global $conf;
-		global $user;
-
-		$sql = "SELECT date_format(c.date_commande,'%m') as dm, count(*) nb";
-		$sql.= " FROM ".$this->from;
-		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-		$sql.= " WHERE date_format(c.date_commande,'%Y') = '".$year."'";
-		$sql.= " AND ".$this->where;
-		$sql.= " GROUP BY dm";
-        $sql.= $this->db->order('dm','DESC');
-
-		return $this->_getNbByMonth($year, $sql);
-	}
+//	function getNbByMonth($year)
+//	{
+//		global $conf;
+//		global $user;
+//
+//		$sql = "SELECT date_format(c.date_commande,'%m') as dm, count(*) nb";
+//		$sql.= " FROM ".$this->from;
+//		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+//		$sql.= " WHERE date_format(c.date_commande,'%Y') = '".$year."'";
+//		$sql.= " AND ".$this->where;
+//		$sql.= " GROUP BY dm";
+//        $sql.= $this->db->order('dm','DESC');
+//
+//		return $this->_getNbByMonth($year, $sql);
+//	}
 
 	/**
 	 * Return orders number by year
@@ -114,20 +114,20 @@ class CommandeStats extends Stats
 	 * @return	array	array with number by year
 	 *
 	 */
-	function getNbByYear()
-	{
-		global $conf;
-		global $user;
-
-		$sql = "SELECT date_format(c.date_commande,'%Y') as dm, count(*), sum(c.".$this->field.")";
-		$sql.= " FROM ".$this->from;
-		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-		$sql.= " WHERE ".$this->where;
-		$sql.= " GROUP BY dm";
-        $sql.= $this->db->order('dm','DESC');
-
-		return $this->_getNbByYear($sql);
-	}
+//	function getNbByYear()
+//	{
+//		global $conf;
+//		global $user;
+//
+//		$sql = "SELECT date_format(c.date_commande,'%Y') as dm, count(*), sum(c.".$this->field.")";
+//		$sql.= " FROM ".$this->from;
+//		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+//		$sql.= " WHERE ".$this->where;
+//		$sql.= " GROUP BY dm";
+//        $sql.= $this->db->order('dm','DESC');
+//
+//		return $this->_getNbByYear($sql);
+//	}
 
 	/**
 	 * Return the orders amount by month for a year
@@ -135,21 +135,21 @@ class CommandeStats extends Stats
 	 * @param	int		$year	year for stats
 	 * @return	array			array with number by month
 	 */
-	function getAmountByMonth($year)
-	{
-		global $conf;
-		global $user;
-
-		$sql = "SELECT date_format(c.date_commande,'%m') as dm, sum(c.".$this->field.")";
-		$sql.= " FROM ".$this->from;
-		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-		$sql.= " WHERE date_format(c.date_commande,'%Y') = '".$year."'";
-		$sql.= " AND ".$this->where;
-		$sql.= " GROUP BY dm";
-        $sql.= $this->db->order('dm','DESC');
-
-		return $this->_getAmountByMonth($year, $sql);
-	}
+//	function getAmountByMonth($year)
+//	{
+//		global $conf;
+//		global $user;
+//
+//		$sql = "SELECT date_format(c.date_commande,'%m') as dm, sum(c.".$this->field.")";
+//		$sql.= " FROM ".$this->from;
+//		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+//		$sql.= " WHERE date_format(c.date_commande,'%Y') = '".$year."'";
+//		$sql.= " AND ".$this->where;
+//		$sql.= " GROUP BY dm";
+//        $sql.= $this->db->order('dm','DESC');
+//
+//		return $this->_getAmountByMonth($year, $sql);
+//	}
 
 	/**
 	 * Return the orders amount average by month for a year
@@ -157,40 +157,40 @@ class CommandeStats extends Stats
 	 * @param	int		$year	year for stats
 	 * @return	array			array with number by month
 	 */
-	function getAverageByMonth($year)
-	{
-		global $conf;
-		global $user;
-
-		$sql = "SELECT date_format(c.date_commande,'%m') as dm, avg(c.".$this->field.")";
-		$sql.= " FROM ".$this->from;
-		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-		$sql.= " WHERE date_format(c.date_commande,'%Y') = '".$year."'";
-		$sql.= " AND ".$this->where;
-		$sql.= " GROUP BY dm";
-        $sql.= $this->db->order('dm','DESC');
-
-		return $this->_getAverageByMonth($year, $sql);
-	}
+//	function getAverageByMonth($year)
+//	{
+//		global $conf;
+//		global $user;
+//
+//		$sql = "SELECT date_format(c.date_commande,'%m') as dm, avg(c.".$this->field.")";
+//		$sql.= " FROM ".$this->from;
+//		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+//		$sql.= " WHERE date_format(c.date_commande,'%Y') = '".$year."'";
+//		$sql.= " AND ".$this->where;
+//		$sql.= " GROUP BY dm";
+//        $sql.= $this->db->order('dm','DESC');
+//
+//		return $this->_getAverageByMonth($year, $sql);
+//	}
 
 	/**
 	 *	Return nb, total and average
 	 *
 	 *	@return	array	Array of values
 	 */
-	function getAllByYear()
-	{
-		global $user;
-
-		$sql = "SELECT date_format(c.date_commande,'%Y') as year, count(*) as nb, sum(c.".$this->field.") as total, avg(".$this->field.") as avg";
-		$sql.= " FROM ".$this->from;
-		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-		$sql.= " WHERE ".$this->where;
-		$sql.= " GROUP BY year";
-        $sql.= $this->db->order('year','DESC');
-
-		return $this->_getAllByYear($sql);
-	}
+//	function getAllByYear()
+//	{
+//		global $user;
+//
+//		$sql = "SELECT date_format(c.date_commande,'%Y') as year, count(*) as nb, sum(c.".$this->field.") as total, avg(".$this->field.") as avg";
+//		$sql.= " FROM ".$this->from;
+//		if (!$user->rights->societe->client->voir && !$this->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+//		$sql.= " WHERE ".$this->where;
+//		$sql.= " GROUP BY year";
+//        $sql.= $this->db->order('year','DESC');
+//
+//		return $this->_getAllByYear($sql);
+//	}
 }
 
 ?>

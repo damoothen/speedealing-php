@@ -51,7 +51,7 @@ abstract class Stats
 			$datay[$year] = $this->getNbByMonth($year);
 			$year++;
 		}
-
+        
 		$data = array();
 
 		for ($i = 0 ; $i < 12 ; $i++)

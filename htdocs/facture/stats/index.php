@@ -23,9 +23,9 @@
  *  \brief      Page des stats factures
  */
 
-require '../../../main.inc.php';
+require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
-require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facturestats.class.php';
+require_once DOL_DOCUMENT_ROOT.'/facture/class/facturestats.class.php';
 
 $WIDTH=500;
 $HEIGHT=200;
@@ -231,9 +231,9 @@ print '<td align="center" valign="top">';
 	print $form->select_company($socid,'socid',$filter,1);
 	print '</td></tr>';
 	// User
-	print '<tr><td>'.$langs->trans("User").'/'.$langs->trans("SalesRepresentative").'</td><td>';
-	print $form->select_users($userid,'userid',1);
-	print '</td></tr>';
+//	print '<tr><td>'.$langs->trans("User").'/'.$langs->trans("SalesRepresentative").'</td><td>';
+//	print $form->select_users($userid,'userid',1);
+//	print '</td></tr>';
 	// Year
 	print '<tr><td>'.$langs->trans("Year").'</td><td>';
 	if (! in_array($year,$arrayyears)) $arrayyears[$year]=$year;
