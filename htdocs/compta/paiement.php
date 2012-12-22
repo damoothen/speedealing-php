@@ -38,6 +38,8 @@ $action		= GETPOST('action');
 $confirm	= GETPOST('confirm');
 
 $facid		= GETPOST('facid','alpha');
+if (empty($facid))
+    $facid = GETPOST('id', 'alpha');
 $socname	= GETPOST('socname');
 $accountid	= GETPOST('accountid');
 $paymentnum	= GETPOST('num_paiement');

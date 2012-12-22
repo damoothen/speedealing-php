@@ -2319,6 +2319,10 @@ class Facture extends nosqlDocument {
                 $this->Status = "STARTED";
             else if (($this->type == "INVOICE_STANDARD" || $this->type == "INVOICE_REPLACEMENT") && $amountPaid == $this->total_ttc) 
                 $this->Status = "PAID";
+        } else {
+            if ($this->type == "INVOICE_AVOIR" && $amountPaid == $this->total_ttc) {
+                $this->Status = "PAID";
+            }
         }
         $this->record();
         return 1;

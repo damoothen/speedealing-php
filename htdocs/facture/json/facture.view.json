@@ -55,6 +55,18 @@
        "countByDate": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.type == \"INVOICE_STANDARD\"){\nemit(doc.date, 1);\n}\n}",
            "reduce": "function(keys, values){\nreturn sum(values);\n}"
+       },
+       "listNotPaidPerSociete": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.Status == \"NOT_PAID\")\n  emit(doc.socid, doc);\n}"
+       },
+       "listReplacedInvoices": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.fk_facture_source)\n  emit(doc.fk_facture_source, doc._id);\n}"
+       },
+       "listAvoirableInvoices": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && (doc.Status == \"NOT_PAID\" || doc.Status == \"STARTED\" || doc.Status == \"PAID\" || doc.Status == \"PAID_PARTIALLY\") && (doc.type != \"INVOICE_REPLACEMENT\" && doc.type != \"INVOICE_AVOIR\")) \n  emit(doc._id, doc);\n}"
+       },
+       "listAvoirableInvoicesPerSociete": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && (doc.Status == \"NOT_PAID\" || doc.Status == \"STARTED\" || doc.Status == \"PAID\" || doc.Status == \"PAID_PARTIALLY\") && (doc.type != \"INVOICE_REPLACEMENT\" && doc.type != \"INVOICE_AVOIR\")) \n  emit(doc.socid, doc);\n}"
        }
    }
 }

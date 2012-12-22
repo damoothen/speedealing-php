@@ -1517,20 +1517,20 @@ else {
 
             // Clone
                 
-            if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == 4) && $user->rights->facture->creer) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=clone&amp;object=invoice">' . $langs->trans("ToClone") . '</a>';
-                print "</p>";
-            }
+//            if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == 4) && $user->rights->facture->creer) {
+//                print '<p class="button-height right">';
+//                print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=clone&amp;object=invoice">' . $langs->trans("ToClone") . '</a>';
+//                print "</p>";
+//            }
 
             // Clone as predefined
-            if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == 4) && $object->Status != "PAID" && $object->Status != "NOT_PAID" && $object->Status != "STARTED" && $object->Status != "CANCELED" && $object->Status != "PAID_PARTIALLY" && $user->rights->facture->creer) {
-                if (!$objectidnext) {
-                    print '<p class="button-height right">';
-                    print '<a class="button icon-page" href="facture/fiche-rec.php?id=' . $object->id . '&amp;action=create">' . $langs->trans("ChangeIntoRepeatableInvoice") . '</a>';
-                    print "</p>";
-                }
-            }
+//            if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == 4) && $object->Status != "PAID" && $object->Status != "NOT_PAID" && $object->Status != "STARTED" && $object->Status != "CANCELED" && $object->Status != "PAID_PARTIALLY" && $user->rights->facture->creer) {
+//                if (!$objectidnext) {
+//                    print '<p class="button-height right">';
+//                    print '<a class="button icon-page" href="facture/fiche-rec.php?id=' . $object->id . '&amp;action=create">' . $langs->trans("ChangeIntoRepeatableInvoice") . '</a>';
+//                    print "</p>";
+//                }
+//            }
             
             // Reopen a standard paid invoice
             if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_REPLACEMENT") && ($object->Status == "CANCELED" || $object->Status == "PAID" || $object->Status == "PAID_PARTIALLY")) {    // A paid invoice (partially or completely)
@@ -1604,7 +1604,7 @@ else {
             // Relative and absolute discounts
         $addrelativediscount = '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditRelativeDiscounts") . '</a>';
         $addabsolutediscount = '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditGlobalDiscounts") . '</a>';
-        $addcreditnote = '<a href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&socid=' . $soc->id . '&type=2&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("AddCreditNote") . '</a>';
+        $addcreditnote = '<a href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&socid=' . $soc->id . '&type=2&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("AddCreditNote") . '</a>';
 
         print '<tr><td>' . $langs->trans('Discounts');
         print '</td><td colspan="5">';
