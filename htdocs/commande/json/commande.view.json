@@ -18,6 +18,27 @@
        "count_status": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\")\n  emit(doc.Status, 1);\n}",
            "reduce": "function(keys, values){\nreturn sum(values);\n}"
+       },
+       "listLinkedObjects": {
+           "map": "function(doc) {\nif (doc.class && (doc.class == \"Propal\" || doc.class == \"Commande\" || doc.class == \"Facture\")) {\nfor (i in doc.linked_objects)\nemit(doc.linked_objects[i].id, {id: doc._id,class:doc.class});\n}\n}"
+       },
+       "countByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nemit(doc.date, 1);\n}\n}",
+           "reduce": "function(keys, values){\nreturn sum(values);\n}"
+       },
+       "listByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nemit(doc.date, doc);\n}\n}"
+       },
+       "amountByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nemit(doc.date, doc.total_ttc);\n}\n}",
+           "reduce": "function(keys, values){\n\treturn sum(values);\n}"
+       },
+       "averageByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nemit(doc.date, doc.total_ttc);\n}\n}",
+           "reduce": "function(keys, values){\n\treturn sum(values)/values.length;\n}"
        }
+   },
+   "updates": {
+       "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
    }
 }

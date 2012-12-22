@@ -799,8 +799,6 @@ class Propal extends nosqlDocument {
         $error = 0;
         $now = dol_now();
 
-        $this->db->begin();
-
         // Load source object
         $objFrom = dol_clone($this);
 
@@ -810,8 +808,8 @@ class Propal extends nosqlDocument {
         if (!empty($socid) && $socid != $this->socid) {
             if ($objsoc->fetch($socid) > 0) {
                 $this->socid = $objsoc->id;
-                $this->cond_reglement_id = (!empty($objsoc->cond_reglement_id) ? $objsoc->cond_reglement_id : 0);
-                $this->mode_reglement_id = (!empty($objsoc->mode_reglement_id) ? $objsoc->mode_reglement_id : 0);
+                $this->cond_reglement_code = (!empty($objsoc->cond_reglement_code) ? $objsoc->cond_reglement_code : 'AV_NOW');
+                $this->mode_reglement_code = (!empty($objsoc->mode_reglement_code) ? $objsoc->mode_reglement_code : 'TIP');
                 $this->fk_project = '';
                 $this->fk_delivery_address = '';
             }
@@ -821,10 +819,12 @@ class Propal extends nosqlDocument {
             $objsoc->fetch($this->socid);
         }
 
-        $this->id = 0;
-        $this->statut = 0;
+        unset($this->id);
+        unset($this->_id);
+        unset($this->_rev);
+        $this->Status = 'DRAFT';
 
-        if (empty($conf->global->PROPALE_ADDON) || !is_readable(DOL_DOCUMENT_ROOT . "/core/modules/propale/" . $conf->global->PROPALE_ADDON . ".php")) {
+        if (empty($conf->global->PROPALE_ADDON) || !is_readable(DOL_DOCUMENT_ROOT . "/propal/core/modules/propale/" . $conf->global->PROPALE_ADDON . ".php")) {
             $this->error = 'ErrorSetupNotComplete';
             return -1;
         }
@@ -838,14 +838,14 @@ class Propal extends nosqlDocument {
         $this->ref_client = '';
 
         // Set ref
-        require_once DOL_DOCUMENT_ROOT . "/core/modules/propale/" . $conf->global->PROPALE_ADDON . '.php';
+        require_once DOL_DOCUMENT_ROOT . "/propal/core/modules/propale/" . $conf->global->PROPALE_ADDON . '.php';
         $obj = $conf->global->PROPALE_ADDON;
         $modPropale = new $obj;
         $this->ref = $modPropale->getNextValue($objsoc, $this);
 
         // Create clone
         $result = $this->create($user);
-        if ($result < 0)
+        if (!empty($result))
             $error++;
 
         if (!$error) {
@@ -871,10 +871,8 @@ class Propal extends nosqlDocument {
 
         // End
         if (!$error) {
-            $this->db->commit();
             return $this->id;
         } else {
-            $this->db->rollback();
             return -1;
         }
     }
@@ -1908,6 +1906,21 @@ class Propal extends nosqlDocument {
             return -2;
         }
     }
+    
+        /**
+     * 	Change payment terms
+     *
+     * 	@param	string $code_reglement_code 	Code of new payment term
+     * 	@return int						>0 si ok, <0 si ko
+     */
+    function setPaymentTerms($cond_reglement_code) {
+        if ($this->Status == "DRAFT") {
+            $this->cond_reglement_code = $cond_reglement_code;
+            $this->record();
+            return 1;
+        }
+        return -2;
+    }
 
     /**
      * 	Change payment methods
@@ -2285,7 +2298,7 @@ class Propal extends nosqlDocument {
 
         $result = '';
         if ($option == '') {
-            $lien = '<a href="' . DOL_URL_ROOT . '/comm/propal.php?id=' . $this->id . $get_params . '">';
+            $lien = '<a href="' . DOL_URL_ROOT . '/propal/propal.php?id=' . $this->id . $get_params . '">';
         }
         if ($option == 'compta') {   // deprecated
             $lien = '<a href="' . DOL_URL_ROOT . '/comm/propal.php?id=' . $this->id . $get_params . '">';
@@ -2294,7 +2307,7 @@ class Propal extends nosqlDocument {
             $lien = '<a href="' . DOL_URL_ROOT . '/expedition/propal.php?id=' . $this->id . $get_params . '">';
         }
         if ($option == 'document') {
-            $lien = '<a href="' . DOL_URL_ROOT . '/comm/propal/document.php?id=' . $this->id . $get_params . '">';
+            $lien = '<a href="' . DOL_URL_ROOT . '/propal/document.php?id=' . $this->id . $get_params . '">';
         }
         $lienfin = '</a>';
 
@@ -2447,6 +2460,88 @@ class Propal extends nosqlDocument {
         $this->record();
         return 1;
     }
+    
+    public function getLinkedObject(){
+        
+        $objects = array();
+        
+        /* No variable $linked_objects ?
+         * 
+         * 
+        // Object stored in $this->linked_objects;
+        foreach ($this->linked_objects as $obj) {
+            switch ($obj->type) {
+                case 'commande': 
+                    $classname = 'Commande';
+                    dol_include_once('commande/class/commande.class.php');
+                    break;
+            }
+            $tmp = new $classname($this->db);
+            $tmp->fetch($obj->id);
+            $objects[$obj->type][] = $tmp;
+        }
+         * 
+         */
+        
+        // Objects that refer current propal in their $linked_objects variable.
+        $res = $this->getView('listLinkedObjects', array('key' => $this->id));
+        if (count($res->rows) > 0) {
+            foreach( $res->rows as $r) {
+                $classname = $r->value->class;
+                if ($classname == 'Commande')
+                    require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
+                $obj = new $classname($this->db);
+                $obj->fetch($r->value->id);
+                $objects[strtolower($classname)][] = $obj;
+            }
+        }
+        
+        return $objects;
+        
+    }
+    
+    public function printLinkedObjects(){
+        
+        global $langs;
+        
+        $objects = $this->getLinkedObject();
+       
+        // Displaying linked orders
+        if (isset($objects['commande'])) {
+            $this->printLinkedObjectsType('commande', $objects['commande']);
+        }
+        
+    }
+    
+    public function printLinkedObjectsType($type, $data){
+        
+        global $langs; 
+        
+        $title = 'LinkedObjects';
+        if ($type == 'commande')
+            $title = 'LinkedOrders';
+        
+        print start_box($langs->trans($title), "six", $this->fk_extrafields->ico, false);
+        print '<table id="tablelines" class="noborder" width="100%">';
+        print '<tr>';
+        print '<th align="left">' . $langs->trans('Ref') . '</th>';
+        print '<th align="left">' . $langs->trans('Date') . '</th>';
+        print '<th align="left">' . $langs->trans('PriceHT') . '</th>';
+        print '<th align="left">' . $langs->trans('Status') . '</th>';
+        print '</tr>';
+        foreach ($data as $p) {
+            print '<tr>';
+            print '<td>' . $p->getNomUrl(1) . '</td>';
+            print '<td>' . dol_print_date($p->date) . '</td>';
+            print '<td>' . price($p->total_ht) . '</td>';
+            print '<td>' . $p->getExtraFieldLabel('Status') . '</td>';
+            print '</tr>';
+        }
+        print '</table>';
+        print end_box();
+
+    }
+    
 
 }
 

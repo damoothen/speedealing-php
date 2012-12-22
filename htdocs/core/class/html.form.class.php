@@ -572,22 +572,25 @@ class Form {
      * 		@return	int						Return number of qualifed lines in list
      */
     function select_remises($selected, $htmlname, $filter, $socid, $maxvalue = 0) {
-        global $langs, $conf;
-
+        global $langs, $conf,$db;
+      
+        $discount = new DiscountAbsolute($db);
+        $result = $discount->getView('listAvailableDiscountsPerSociete', array('key' => $socid));
+        
         // On recherche les remises
-        $sql = "SELECT re.rowid, re.amount_ht, re.amount_tva, re.amount_ttc,";
-        $sql.= " re.description, re.fk_facture_source";
-        $sql.= " FROM " . MAIN_DB_PREFIX . "societe_remise_except as re";
-        $sql.= " WHERE fk_soc = " . $socid;
-        if ($filter)
-            $sql.= " AND " . $filter;
-        $sql.= " ORDER BY re.description ASC";
-
-        dol_syslog(get_class($this) . "::select_remises sql=" . $sql);
-        $resql = $this->db->query($sql);
-        if ($resql) {
+//        $sql = "SELECT re.rowid, re.amount_ht, re.amount_tva, re.amount_ttc,";
+//        $sql.= " re.description, re.fk_facture_source";
+//        $sql.= " FROM " . MAIN_DB_PREFIX . "societe_remise_except as re";
+//        $sql.= " WHERE fk_soc = " . $socid;
+//        if ($filter)
+//            $sql.= " AND " . $filter;
+//        $sql.= " ORDER BY re.description ASC";
+//
+//        dol_syslog(get_class($this) . "::select_remises sql=" . $sql);
+//        $resql = $this->db->query($sql);
+        if (true) {
             print '<select class="flat" name="' . $htmlname . '">';
-            $num = $this->db->num_rows($resql);
+            $num = count($result->rows);//$this->db->num_rows($resql);
 
             $qualifiedlines = $num;
 
@@ -595,7 +598,8 @@ class Form {
             if ($num) {
                 print '<option value="0">&nbsp;</option>';
                 while ($i < $num) {
-                    $obj = $this->db->fetch_object($resql);
+                    $obj = new DiscountAbsolute($this->db);//$this->db->fetch_object($resql);
+                    $obj->fetch($result->rows[$i]->id);
                     $desc = dol_trunc($obj->description, 40);
                     if ($desc == '(CREDIT_NOTE)')
                         $desc = $langs->trans("CreditNote");
@@ -612,7 +616,7 @@ class Form {
                         $disabled = ' disabled="disabled"';
                     }
 
-                    print '<option value="' . $obj->rowid . '"' . $selectstring . $disabled . '>' . $desc . ' (' . price($obj->amount_ht) . ' ' . $langs->trans("HT") . ' - ' . price($obj->amount_ttc) . ' ' . $langs->trans("TTC") . ')</option>';
+                    print '<option value="' . $obj->id . '"' . $selectstring . $disabled . '>' . $desc . ' (' . price($obj->amount_ht) . ' ' . $langs->trans("HT") . ' - ' . price($obj->amount_ttc) . ' ' . $langs->trans("TTC") . ')</option>';
                     $i++;
                 }
             }

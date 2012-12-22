@@ -26,7 +26,7 @@
 
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
-require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 $langs->load('companies');
@@ -36,7 +36,9 @@ $langs->load('banks');
 $action		= GETPOST('action');
 $confirm	= GETPOST('confirm');
 
-$facid		= GETPOST('facid','int');
+$facid		= GETPOST('facid','alpha');
+if (empty($facid))
+    $facid = GETPOST('id', 'alpha');
 $socname	= GETPOST('socname');
 $accountid	= GETPOST('accountid');
 $paymentnum	= GETPOST('num_paiement');
@@ -93,7 +95,7 @@ if ($action == 'add_paiement' || ($action == 'confirm_paiement' && $confirm=='ye
     }
 
     // Check parameters
-    if (! GETPOST('paiementcode'))
+    if (! GETPOST('mode_reglement_code'))
     {
         $fiche_erreur_message = '<div class="error">'.$langs->trans('ErrorFieldRequired',$langs->transnoentities('PaymentMode')).'</div>';
         $error++;
@@ -153,6 +155,7 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
     $paiement->paiementid   = dol_getIdFromCode($db,$_POST['paiementcode'],'c_paiement');
     $paiement->num_paiement = $_POST['num_paiement'];
     $paiement->note         = $_POST['comment'];
+    $paiment->mode_reglement_code = $_POST['mode_reglement_code'];
 
     if (! $error)
     {
@@ -164,15 +167,15 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
         }
     }
 
-    if (! $error)
-    {
-        $result=$paiement->addPaymentToBank($user,'payment','(CustomerInvoicePayment)',$_POST['accountid'],$_POST['chqemetteur'],$_POST['chqbank']);
-        if ($result < 0)
-        {
-            $errmsg=$paiement->error;
-            $error++;
-        }
-    }
+//    if (! $error)
+//    {
+//        $result=$paiement->addPaymentToBank($user,'payment','(CustomerInvoicePayment)',$_POST['accountid'],$_POST['chqemetteur'],$_POST['chqbank']);
+//        if ($result < 0)
+//        {
+//            $errmsg=$paiement->error;
+//            $error++;
+//        }
+//    }
 
     if (! $error)
     {
@@ -189,7 +192,7 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
                 else $invoiceid=$facid;
             }
         }
-        if ($invoiceid > 0) $loc = DOL_URL_ROOT.'/compta/facture.php?facid='.$invoiceid;
+        if ($invoiceid > 0) $loc = DOL_URL_ROOT.'/facture/fiche.php?id='.$invoiceid;
         else $loc = DOL_URL_ROOT.'/compta/paiement/fiche.php?id='.$paiement_id;
         header('Location: '.$loc);
         exit;
@@ -364,7 +367,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 		print '<table class="border" width="100%">';
 
         // Third party
-        print '<tr><td><span class="fieldrequired">'.$langs->trans('Company').'</span></td><td colspan="2">'.$facture->client->getNomUrl(4)."</td></tr>\n";
+        print '<tr><td><span class="fieldrequired">'.$langs->trans('Company').'</span></td><td colspan="2">'.$facture->client->name."</td></tr>\n";
 
         // Date payment
         print '<tr><td><span class="fieldrequired">'.$langs->trans('Date').'</span></td><td>';
@@ -379,7 +382,8 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 
         // Payment mode
         print '<tr><td><span class="fieldrequired">'.$langs->trans('PaymentMode').'</span></td><td>';
-        $form->select_types_paiements((GETPOST('paiementcode')?GETPOST('paiementcode'):$facture->mode_reglement_code),'paiementcode','',2);
+//        $form->select_types_paiements((GETPOST('paiementcode')?GETPOST('paiementcode'):$facture->mode_reglement_code),'paiementcode','',2);
+        print $facture->select_fk_extrafields('mode_reglement_code', 'mode_reglement_code', $facture->mode_reglement_code);
         print "</td>\n";
         print '<td rowspan="'.$rowspan.'" valign="top">';
         print '<textarea name="comment" wrap="soft" cols="60" rows="'.ROWS_4.'">'.(empty($_POST['comment'])?'':$_POST['comment']).'</textarea></td>';
@@ -442,25 +446,26 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
         /*
          * List of unpaid invoices
          */
-        $sql = 'SELECT f.rowid as facid, f.facnumber, f.total_ttc, f.type, ';
-        $sql.= ' f.datef as df';
-        $sql.= ' FROM '.MAIN_DB_PREFIX.'facture as f';
-        $sql.= ' WHERE f.fk_soc = '.$facture->socid;
-        $sql.= ' AND f.paye = 0';
-        $sql.= ' AND f.fk_statut = 1'; // Statut=0 => not validated, Statut=2 => canceled
-        if ($facture->type != 2)
+        $unpaidBills = $facture->getView('listUnpaid', array('key' => $facture->socid));
+//        $sql = 'SELECT f.rowid as facid, f.facnumber, f.total_ttc, f.type, ';
+//        $sql.= ' f.datef as df';
+//        $sql.= ' FROM '.MAIN_DB_PREFIX.'facture as f';
+//        $sql.= ' WHERE f.fk_soc = '.$facture->socid;
+//        $sql.= ' AND f.paye = 0';
+//        $sql.= ' AND f.fk_statut = 1'; // Statut=0 => not validated, Statut=2 => canceled
+//        if ($facture->type != 2)
+//        {
+//            $sql .= ' AND type in (0,1,3)';	// Standard invoice, replacement, deposit
+//        }
+//        else
+//        {
+//            $sql .= ' AND type = 2';		// If paying back a credit note, we show all credit notes
+//        }
+//
+//        $resql = $db->query($sql);
+        if (!empty($unpaidBills->rows))
         {
-            $sql .= ' AND type in (0,1,3)';	// Standard invoice, replacement, deposit
-        }
-        else
-        {
-            $sql .= ' AND type = 2';		// If paying back a credit note, we show all credit notes
-        }
-
-        $resql = $db->query($sql);
-        if ($resql)
-        {
-            $num = $db->num_rows($resql);
+            $num = count($unpaidBills->rows);
             if ($num > 0)
             {
 
@@ -486,11 +491,11 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 
                 while ($i < $num)
                 {
-                    $objp = $db->fetch_object($resql);
+                    $objp = $unpaidBills->rows[$i];
                     $var=!$var;
 
                     $invoice=new Facture($db);
-                    $invoice->fetch($objp->facid);
+                    $invoice->fetch($objp->id);
                     $paiement = $invoice->getSommePaiement();
                     $creditnotes=$invoice->getSumCreditNotesUsed();
                     $deposits=$invoice->getSumDepositsUsed();
@@ -504,10 +509,10 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
                     print "</td>\n";
 
                     // Date
-                    print '<td align="center">'.dol_print_date($db->jdate($objp->df),'day')."</td>\n";
+                    print '<td align="center">'.dol_print_date($invoice->date,'day')."</td>\n";
 
                     // Prix
-                    print '<td align="right">'.price($objp->total_ttc).'</td>';
+                    print '<td align="right">'.price($invoice->total_ttc).'</td>';
 
                     // Recu
                     print '<td align="right">'.price($paiement);
@@ -523,14 +528,14 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
                     print '<td align="right">';
 
                     // Add remind amount
-                    $namef = 'amount_'.$objp->facid;
-                    $nameRemain = 'remain_'.$objp->facid;
+                    $namef = 'amount_'.$objp->id;
+                    $nameRemain = 'remain_'.$objp->id;
 
                     if ($action != 'add_paiement')
                     {
                         if ($conf->use_javascript_ajax && !empty($conf->global->MAIN_JS_ON_PAYMENT))
                         {
-                            print img_picto($langs->trans('AddRemind'),'rightarrow.png','id="'.$objp->facid.'" "');
+                            print img_picto($langs->trans('AddRemind'),'rightarrow.png','id="'.$objp->id.'" "');
                         }
                         print '<input type=hidden name="'.$nameRemain.'" value="'.$remaintopay.'">';
                         print '<input type="text" size="8" name="'.$namef.'" value="'.$_POST[$namef].'">';
@@ -554,7 +559,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
                     print "</tr>\n";
 
                     $total+=$objp->total;
-                    $total_ttc+=$objp->total_ttc;
+                    $total_ttc+=$invoice->total_ttc;
                     $totalrecu+=$paiement;
                     $totalrecucreditnote+=$creditnotes;
                     $totalrecudeposits+=$deposits;

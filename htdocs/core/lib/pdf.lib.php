@@ -1393,8 +1393,9 @@ function pdf_getLinkedObjects($object,$outputlangs,$hookmanager=false)
 {
 	$linkedobjects=array();
 
-	$object->fetchObjectLinked();
-
+//	$object->fetchObjectLinked();
+        $object->linkedObjects = $object->getLinkedObject();
+    
 	foreach($object->linkedObjects as $objecttype => $objects)
 	{
 		if ($objecttype == 'propal')

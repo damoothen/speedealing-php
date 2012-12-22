@@ -14,6 +14,24 @@
        },
        "linesPerPropal": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"PropalLine\")\n  emit(doc.fk_propal, doc);\n}"
+       },
+       "listLinkedObjects": {
+           "map": "function(doc) {\nif (doc.class && (doc.class == \"Propal\" || doc.class == \"Commande\" || doc.class == \"Facture\")) {\nfor (i in doc.linked_objects)\nemit(doc.linked_objects[i].id, {id: doc._id,class:doc.class});\n}\n}"
+       },
+       "countByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Propal\"){\nemit(doc.date, 1);\n}\n}",
+           "reduce": "function(keys, values){\nreturn sum(values);\n}"
+       },
+       "amountByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Propal\"){\nemit(doc.date, doc.total_ttc);\n}\n}",
+           "reduce": "function(keys, values){\n\treturn sum(values);\n}"
+       },
+       "averageByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Propal\"){\nemit(doc.date, doc.total_ttc);\n}\n}",
+           "reduce": "function(keys, values){\n\treturn sum(values)/values.length;\n}"
+       },
+       "listByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Propal\"){\nemit(doc.date, doc);\n}\n}"
        }
    }
 }
