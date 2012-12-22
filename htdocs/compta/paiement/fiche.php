@@ -26,8 +26,8 @@
 
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
-require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-require_once DOL_DOCUMENT_ROOT .'/core/modules/facture/modules_facture.php';
+require_once DOL_DOCUMENT_ROOT.'/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT .'/facture/core/modules/facture/modules_facture.php';
 if (! empty($conf->banque->enabled)) require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 $langs->load('bills');

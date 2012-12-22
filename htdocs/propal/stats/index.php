@@ -23,17 +23,17 @@
  *		\brief      Page des stats propositions commerciales
  */
 
-require '../../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propalestats.class.php';
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/propal/class/propalestats.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
 
 $WIDTH=500;
 $HEIGHT=200;
 
-$userid=GETPOST('userid','int'); if ($userid < 0) $userid=0;
-$socid=GETPOST('socid','int'); if ($socid < 0) $socid=0;
+$userid=GETPOST('userid','alpha'); if (empty($userid)) $userid=null;
+$socid=GETPOST('socid','alpha'); if (empty($socid)) $socid=null;
 // Security check
-if ($user->societe_id > 0)
+if (!empty($user->societe_id))
 {
     $action = '';
     $socid = $user->societe_id;
@@ -232,9 +232,9 @@ print '<td align="center" valign="top">';
 	print $form->select_company($socid,'socid',$filter,1);
 	print '</td></tr>';
 	// User
-	print '<tr><td>'.$langs->trans("User").'/'.$langs->trans("SalesRepresentative").'</td><td>';
-	print $form->select_users($userid,'userid',1);
-	print '</td></tr>';
+//	print '<tr><td>'.$langs->trans("User").'/'.$langs->trans("SalesRepresentative").'</td><td>';
+//	print $form->select_users($userid,'userid',1);
+//	print '</td></tr>';
 	// Year
 	print '<tr><td>'.$langs->trans("Year").'</td><td>';
 	if (! in_array($year,$arrayyears)) $arrayyears[$year]=$year;

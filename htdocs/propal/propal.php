@@ -55,7 +55,7 @@ $error = 0;
 
 $id = GETPOST('id', 'alpha');
 $ref = GETPOST('ref', 'alpha');
-$socid = GETPOST('socid', 'int');
+$socid = GETPOST('socid', 'alpha');
 $action = GETPOST('action', 'alpha');
 $confirm = GETPOST('confirm', 'alpha');
 $lineid = GETPOST('lineid', 'alpha');
@@ -113,7 +113,7 @@ if ($action == 'confirm_clone' && $confirm == 'yes') {
     if (1 == 0 && !GETPOST('clone_content') && !GETPOST('clone_receivers')) {
         setEventMessage($langs->trans("NoCloneOptionsSpecified"), 'errors');
     } else {
-        if ($object->id > 0) {
+        if (!empty($object->id)) {
             $result = $object->createFromClone($socid, $hookmanager);
             if ($result > 0) {
                 header("Location: " . $_SERVER['PHP_SELF'] . '?id=' . $result);
@@ -1038,6 +1038,80 @@ if (!$formconfirm) {
 // Print form confirm
 print $formconfirm;
 
+/*
+ * Boutons Actions
+ */
+if ($action != 'presend') {
+    print '<div class="tabsAction">';
+
+    if ($action != 'statut' && $action <> 'editline') {
+        // Validate
+        if ($object->Status == "DRAFT" && $user->rights->propal->valider && count($object->lines) > 0) {
+                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
+        }
+
+        // Edit
+        if ($object->Status == "OPENED" && $user->rights->propal->creer) {
+            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
+        }
+
+        // ReOpen
+        if ((in_array($object->Status, array('SIGNED', 'NOT_SIGNED'))) && $user->rights->propal->cloturer) {
+            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=reopen' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#reopen') . '"';
+            print '>' . $langs->trans('ReOpen') . '</a>';
+        }
+
+        // Send
+        if ($object->Status == "OPENED" || $object->statut == 2) {
+            if (empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->propal->propal_advance->send) {
+                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
+            }
+            else
+                print '<a class="buttonRefused" href="#">' . $langs->trans('SendByMail') . '</a>';
+        }
+
+        // Create an order
+        if (!empty($conf->commande->enabled) && $object->Status == "SIGNED" && $user->societe_id == 0) {
+            if ($user->rights->commande->creer) {
+                print '<a class="button" href="' . DOL_URL_ROOT . '/commande/commande.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddOrder") . '</a>';
+            }
+        }
+
+        // Create an invoice and classify billed
+//        if ($object->Status == "SIGNED" && $user->societe_id == 0) {
+//            if (!empty($conf->facture->enabled) && $user->rights->facture->creer) {
+//                print '<a class="button" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddBill") . '</a>';
+//            }
+//
+//            $arraypropal = $object->getInvoiceArrayList();
+//            if (is_array($arraypropal) && count($arraypropal) > 0) {
+//                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled&amp;socid=' . $object->socid . '">' . $langs->trans("ClassifyBilled") . '</a>';
+//            }
+//        }
+
+        // Close
+        if ($object->Status == "OPENED" && $user->rights->propal->cloturer) {
+            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=statut' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#close') . '"';
+            print '>' . $langs->trans('Close') . '</a>';
+        }
+
+//        // Clone
+//        if ($user->rights->propal->creer) {
+//            print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=' . $object->element . '">' . $langs->trans("ToClone") . '</a>';
+//        }
+
+        // Delete
+        if ($user->rights->propal->supprimer) {
+            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete"';
+            print '>' . $langs->trans('Delete') . '</a>';
+        }
+    }
+
+    print '</div>';
+    print "<br>\n";
+}
+
+
 print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
 
 print '<table class="border" width="100%">';
@@ -1169,7 +1243,13 @@ if ($action != 'editconditions' && $object->Status == "DRAFT")
 print '</tr></table>';
 print '</td><td colspan="3">';
 if ($action == 'editconditions') {
-    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'cond_reglement_id');
+//    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'cond_reglement_id');
+    print '<form name="editconditions" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
+    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+    print '<input type="hidden" name="action" value="setconditions">';
+    print $object->select_fk_extrafields("cond_reglement_code", "cond_reglement_code", $object->cond_reglement_code);
+    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
+    print '</form>';
 } else {
 //    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'none');
     print $object->getExtraFieldLabel('cond_reglement_code');
@@ -1383,7 +1463,7 @@ print end_box();
  * Lines
  */
 
-print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
+print start_box($langs->trans('ProposalLines'), "six", $object->fk_extrafields->ico, false);
 
 if (!empty($conf->use_javascript_ajax) && $object->statut == 0) {
     include DOL_DOCUMENT_ROOT . '/core/tpl/ajaxrow.tpl.php';
@@ -1422,8 +1502,9 @@ if ($object->Status == "DRAFT" && $user->rights->propal->creer) {
 
 print '</table>';
 
-print '</div>';
-print "\n";
+
+
+print end_box();
 
 if ($action == 'statut') {
     /*
@@ -1452,86 +1533,9 @@ if ($action == 'statut') {
     print $form_close;
 }
 
-
-/*
- * Boutons Actions
- */
 if ($action != 'presend') {
-    print '<div class="tabsAction">';
-
-    if ($action != 'statut' && $action <> 'editline') {
-        // Validate
-        if ($object->Status == "DRAFT" && $user->rights->propal->valider) {
-            if (count($object->lines) > 0)
-                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
-            else
-                print '<a class="butActionRefused" href="#">' . $langs->trans('Validate') . '</a>';
-        }
-
-        // Edit
-        if ($object->Status == "OPENED" && $user->rights->propal->creer) {
-            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
-        }
-
-        // ReOpen
-        if ((in_array($object->Status, array('SIGNED', 'NOT_SIGNED'))) && $user->rights->propal->cloturer) {
-            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=reopen' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#reopen') . '"';
-            print '>' . $langs->trans('ReOpen') . '</a>';
-        }
-
-        // Send
-        if ($object->Status == "OPENED" || $object->statut == 2) {
-            if (empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->propal->propal_advance->send) {
-                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
-            }
-            else
-                print '<a class="butActionRefused" href="#">' . $langs->trans('SendByMail') . '</a>';
-        }
-
-        // Create an order
-        if (!empty($conf->commande->enabled) && $object->Status == "SIGNED" && $user->societe_id == 0) {
-            if ($user->rights->commande->creer) {
-                print '<a class="butAction" href="' . DOL_URL_ROOT . '/commande/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddOrder") . '</a>';
-            }
-        }
-
-        // Create an invoice and classify billed
-        if ($object->Status == "SIGNED" && $user->societe_id == 0) {
-            if (!empty($conf->facture->enabled) && $user->rights->facture->creer) {
-                print '<a class="butAction" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddBill") . '</a>';
-            }
-
-            $arraypropal = $object->getInvoiceArrayList();
-            if (is_array($arraypropal) && count($arraypropal) > 0) {
-                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled&amp;socid=' . $object->socid . '">' . $langs->trans("ClassifyBilled") . '</a>';
-            }
-        }
-
-        // Close
-        if ($object->Status == "OPENED" && $user->rights->propal->cloturer) {
-            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=statut' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#close') . '"';
-            print '>' . $langs->trans('Close') . '</a>';
-        }
-
-        // Clone
-        if ($user->rights->propal->creer) {
-            print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=' . $object->element . '">' . $langs->trans("ToClone") . '</a>';
-        }
-
-        // Delete
-        if ($user->rights->propal->supprimer) {
-            print '<a class="butActionDelete" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete"';
-            print '>' . $langs->trans('Delete') . '</a>';
-        }
-    }
-
-    print '</div>';
-    print "<br>\n";
-}
-
-if ($action != 'presend') {
-    print '<table width="100%"><tr><td width="100%" valign="top">';
-    print '<a name="builddoc"></a>'; // ancre
+//    print '<table width="100%"><tr><td width="100%" valign="top">';
+//    print '<a name="builddoc"></a>'; // ancre
 
 
     /*
@@ -1551,7 +1555,8 @@ if ($action != 'presend') {
     /*
      * Linked object block
      */
-    $somethingshown = $object->showLinkedObjectBlock();
+    $object->printLinkedObjects();
+//    $somethingshown = $object->showLinkedObjectBlock();
 
 //    print '</td><td valign="top" width="50%">';
 //
@@ -1560,7 +1565,7 @@ if ($action != 'presend') {
 //    $formactions = new FormActions($db);
 //    $somethingshown = $formactions->showactions($object, 'propal', $socid);
 
-    print '</td></tr></table>';
+//    print '</td></tr></table>';
 }
 
 
@@ -1643,7 +1648,6 @@ if ($action == 'presend') {
 
 
 // End of page
-end_box();
 print '</div>';
 print '</div>';
 llxFooter();
