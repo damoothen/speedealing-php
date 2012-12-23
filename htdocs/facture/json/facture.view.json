@@ -1,0 +1,72 @@
+{
+   "_id": "_design/Facture",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\")\n  emit(doc._id, doc);\n}"
+       },
+       "count": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\")\n  emit(doc.ref, 1);\n}",
+           "reduce": "function(keys, values){\n\treturn sum(values);\n}"
+       },
+       "listByRef": {
+           "map": "function(doc) {\nif (doc.class && doc.class == 'Facture')\n  emit(doc.ref, doc);\n}"
+       },
+       "lines": {
+           "map": "function(doc) {\nif (doc.class && doc.class == 'FactureLigne')\n  emit(doc._id, doc);\n}"
+       },
+       "linesPerFacture": {
+           "map": "function(doc) {\nif (doc.class && doc.class == 'FactureLigne')\n  emit(doc.fk_facture, doc);\n}"
+       },
+       "listUnpaid": {
+           "map": "function(doc) {\nif (doc.class && doc.class==\"Facture\" && (!doc.paye || doc.paye != doc.total_ttc))\n  emit(doc.socid, doc);\n}"
+       },
+       "payments": {
+           "map": "function(doc) {\nif (doc.class && doc.class==\"Paiement\")\n  emit(doc._id, doc);\n}"
+       },
+       "paymentsPerFacture": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Paiement\") {\nfor (i in doc.amounts) {\n  emit(i, {id: doc._id, datepaye: doc.datepaye, amount: parseFloat(doc.amounts[i])});\n}\n}\n}"
+       },
+       "sumPaymentsPerFacture": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Paiement\") {\nfor (i in doc.amounts) {\n  emit(i, parseFloat(doc.amounts[i]));\n}\n}\n}",
+           "reduce": "function(keys, values){\nreturn sum(values);\n}"
+       },
+       "discounts": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"DiscountAbsolute\")\n  emit(doc._id, doc);\n}"
+       },
+       "availableDiscountsPerSociete": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"DiscountAbsolute\" && !doc.fk_facture && !doc.fk_facture_line)\n  emit(doc.fk_soc, parseFloat(doc.amount_ttc));\n}",
+           "reduce": "function(keys, values){\nreturn sum(values);\n}"
+       },
+       "listLinkedObjects": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\"){\nfor (i in doc.linked_objects) {\n  emit(doc._id, doc.linked_objects);\n}\n}\n}"
+       },
+       "listByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.type == \"INVOICE_STANDARD\"){\nemit(doc.date, doc);\n}\n}"
+       },
+       "amountByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.type == \"INVOICE_STANDARD\"){\nemit(doc.date, doc.total_ttc);\n}\n}",
+           "reduce": "function(keys, values){\n\treturn sum(values);\n}"
+       },
+       "averageByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.type == \"INVOICE_STANDARD\"){\nemit(doc.date, doc.total_ttc);\n}\n}",
+           "reduce": "function(keys, values){\n\treturn sum(values)/values.length;\n}"
+       },
+       "countByDate": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.type == \"INVOICE_STANDARD\"){\nemit(doc.date, 1);\n}\n}",
+           "reduce": "function(keys, values){\nreturn sum(values);\n}"
+       },
+       "listNotPaidPerSociete": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.Status == \"NOT_PAID\")\n  emit(doc.socid, doc);\n}"
+       },
+       "listReplacedInvoices": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.fk_facture_source)\n  emit(doc.fk_facture_source, doc._id);\n}"
+       },
+       "listAvoirableInvoices": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && (doc.Status == \"NOT_PAID\" || doc.Status == \"STARTED\" || doc.Status == \"PAID\" || doc.Status == \"PAID_PARTIALLY\") && (doc.type != \"INVOICE_REPLACEMENT\" && doc.type != \"INVOICE_AVOIR\")) \n  emit(doc._id, doc);\n}"
+       },
+       "listAvoirableInvoicesPerSociete": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && (doc.Status == \"NOT_PAID\" || doc.Status == \"STARTED\" || doc.Status == \"PAID\" || doc.Status == \"PAID_PARTIALLY\") && (doc.type != \"INVOICE_REPLACEMENT\" && doc.type != \"INVOICE_AVOIR\")) \n  emit(doc.socid, doc);\n}"
+       }
+   }
+}
