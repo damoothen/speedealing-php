@@ -21,13 +21,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 		\defgroup   facture     Module invoices
- *      \brief      Module pour gerer les factures clients et/ou fournisseurs
- *      \file       htdocs/core/modules/modFacture.class.php
- * 		\ingroup    facture
- * 		\brief      Fichier de la classe de description et activation du module Facture
- */
 include_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 
 /**
@@ -153,11 +146,11 @@ class modFacture extends DolibarrModules {
 
         // Menus
         //-------
-        
-        $r=0;
+
+        $r = 0;
         $this->menus[$r]->_id = "menu:factures";
         $this->menus[$r]->type = "top";
-        $this->menus[$r]->position = 89;
+        $this->menus[$r]->position = 42;
         $this->menus[$r]->langs = "facture";
         $this->menus[$r]->perms = '$user->rights->facture->lire';
         $this->menus[$r]->enabled = '$conf->facture->enabled';
@@ -166,7 +159,7 @@ class modFacture extends DolibarrModules {
         $r++;
 
         $this->menus[$r]->_id = "menu:newfacture";
-        $this->menus[$r]->position = 890;
+        $this->menus[$r]->position = 0;
         $this->menus[$r]->url = "/facture/fiche.php?action=create";
         $this->menus[$r]->langs = "facture";
         $this->menus[$r]->perms = '$user->rights->facture->creer';
@@ -175,10 +168,10 @@ class modFacture extends DolibarrModules {
         $this->menus[$r]->title = "NewBill";
         $this->menus[$r]->fk_menu = "menu:factures";
         $r++;
-        
+
         $this->menus[$r]->_id = "menu:billslist";
-        $this->menus[$r]->position = 891;
-        $this->menus[$r]->url = "/facture/liste.php";
+        $this->menus[$r]->position = 1;
+        $this->menus[$r]->url = "/facture/list.php";
         $this->menus[$r]->langs = "facture";
         $this->menus[$r]->perms = '$user->rights->facture->lire';
         $this->menus[$r]->enabled = '$conf->facture->enabled';
@@ -186,9 +179,9 @@ class modFacture extends DolibarrModules {
         $this->menus[$r]->title = "List";
         $this->menus[$r]->fk_menu = "menu:factures";
         $r++;
-                
+
         $this->menus[$r]->_id = "menu:billsstats";
-        $this->menus[$r]->position = 892;
+        $this->menus[$r]->position = 2;
         $this->menus[$r]->url = "/facture/stats/index.php";
         $this->menus[$r]->langs = "facture";
         $this->menus[$r]->perms = '$user->rights->facture->lire';
@@ -278,9 +271,6 @@ class modFacture extends DolibarrModules {
 //        $this->menus[$r]->usertype = 2;
 //        $this->menus[$r]->title = "Reportings";
 //        $this->menus[$r]->fk_menu = "menu:payments0";
-
-
-
         // Exports
         //--------
 //        $r = 0;

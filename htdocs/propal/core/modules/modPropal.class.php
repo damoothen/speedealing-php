@@ -7,7 +7,7 @@
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2012      Juanjo Menentr       <jmenent@2byte.es>
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
- * Copyright (C) 2012 David Moothen           <dmoothen@websitti.fr>
+ * Copyright (C) 2012 David Moothen             <dmoothen@websitti.fr>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,6 @@
  * limitations under the License.
  */
 
-/**
- * 	\defgroup   propale     Module commercial proposals
- * 	\brief      Module pour gerer la tenue de propositions commerciales
- * 	\file       htdocs/core/modules/modPropale.class.php
- * 	\ingroup    propale
- * 	\brief      Fichier de description et activation du module Propale
- */
 include_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 
 /**
@@ -152,10 +145,10 @@ class modPropal extends DolibarrModules {
         // Main menu entries
         $this->menu = array();   // List of menus to add
         $r = 0;
-        
+
         $this->menus[$r]->_id = "menu:propals";
         $this->menus[$r]->type = "top";
-        $this->menus[$r]->position = 79;
+        $this->menus[$r]->position = 40;
         $this->menus[$r]->langs = "propal";
         $this->menus[$r]->perms = '$user->rights->propal->lire';
         $this->menus[$r]->enabled = '$conf->propal->enabled';
@@ -164,7 +157,7 @@ class modPropal extends DolibarrModules {
         $r++;
 
         $this->menus[$r]->_id = "menu:newpropal";
-        $this->menus[$r]->position = 790;
+        $this->menus[$r]->position = 0;
         $this->menus[$r]->url = "/propal/addpropal.php?action=create";
         $this->menus[$r]->langs = "propal";
         $this->menus[$r]->perms = '$user->rights->propal->creer';
@@ -173,9 +166,9 @@ class modPropal extends DolibarrModules {
         $this->menus[$r]->title = "NewPropal";
         $this->menus[$r]->fk_menu = "menu:propals";
         $r++;
-        
+
         $this->menus[$r]->_id = "menu:propalslist";
-        $this->menus[$r]->position = 791;
+        $this->menus[$r]->position = 1;
         $this->menus[$r]->url = "/propal/list.php";
         $this->menus[$r]->langs = "propal";
         $this->menus[$r]->perms = '$user->rights->propal->lire';
@@ -184,9 +177,9 @@ class modPropal extends DolibarrModules {
         $this->menus[$r]->title = "List";
         $this->menus[$r]->fk_menu = "menu:propals";
         $r++;
-                
+
         $this->menus[$r]->_id = "menu:propalsstats";
-        $this->menus[$r]->position = 792;
+        $this->menus[$r]->position = 2;
         $this->menus[$r]->url = "/propal/stats/index.php";
         $this->menus[$r]->langs = "propal";
         $this->menus[$r]->perms = '$user->rights->propal->lire';
@@ -195,7 +188,7 @@ class modPropal extends DolibarrModules {
         $this->menus[$r]->title = "Statistics";
         $this->menus[$r]->fk_menu = "menu:propals";
         $r++;
-        
+
         // Exports
         //--------
 //        $r = 0;

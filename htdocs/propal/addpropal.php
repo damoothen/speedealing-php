@@ -5,7 +5,7 @@
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
- * Copyright (C) 2012      David Moothen       <dmoothen@websitti.fr>
+ * Copyright (C) 2012      David Moothen        <dmoothen@websitti.fr>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,6 @@
  * limitations under the License.
  */
 
-/**
- * 	\file       htdocs/comm/addpropal.php
- * 	\ingroup    propal
- * 	\brief      Page to add a new commercial proposal
- */
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php';
 require_once DOL_DOCUMENT_ROOT . '/propal/core/modules/propale/modules_propale.php';
@@ -134,7 +129,7 @@ if ($action == 'create') {
     print '</tr>';
 
     // Third party
-    print '<tr><td class="fieldrequired">' . $langs->trans('Company') . '</td><td colspan="2">';// . $soc->getNomUrl(1);
+    print '<tr><td class="fieldrequired">' . $langs->trans('Company') . '</td><td colspan="2">'; // . $soc->getNomUrl(1);
 //    print '<input type="hidden" name="socid" value="' . $soc->id . '">';
     print $form->select_company($socid, 'socid');
     print '</td>';

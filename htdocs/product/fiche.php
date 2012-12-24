@@ -29,9 +29,9 @@ require_once DOL_DOCUMENT_ROOT . '/product/class/html.formproduct.class.php';
 require_once DOL_DOCUMENT_ROOT . '/product/lib/product.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/societe/lib/societe.lib.php';
 if (!empty($conf->propal->enabled))
-    require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
+    require_once DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php';
 if (!empty($conf->facture->enabled))
-    require_once DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
+    require_once DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php';
 if (!empty($conf->commande->enabled))
     require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
 

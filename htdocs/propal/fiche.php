@@ -1,7 +1,5 @@
 <?php
 
-//
-
 /* Copyright (C) 2001-2007 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur   <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne           <eric.seigne@ryxeo.com>
@@ -11,7 +9,7 @@
  * Copyright (C) 2010-2012 Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2010-2011 Philippe Grand        <philippe.grand@atoo-net.com>
  * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
- * Copyright (C) 2012      David Moothen   <dmoothen@websitti.fr>
+ * Copyright (C) 2012      David Moothen         <dmoothen@websitti.fr>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +24,6 @@
  * limitations under the License.
  */
 
-/**
- * 	\file       	htdocs/comm/propal.php
- * 	\ingroup    	propale
- * 	\brief      	Page of commercial proposals card and list
- */
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formfile.class.php';
@@ -1047,7 +1040,7 @@ if ($action != 'presend') {
     if ($action != 'statut' && $action <> 'editline') {
         // Validate
         if ($object->Status == "DRAFT" && $user->rights->propal->valider && count($object->lines) > 0) {
-                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
+            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
         }
 
         // Edit
@@ -1088,7 +1081,6 @@ if ($action != 'presend') {
 //                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled&amp;socid=' . $object->socid . '">' . $langs->trans("ClassifyBilled") . '</a>';
 //            }
 //        }
-
         // Close
         if ($object->Status == "OPENED" && $user->rights->propal->cloturer) {
             print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=statut' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#close') . '"';
@@ -1099,7 +1091,6 @@ if ($action != 'presend') {
 //        if ($user->rights->propal->creer) {
 //            print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=' . $object->element . '">' . $langs->trans("ToClone") . '</a>';
 //        }
-
         // Delete
         if ($user->rights->propal->supprimer) {
             print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete"';
@@ -1113,6 +1104,8 @@ if ($action != 'presend') {
 
 
 print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
+
+dol_fiche_head($head, 'card', $title, 0, $picto);
 
 print '<table class="border" width="100%">';
 
@@ -1444,6 +1437,7 @@ print '<td>' . $langs->trans("Currency" . $conf->currency) . '</td></tr>';
 print '<tr><td height="10">' . $langs->trans('Status') . '</td><td align="left" colspan="2">' . $langs->trans($object->getExtraFieldLabel('Status')) . '</td></tr>';
 
 print '</table><br>';
+dol_fiche_end();
 
 if (!empty($conf->global->MAIN_DISABLE_CONTACTS_TAB)) {
     $blocname = 'contacts';
@@ -1463,7 +1457,7 @@ print end_box();
  * Lines
  */
 
-print start_box($langs->trans('ProposalLines'), "six", $object->fk_extrafields->ico, false);
+print start_box($langs->trans('ProposalLines'), "twelve", $object->fk_extrafields->ico, false);
 
 if (!empty($conf->use_javascript_ajax) && $object->statut == 0) {
     include DOL_DOCUMENT_ROOT . '/core/tpl/ajaxrow.tpl.php';
@@ -1557,14 +1551,12 @@ if ($action != 'presend') {
      */
     $object->printLinkedObjects();
 //    $somethingshown = $object->showLinkedObjectBlock();
-
 //    print '</td><td valign="top" width="50%">';
 //
 //    // List of actions on element
 //    include_once DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
 //    $formactions = new FormActions($db);
 //    $somethingshown = $formactions->showactions($object, 'propal', $socid);
-
 //    print '</td></tr></table>';
 }
 

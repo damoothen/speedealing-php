@@ -73,9 +73,9 @@ class modImport extends DolibarrModules {
         $this->rights[$r]->default = false;
         $this->rights[$r]->perm = array('run');
         $r++;
-        
-        
-        
+
+
+
         // Menus
         $r = 0;
         $this->menus[$r]->_id = "menu:tools";
@@ -98,8 +98,6 @@ class modImport extends DolibarrModules {
         $this->menus[$r]->title = "FormatedImport";
         $this->menus[$r]->fk_menu = "menu:tools";
         $r++;
-        
-        
     }
 
     /**

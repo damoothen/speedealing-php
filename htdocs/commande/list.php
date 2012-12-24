@@ -19,12 +19,6 @@
  * limitations under the License.
  */
 
-/**
- *	\file       htdocs/commande/liste.php
- *	\ingroup    commande
- *	\brief      Page to list orders
- */
-
 
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
@@ -139,7 +133,7 @@ $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "ref";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("ref", "url", array('url' => 'commande/commande.php?id='));
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("ref", "url");
 $i++;
 print'<th class="essential">';
 print $langs->trans('Company');
@@ -216,7 +210,7 @@ $obj->aoColumns[$i]->sWidth = "60px";
 $obj->aoColumns[$i]->bSortable = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 
-$url = "commande/commande.php";
+$url = "commande/fiche.php";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
 	ar[ar.length] = "<a href=\"' . $url . '?id=";
@@ -247,8 +241,8 @@ print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Sea
 $i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
 $i++;
-//print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
-//$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
+$i++;
 print'<th id="' . $i . '"></th>';
 $i++;
 print'</tr>';
@@ -258,7 +252,7 @@ print'</tbody>';
 
 print "</table>";
 
-$obj->aaSorting = array(array(2, 'asc'));
+$obj->aaSorting = array(array(1, 'asc'));
 //$obj->bServerSide = true;
 
 //if ($all) {
@@ -273,7 +267,7 @@ $obj->aaSorting = array(array(2, 'asc'));
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listTODOByUser";
 //
 //}
-$obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
+//$obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
 
 $object->datatablesCreate($obj, "listorders", true, true);
 
