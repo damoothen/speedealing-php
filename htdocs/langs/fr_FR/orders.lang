@@ -7,6 +7,7 @@ OrderId=Id commande
 Order=Commande
 Orders=Commandes
 OrderLine=Ligne de commande
+OrderLines=Lignes de commande
 OrderFollow=Suivi
 OrderDate=Date commande
 OrderToProcess=Commande à traiter
