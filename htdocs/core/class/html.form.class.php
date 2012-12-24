@@ -2288,7 +2288,7 @@ class Form {
         $defaulttx = str_replace('*', '', $selectedrate);
 
         // Check parameters
-        if (is_object($societe_vendeuse) && !$societe_vendeuse->country_code) {
+        if (is_object($societe_vendeuse) && !$societe_vendeuse->country_id) {
             if ($societe_vendeuse->id == $mysoc->id) {
                 $return.= '<font class="error">' . $langs->trans("ErrorYourCountryIsNotDefined") . '</div>';
             } else {
@@ -2298,29 +2298,29 @@ class Form {
         }
 
         //var_dump($societe_acheteuse);
-        //print "name=$name, selectedrate=$selectedrate, seller=".$societe_vendeuse->country_code." buyer=".$societe_acheteuse->country_code." buyer is company=".$societe_acheteuse->isACompany()." idprod=$idprod, info_bits=$info_bits type=$type";
+        //print "name=$name, selectedrate=$selectedrate, seller=".$societe_vendeuse->country_id." buyer=".$societe_acheteuse->country_id." buyer is company=".$societe_acheteuse->isACompany()." idprod=$idprod, info_bits=$info_bits type=$type";
         //exit;
         // Get list of all VAT rates to show
         // First we defined code_pays to use to find list
         if (is_object($societe_vendeuse)) {
-            $code_pays = "'" . $societe_vendeuse->country_code . "'";
+            $code_pays = "'" . $societe_vendeuse->country_id . "'";
         } else {
-            $code_pays = "'" . $mysoc->country_code . "'";   // Pour compatibilite ascendente
+            $code_pays = "'" . $mysoc->country_id . "'";   // Pour compatibilite ascendente
         }
         if (!empty($conf->global->SERVICE_ARE_ECOMMERCE_200238EC)) {    // If option to have vat for end customer for services is on
             if (!$societe_vendeuse->isInEEC() && $societe_acheteuse->isInEEC() && !$societe_acheteuse->isACompany()) {
                 // We also add the buyer
                 if (is_numeric($type)) {
                     if ($type == 1) { // We know product is a service
-                        $code_pays.=",'" . $societe_acheteuse->country_code . "'";
+                        $code_pays.=",'" . $societe_acheteuse->country_id . "'";
                     }
                 } else if (!$idprod) {  // We don't know type of product
-                    $code_pays.=",'" . $societe_acheteuse->country_code . "'";
+                    $code_pays.=",'" . $societe_acheteuse->country_id . "'";
                 } else {
                     $prodstatic = new Product($this->db);
                     $prodstatic->fetch($idprod);
                     if ($prodstatic->type == 1) {   // We know product is a service
-                        $code_pays.=",'" . $societe_acheteuse->country_code . "'";
+                        $code_pays.=",'" . $societe_acheteuse->country_id . "'";
                     }
                 }
             }
