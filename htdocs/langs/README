@@ -1,0 +1,9 @@
+Une application est en train d'être mise en place afin de faciliter les traductions :
+
+url temporaire :
+
+http://trad.cap-networks.com/
+
+La langue de référence est l'anglais,
+si vous ajoutez ou supprimez des balises dans le français, il faut absolument le faire dans l'anglais.
+ce sont les fichiers contenu dans en_US qui vont générer les autres langues.
