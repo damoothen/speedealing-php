@@ -1,0 +1,98 @@
+<?php
+/* Copyright (C) 2012	Regis Houssin	<regis@dolibarr.fr>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$commercial = array(
+		'CHARSET' => 'UTF-8',
+		'Commercial' => 'Vertrieb',
+		'CommercialArea' => 'Vertriebsübersicht',
+		'CommercialCard' => 'Vertriebskarte',
+		'CustomerArea' => 'Kundenübersicht',
+		'Customer' => 'Kunde',
+		'Customers' => 'Kunden',
+		'Prospect' => 'Lead',
+		'Prospects' => 'Leads',
+		'DeleteAction' => 'Maßnahme / Aufgabe löschen',
+		'NewAction' => 'Neue Maßnahme / Aufgabe',
+		'AddAction' => 'Maßnahme / Aufgabe hinzufügen',
+		'AddAnAction' => 'Hinzufügen einer Maßnahme / Aufgabe',
+		'ConfirmDeleteAction' => 'Möchten Sie diese Aufgabe wirklich löschen?',
+		'CardAction' => 'Maßnahmenkarte',
+		'PercentDone' => 'Fortschritt',
+		'ActionOnCompany' => 'Aufgabe zu dieser Organisation',
+		'ActionOnContact' => 'Aufgabe zu diesem Kontakt',
+		'TaskRDV' => 'Treffen',
+		'TaskRDVWith' => 'Treffen mit %s',
+		'ShowTask' => 'Zeige Aufgabe',
+		'ShowAction' => 'Zeige Maßnahme',
+		'ActionsReport' => 'Maßnahmenbericht',
+		'SalesRepresentative' => 'Vertriebsmitarbeiter',
+		'SalesRepresentatives' => 'Vertreter',
+		'SalesRepresentativeFollowUp' => 'Vertriebsmitarbeiter (Follow-up)',
+		'SalesRepresentativeSignature' => 'Vertriebsmitarbeiter (Unterschrift)',
+		'CommercialInterlocutor' => 'Ansprechpartner Verkauf',
+		'ErrorWrongCode' => 'Falscher Code',
+		'NoSalesRepresentativeAffected' => 'Keine besonderen Vertriebsmitarbeiter betroffen',
+		'ShowCustomer' => 'Zeige Kunden',
+		'ShowProspect' => 'Zeige Lead',
+		'ListOfProspects' => 'Leads-Liste',
+		'ListOfCustomers' => 'Kundenliste',
+		'LastDoneTasks' => 'Letzte %s abgeschlossene Aufgaben',
+		'LastRecordedTasks' => 'Letzte Aufgaben',
+		'LastActionsToDo' => 'Letzte %s älteste, nicht abgeschlossene Maßnahmen',
+		'DoneAndToDoActionsFor' => 'Abgeschlossene und zu erledigende Maßnahmen für %s',
+		'DoneAndToDoActions' => 'Abgeschlossene und zu erledigende Maßnahmen',
+		'DoneActions' => 'Abgeschlossene Maßnahmen',
+		'DoneActionsFor' => 'Abgeschlossene Maßnahmen für %s',
+		'ToDoActions' => 'Unvollständige Maßnahmen',
+		'ToDoActionsFor' => 'Unvollständige Maßnahmen für %s',
+		'SendPropalRef' => 'Sende Offert %s',
+		'SendOrderRef' => 'Sende Bestellung %s',
+		'NoRecordedProspects' => 'Keine erfassten Leads',
+		'StatusActionToDo' => 'Zu erledigen',
+		'StatusActionDone' => 'Abgeschlossen',
+		'MyActionsAsked' => 'Selbst angelegte Maßnahmen',
+		'MyActionsToDo' => 'Meine To-Do-Liste',
+		'MyActionsDone' => 'Meine abgeschlossenen Maßnahmen',
+		'StatusActionInProcess' => 'In Bearbeitung',
+		'TasksHistoryForThisContact' => 'Maßnahmen zu diesem Kontakt',
+		'LastProspectDoNotContact' => 'Nicht kontaktieren',
+		'LastProspectNeverContacted' => 'Noch nicht kontaktiert',
+		'LastProspectToContact' => 'Zu kontaktieren',
+		'LastProspectContactInProcess' => 'Kontaktaufnahme läuft',
+		'LastProspectContactDone' => 'Kontaktaufnahme erledigt',
+		'DateActionPlanned' => 'Geplantes Erledigungsdatum',
+		'DateActionDone' => 'Echtes Erledigungsdatum',
+		'ActionAskedBy' => 'Maßnahme erbeten von',
+		'ActionAffectedTo' => 'Maßnahme zugewiesen an',
+		'ActionDoneBy' => 'Maßnahme erledigt von',
+		'ActionUserAsk' => 'Aufgenommen durch',
+		'ErrorStatusCantBeZeroIfStarted' => 'Ist das Feld \'<b>Echtes Erledigungsdatum</b>\' ausgefüllt, so wurde die Aktion bereits gestartet (oder beendet) und der \'<b>Status</b>\' kann nicht 0%% sein.',
+		'ActionAC_TEL' => 'Anruf',
+		'ActionAC_FAX' => 'Fax versenden',
+		'ActionAC_PROP' => 'Offert senden',
+		'ActionAC_EMAIL' => 'E-Mail senden',
+		'ActionAC_RDV' => 'Treffen',
+		'ActionAC_FAC' => 'Abrechnung senden',
+		'ActionAC_REL' => 'Abrechnung (Erinnerung) senden',
+		'ActionAC_CLO' => 'Schließen',
+		'ActionAC_EMAILING' => 'E-Mail-Kampagne starten',
+		'ActionAC_COM' => 'Sende Bestellung per Post',
+		'Rendez-Vous' => 'Treffen',
+		'AddActionRendezVous' => 'Treffen anlegen',
+		'ActionAC_SUP_ORD' => 'Sende Lieferantenbestellung per Post',
+		'ActionAC_SUP_INV' => 'Sende Lieferantenrechnung per Post',
+);
+?>

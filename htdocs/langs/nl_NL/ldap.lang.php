@@ -1,0 +1,48 @@
+<?php
+/* Copyright (C) 2012	Regis Houssin	<regis@dolibarr.fr>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$ldap = array(
+		'CHARSET' => 'UTF-8',
+		'DomainPassword' => 'Wachtwoord voor het domein',
+		'YouMustChangePassNextLogon' => 'Wachtwoord voor de gebruiker <b>%s</b> op het domein <b>%s</b> dient te worden gewijzigd.',
+		'UserMustChangePassNextLogon' => 'Gebruiker dient het wachtwoord te wijzigen op het domein %s',
+		'LdapUacf_NORMAL_ACCOUNT' => 'Gebruikersaccount',
+		'LdapUacf_DONT_EXPIRE_PASSWORD' => 'Wachtwoord verloopt nooit',
+		'LdapUacf_ACCOUNTDISABLE' => 'Account is uitgeschakeld in het domein %s',
+		'LDAPInformationsForThisContact' => 'Informatie in LDAP database voor dit contact',
+		'LDAPInformationsForThisUser' => 'Informatie in LDAP database voor deze gebruiker',
+		'LDAPInformationsForThisGroup' => 'Informatie in LDAP database voor deze groep',
+		'LDAPInformationsForThisMember' => 'Informatie in LDAP database voor dit lid',
+		'LDAPAttribute' => 'LDAP-attribuut',
+		'LDAPAttributes' => 'LDAP-attributen',
+		'LDAPCard' => 'LDAP-kaart',
+		'LDAPRecordNotFound' => 'Tabelregel niet gevonden in de LDAP database',
+		'LDAPUsers' => 'Gebruikers in LDAP database',
+		'LDAPGroups' => 'Groepen in de LDAP database',
+		'LDAPFieldStatus' => 'Status',
+		'LDAPFieldFirstSubscriptionDate' => 'Eerste inschrijvingsdatum',
+		'LDAPFieldFirstSubscriptionAmount' => 'Eerste inschrijvingsbedrag',
+		'LDAPFieldLastSubscriptionDate' => 'Laatste inschrijvingsdatum',
+		'LDAPFieldLastSubscriptionAmount' => 'Laatste inschrijvingsbedrag',
+		'SynchronizeDolibarr2Ldap' => 'Synchroniseer gebruiker (Dolibarr - >LDAP)',
+		'UserSynchronized' => 'Gebruiker gesynchroniseerd',
+		'GroupSynchronized' => 'Groep gesynchroniseerd',
+		'MemberSynchronized' => 'Lidmaatschap gesynchroniseerd',
+		'ContactSynchronized' => 'Contact gesynchroniseerd',
+		'ForceSynchronize' => 'Forceer synchronisatie Dolibarr -> LDAP',
+		'ErrorFailedToReadLDAP' => 'Kon niet lezen uit de LDAP-database. Controleer de instellingen van de LDAP module en database toegankelijkheid.',
+);
+?>

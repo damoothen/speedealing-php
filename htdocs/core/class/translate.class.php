@@ -178,7 +178,6 @@ class Translate {
         }
 
         $fileread = 0;
-        //$forcelangdir = 'en_US'; // for debug
         $langofdir = (empty($forcelangdir) ? $this->defaultlang : $forcelangdir);
 
         // Redefine alt
@@ -190,8 +189,7 @@ class Translate {
 
         foreach ($this->dir as $keydir => $searchdir) {
             // Directory of translation files
-            $file_lang = $searchdir . ($modulename ? '/' . $modulename : '') . "/langs/" . $langofdir . "/" . $newdomain . ".lang";
-            //$file_lang = $searchdir . ($modulename ? '/' . $modulename : '') . "/langs/" . $langofdir . "/" . $newdomain . ".lang.php";
+            $file_lang = $searchdir . ($modulename ? '/' . $modulename : '') . "/langs/" . $langofdir . "/" . $newdomain . ".lang.php";
             $file_lang_osencoded = dol_osencode($file_lang);
             $filelangexists = is_file($file_lang_osencoded);
             //dol_syslog('Translate::Load Try to read for alt='.$alt.' langofdir='.$langofdir.' file_lang='.$file_lang." => filelangexists=".$filelangexists);
@@ -227,77 +225,46 @@ class Translate {
                 }
 
                 if (!$found) {
-                	if ($fp = @fopen($file_lang, "rt")) {
-                        if ($usecachekey)
-                            $tabtranslatedomain = array(); // To save lang content in cache
 
+                	include $file_lang;
 
-                        // For php array translation files
-                        /*
-                        include $file_lang;
+                	if ($usecachekey)
+                		$tabtranslatedomain = array(); // To save lang content in cache
 
-                        foreach($$newdomain as $key => $value) {
-                        	if ((!empty($conf->global->MAIN_USE_CUSTOM_TRANSLATION) || empty($this->tab_translate[$key])) && !empty($value)) {    // If data was already found, we must not enter here, even if MAIN_FORCELANGDIR is set (MAIN_FORCELANGDIR is to replace lang dir, not to overwrite)
-                        		$value = trim(preg_replace('/\\n/', "\n", $value));
+                	foreach($$newdomain as $key => $value) {
+                		if ((!empty($conf->global->MAIN_USE_CUSTOM_TRANSLATION) || empty($this->tab_translate[$key])) && !empty($value)) {    // If data was already found, we must not enter here, even if MAIN_FORCELANGDIR is set (MAIN_FORCELANGDIR is to replace lang dir, not to overwrite)
+                			$value = trim(preg_replace('/\\n/', "\n", $value));
 
-                        		if ($key == 'DIRECTION') { // This is to declare direction of language
-                        			if ($alt < 2 || empty($this->tab_translate[$key])) { // We load direction only for primary files or if not yet loaded
-                        				$this->tab_translate[$key] = $value;
-                        				if ($stopafterdirection)
-                        					break; // We do not save tab if we stop after DIRECTION
-                        				else if ($usecachekey)
-                        					$tabtranslatedomain[$key] = $value;
-                        			}
-                        		}
-                        		else {
-                        			$this->tab_translate[$key] = $value;
-                        			if ($usecachekey)
-                        				$tabtranslatedomain[$key] = $value; // To save lang content in cache
-                        		}
-                        	}
-                        }*/
+                			if ($key == 'DIRECTION') { // This is to declare direction of language
+                				if ($alt < 2 || empty($this->tab_translate[$key])) { // We load direction only for primary files or if not yet loaded
+                					$this->tab_translate[$key] = $value;
+                					if ($stopafterdirection)
+                						break; // We do not save tab if we stop after DIRECTION
+                					else if ($usecachekey)
+                						$tabtranslatedomain[$key] = $value;
+                				}
+                			}
+                			else {
+                				$this->tab_translate[$key] = $value;
+                				if ($usecachekey)
+                					$tabtranslatedomain[$key] = $value; // To save lang content in cache
+                			}
+                		}
+                	}
+                	$fileread = 1;
 
-                        while ($line = fgets($fp, 4096)) { // Ex: Need 225ms for all fgets on all lang file for Third party page. Same speed than file_get_contents
-                            if ($line[0] != "\n" && $line[0] != " " && $line[0] != "#") {
-                                $tab = explode('=', $line, 2);
-                                $key = trim($tab[0]);
-                                //print "Domain=$domain, found a string for $tab[0] with value $tab[1]<br>";
-                                if ((!empty($conf->global->MAIN_USE_CUSTOM_TRANSLATION) || empty($this->tab_translate[$key])) && isset($tab[1])) {    // If data was already found, we must not enter here, even if MAIN_FORCELANGDIR is set (MAIN_FORCELANGDIR is to replace lang dir, not to overwrite)
-                                    $value = trim(preg_replace('/\\n/', "\n", $tab[1]));
+                	// TODO Move cache write out of loop on dirs
+                	// To save lang content for usecachekey into cache
+                	if ($usecachekey && count($tabtranslatedomain)) {
+                		$ressetcache = dol_setcache($usecachekey, $tabtranslatedomain);
+                		if ($ressetcache < 0) {
+                			$error = 'Failed to set cache for usecachekey=' . $usecachekey . ' result=' . $ressetcache;
+                			dol_syslog($error, LOG_ERR);
+                		}
+                	}
 
-                                    if ($key == 'DIRECTION') { // This is to declare direction of language
-                                        if ($alt < 2 || empty($this->tab_translate[$key])) { // We load direction only for primary files or if not yet loaded
-                                            $this->tab_translate[$key] = $value;
-                                            if ($stopafterdirection)
-                                                break; // We do not save tab if we stop after DIRECTION
-                                            else if ($usecachekey)
-                                                $tabtranslatedomain[$key] = $value;
-                                        }
-                                    }
-                                    else {
-                                        $this->tab_translate[$key] = $value;
-                                        if ($usecachekey)
-                                            $tabtranslatedomain[$key] = $value; // To save lang content in cache
-                                    }
-                                }
-                            }
-                        }
-                        fclose($fp);
-                        $fileread = 1;
-
-                        // TODO Move cache write out of loop on dirs
-                        // To save lang content for usecachekey into cache
-                        if ($usecachekey && count($tabtranslatedomain)) {
-                            $ressetcache = dol_setcache($usecachekey, $tabtranslatedomain);
-                            if ($ressetcache < 0) {
-                                $error = 'Failed to set cache for usecachekey=' . $usecachekey . ' result=' . $ressetcache;
-                                dol_syslog($error, LOG_ERR);
-                            }
-                        }
-
-                        if (empty($conf->global->MAIN_FORCELANGDIR) && empty($conf->global->MAIN_USE_CUSTOM_TRANSLATION))
-                            break;  // Break loop on each root dir. If a module has forced dir, we do not stop loop.
-                    }
+                	if (empty($conf->global->MAIN_FORCELANGDIR) && empty($conf->global->MAIN_USE_CUSTOM_TRANSLATION))
+                		break;  // Break loop on each root dir. If a module has forced dir, we do not stop loop.
                 }
             }
         }

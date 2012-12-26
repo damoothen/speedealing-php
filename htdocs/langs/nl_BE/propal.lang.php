@@ -1,0 +1,97 @@
+<?php
+/* Copyright (C) 2012	Regis Houssin	<regis@dolibarr.fr>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$propal = array(
+		'CHARSET' => 'UTF-8',
+		'Proposals' => 'Offertes',
+		'Proposal' => 'Offerte',
+		'ProposalsDraft' => 'Klad offertes',
+		'ProposalDraft' => 'Klad offerte',
+		'ProposalsOpened' => 'Geopende offertes',
+		'Prop' => 'Offertes',
+		'CommercialProposal' => 'Offerte',
+		'CommercialProposals' => 'Offertes',
+		'NewProp' => 'Nieuwe offerte',
+		'NewProposal' => 'Nieuwe offerte',
+		'NewPropal' => 'Nieuwe offerte',
+		'Prospect' => 'Potentiële klant',
+		'ProspectList' => 'Lijst van potentiële klanten',
+		'DeleteProp' => 'Verwijder offerte',
+		'ValidateProp' => 'Valideer offerte',
+		'AddProp' => 'Offerte toevoegen',
+		'ConfirmDeleteProp' => 'Weet u zeker dat u deze offerte wilt verwijderen?',
+		'ConfirmValidateProp' => 'Weet u zeker dat u deze offerte wilt valideren?',
+		'LastPropals' => 'Laatste %s offertes',
+		'LastClosedProposals' => 'Laatste %s gesloten offertes',
+		'AllPropals' => 'Alle offertes',
+		'LastProposals' => 'Laatste offertes',
+		'SearchAProposal' => 'Zoek een offerte',
+		'ProposalsStatistics' => 'Statistieken offertes',
+		'NumberOfProposalsByMonth' => 'Aantal per maand',
+		'AmountOfProposalsByMonthHT' => 'Bedrag per maand (exclusief BTW)',
+		'NbOfProposals' => 'Aantal offertes',
+		'ShowPropal' => 'Toon offerte',
+		'PropalsDraft' => 'Klad offertes',
+		'PropalsOpened' => 'Geopend',
+		'PropalsNotBilled' => 'Gesloten niet gefactureerd',
+		'PropalStatusDraft' => 'Klad (moet worden gevalideerd)',
+		'PropalStatusValidated' => 'Gevalideerd (offerte wordt geopend)',
+		'PropalStatusOpened' => 'Gevalideerd (offerte wordt geopend)',
+		'PropalStatusClosed' => 'Gesloten',
+		'PropalStatusSigned' => 'Ondertekend (tot factuur)',
+		'PropalStatusNotSigned' => 'Niet ondertekend (gesloten)',
+		'PropalStatusBilled' => 'Gefactureerd',
+		'PropalStatusDraftShort' => 'Klad',
+		'PropalStatusValidatedShort' => 'Gevalideerd',
+		'PropalStatusOpenedShort' => 'Geopend',
+		'PropalStatusClosedShort' => 'Gesloten',
+		'PropalStatusSignedShort' => 'Ondertekend',
+		'PropalStatusNotSignedShort' => 'Niet ondertekend',
+		'PropalStatusBilledShort' => 'Gefactureerd',
+		'PropalsToClose' => 'Offertes te sluiten',
+		'PropalsToBill' => 'Onderteken offerte tot factuur',
+		'ListOfProposals' => 'Lijst van offertes',
+		'ActionsOnPropal' => 'Acties op offerte',
+		'NoOpenedPropals' => 'Geen geopende offertes',
+		'NoOtherOpenedPropals' => 'Geen andere geopende offertes',
+		'RefProposal' => 'Ref offerte',
+		'SendPropalByMail' => 'Stuur offertes per mail',
+		'FileNotUploaded' => 'Het bestand is niet geüpload',
+		'FileUploaded' => 'Het bestand is geüpload',
+		'AssociatedDocuments' => 'Documenten in verband met de offerte:',
+		'ErrorCantOpenDir' => 'Kan directorie niet openen',
+		'DateEndPropal' => 'Vervaldatum',
+		'DateEndPropalShort' => 'Vervaldatum',
+		'ValidityDuration' => 'Geldigheidsduur',
+		'CloseAs' => 'Sluiten met status',
+		'ClassifyBilled' => 'Classificeer gefactureerd',
+		'BuildBill' => 'Maak factuur',
+		'RelatedBill' => 'Gelinkte factuur',
+		'RelatedBills' => 'Gelinkte facturen',
+		'ErrorPropalNotFound' => 'Offerte %s niet gevonden',
+		'Estimate' => 'Raming:',
+		'EstimateShort' => 'Raming',
+		'OtherPropals' => 'Andere offertes',
+		'CopyPropalFrom' => 'Maak een offerte door het kopiëren van een bestaande offerte',
+		'CreateEmptyPropal' => 'Maak een offerte / leeg of uit de lijst van producten en diensten',
+		'DefaultProposalDurationValidity' => 'Standaard geldigheidsduur voor offertes (in dagen)',
+		'UseCustomerContactAsPropalRecipientIfExist' => 'Gebruik de klant zijn contactadres indien ingesteld, in de plaats van het adres van derde partijen als begunstigde voor offertes',
+		'ClonePropal' => 'Kloon offerte',
+		'ConfirmClonePropal' => 'Weet u zeker dat u de offerte <b>%s</b> wilt klonen?',
+		'DocModelAzurDescription' => 'Een compleet model van een offerte (logo,...)',
+		'DocModelJauneDescription' => 'Jaune offerte model',
+);
+?>

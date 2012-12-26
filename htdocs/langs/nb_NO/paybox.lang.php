@@ -1,0 +1,53 @@
+<?php
+/* Copyright (C) 2012	Regis Houssin	<regis@dolibarr.fr>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$paybox = array(
+		'CHARSET' => 'UTF-8',
+		'PayBoxSetup' => 'PayBox modul oppsett',
+		'PayBoxDesc' => 'Denne modulen tilbudet sider å tillate betaling på <a href="http://www.paybox.com" target="_blank">Paybox</a> av kunder. Dette kan brukes for en gratis betaling eller for en betaling på en bestemt Dolibarr objekt (faktura, ordre, ...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'Følgende nettadresser er klare med en side til en kunde til å foreta en betaling på Dolibarr objekter',
+		'PaymentForm' => 'Betaling form',
+		'WelcomeOnPaymentPage' => 'Velkommen på våre elektroniske betalingstjenester',
+		'ThisScreenAllowsYouToPay' => 'Dette skjermbildet kan du foreta en online betaling for å %s.',
+		'ThisIsInformationOnPayment' => 'Dette er informasjon om betaling å gjøre',
+		'ToComplete' => 'For å fullføre',
+		'YourEMail' => 'E-post for betalingsbekreftelsen',
+		'Creditor' => 'Kreditor',
+		'PaymentCode' => 'Betaling kode',
+		'PayBoxDoPayment' => 'Gå på betaling',
+		'YouWillBeRedirectedOnPayBox' => 'Du vil bli omdirigert på sikrede Paybox siden for å inndataene du kredittkortinformasjonen',
+		'PleaseBePatient' => 'Vær, være tålmodig',
+		'Continue' => 'Neste',
+		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL for å tilby en %s online betaling brukergrensesnitt for en bestilling',
+		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL for å tilby en %s online betaling brukergrensesnitt for en faktura',
+		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL for å tilby en %s online betaling brukergrensesnitt for en kontrakt linje',
+		'ToOfferALinkForOnlinePaymentOnFreeAmount' => 'URL for å tilby en %s online betaling brukergrensesnitt for et fritt beløp',
+		'ToOfferALinkForOnlinePaymentOnMemberSubscription' => 'URL for å tilby en %s online betaling brukergrensesnitt for et medlem abonnement',
+		'YouCanAddTagOnUrl' => 'Du kan også legge til url parameter <b>& tag = <i>verdien</i></b> til noen av disse URL (kreves kun gratis betaling) for å legge til dine egne betalingen kommentar taggen.',
+		'SetupPayBoxToHavePaymentCreatedAutomatically' => 'Oppsettet ditt PayBox med url <b>%s</b> å få betaling opprettes automatisk når validert av paybox.',
+		'YourPaymentHasBeenRecorded' => 'Denne siden bekrefter at din betaling er registrert. Takk.',
+		'YourPaymentHasNotBeenRecorded' => 'Du betaling ikke er registrert og transaksjonen har blitt kansellert. Takk.',
+		'AccountParameter' => 'Konto parametere',
+		'UsageParameter' => 'Parametere for bruk',
+		'ToOfferALinkForOnlinePayment' => 'URL for %s betaling',
+		'InformationToFindParameters' => 'Hjelp til å finne din %s kontoinformasjon',
+		'PAYBOX_CGI_URL_V2' => 'Url av PAYBOX CGI modul for betaling',
+		'VendorName' => 'Navn på leverandøren',
+		'CSSUrlForPaymentForm' => 'CSS-stilark url for betalingsformen',
+		'MessageOK' => 'Melding på godkjent betaling retur siden',
+		'MessageKO' => 'Melding om avbrutt betaling retur siden',
+);
+?>

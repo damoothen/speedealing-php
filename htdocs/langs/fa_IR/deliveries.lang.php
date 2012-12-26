@@ -1,0 +1,40 @@
+<?php
+/* Copyright (C) 2012	Regis Houssin	<regis@dolibarr.fr>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$deliveries = array(
+		'CHARSET' => 'UTF-8',
+		'Delivery' => 'تسليم',
+		'Deliveries' => 'الولادة',
+		'DeliveryCard' => 'تسليم البطاقة',
+		'DeliveryOrder' => 'من أجل تقديم',
+		'DeliveryOrders' => 'توصيل الطلبات',
+		'DeliveryDate' => 'تاريخ التسليم',
+		'DeliveryDateShort' => 'Deliv. تاريخ',
+		'CreateDeliveryOrder' => 'ومن أجل توليد التسليم',
+		'QtyDelivered' => 'الكمية المسلمة',
+		'SetDeliveryDate' => 'حدد تاريخ الشحن',
+		'ValidateDeliveryReceipt' => 'تحقق من إنجاز ورود',
+		'ValidateDeliveryReceiptConfirm' => 'هل أنت متأكد من أن هذا الإنجاز تحقق من ورود؟',
+		'DeliveryMethod' => 'طريقة التسليم',
+		'TrackingNumber' => 'تتبع عدد',
+		'NameAndSignature' => 'الاسم والتوقيع :',
+		'ToAndDate' => 'To___________________________________ على ____ / _____ / __________',
+		'GoodStatusDeclaration' => 'وتلقى البضائع الواردة أعلاه في حالة جيدة ،',
+		'Deliverer' => 'المنفذ :',
+		'Sender' => 'مرسل',
+		'Recipient' => 'المتلقي',
+);
+?>
