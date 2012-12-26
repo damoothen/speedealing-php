@@ -1911,15 +1911,15 @@ class Product extends nosqlDocument {
             $lien = '<a href="' . DOL_URL_ROOT . '/product/fiche.php?id=' . $this->id . '">';
             $lienfin = '</a>';
         }
-        $newref = $this->ref;
+        $newref = $this->label;
         if ($maxlength)
             $newref = dol_trunc($newref, $maxlength, 'middle');
 
         if ($withpicto) {
-            if ($this->type == 0)
-                $result.=($lien . img_object($langs->trans("ShowProduct") . ' ' . $this->ref, 'product') . $lienfin . ' ');
-            if ($this->type == 1)
-                $result.=($lien . img_object($langs->trans("ShowService") . ' ' . $this->ref, 'service') . $lienfin . ' ');
+            if ($this->type == 0 || $this->type == 'PRODUCT')
+                $result.=($lien . img_object($langs->trans("ShowProduct") . ' ' . $this->name, 'product') . $lienfin . ' ');
+            if ($this->type == 1 || $this->type == 'SERVICE')
+                $result.=($lien . img_object($langs->trans("ShowService") . ' ' . $this->name, 'service') . $lienfin . ' ');
         }
         $result.=$lien . $newref . $lienfin;
         return $result;

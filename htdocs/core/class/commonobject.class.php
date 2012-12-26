@@ -2257,7 +2257,7 @@ abstract class CommonObject
         //'CH',	// Switzerland - No. Swizerland in not in EEC
         );
         //print "dd".$this->country_code;
-        return in_array($this->country_code,$country_code_in_EEC);
+        return in_array($this->country_id,$country_code_in_EEC);
     }
 
 
@@ -2606,13 +2606,14 @@ abstract class CommonObject
 		if (! empty($line->date_start)) $type=1; // deprecated
 		if (! empty($line->date_end)) $type=1; // deprecated
 
-		if ($line->fk_product > 0)
+		if (!empty($line->fk_product))
 		{
 			$product_static = new Product($this->db);
+                        $product_static->fetch($line->fk_product);
 
-			$product_static->type=$line->fk_product_type;
-			$product_static->id=$line->fk_product;
-			$product_static->ref=$line->ref;
+//			$product_static->type=$line->product_type;
+//			$product_static->id=$line->fk_product;
+//			$product_static->ref=$line->ref;
 			$text=$product_static->getNomUrl(1);
 		}
 
@@ -2620,7 +2621,7 @@ abstract class CommonObject
 		if ($action != 'editline' || $selected != $line->id)
 		{
 			// Produit
-			if ($line->fk_product > 0)
+			if (!empty($line->fk_product))
 			{
 				// Define output language
 				if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
@@ -2645,8 +2646,9 @@ abstract class CommonObject
 					$label = $line->product_label;
 				}
 
-				$text.= ' - '.(! empty($line->label)?$line->label:$label);
-				$description=(! empty($conf->global->PRODUIT_DESC_IN_FORM)?'':dol_htmlentitiesbr($line->description));
+//				$text.= ' - '.(! empty($line->label)?$line->label:$label);
+//				$description=(! empty($conf->global->PRODUIT_DESC_IN_FORM)?'':dol_htmlentitiesbr($line->description));
+                                $text .= (!empty($conf->global->PRODUIT_DESC_IN_FORM) ? '' : ' - ' . $line->description);
 			}
 
 			// Output template part (modules that overwrite templates must declare this into descriptor)

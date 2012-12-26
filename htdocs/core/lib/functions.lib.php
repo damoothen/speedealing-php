@@ -2885,13 +2885,13 @@ function get_product_localtax_for_country($idprod, $local, $countrycode) {
  */
 function get_default_tva($thirdparty_seller, $thirdparty_buyer, $idprod = 0, $idprodfournprice = 0) {
     global $conf;
-
+    
     if (!is_object($thirdparty_seller))
         return -1;
     if (!is_object($thirdparty_buyer))
         return -1;
 
-    dol_syslog("get_default_tva: seller use vat=" . $thirdparty_seller->tva_assuj . ", seller country=" . $thirdparty_seller->country_code . ", seller in cee=" . $thirdparty_seller->isInEEC() . ", buyer country=" . $thirdparty_buyer->country_code . ", buyer in cee=" . $thirdparty_buyer->isInEEC() . ", idprod=" . $idprod . ", idprodfournprice=" . $idprodfournprice . ", SERVICE_ARE_ECOMMERCE_200238EC=" . (!empty($conf->global->SERVICES_ARE_ECOMMERCE_200238EC) ? $conf->global->SERVICES_ARE_ECOMMERCE_200238EC : ''));
+    dol_syslog("get_default_tva: seller use vat=" . $thirdparty_seller->tva_assuj . ", seller country=" . $thirdparty_seller->country_id . ", seller in cee=" . $thirdparty_seller->isInEEC() . ", buyer country=" . $thirdparty_buyer->country_id . ", buyer in cee=" . $thirdparty_buyer->isInEEC() . ", idprod=" . $idprod . ", idprodfournprice=" . $idprodfournprice . ", SERVICE_ARE_ECOMMERCE_200238EC=" . (!empty($conf->global->SERVICES_ARE_ECOMMERCE_200238EC) ? $conf->global->SERVICES_ARE_ECOMMERCE_200238EC : ''));
 
     // Si vendeur non assujeti a TVA (tva_assuj vaut 0/1 ou franchise/reel)
     if (is_numeric($thirdparty_seller->tva_assuj) && !$thirdparty_seller->tva_assuj) {
@@ -2906,8 +2906,8 @@ function get_default_tva($thirdparty_seller, $thirdparty_buyer, $idprod = 0, $id
     //if (is_object($thirdparty_buyer) && ($thirdparty_seller->country_id == $thirdparty_buyer->country_id) && ($thirdparty_buyer->tva_assuj == 1 || $thirdparty_buyer->tva_assuj == 'reel'))
     // Le test ci-dessus ne devrait pas etre necessaire. Me signaler l'exemple du cas juridique concerne si le test suivant n'est pas suffisant.
     // Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
-    if (($thirdparty_seller->country_code == $thirdparty_buyer->country_code)
-            || (in_array($thirdparty_seller->country_code, array('FR,MC')) && in_array($thirdparty_buyer->country_code, array('FR', 'MC')))) { // Warning ->country_code not always defined
+    if (($thirdparty_seller->country_id == $thirdparty_buyer->country_id)
+            || (in_array($thirdparty_seller->country_id, array('FR,MC')) && in_array($thirdparty_buyer->country_id, array('FR', 'MC')))) { // Warning ->country_id not always defined
         //print 'VATRULE 3';
         return get_product_vat_for_country($idprod, $thirdparty_seller, $idprodfournprice);
     }
