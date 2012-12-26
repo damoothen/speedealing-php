@@ -1,21 +1,19 @@
 <?php
-
 /* Copyright (C) 2001      Eric Seigne         <erics@rycks.com>
  * Copyright (C) 2004-2012 Destailleur Laurent <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2010 Regis Houssin       <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin       <regis@dolibarr.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -161,7 +159,7 @@ class Translate {
         if ($this->defaultlang == 'none_NONE')
             return;    // Special language code to not translate keys
 
-            
+
 //dol_syslog("Translate::Load Start domain=".$domain." alt=".$alt." forcelangdir=".$forcelangdir." this->defaultlang=".$this->defaultlang);
 
         $newdomain = $domain;
@@ -180,6 +178,7 @@ class Translate {
         }
 
         $fileread = 0;
+        //$forcelangdir = 'en_US'; // for debug
         $langofdir = (empty($forcelangdir) ? $this->defaultlang : $forcelangdir);
 
         // Redefine alt
@@ -192,9 +191,9 @@ class Translate {
         foreach ($this->dir as $keydir => $searchdir) {
             // Directory of translation files
             $file_lang = $searchdir . ($modulename ? '/' . $modulename : '') . "/langs/" . $langofdir . "/" . $newdomain . ".lang";
+            //$file_lang = $searchdir . ($modulename ? '/' . $modulename : '') . "/langs/" . $langofdir . "/" . $newdomain . ".lang.php";
             $file_lang_osencoded = dol_osencode($file_lang);
             $filelangexists = is_file($file_lang_osencoded);
-
             //dol_syslog('Translate::Load Try to read for alt='.$alt.' langofdir='.$langofdir.' file_lang='.$file_lang." => filelangexists=".$filelangexists);
 
             if ($filelangexists) {
@@ -228,9 +227,35 @@ class Translate {
                 }
 
                 if (!$found) {
-                    if ($fp = @fopen($file_lang, "rt")) {
+                	if ($fp = @fopen($file_lang, "rt")) {
                         if ($usecachekey)
                             $tabtranslatedomain = array(); // To save lang content in cache
+
+
+                        // For php array translation files
+                        /*
+                        include $file_lang;
+
+                        foreach($$newdomain as $key => $value) {
+                        	if ((!empty($conf->global->MAIN_USE_CUSTOM_TRANSLATION) || empty($this->tab_translate[$key])) && !empty($value)) {    // If data was already found, we must not enter here, even if MAIN_FORCELANGDIR is set (MAIN_FORCELANGDIR is to replace lang dir, not to overwrite)
+                        		$value = trim(preg_replace('/\\n/', "\n", $value));
+
+                        		if ($key == 'DIRECTION') { // This is to declare direction of language
+                        			if ($alt < 2 || empty($this->tab_translate[$key])) { // We load direction only for primary files or if not yet loaded
+                        				$this->tab_translate[$key] = $value;
+                        				if ($stopafterdirection)
+                        					break; // We do not save tab if we stop after DIRECTION
+                        				else if ($usecachekey)
+                        					$tabtranslatedomain[$key] = $value;
+                        			}
+                        		}
+                        		else {
+                        			$this->tab_translate[$key] = $value;
+                        			if ($usecachekey)
+                        				$tabtranslatedomain[$key] = $value; // To save lang content in cache
+                        		}
+                        	}
+                        }*/
 
                         while ($line = fgets($fp, 4096)) { // Ex: Need 225ms for all fgets on all lang file for Third party page. Same speed than file_get_contents
                             if ($line[0] != "\n" && $line[0] != " " && $line[0] != "#") {
