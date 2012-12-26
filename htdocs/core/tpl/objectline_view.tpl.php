@@ -59,7 +59,7 @@
 		}
 		else
 		{
-			if ($line->fk_product > 0) {
+			if (!empty($line->fk_product)) {
 
 				echo $form->textwithtooltip($text,$description,3,'','',$i,0,($line->fk_parent_line?img_picto('', 'rightarrow'):''));
 

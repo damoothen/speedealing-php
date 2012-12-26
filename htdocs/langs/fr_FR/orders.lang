@@ -7,6 +7,7 @@ OrderId=Id commande
 Order=Commande
 Orders=Commandes
 OrderLine=Ligne de commande
+OrderLines=Lignes de commande
 OrderFollow=Suivi
 OrderDate=Date commande
 OrderToProcess=Commande à traiter
@@ -160,3 +161,6 @@ CreateInvoiceForThisCustomer=Facturer commandes
 NoOrdersToInvoice=Pas de commandes facturables
 CloseProcessedOrdersAutomatically=Classer automatiquement à "Traitées" les commandes sélectionnées.
 MenuOrdersToBill2=Commandes facturables
+
+LinkedInvoices=Factures jointes
+LinkedProposals=Propositions commerciales jointes

@@ -365,7 +365,7 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
     $langs->load('errors');
     $error = false;
 
-    $idprod = GETPOST('idprod', 'int');
+    $idprod = GETPOST('idprod', 'alpha');
     $product_desc = (GETPOST('product_desc') ? GETPOST('product_desc') : (GETPOST('np_desc') ? GETPOST('np_desc') : (GETPOST('dp_desc') ? GETPOST('dp_desc') : '')));
     $price_ht = GETPOST('price_ht');
     $tva_tx = GETPOST('tva_tx');
@@ -422,20 +422,20 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
                 $tva_tx = str_replace('*', '', $tva_tx);
                 $desc = $product_desc;
             } else {
-                $tva_tx = get_default_tva($mysoc, $object->client, $prod->id);
-                $tva_npr = get_default_npr($mysoc, $object->client, $prod->id);
+                $tva_tx = get_default_tva($mysoc, $object->thirdparty, $prod->id);
+                $tva_npr = get_default_npr($mysoc, $object->thirdparty, $prod->id);
 
                 // We define price for product
-                if (!empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->client->price_level)) {
-                    $pu_ht = $prod->multiprices[$object->client->price_level];
-                    $pu_ttc = $prod->multiprices_ttc[$object->client->price_level];
-                    $price_min = $prod->multiprices_min[$object->client->price_level];
-                    $price_base_type = $prod->multiprices_base_type[$object->client->price_level];
+                if (!empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->thirdparty->price_level)) {
+                    $pu_ht = $prod->multiprices[$object->thirdparty->price_level];
+                    $pu_ttc = $prod->multiprices_ttc[$object->thirdparty->price_level];
+                    $price_min = $prod->multiprices_min[$object->thirdparty->price_level];
+                    $price_base_type = $prod->multiprices_base_type[$object->thirdparty->price_level];
                 } else {
-                    $pu_ht = $prod->price;
-                    $pu_ttc = $prod->price_ttc;
-                    $price_min = $prod->price_min;
-                    $price_base_type = $prod->price_base_type;
+                    $pu_ht = $prod->price->price;
+                    $pu_ttc = $prod->price->price_ttc;
+                    $price_min = $prod->price->price_min;
+                    $price_base_type = $prod->price->price_base_type;
                 }
 
                 // On reevalue prix selon taux tva car taux tva transaction peut etre different
@@ -471,14 +471,14 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
                 $desc = dol_concatdesc($desc, $product_desc);
             }
 
-            if (!empty($prod->customcode) || !empty($prod->country_code)) {
+            if (!empty($prod->customcode) || !empty($prod->country_id)) {
                 $tmptxt = '(';
                 if (!empty($prod->customcode))
                     $tmptxt.=$langs->transnoentitiesnoconv("CustomCode") . ': ' . $prod->customcode;
-                if (!empty($prod->customcode) && !empty($prod->country_code))
+                if (!empty($prod->customcode) && !empty($prod->country_id))
                     $tmptxt.=' - ';
-                if (!empty($prod->country_code))
-                    $tmptxt.=$langs->transnoentitiesnoconv("CountryOrigin") . ': ' . getCountry($prod->country_code, 0, $db, $langs, 0);
+                if (!empty($prod->country_id))
+                    $tmptxt.=$langs->transnoentitiesnoconv("CountryOrigin") . ': ' . getCountry($prod->country_id, 0, $db, $langs, 0);
                 $tmptxt.=')';
                 $desc.= (dol_textishtml($desc) ? "<br>\n" : "\n") . $tmptxt;
             }
@@ -500,8 +500,8 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
         $buyingprice = (GETPOST('buying_price') ? GETPOST('buying_price') : '');
 
         // Local Taxes
-        $localtax1_tx = get_localtax($tva_tx, 1, $object->client);
-        $localtax2_tx = get_localtax($tva_tx, 2, $object->client);
+        $localtax1_tx = get_localtax($tva_tx, 1, $object->thirdparty);
+        $localtax2_tx = get_localtax($tva_tx, 2, $object->thirdparty);
 
         $info_bits = 0;
         if ($tva_npr)
@@ -1962,7 +1962,7 @@ else {
 
     // Show list of paymenys
     $payments = $object->getPaymentsList();
-    print start_box($langs->trans('PaymentsList'), "six", $object->fk_extrafields->ico, false);
+    print start_box($langs->trans('Payment'), "six", $object->fk_extrafields->ico, false);
     print '<table id="tablelines" class="noborder" width="100%">';
     print '<tr>';
     print '<th align="left">' . $langs->trans('Payments') . '</th>';
@@ -1992,7 +1992,7 @@ else {
     /*
      * Documents generes
      */
-    print start_box($langs->trans('GeneratedDocuments'), "six", $object->fk_extrafields->ico, false);
+    print start_box($langs->trans('Documents'), "six", $object->fk_extrafields->ico, false);
     $filename = dol_sanitizeFileName($object->ref);
     $filedir = $conf->facture->dir_output . '/' . dol_sanitizeFileName($object->ref);
     $urlsource = $_SERVER['PHP_SELF'] . '?id=' . $object->id;

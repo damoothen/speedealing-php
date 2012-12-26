@@ -315,8 +315,8 @@ class Propal extends nosqlDocument {
         }
 
         // Check parameters
-        if ($type < 0)
-            return -1;
+//        if ($type < 0)
+//            return -1;
 
         if ($this->Status == "DRAFT") {
 //            $this->db->begin();

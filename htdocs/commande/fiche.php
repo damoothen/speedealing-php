@@ -53,6 +53,10 @@ $langs->load('products');
 if (!empty($conf->margin->enabled))
     $langs->load('margins');
 
+//$product = new Product($db);
+//$res = $product->getView('list', array('startkey' => 'd', 'endkey' => 'dZ'));
+//echo '<pre>' . print_r($res, true) . '</pre>';die;
+
 
 /* Post params ************************************************************** */
 
@@ -71,6 +75,7 @@ $object = new Commande($db);
 $soc = new Societe($db);
 if (!empty($id)) {
     $object->fetch($id);
+    $object->fetch_thirdparty();
     $soc->fetch($object->socid);
     $object->getLinesArray();
 }
@@ -253,7 +258,7 @@ if ($action == 'add' && $user->rights->commande->creer) {
     $langs->load('errors');
     $error = false;
 
-    $idprod = GETPOST('idprod', 'int');
+    $idprod = GETPOST('idprod', 'alpha');
     $product_desc = (GETPOST('product_desc') ? GETPOST('product_desc') : (GETPOST('np_desc') ? GETPOST('np_desc') : (GETPOST('dp_desc') ? GETPOST('dp_desc') : '')));
     $price_ht = GETPOST('price_ht');
     $tva_tx = GETPOST('tva_tx');
@@ -304,20 +309,20 @@ if ($action == 'add' && $user->rights->commande->creer) {
                 $tva_tx = str_replace('*', '', $tva_tx);
                 $desc = $product_desc;
             } else {
-                $tva_tx = get_default_tva($mysoc, $object->client, $prod->id);
-                $tva_npr = get_default_npr($mysoc, $object->client, $prod->id);
+                $tva_tx = get_default_tva($mysoc, $object->thirdparty, $prod->id);
+                $tva_npr = get_default_npr($mysoc, $object->thirdparty, $prod->id);
 
                 // multiprix
-                if (!empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->client->price_level)) {
-                    $pu_ht = $prod->multiprices[$object->client->price_level];
-                    $pu_ttc = $prod->multiprices_ttc[$object->client->price_level];
-                    $price_min = $prod->multiprices_min[$object->client->price_level];
-                    $price_base_type = $prod->multiprices_base_type[$object->client->price_level];
+                if (!empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->thirdparty->price_level)) {
+                    $pu_ht = $prod->multiprices[$object->thirdparty->price_level];
+                    $pu_ttc = $prod->multiprices_ttc[$object->thirdparty->price_level];
+                    $price_min = $prod->multiprices_min[$object->thirdparty->price_level];
+                    $price_base_type = $prod->multiprices_base_type[$object->thirdparty->price_level];
                 } else {
-                    $pu_ht = $prod->price;
-                    $pu_ttc = $prod->price_ttc;
-                    $price_min = $prod->price_min;
-                    $price_base_type = $prod->price_base_type;
+                    $pu_ht = $prod->price->price;
+                    $pu_ttc = $prod->price->price_ttc;
+                    $price_min = $prod->price->price_min;
+                    $price_base_type = $prod->price->price_base_type;
                 }
 
                 // On reevalue prix selon taux tva car taux tva transaction peut etre different

@@ -28,8 +28,9 @@ if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 require '../../main.inc.php';
+require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
 
-$idprod=GETPOST('idprod','int');
+$idprod=GETPOST('idprod','alpha');
 
 $prices = array();
 
@@ -45,31 +46,35 @@ top_httphead();
 
 if (! empty($idprod))
 {
-	$sql = "SELECT p.rowid, p.label, p.ref, p.price, p.duration,";
-	$sql.= " pfp.ref_fourn,";
-	$sql.= " pfp.rowid as idprodfournprice, pfp.price as fprice, pfp.quantity, pfp.unitprice, pfp.charges, pfp.unitcharges,";
-	$sql.= " s.nom";
-	$sql.= " FROM ".MAIN_DB_PREFIX."product_fournisseur_price as pfp";
-	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = pfp.fk_product";
-	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON s.rowid = pfp.fk_soc";
-	$sql.= " WHERE pfp.fk_product = ".$idprod;
-	$sql.= " AND p.tobuy = 1";
-	$sql.= " AND s.fournisseur = 1";
-	$sql.= " ORDER BY s.nom, pfp.ref_fourn DESC";
+//	$sql = "SELECT p.rowid, p.label, p.ref, p.price, p.duration,";
+//	$sql.= " pfp.ref_fourn,";
+//	$sql.= " pfp.rowid as idprodfournprice, pfp.price as fprice, pfp.quantity, pfp.unitprice, pfp.charges, pfp.unitcharges,";
+//	$sql.= " s.nom";
+//	$sql.= " FROM ".MAIN_DB_PREFIX."product_fournisseur_price as pfp";
+//	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = pfp.fk_product";
+//	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON s.rowid = pfp.fk_soc";
+//	$sql.= " WHERE pfp.fk_product = ".$idprod;
+//	$sql.= " AND p.tobuy = 1";
+//	$sql.= " AND s.fournisseur = 1";
+//	$sql.= " ORDER BY s.nom, pfp.ref_fourn DESC";
+//
+//	dol_syslog("Ajax::getSupplierPrices sql=".$sql, LOG_DEBUG);
+//	$result=$db->query($sql);
+    
+    $product = new Product($db);
+    $result = $product->getView('list', array('startkey' => $idprod, 'endkey' => $idprod . 'Z'));
 
-	dol_syslog("Ajax::getSupplierPrices sql=".$sql, LOG_DEBUG);
-	$result=$db->query($sql);
-
-	if ($result)
+	if (!empty($result->rows))
 	{
-		$num = $db->num_rows($result);
+		$num = count($result->rows);
 
 		if ($num)
 		{
 			$i = 0;
 			while ($i < $num)
 			{
-				$objp = $db->fetch_object($result);
+                                $objp = new Product($db);
+                                $objp->fecth($result->$rows[$i]->key);
 
 				$title = $objp->nom.' - '.$objp->ref_fourn.' - ';
 				$label = '';

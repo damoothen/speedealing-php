@@ -1042,6 +1042,241 @@ class Form {
             dol_print_error($db);
         }
     }
+    
+    
+    /**
+     * 	Return list of products for a customer
+     *
+     * 	@param      int		$selected       Preselected product
+     * 	@param      string	$htmlname       Name of select html
+     *  @param		string	$filtertype     Filter on product type (''=nofilter, 0=product, 1=service)
+     * 	@param      int		$limit          Limite sur le nombre de lignes retournees
+     * 	@param      int		$price_level    Level of price to show
+     * 	@param      string	$filterkey      Filter on product
+     * 	@param		int		$status         -1=Return all products, 0=Products not on sell, 1=Products on sell
+     *  @param      int		$finished       Filter on finished field: 2=No filter
+     *  @param      int		$disableout     Disable print output
+     *  @return     array    				Array of keys for json
+     */
+    function select_products($selected = '', $htmlname = 'productid', $filtertype = '', $limit = 20, $price_level = 0, $filterkey = '', $status = 1, $finished = 2, $disableout = 0) {
+        global $langs, $conf, $user, $db;
+
+        require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
+        $object = new Product($db);
+        $result = $object->getView('list', array('startkey' => $filterkey, 'endkey' => $filterkey . 'Z'));
+        
+//        $sql = "SELECT ";
+//        $sql.= " p.rowid, p.label, p.ref, p.description, p.fk_product_type, p.price, p.price_ttc, p.price_base_type, p.tva_tx, p.duration, p.stock";
+//        // Multilang : we add translation
+//        if (!empty($conf->global->MAIN_MULTILANGS)) {
+//            $sql.= ", pl.label as label_translated";
+//        }
+//        $sql.= " FROM " . MAIN_DB_PREFIX . "product as p";
+//        // Multilang : we add translation
+//        if (!empty($conf->global->MAIN_MULTILANGS)) {
+//            $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "product_lang as pl ON pl.fk_product = p.rowid AND pl.lang='" . $langs->getDefaultLang() . "'";
+//        }
+//        $sql.= ' WHERE p.entity IN (' . getEntity('product', 1) . ')';
+//        if ($finished == 0) {
+//            $sql.= " AND p.finished = " . $finished;
+//        } elseif ($finished == 1) {
+//            $sql.= " AND p.finished = " . $finished;
+//            if ($status >= 0)
+//                $sql.= " AND p.tosell = " . $status;
+//        }
+//        elseif ($status >= 0) {
+//            $sql.= " AND p.tosell = " . $status;
+//        }
+//        if (strval($filtertype) != '')
+//            $sql.=" AND p.fk_product_type=" . $filtertype;
+//        // Add criteria on ref/label
+//        if ($filterkey && $filterkey != '') {
+//            if (!empty($conf->global->PRODUCT_DONOTSEARCH_ANYWHERE)) {   // Can use index
+//                $sql.=" AND (p.ref LIKE '" . $filterkey . "%' OR p.label LIKE '" . $filterkey . "%'";
+//                if (!empty($conf->global->MAIN_MULTILANGS))
+//                    $sql.=" OR pl.label LIKE '" . $filterkey . "%'";
+//                $sql.=")";
+//            }
+//            else {
+//                $sql.=" AND (p.ref LIKE '%" . $filterkey . "%' OR p.label LIKE '%" . $filterkey . "%'";
+//                if (!empty($conf->global->MAIN_MULTILANGS))
+//                    $sql.=" OR pl.label LIKE '%" . $filterkey . "%'";
+//                $sql.=")";
+//            }
+//
+//            if (!empty($conf->barcode->enabled)) {
+//                $sql .= " OR p.barcode LIKE '" . $filterkey . "'";
+//            }
+//        }
+//        $sql.= $db->order("p.ref");
+//        $sql.= $db->plimit($limit);
+//
+//        // Build output string
+        $outselect = '';
+        $outjson = array();
+//
+//        dol_syslog(get_class($this) . "::select_produits_do search product sql=" . $sql, LOG_DEBUG);
+//        $result = $this->db->query($sql);
+        if (!empty($result->rows)) {
+            $num = count($result->rows);
+
+            $outselect.='<select class="flat" name="' . $htmlname . '" id="' . $htmlname . '">';
+            $outselect.='<option value="0" selected="selected">&nbsp;</option>';
+
+            $i = 0;
+            while ($num && $i < $num) {
+                $outkey = '';
+                $outval = '';
+                $outref = '';
+                $outlabel = '';
+                $outdesc = '';
+                $outtype = '';
+                $outprice_ht = '';
+                $outprice_ttc = '';
+                $outpricebasetype = '';
+                $outtva_tx = '';
+
+//                $objp = $this->db->fetch_object($result);
+                $objp = new Product($db);
+                $objp->fetch($result->rows[$i]->value->_id);
+
+                $label = $objp->label;
+                if (!empty($objp->label_translated))
+                    $label = $objp->label_translated;
+                if ($filterkey && $filterkey != '')
+                    $label = preg_replace('/(' . preg_quote($filterkey) . ')/i', '<strong>$1</strong>', $label, 1);
+
+                $outkey = $objp->id;
+                $outref = $objp->name;
+                $outlabel = $objp->label;
+                $outdesc = isset($objp->description) ? $objp->description : '';
+                $outtype = $objp->type;
+
+                $opt = '<option value="' . $objp->id . '"';
+                $opt.= ($objp->id == $selected) ? ' selected="selected"' : '';
+                if (!empty($conf->stock->enabled) && $objp->type == 'PRODUCT' && isset($objp->stock)) {
+                    if ($objp->stock > 0) {
+                        $opt.= ' style="background-color:#32CD32; color:#F5F5F5;"';
+                    } else if ($objp->stock <= 0) {
+                        $opt.= ' style="background-color:#FF0000; color:#F5F5F5;"';
+                    }
+                }
+                $opt.= '>';
+                $opt.= $objp->name . ' - ' . dol_trunc($label, 32) . ' - ';
+
+                $objRef = $objp->name;
+                if ($filterkey && $filterkey != '')
+                    $objRef = preg_replace('/(' . preg_quote($filterkey) . ')/i', '<strong>$1</strong>', $objRef, 1);
+                $outval.=$objRef . ' - ' . dol_trunc($label, 32) . ' - ';
+
+                $found = 0;
+                $currencytext = $langs->trans("Currency" . $conf->currency);
+                $currencytextnoent = $langs->transnoentities("Currency" . $conf->currency);
+                if (dol_strlen($currencytext) > 10)
+                    $currencytext = $conf->currency; // If text is too long, we use the short code
+                if (dol_strlen($currencytextnoent) > 10)
+                    $currencytextnoent = $conf->currency;   // If text is too long, we use the short code
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Multiprice
+//                if ($price_level >= 1) {  // If we need a particular price level (from 1 to 6)
+//                    $sql = "SELECT price, price_ttc, price_base_type, tva_tx";
+//                    $sql.= " FROM " . MAIN_DB_PREFIX . "product_price";
+//                    $sql.= " WHERE fk_product='" . $objp->rowid . "'";
+//                    $sql.= " AND price_level=" . $price_level;
+//                    $sql.= " ORDER BY date_price";
+//                    $sql.= " DESC LIMIT 1";
+//
+//                    dol_syslog(get_class($this) . "::select_produits_do search price for level '.$price_level.' sql=" . $sql);
+//                    $result2 = $this->db->query($sql);
+//                    if ($result2) {
+//                        $objp2 = $this->db->fetch_object($result2);
+//                        if ($objp2) {
+//                            $found = 1;
+//                            if ($objp2->price_base_type == 'HT') {
+//                                $opt.= price($objp2->price, 1) . ' ' . $currencytext . ' ' . $langs->trans("HT");
+//                                $outval.= price($objp2->price, 1) . ' ' . $currencytextnoent . ' ' . $langs->transnoentities("HT");
+//                            } else {
+//                                $opt.= price($objp2->price_ttc, 1) . ' ' . $currencytext . ' ' . $langs->trans("TTC");
+//                                $outval.= price($objp2->price_ttc, 1) . ' ' . $currencytextnoent . ' ' . $langs->transnoentities("TTC");
+//                            }
+//                            $outprice_ht = price($objp2->price);
+//                            $outprice_ttc = price($objp2->price_ttc);
+//                            $outpricebasetype = $objp2->price_base_type;
+//                            $outtva_tx = $objp2->tva_tx;
+//                        }
+//                    } else {
+//                        dol_print_error($this->db);
+//                    }
+//                }
+
+                // If level no defined or multiprice not found, we used the default price
+                if (!$found) {
+                    if ($objp->price->price_base_type == 'HT') {
+                        $opt.= price($objp->price->price, 1) . ' ' . $currencytext . ' ' . $langs->trans("HT");
+                        $outval.= price($objp->price->price, 1) . ' ' . $currencytextnoent . ' ' . $langs->transnoentities("HT");
+                    } else {
+                        $opt.= price($objp->price->price_ttc, 1) . ' ' . $currencytext . ' ' . $langs->trans("TTC");
+                        $outval.= price($objp->price->price_ttc, 1) . ' ' . $currencytextnoent . ' ' . $langs->transnoentities("TTC");
+                    }
+                    $outprice_ht = price($objp->price->price);
+                    $outprice_ttc = price($objp->price->price_ttc);
+                    $outpricebasetype = $objp->price->price_base_type;
+                    $outtva_tx = $objp->price->tva_tx;
+                }
+
+                if (!empty($conf->stock->enabled) && isset($objp->stock) && $objp->type == "PRODUCT") {
+                    $opt.= ' - ' . $langs->trans("Stock") . ':' . $objp->stock;
+                    $outval.=' - ' . $langs->transnoentities("Stock") . ':' . $objp->stock;
+                }
+
+                if ($objp->duration) {
+                    $duration_value = substr($objp->duration, 0, dol_strlen($objp->duration) - 1);
+                    $duration_unit = substr($objp->duration, -1);
+                    if ($duration_value > 1) {
+                        $dur = array("h" => $langs->trans("Hours"), "d" => $langs->trans("Days"), "w" => $langs->trans("Weeks"), "m" => $langs->trans("Months"), "y" => $langs->trans("Years"));
+                    } else {
+                        $dur = array("h" => $langs->trans("Hour"), "d" => $langs->trans("Day"), "w" => $langs->trans("Week"), "m" => $langs->trans("Month"), "y" => $langs->trans("Year"));
+                    }
+                    $opt.= ' - ' . $duration_value . ' ' . $langs->trans($dur[$duration_unit]);
+                    $outval.=' - ' . $duration_value . ' ' . $langs->transnoentities($dur[$duration_unit]);
+                }
+
+                $opt.= "</option>\n";
+
+                // Add new entry
+                // "key" value of json key array is used by jQuery automatically as selected value
+                // "label" value of json key array is used by jQuery automatically as text for combo box
+                $outselect.=$opt;
+                array_push($outjson, array('key' => $outkey, 'value' => $outref, 'label' => $outval, 'label2' => $outlabel, 'desc' => $outdesc, 'type' => $outtype, 'price_ht' => $outprice_ht, 'price_ttc' => $outprice_ttc, 'pricebasetype' => $outpricebasetype, 'tva_tx' => $outtva_tx));
+
+                $i++;
+            }
+
+            $outselect.='</select>';
+
+//            $this->db->free($result);
+
+            if (empty($disableout))
+                print $outselect;
+            return $outjson;
+        }
+        else {
+            dol_print_error($db);
+        }
+    }
+
 
     /**
      * 	Return list of products for customer (in Ajax if Ajax activated or go to select_produits_fournisseurs_do)
@@ -2288,7 +2523,7 @@ class Form {
         $defaulttx = str_replace('*', '', $selectedrate);
 
         // Check parameters
-        if (is_object($societe_vendeuse) && !$societe_vendeuse->country_code) {
+        if (is_object($societe_vendeuse) && !$societe_vendeuse->country_id) {
             if ($societe_vendeuse->id == $mysoc->id) {
                 $return.= '<font class="error">' . $langs->trans("ErrorYourCountryIsNotDefined") . '</div>';
             } else {
@@ -2298,29 +2533,29 @@ class Form {
         }
 
         //var_dump($societe_acheteuse);
-        //print "name=$name, selectedrate=$selectedrate, seller=".$societe_vendeuse->country_code." buyer=".$societe_acheteuse->country_code." buyer is company=".$societe_acheteuse->isACompany()." idprod=$idprod, info_bits=$info_bits type=$type";
+        //print "name=$name, selectedrate=$selectedrate, seller=".$societe_vendeuse->country_id." buyer=".$societe_acheteuse->country_id." buyer is company=".$societe_acheteuse->isACompany()." idprod=$idprod, info_bits=$info_bits type=$type";
         //exit;
         // Get list of all VAT rates to show
         // First we defined code_pays to use to find list
         if (is_object($societe_vendeuse)) {
-            $code_pays = "'" . $societe_vendeuse->country_code . "'";
+            $code_pays = "'" . $societe_vendeuse->country_id . "'";
         } else {
-            $code_pays = "'" . $mysoc->country_code . "'";   // Pour compatibilite ascendente
+            $code_pays = "'" . $mysoc->country_id . "'";   // Pour compatibilite ascendente
         }
         if (!empty($conf->global->SERVICE_ARE_ECOMMERCE_200238EC)) {    // If option to have vat for end customer for services is on
             if (!$societe_vendeuse->isInEEC() && $societe_acheteuse->isInEEC() && !$societe_acheteuse->isACompany()) {
                 // We also add the buyer
                 if (is_numeric($type)) {
                     if ($type == 1) { // We know product is a service
-                        $code_pays.=",'" . $societe_acheteuse->country_code . "'";
+                        $code_pays.=",'" . $societe_acheteuse->country_id . "'";
                     }
                 } else if (!$idprod) {  // We don't know type of product
-                    $code_pays.=",'" . $societe_acheteuse->country_code . "'";
+                    $code_pays.=",'" . $societe_acheteuse->country_id . "'";
                 } else {
                     $prodstatic = new Product($this->db);
                     $prodstatic->fetch($idprod);
                     if ($prodstatic->type == 1) {   // We know product is a service
-                        $code_pays.=",'" . $societe_acheteuse->country_code . "'";
+                        $code_pays.=",'" . $societe_acheteuse->country_id . "'";
                     }
                 }
             }
