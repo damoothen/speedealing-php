@@ -1992,7 +1992,7 @@ else {
     /*
      * Documents generes
      */
-    print start_box($langs->trans('GeneratedDocuments'), "six", $object->fk_extrafields->ico, false);
+    print start_box($langs->trans('Documents'), "six", $object->fk_extrafields->ico, false);
     $filename = dol_sanitizeFileName($object->ref);
     $filedir = $conf->facture->dir_output . '/' . dol_sanitizeFileName($object->ref);
     $urlsource = $_SERVER['PHP_SELF'] . '?id=' . $object->id;

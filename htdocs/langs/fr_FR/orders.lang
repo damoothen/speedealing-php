@@ -161,3 +161,6 @@ CreateInvoiceForThisCustomer=Facturer commandes
 NoOrdersToInvoice=Pas de commandes facturables
 CloseProcessedOrdersAutomatically=Classer automatiquement à "Traitées" les commandes sélectionnées.
 MenuOrdersToBill2=Commandes facturables
+
+LinkedInvoices=Factures jointes
+LinkedProposals=Propositions commerciales jointes
