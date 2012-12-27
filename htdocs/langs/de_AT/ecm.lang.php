@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'Stammordner',
 		'ECMNewSection' => 'Neues Verzeichnis',
 		'ECMAddSection' => 'Verzeichnis hinzufügen',
-		'ECMNewSection' => 'Neues Verzeichnis',
 		'ECMNewDocument' => 'Neues Dokument',
 		'ECMCreationDate' => 'Erstellungsdatum',
 		'ECMNbOfFilesInDir' => 'Anzahl der Dateien im Verzeichnis',
@@ -53,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Dokumentenverzeichnisse',
 		'ECMTypeManual' => 'Manuell',
 		'ECMTypeAuto' => 'Automatisch',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Mit Partnern verknüpfte Dokumente',
 		'ECMDocsByProposals' => 'Mit Angeboten verknüpfte Dokumente',
 		'ECMDocsByOrders' => 'Mit Kundenaufträgen verknüpfte Dokumente',
@@ -67,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Entfernen des Verzeichnisses nicht möglich, da es noch Dateien enthält',
 		'ECMFileManager' => 'Dateiverwaltung',
 		'ECMSelectASection' => 'Wählen Sie ein Verzeichnis aus der Baumansicht auf der linken Seite...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.',
 );
 ?>

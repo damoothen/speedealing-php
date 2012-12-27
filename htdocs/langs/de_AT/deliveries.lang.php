@@ -28,9 +28,12 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Liefertermin setzen',
 		'ValidateDeliveryReceipt' => 'Lieferschein freigeben',
 		'ValidateDeliveryReceiptConfirm' => 'Möchten Sie die Lieferung wirklich bestätigen?',
+		'DeleteDeliveryReceipt' => 'Delete delivery receipt',
+		'DeleteDeliveryReceiptConfirm' => 'Are you sure you want to delete delivery receipt <b>%s</b> ?',
 		'DeliveryMethod' => 'Versandart',
 		'TrackingNumber' => 'Tracking Nummer',
-		// merou PDF model
+		'DeliveryNotValidated' => 'Delivery not validated',
+		// merou PDF model						   
 		'NameAndSignature' => 'Name und Unterschrift:',
 		'ToAndDate' => 'An___________________________________ am ____/_____/__________',
 		'GoodStatusDeclaration' => 'Haben die oben genannten Waren in einwandfreiem Zustand erhalten,',

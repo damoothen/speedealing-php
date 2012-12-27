@@ -23,6 +23,7 @@ $interventions = array(
 		'AddIntervention' => 'Eingriffsstelle hinzufügen',
 		'ListOfInterventions' => 'Liste der Eingriffe',
 		'EditIntervention' => 'Eingriff bearbeiten',
+		'ActionsOnFicheInter' => 'Actions on intervention',
 		'LastInterventions' => 'Letzte %s Eingriffe',
 		'AllInterventions' => 'Alle Eingriffe',
 		'CreateDraftIntervention' => 'Eingriffsentwurf',
@@ -30,6 +31,7 @@ $interventions = array(
 		'InterventionContact' => 'Kontakt für Eingriffe',
 		'DeleteIntervention' => 'Eingriff löschen',
 		'ValidateIntervention' => 'Eingriff freigeben',
+		'ModifyIntervention' => 'Eingriff',
 		'DeleteInterventionLine' => 'Eingriffszeile löschen',
 		'ConfirmDeleteIntervention' => 'Möchten Sie diesen Eingriff wirklich löschen?',
 		'ConfirmValidateIntervention' => 'Möchten Sie diesen Eingriff wirklich freigeben?',
@@ -38,15 +40,19 @@ $interventions = array(
 		'NameAndSignatureOfInternalContact' => 'Name und Unterschrift des internen Kontakts:',
 		'NameAndSignatureOfExternalContact' => 'Name und Unterschrift des Kunden:',
 		'DocumentModelStandard' => 'Standard-Dokumentvorlage für Eingriffe',
+		'ClassifyBilled' => 'Classify "Billed"',
+		'StatusInterInvoiced' => 'Billed',
+		'RelatedInterventions' => 'Related interventions',
+		'ShowIntervention' => 'Zeige Intervention',
+		////////// Types de contacts //////////
 		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Eingriffsnachverfolgung durch Vertreter',
 		'TypeContact_fichinter_internal_INTERVENING' => 'Eingriff läuft',
 		'TypeContact_fichinter_external_BILLING' => 'Rechnungskontakt Kunde',
 		'TypeContact_fichinter_external_CUSTOMER' => 'Kundenkontakt-Nachverfolgung',
+		// Modele numérotation
 		'ArcticNumRefModelDesc1' => 'Generisches Nummernmodell',
 		'ArcticNumRefModelError' => 'Fehler beim aktivieren',
 		'PacificNumRefModelDesc1' => 'Liefere Nummer im Format %syymm-nnnn zurück, wobei yy das Jahr, mm das Monat und nnnn eine Zahlensequenz ohne Nullwert oder Leerzeichen ist',
 		'PacificNumRefModelError' => 'Eine Interventionskarte beginnend mit $syymm existiert bereits und ist nicht mir dieser Numerierungssequenz kompatibel. Bitte löschen oder umbenennen.',
-		'ModifyIntervention' => 'Eingriff',
-		'ShowIntervention' => 'Zeige Intervention',
 );
 ?>

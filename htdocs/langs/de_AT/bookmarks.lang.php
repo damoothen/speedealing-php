@@ -32,7 +32,7 @@ $bookmarks = array(
 		'SetHereATitleForLink' => 'Geben Sie hier einen Linktitel ein',
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Verwenden Sie eine externe http-URL oder eine URL relativ zum Systempfad',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Bitte wählen Sie, ob sich ein geklickter Link in einem neuen oder demselben Fenster öffnet',
-		'ListOfBookmarks' => 'Liste der Lesezeichen',
 		'BookmarksManagement' => 'Bookmarks-Verwaltung',
+		'ListOfBookmarks' => 'Liste der Lesezeichen',
 );
 ?>
