@@ -19,6 +19,7 @@ $trips = array(
 		'Trip' => 'Excursie',
 		'Trips' => 'Excursii',
 		'TripsAndExpenses' => 'Excursii si cheltuieli',
+		'TripsAndExpensesStatistics' => 'Excursii şi statistici cheltuieli',
 		'TripCard' => 'Trip carte',
 		'AddTrip' => 'Adauga-intors',
 		'ListOfTrips' => 'Lista de excursii',
@@ -32,9 +33,8 @@ $trips = array(
 		'TF_OTHER' => 'Alt',
 		'TF_LUNCH' => 'Prânz',
 		'TF_TRIP' => 'Excursie',
-		'TripsAndExpensesStatistics' => 'Excursii şi statistici cheltuieli',
 		'ListTripsAndExpenses' => 'Lista de excursii şi cheltuieli',
 		'ExpensesArea' => 'Excursii şi zona de cheltuieli',
-		'SearchATripAndExpense' => 'Căutaţi o călătorie şi cheltuieli',
+		'SearchATripAndExpense' => 'Căutaţi o călătorie şi cheltuieli'
 );
 ?>

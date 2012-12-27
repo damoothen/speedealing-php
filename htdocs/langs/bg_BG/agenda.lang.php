@@ -81,12 +81,13 @@ $agenda = array(
 		'AgendaUrlOptions5' => '<b>logind = %s</b> да се ограничи производството за действия, извършени от потребителя <b>%s.</b>',
 		'AgendaShowBirthdayEvents' => 'Покажи контакти рожден ден',
 		'AgendaHideBirthdayEvents' => 'Скриване на контакти рожден ден',
+		// External Sites ical
 		'ExportCal' => 'Export календар',
 		'ExtSites' => 'Импортиране на външни календари',
 		'ExtSitesEnableThisTool' => 'Показват външни календари в дневния ред',
 		'ExtSitesNbOfAgenda' => 'Брой на календари',
 		'AgendaExtNb' => 'Календар NB %s',
 		'ExtSiteUrlAgenda' => 'URL адрес за достъп до файла. Ical',
-		'ExtSiteNoLabel' => '№ Описание',
+		'ExtSiteNoLabel' => '№ Описание'
 );
 ?>

@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => 'Setup se povezujejo na zunanji strani',
-		'ExternalSiteURL' => 'Zunanja stran URL',
+		'ExternalSiteURL' => 'Zunanja stran URL'
 );
 ?>

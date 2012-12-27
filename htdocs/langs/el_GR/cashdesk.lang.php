@@ -15,7 +15,6 @@
  */
 
 $cashdesk = array(
-		// Language file - en_US - cashdesk
 		'CHARSET' => 'UTF-8',
 		'CashDeskMenu' => 'Point of sale',
 		'CashDesk' => 'Point of sale',
@@ -25,6 +24,10 @@ $cashdesk = array(
 		'CashDeskBankCB' => 'Bank account (card)',
 		'CashDeskBankCheque' => 'Bank account (cheque)',
 		'CashDeskWarehouse' => 'Warehouse',
+		'CashdeskShowServices' => 'Πώληση υπηρεσιών',
+		'CashDeskProducts' => 'Προϊόντα',
+		'CashDeskStock' => 'Χρηματιστήριο',
+		'CashDeskOn' => 'επί',
 		'CashDeskThirdParty' => 'Third party',
 		'ShoppingCart' => 'Shopping cart',
 		'NewSell' => 'New sell',
@@ -38,9 +41,6 @@ $cashdesk = array(
 		'ProductFound' => 'product found',
 		'ProductsFound' => 'products found',
 		'NoArticle' => 'No article',
-		'CashDeskProducts' => 'Προϊόντα',
-		'CashDeskStock' => 'Χρηματιστήριο',
-		'CashDeskOn' => 'επί',
 		'Identification' => 'Αναγνώριση',
 		'Article' => 'Άρθρο',
 		'Difference' => 'Διαφορά',
@@ -49,10 +49,9 @@ $cashdesk = array(
 		'Change' => 'Περίσσεια λάβει',
 		'CalTip' => 'Κάντε κλικ για να δείτε το ημερολόγιο',
 		'CashDeskSetupStock' => 'Ρωτάτε για να μειώσετε απόθεμα στο τιμολόγιο δημιουργία αποθήκης αλλά για αυτό είναι δεν ορίζεται <br> Αλλαγή απόθεμα εγκατάστασης μονάδας, ή επιλέξτε μια αποθήκη',
-		'CashdeskShowServices' => 'Πώληση υπηρεσιών',
 		'BankToPay' => 'Πιστωτικός λογαριασμός',
 		'ShowCompany' => 'Εμφάνιση εταιρείας',
 		'ShowStock' => 'Εμφάνιση αποθήκη',
-		'DeleteArticle' => 'Κάντε κλικ για να καταργήσετε αυτό το άρθρο',
+		'DeleteArticle' => 'Κάντε κλικ για να καταργήσετε αυτό το άρθρο'
 );
 ?>

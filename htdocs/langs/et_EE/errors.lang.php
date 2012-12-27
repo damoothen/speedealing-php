@@ -17,6 +17,7 @@
 $errors = array(
 		'CHARSET' => 'UTF-8',
 		'MenuManager' => 'Menüü juht',
+		// Errors
 		'Error' => 'Viga',
 		'Errors' => 'Vead',
 		'ErrorBadEMail' => 'E-post %s on vale',
@@ -118,6 +119,15 @@ $errors = array(
 		'ErrorBothFieldCantBeNegative' => 'Valdkonnad %s ja %s ei saa olla nii negatiivne',
 		'ErrorWebServerUserHasNotPermission' => 'Kasutaja konto <b>%s</b> kasutada täita web server ei luba, et',
 		'ErrorNoActivatedBarcode' => 'Ei vöötkoodi tüüpi aktiveeritud',
+		'ErrUnzipFails' => 'Failed to unzip %s with ZipArchive',
+		'ErrNoZipEngine' => 'No engine to unzip %s file in this PHP',
+		'ErrorFileMustBeADolibarrPackage' => 'The file %s must be a Dolibarr zip package',
+		'ErrorFileRequired' => 'It takes a package Dolibarr file',
+		'ErrorPhpCurlNotInstalled' => 'The PHP CURL is not installed, this is essential to talk with Paypal',
+		'ErrorFailedToAddToMailmanList' => 'Failed to add record to Mailman list or SPIP base',
+		'ErrorNewVaueCantMatchOldValue' => 'New value can\'t be equal to old one',
+		// Warnings
+		'WarningMandatorySetupNotComplete' => 'Mandatory setup parameters are not yet defined',
 		'WarningSafeModeOnCheckExecDir' => 'Hoiatus, PHP võimalus <b>safe_mode</b> on nii käsk tuleb hoida sees kataloogis deklareeritud php parameeter <b>safe_mode_exec_dir.</b>',
 		'WarningAllowUrlFopenMustBeOn' => 'Parameeter <b>allow_url_fopen</b> peab seadma <b>sisse</b> filer <b>php.ini</b> eest, see moodul töötab täiesti. Sa pead muutma seda pilti käsitsi.',
 		'WarningBuildScriptNotRunned' => 'Script <b>%s</b> ei olnud veel jooksis ehitada graafika, või ei ole andmeid näidata.',
@@ -126,7 +136,8 @@ $errors = array(
 		'WarningConfFileMustBeReadOnly' => 'Hoiatus, oma config fail <b>(htdocs / conf / conf.php)</b> võib olla kirjutatakse veebiserver. See on tõsine turvaauguks. Muuda õigusi fail olla ainult lugemiseks režiim operatsioonisüsteemi kasutaja kasutavad veebiserveris. Kui te kasutate Windows ja FAT formaati kettalt, peate teadma, et see failisüsteem ei võimalda lisada õigusi faili, nii ei saa olla täiesti ohutu.',
 		'WarningsOnXLines' => 'Hoiatused <b>%s</b> allikas read',
 		'WarningNoDocumentModelActivated' => 'Ei mudel, dokumentide tootmine, on aktiveeritud. Mudelit valis vaikimisi kuni te vaadata oma moodul setup.',
-		'WarningInstallDirExists' => 'Hoiatus, install kataloogi <b>(htdocs / install)</b> on endiselt olemas. See on tõsine turvaauguks. Sa peaksid eemaldada nii kiiresti kui võimalik.',
+		'WarningLockFileDoesNotExists' => 'Warning, once setup is finished, you must disable install/migrate tools by adding a file <b>install.lock</b> into directory <b>%s</b>. Missing this file is a security hole.',
 		'WarningUntilDirRemoved' => 'Kõik turvahoiatuste (nähtav admin kasutajate puhul) jääb aktiivseks nii kaua, kui haavatavus on olemas (või et pidev MAIN_REMOVE_INSTALL_WARNING lisatakse Setup-> Other setup).',
+		'WarningCloseAlways' => 'Warning, closing is done even if amount differs between source and target elements. Enable this feature with caution.'
 );
 ?>

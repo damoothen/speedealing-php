@@ -35,6 +35,6 @@ $trips = array(
 		'TF_TRIP' => '旅程',
 		'ListTripsAndExpenses' => '旅行和费用清单',
 		'ExpensesArea' => '与贸易有关的知识产权协定“和开支面积',
-		'SearchATripAndExpense' => '寻找旅行和费用',
+		'SearchATripAndExpense' => '寻找旅行和费用'
 );
 ?>

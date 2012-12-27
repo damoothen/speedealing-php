@@ -28,16 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Aseta meriliikenneyhtiön päivämäärä',
 		'ValidateDeliveryReceipt' => 'Validate toimituksen vastaanottamisen',
 		'ValidateDeliveryReceiptConfirm' => 'Oletko varma, että haluat vahvistaa tämän toimituksen vastaanottamisesta?',
+		'DeleteDeliveryReceipt' => 'Poista toimituskuitti',
+		'DeleteDeliveryReceiptConfirm' => 'Oletko varma että haluat poistaa toimituskuitti <b>%s?</b>',
 		'DeliveryMethod' => 'Toimitustapa',
 		'TrackingNumber' => 'Seurantanumero',
+		'DeliveryNotValidated' => 'Toimitus ei validoitu',
+		// merou PDF model
 		'NameAndSignature' => 'Nimi ja allekirjoitus:',
 		'ToAndDate' => 'To___________________________________ on ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'Ovat saaneet tavarat edellä hyvässä kunnossa,',
 		'Deliverer' => 'Deliverer:',
 		'Sender' => 'Sender',
-		'Recipient' => 'Edunsaajavaltiot',
-		'DeleteDeliveryReceipt' => 'Poista toimituskuitti',
-		'DeleteDeliveryReceiptConfirm' => 'Oletko varma että haluat poistaa toimituskuitti <b>%s?</b>',
-		'DeliveryNotValidated' => 'Toimitus ei validoitu',
+		'Recipient' => 'Edunsaajavaltiot'
 );
 ?>

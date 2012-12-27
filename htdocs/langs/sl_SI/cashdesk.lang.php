@@ -15,7 +15,6 @@
  */
 
 $cashdesk = array(
-		// Language file - en_US - cashdesk = 
 		'CHARSET' => 'UTF-8',
 		'CashDeskMenu' => 'Prodajno mesto',
 		'CashDesk' => 'Prodajno mesto',
@@ -25,6 +24,7 @@ $cashdesk = array(
 		'CashDeskBankCB' => 'Bančni račun (kartica)',
 		'CashDeskBankCheque' => 'Bančni račun (ček)',
 		'CashDeskWarehouse' => 'Skladišče',
+		'CashdeskShowServices' => 'Prodaja storitev',
 		'CashDeskProducts' => 'Proizvodi',
 		'CashDeskStock' => 'Zaloga',
 		'CashDeskOn' => 'vklopljen',
@@ -52,7 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Bremenitev računa',
 		'ShowCompany' => 'Prikaži podjetje',
 		'ShowStock' => 'Prikaži skladišče',
-		'DeleteArticle' => 'Kliknite za izbris tega artikla',
-		'CashdeskShowServices' => 'Prodaja storitev',
+		'DeleteArticle' => 'Kliknite za izbris tega artikla'
 );
 ?>

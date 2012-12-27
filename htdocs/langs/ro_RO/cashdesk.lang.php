@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Taxa de cont',
 		'ShowCompany' => 'Afişare companie',
 		'ShowStock' => 'Arată depozit',
-		'DeleteArticle' => 'Faceţi clic pentru a elimina acest articol',
+		'DeleteArticle' => 'Faceţi clic pentru a elimina acest articol'
 );
 ?>

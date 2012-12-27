@@ -44,9 +44,9 @@ $orders = array(
 		'StatusOrderCanceledShort' => 'Annulée',
 		'StatusOrderDraftShort' => 'Brouillon',
 		'StatusOrderValidatedShort' => 'Validée',
-		'StatusOrderOnProcessShort' => 'Traitement en cours',
 		'StatusOrderSentShort' => 'Envoi en cours',
 		'StatusOrderSent' => 'Envoi en cours',
+		'StatusOrderOnProcessShort' => 'Traitement en cours',
 		'StatusOrderProcessedShort' => 'Traitée',
 		'StatusOrderToBillShort' => 'Délivrée',
 		'StatusOrderToBill2Short' => 'A facturer',
@@ -69,9 +69,9 @@ $orders = array(
 		'ShippingExist' => 'Une expédition existe',
 		'DraftOrWaitingApproved' => 'Brouillon ou approuvée pas encore commandée',
 		'DraftOrWaitingShipped' => 'Brouillon ou validée pas encore expédiée',
-		'SearchOrder' => 'Rechercher une commande',
 		'MenuOrdersToBill' => 'Commandes délivrées',
 		'MenuOrdersToBill2' => 'Commandes à facturer',
+		'SearchOrder' => 'Rechercher une commande',
 		'Sending' => 'Expédition',
 		'Sendings' => 'Expéditions',
 		'ShipProduct' => 'Expédier produit',
@@ -131,7 +131,6 @@ $orders = array(
 		'CloneOrder' => 'Cloner commande',
 		'ConfirmCloneOrder' => 'Êtes-vous sûr de vouloir cloner cette commande <b>%s</b> ?',
 		'DispatchSupplierOrder' => 'Réception de la commande fournisseur %s',
-		'DateDeliveryPlanned' => 'Date de livraison prévue',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Responsable suivi commande client',
 		'TypeContact_commande_internal_SHIPPING' => 'Responsable envoi commande client',
@@ -158,8 +157,7 @@ $orders = array(
 		'OrderSource6' => 'Magasin',
 		'QtyOrdered' => 'Qté commandée',
 		'AddDeliveryCostLine' => 'Ajouter une ligne de frais port indiquant le poids de la commande',
-		'SetDemandReason' => 'Définir l\'origine de la commande',
-		// Document models
+		// Documents models
 		'PDFEinsteinDescription' => 'Modèle de commande complet (logo...)',
 		'PDFEdisonDescription' => 'Modèle de commande simple',
 		// Orders modes
@@ -171,6 +169,6 @@ $orders = array(
 		'CreateInvoiceForThisCustomer' => 'Facturer commandes',
 		'NoOrdersToInvoice' => 'Pas de commandes facturables',
 		'CloseProcessedOrdersAutomatically' => 'Classer automatiquement à "Traitées" les commandes sélectionnées.',
-		'MenuOrdersToBill2' => 'Commandes facturables',
+		'MenuOrdersToBill2' => 'Commandes à facturer'
 );
 ?>

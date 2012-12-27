@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Nb jäljellä olevien merkkien',
 		'SmsInfoNumero' => '(Muoto kansainvälinen eli +33899701761)',
 		'DelayBeforeSending' => 'Viive ennen lähettämistä (min)',
-		'SmsNoPossibleRecipientFound' => 'Ei tavoite käytettävissä. Tarkista asetukset oman SMS tarjoaja.',
+		'SmsNoPossibleRecipientFound' => 'Ei tavoite käytettävissä. Tarkista asetukset oman SMS tarjoaja.'
 );
 ?>

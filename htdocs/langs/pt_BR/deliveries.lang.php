@@ -32,12 +32,13 @@ $deliveries = array(
 		'DeleteDeliveryReceiptConfirm' => 'Tem certeza de que deseja apagar o recibo de entrega?',
 		'DeliveryMethod' => 'Método de Envio',
 		'TrackingNumber' => 'N� de Tracking',
-		// merou PDF model=
+		'DeliveryNotValidated' => 'Delivery not validated',
+		// merou PDF model
 		'NameAndSignature' => 'Nome e assinatura:',
 		'ToAndDate' => 'Em___________________________________ a ____/_____/__________',
 		'GoodStatusDeclaration' => 'Recebi a mercadoria em bom estado,',
 		'Deliverer' => 'Destinatario:',
 		'Sender' => 'Origem',
-		'Recipient' => 'Destinatário',
+		'Recipient' => 'Destinatário'
 );
 ?>

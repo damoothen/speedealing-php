@@ -44,6 +44,7 @@ $projects = array(
 		'NbOpenTasks' => '铌打开任务',
 		'NbOfProjects' => '铌项目',
 		'TimeSpent' => '花费的时间',
+		'TimesSpent' => '所花费的时间',
 		'RefTask' => '号。任务',
 		'LabelTask' => '标签任务',
 		'NewTimeSpent' => '新的时间',
@@ -95,6 +96,20 @@ $projects = array(
 		'TaskRessourceLinks' => '资源的整合',
 		'ProjectsDedicatedToThisThirdParty' => '这个项目致力于第三方',
 		'NoTasks' => '该项目没有任务',
+		'LinkedToAnotherCompany' => '链接到其他第三方',
+		'TaskIsNotAffectedToYou' => '任务不分配给你',
+		'ErrorTimeSpentIsEmpty' => '所花费的时间是空的',
+		'ThisWillAlsoRemoveTasks' => '这一行动也将删除所有项目任务<b>（%s</b>任务的时刻），花全部的时间都投入。',
+		'IfNeedToUseOhterObjectKeepEmpty' => '如果某些对象（发票，订单，...），属于其他第三方，必须与该项目以创建，保持这个空项目多的第三方。',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => '项目负责人',
 		'TypeContact_project_external_PROJECTLEADER' => '项目负责人',
 		'TypeContact_project_internal_CONTRIBUTOR' => '投稿',
@@ -103,12 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => '执行任务',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => '投稿',
 		'TypeContact_project_task_external_CONTRIBUTOR' => '投稿',
-		'DocumentModelBaleine' => '一个完整的项目报告模型（logo. ..）',
-		'LinkedToAnotherCompany' => '链接到其他第三方',
-		'TimesSpent' => '所花费的时间',
-		'TaskIsNotAffectedToYou' => '任务不分配给你',
-		'ErrorTimeSpentIsEmpty' => '所花费的时间是空的',
-		'ThisWillAlsoRemoveTasks' => '这一行动也将删除所有项目任务<b>（%s</b>任务的时刻），花全部的时间都投入。',
-		'IfNeedToUseOhterObjectKeepEmpty' => '如果某些对象（发票，订单，...），属于其他第三方，必须与该项目以创建，保持这个空项目多的第三方。',
+		// Documents models
+		'DocumentModelBaleine' => '一个完整的项目报告模型（logo. ..）'
 );
 ?>

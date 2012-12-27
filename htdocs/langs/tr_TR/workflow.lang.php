@@ -23,5 +23,7 @@ $workflow = array(
 		'descWORKFLOW_PROPAL_AUTOCREATE_INVOICE' => 'Ticari bir teklif imzalandıktan sonra otomatik olarak bir müşteri faturası oluştur',
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Bir sözleşme doğrulandıktan sonra otomatik olarak bir müşteri faturası oluştur',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Bir müşteri siparişi kapatıldıktan sonra otomatik olarak bir müşteri faturası oluştur',
+		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Classify linked source proposal to billed when customer order is set to paid',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid'
 );
 ?>

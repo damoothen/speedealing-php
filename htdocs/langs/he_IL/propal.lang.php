@@ -99,15 +99,18 @@ $propal = array(
 		'AvailabilityPeriod' => 'זמינות עיכוב',
 		'SetAvailability' => 'הגדרת עיכוב זמינות',
 		'AfterOrder' => 'אחרי הסדר',
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => 'מידי',
 		'AvailabilityTypeAV_1W' => '1 שבוע',
 		'AvailabilityTypeAV_2W' => '2 שבועות',
 		'AvailabilityTypeAV_3W' => '3 שבועות',
 		'AvailabilityTypeAV_1M' => '1 חודש',
+		////////// Types de contacts //////////
 		'TypeContact_propal_internal_SALESREPFOLL' => 'הצעת נציג הבאה למעלה',
 		'TypeContact_propal_external_BILLING' => 'חשבונית הלקוח קשר',
 		'TypeContact_propal_external_CUSTOMER' => 'הקשר של הלקוח הבא למעלה ההצעה',
+		// Document models
 		'DocModelAzurDescription' => 'מודל הצעה מלאה (logo. ..)',
-		'DocModelJauneDescription' => 'ההצעה Jaune מודל',
+		'DocModelJauneDescription' => 'ההצעה Jaune מודל'
 );
 ?>

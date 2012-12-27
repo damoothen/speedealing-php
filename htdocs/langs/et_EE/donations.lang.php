@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Annetus',
 		'Donations' => 'Annetused',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Annetaja',
 		'Donors' => 'Doonorid',
 		'AddDonation' => 'Lisa annetuse',
@@ -37,9 +38,13 @@ $donations = array(
 		'DonationStatusPromiseValidatedShort' => 'Valideeritud',
 		'DonationStatusPaidShort' => 'Saanud',
 		'ValidPromess' => 'Kinnitada lubadus',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Ehitada kätte',
 		'DonationsModels' => 'Dokumendid mudelid annetuste laekumine',
 		'LastModifiedDonations' => 'Last %s muutmine annetusi',
 		'SearchADonation' => 'Otsi annetuse',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

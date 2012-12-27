@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => 'OS Commerce Server isännän / ip',
 		'OSCommerceDatabaseName' => 'OS Commerce tietokannan nimi',
 		'OSCommercePrefix' => 'OS Commerce taulukot etuliite',
-		'OSCommerceUser' => 'OS Commerce tietokanta sisäänkirjoittautumissivuksesi',
+		'OSCommerceUser' => 'OS Commerce tietokanta sisäänkirjoittautumissivuksesi'
 );
 ?>

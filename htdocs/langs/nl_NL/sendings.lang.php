@@ -47,9 +47,11 @@ $sendings = array(
 		'StatusSendingCanceled' => 'Geannuleerd',
 		'StatusSendingDraft' => 'Concept',
 		'StatusSendingValidated' => 'Gevalideerd (producten te verzenden of reeds verzonden)',
+		'StatusSendingProcessed' => 'Processed',
 		'StatusSendingCanceledShort' => 'Geannuleerd',
 		'StatusSendingDraftShort' => 'Concept',
 		'StatusSendingValidatedShort' => 'Gevalideerd',
+		'StatusSendingProcessedShort' => 'Processed',
 		'SendingSheet' => 'Verzendbrief',
 		'Carriers' => 'Vervoerders',
 		'Carrier' => 'Vervoerder',
@@ -66,18 +68,19 @@ $sendings = array(
 		'StatsOnShipmentsOnlyValidated' => 'Statistieken enkel uitgevoerd op gevalideerde verzendingen',
 		'DateDeliveryPlanned' => 'Geplande leveringsdatum',
 		'DateReceived' => 'Datum leveringsonvangst',
-		// Sending methods = undefined
-		'SendingMethodCATCH' => 'Afhalen door de afnemer',
-		'SendingMethodTRANS' => 'Vervoerder',
-		'SendingMethodCOLSUI' => 'Colissimo',
-		// ModelDocument = undefined
-		'DocumentModelSirocco' => 'Eenvoudig leveringsbewijs documentmodel',
-		'DocumentModelTyphon' => 'Completer leveringsbewijs documentmodel (logo, etc)',
-		'ShipmentCreationIsDoneFromOrder' => 'Op dit moment, is oprichting van een nieuwe zending gedaan van de volgorde kaart.',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constant EXPEDITION_ADDON_NUMBER niet gedefinieerd',
 		'SendShippingByEMail' => 'Stuur verzending per e-mail',
 		'SendShippingRef' => 'Stuur scheepvaart %s',
 		'ActionsOnShipping' => 'Acions op verzendkosten',
 		'LinkToTrackYourPackage' => 'Link naar uw pakket',
+		'ShipmentCreationIsDoneFromOrder' => 'Op dit moment, is oprichting van een nieuwe zending gedaan van de volgorde kaart.',
+		'RelatedShippings' => 'Related shippings',
+		// Sending methods
+		'SendingMethodCATCH' => 'Afhalen door de afnemer',
+		'SendingMethodTRANS' => 'Vervoerder',
+		'SendingMethodCOLSUI' => 'Colissimo',
+		// ModelDocument
+		'DocumentModelSirocco' => 'Eenvoudig leveringsbewijs documentmodel',
+		'DocumentModelTyphon' => 'Completer leveringsbewijs documentmodel (logo, etc)',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constant EXPEDITION_ADDON_NUMBER niet gedefinieerd'
 );
 ?>

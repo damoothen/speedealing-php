@@ -147,6 +147,8 @@ $members = array(
 		'ShowSubscription' => 'Zeige Abonnement',
 		'MemberModifiedInDolibarr' => 'Mitglied bearbeitet',
 		'SendAnEMailToMember' => 'Informations-E-Mail an Mitglied senden',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL_SUBJECT' => 'Subject of the e-mail received in case of auto-inscription of a guest',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL' => 'E-mail received in case of auto-inscription of a guest',
 		'DescADHERENT_AUTOREGISTER_MAIL_SUBJECT' => 'E-Mail-Betreff für automat. Mitgliederabonnements',
 		'DescADHERENT_AUTOREGISTER_MAIL' => 'E-Mail-Text für autom. Mitgliederabonnements',
 		'DescADHERENT_MAIL_VALID_SUBJECT' => 'E-Mail-Betreff bei Mitgliederfreigabe',
@@ -157,12 +159,12 @@ $members = array(
 		'DescADHERENT_MAIL_RESIL' => 'E-Mail-Text beim Zurückstellen eines Mitglieds',
 		'DescADHERENT_MAIL_FROM' => 'Absender E-Mail-Adresse für automatische Mails',
 		'DescADHERENT_ETIQUETTE_TYPE' => 'Format der Etikettenseite',
+		'DescADHERENT_ETIQUETTE_TEXT' => 'Text printed on member address sheets',
 		'DescADHERENT_CARD_TYPE' => 'Format der Kartenseite',
 		'DescADHERENT_CARD_HEADER_TEXT' => 'Text für den Druck oben auf der Mitgliedskarte',
 		'DescADHERENT_CARD_TEXT' => 'Text für den Druck auf der Mitgliedskarte (linksbündig)',
 		'DescADHERENT_CARD_TEXT_RIGHT' => 'Text für den Druck auf der Mitgliedskarte (rechtsbündig)',
 		'DescADHERENT_CARD_FOOTER_TEXT' => 'Text für den Druck unten auf der Mitgliedskarte',
-		'DescADHERENT_MAILMAN_LISTS' => 'Liste(n) für die autom. Einschreibung neuer Mitglieder (kommagetrennt)',
 		'GlobalConfigUsedIfNotDefined' => 'Der verwendete Text wird in Stiftungsmodul festgelegt. Ist dieser Text nicht definiert, dann über Einstellungen festlegen.',
 		'MayBeOverwrited' => 'Dieser Text kann mit der Definition im Mitgliedstyp überschrieben werden.',
 		'ShowTypeCard' => 'Zeige Typ \'%s\'',
@@ -209,6 +211,6 @@ $members = array(
 		'Collectivités' => 'Organisationen',
 		'Particuliers' => 'Privatpersonen',
 		'Entreprises' => 'Unternehmen',
-		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Um Ihre Beitragszahlung mit einer Banküberweisung auszuführen, gehen Sie zur Seite: <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a>.<br>Um mittels Kreditkarte zu zahlen, klicken Sie auf den Button am Seitenende.<br>',
+		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Um Ihre Beitragszahlung mit einer Banküberweisung auszuführen, gehen Sie zur Seite: <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a>.<br>Um mittels Kreditkarte zu zahlen, klicken Sie auf den Button am Seitenende.<br>'
 );
 ?>

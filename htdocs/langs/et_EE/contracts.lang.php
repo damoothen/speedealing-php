@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'Kinnitada leping',
 		'ActivateService' => 'Aktiveeri teenus',
 		'ConfirmActivateService' => 'Oled kindel, et soovite aktiveerida seda teenust koos kuupäeva <b>%s?</b>',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'Lepingu kuupäev',
 		'DateServiceActivate' => 'Teenuse aktiveerimine kuupäev',
 		'DateServiceUnactivate' => 'Teenuse deaktiveerimine kuupäev',
@@ -69,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'List töötab teenused',
 		'NotActivatedServices' => 'Passiivne teenused (sh kinnitatud lepingud)',
 		'BoardNotActivatedServices' => 'Teenuste aktiveerimiseks seas kinnitatud lepingud',
-		'LastContracts' => 'Viimati% lepingud',
+		'LastContracts' => 'Last %s muutmine lepingud',
 		'LastActivatedServices' => 'Last %s aktiveeritud teenused',
 		'LastModifiedServices' => 'Last %s muutmine teenused',
 		'EditServiceLine' => 'Edit teenuse rida',
@@ -101,11 +102,12 @@ $contracts = array(
 		'ExpiredSince' => 'Aegumistähtaeg',
 		'RelatedContracts' => 'Seotud lepingud',
 		'NoExpiredServices' => 'Ei möödunud aktiivne teenused',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'Müügiesindaja allkirjastades lepingu',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'Müügiesindaja järelmeetmeid leping',
 		'TypeContact_contrat_external_BILLING' => 'Arved kliendi kontaktandmed',
 		'TypeContact_contrat_external_CUSTOMER' => 'Järelmeetmete kliendikontakti',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Allkirjastades lepingu kliendikontakti',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Pidev CONTRACT_ADDON ole määratletud',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Pidev CONTRACT_ADDON ole määratletud'
 );
 ?>

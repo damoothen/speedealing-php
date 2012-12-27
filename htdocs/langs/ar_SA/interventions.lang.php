@@ -23,6 +23,7 @@ $interventions = array(
 		'AddIntervention' => 'إضافة التدخل',
 		'ListOfInterventions' => 'قائمة التدخلات',
 		'EditIntervention' => 'Editer التدخل',
+		'ActionsOnFicheInter' => 'إجراءات على التدخل',
 		'LastInterventions' => 'آخر تدخلات ٪ ق',
 		'AllInterventions' => 'كل التدخلات',
 		'CreateDraftIntervention' => 'إنشاء مشروع',
@@ -39,18 +40,19 @@ $interventions = array(
 		'NameAndSignatureOfInternalContact' => 'الاسم والتوقيع على التدخل :',
 		'NameAndSignatureOfExternalContact' => 'اسم وتوقيع العميل :',
 		'DocumentModelStandard' => 'نموذج وثيقة موحدة للتدخلات',
-		'TypeContact_fichinter_internal_INTERREPFOLL' => 'ممثل متابعة التدخل',
-		'TypeContact_fichinter_internal_INTERVENING' => 'التدخل',
-		'TypeContact_fichinter_external_BILLING' => 'فواتير العملاء الاتصال',
-		'TypeContact_fichinter_external_CUSTOMER' => 'متابعة العملاء الاتصال',
-		'ArcticNumRefModelDesc1' => 'عدد نموذج عامة',
-		'ArcticNumRefModelError' => 'فشل لتفعيل',
-		'PacificNumRefModelDesc1' => 'عودة número مع الشكل nnnn - ٪ syymm فيها السنة هي السنة ، هو شهر ملم وnnnn هو كسر التسلسل وليس هناك عودة لل0',
-		'PacificNumRefModelError' => 'تدخل البطاقة ابتداء من دولار ويوجد بالفعل syymm لا تتفق مع هذا النموذج من التسلسل. إزالة أو تغيير تسميتها لتصبح لتفعيل هذه الوحدة.',
-		'ActionsOnFicheInter' => 'إجراءات على التدخل',
 		'ClassifyBilled' => 'تصنيف &quot;وصفت&quot;',
 		'StatusInterInvoiced' => 'فواتير',
 		'RelatedInterventions' => 'التدخلات المتعلقة',
 		'ShowIntervention' => 'عرض التدخل',
+		////////// Types de contacts //////////
+		'TypeContact_fichinter_internal_INTERREPFOLL' => 'ممثل متابعة التدخل',
+		'TypeContact_fichinter_internal_INTERVENING' => 'التدخل',
+		'TypeContact_fichinter_external_BILLING' => 'فواتير العملاء الاتصال',
+		'TypeContact_fichinter_external_CUSTOMER' => 'متابعة العملاء الاتصال',
+		// Modele numérotation
+		'ArcticNumRefModelDesc1' => 'عدد نموذج عامة',
+		'ArcticNumRefModelError' => 'فشل لتفعيل',
+		'PacificNumRefModelDesc1' => 'عودة número مع الشكل nnnn - ٪ syymm فيها السنة هي السنة ، هو شهر ملم وnnnn هو كسر التسلسل وليس هناك عودة لل0',
+		'PacificNumRefModelError' => 'تدخل البطاقة ابتداء من دولار ويوجد بالفعل syymm لا تتفق مع هذا النموذج من التسلسل. إزالة أو تغيير تسميتها لتصبح لتفعيل هذه الوحدة.'
 );
 ?>

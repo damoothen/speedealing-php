@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'Raíz',
 		'ECMNewSection' => 'Criar Pasta Manual',
 		'ECMAddSection' => 'Adicionar Pasta Manual',
-		'ECMNewSection' => 'Nova Pasta Manual',
 		'ECMNewDocument' => 'Novo Documento',
 		'ECMCreationDate' => 'Data Criação',
 		'ECMNbOfFilesInDir' => 'Número de Arquivos na Pasta',
@@ -53,10 +52,10 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Pastas de Documetos',
 		'ECMTypeManual' => 'Manual',
 		'ECMTypeAuto' => 'Automático',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Documentos Associados a Fornecedores',
 		'ECMDocsByProposals' => 'Documentos Assoicados a Orçamentos',
 		'ECMDocsByOrders' => 'Documentos Associados a Pedidos',
-		'ECMDocsByNfes' => 'Documentos Associados a Notas Fiscais',
 		'ECMDocsByContracts' => 'Documentos Associados a Contratos',
 		'ECMDocsByInvoices' => 'Documentos Associados a Faturas',
 		'ECMDocsByProducts' => 'Documentos ligados a produtos',
@@ -68,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Não se pode eliminar porque contém arquivos',
 		'ECMFileManager' => 'Explorador de Arquivos',
 		'ECMSelectASection' => 'Selecione uma pasta na árvore da esquerda',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

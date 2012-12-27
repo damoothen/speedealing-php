@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => 'Nome/IP servidor da base de dados OS commerce',
 		'OSCommerceDatabaseName' => 'Nome da base de dados OS Commerce',
 		'OSCommercePrefix' => 'Prefixo Tabelas OS Commerce',
-		'OSCommerceUser' => 'Utilizador da base de dados OS Commerce',
+		'OSCommerceUser' => 'Utilizador da base de dados OS Commerce'
 );
 ?>

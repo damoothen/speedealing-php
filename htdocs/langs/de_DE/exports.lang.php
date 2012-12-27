@@ -128,5 +128,13 @@ $exports = array(
 		'ExampleAnyRefFoundIntoElement' => 'Ein Referenz für das Element <b>%s</b> gefunden',
 		'ExampleAnyCodeOrIdFoundIntoDictionnary' => 'Ein Code (oder eine ID) wurde im Dictionnary <b>%s</b> gefunden',
 		'CSVFormatDesc' => '<b>Comma Separated Value</b> Format (.csv). <br> Dies ist ein Textdatei-Format, bei dem einzelne Spalten durch ein Trennzeichen [ %s ] getrennt sind. Wird innerhalb eines Feldes das Trennzeichen gefunden, wird der Wert des entsprechenden Feldes über ein Rundungszeichen [ %s ] gerundet. Das Escape-Zeichen für die Rundung ist [ %s ].',
+		'Excel95FormatDesc' => '<b>Excel</b> file format (.xls)<br>This is native Excel 95 format (BIFF5).',
+		'Excel2007FormatDesc' => '<b>Excel</b> file format (.xlsx)<br>This is native Excel 2007 format (SpreadsheetML).',
+		'TsvFormatDesc' => '<b>Tab Separated Value</b> file format (.tsv)<br>This is a text file format where fields are separated by a tabulator [tab].',
+		'ExportFieldAutomaticallyAdded' => 'Field <b>%s</b> was automatically added. It will avoid you to have similar lines to be treated as duplicate records (with this field added, all ligne will own its own id and will differ).',
+		'CsvOptions' => 'Csv Options',
+		'Separator' => 'Separator',
+		'Enclosure' => 'Enclosure',
+		'SuppliersProducts' => 'Suppliers Products'
 );
 ?>

@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'Bu üye herhangi bir kategoride yoktur',
 		'ClassifyInCategory' => 'Kategoride Sınıflandır',
 		'NoneCategory' => 'Hiçbiri',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'Bu kategori zaten bu ilgi ile var',
 		'ReturnInProduct' => 'Ürün/hizmet kartına geri dön',
 		'ReturnInSupplier' => 'Tedarikçi kartına geri dön',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'Tedarikçi kategorileri listesi',
 		'CatCusList' => 'Müşteri/aday kategorileri listesi',
 		'CatProdList' => 'Ürün kategorileri Listesi',
-		'CatMemberList' => 'Üye kategorileri Listesi',
+		'CatMemberList' => 'Üye kategorileri Listesi'
 );
 ?>

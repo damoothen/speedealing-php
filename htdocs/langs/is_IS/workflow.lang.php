@@ -23,5 +23,7 @@ $workflow = array(
 		'descWORKFLOW_PROPAL_AUTOCREATE_INVOICE' => 'Búa til viðskiptavina reikning sjálfkrafa eftir verslunar Tillagan er undirrituð',
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Búa til viðskiptavina reikning sjálfkrafa eftir að samningur er staðfest',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Búa til viðskiptavina reikning sjálfkrafa eftir að viðskiptavinur þess er lokað',
+		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Classify linked source proposal to billed when customer order is set to paid',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid'
 );
 ?>

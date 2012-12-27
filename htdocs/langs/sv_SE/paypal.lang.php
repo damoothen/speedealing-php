@@ -30,6 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => 'Detta är id transaktion: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Lägg till URL Paypal betalning när du skickar ett dokument per post',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-postadress att omedelbart anmälan av betalning (IPN)',
-		'YouAreCurrentlyInSandboxMode' => 'Du är för närvarande i &quot;sandlåda&quot;-läget',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Du är för närvarande i &quot;sandlåda&quot;-läget'
 );
 ?>

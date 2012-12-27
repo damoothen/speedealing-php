@@ -17,6 +17,7 @@
 $errors = array(
 		'CHARSET' => 'UTF-8',
 		'MenuManager' => 'תפריט מנהל',
+		// Errors
 		'Error' => 'שגיאה',
 		'Errors' => 'שגיאות',
 		'ErrorBadEMail' => '%s אימייל הוא בסדר',
@@ -118,6 +119,15 @@ $errors = array(
 		'ErrorBothFieldCantBeNegative' => 'שדות %s ו %s לא יכול להיות גם שלילי',
 		'ErrorWebServerUserHasNotPermission' => 'חשבון משתמש <b>%s</b> נהג לבצע שרת האינטרנט אין כל אישור על כך',
 		'ErrorNoActivatedBarcode' => 'לא סוג ברקוד מופעל',
+		'ErrUnzipFails' => 'Failed to unzip %s with ZipArchive',
+		'ErrNoZipEngine' => 'No engine to unzip %s file in this PHP',
+		'ErrorFileMustBeADolibarrPackage' => 'The file %s must be a Dolibarr zip package',
+		'ErrorFileRequired' => 'It takes a package Dolibarr file',
+		'ErrorPhpCurlNotInstalled' => 'The PHP CURL is not installed, this is essential to talk with Paypal',
+		'ErrorFailedToAddToMailmanList' => 'Failed to add record to Mailman list or SPIP base',
+		'ErrorNewVaueCantMatchOldValue' => 'New value can\'t be equal to old one',
+		// Warnings
+		'WarningMandatorySetupNotComplete' => 'Mandatory setup parameters are not yet defined',
 		'WarningSafeModeOnCheckExecDir' => 'אזהרה, <b>safe_mode</b> PHP אפשרות על כך הפקודה יש לשמור בתוך ספרייה הכריז <b>safe_mode_exec_dir</b> פרמטר PHP.',
 		'WarningAllowUrlFopenMustBeOn' => '<b>Allow_url_fopen</b> פרמטר חייב להיות מוגדר <b>על</b> ב <b>php.ini</b> פילר על כך מודול זה עובד לחלוטין. עליך לשנות את הקובץ באופן ידני.',
 		'WarningBuildScriptNotRunned' => '<b>%s</b> סקריפט עדיין לא רץ לבנות גרפיקה, או שאין נתונים להראות.',
@@ -126,7 +136,8 @@ $errors = array(
 		'WarningConfFileMustBeReadOnly' => 'אזהרה, הקובץ config שלך <b>(htdocs / conf / conf.php)</b> יכולים להיות מוחלפים על ידי שרת האינטרנט. זה חור אבטחה רציני. שינוי הרשאות על הקובץ להיות למצב קריאה בלבד למשתמש מערכת ההפעלה בשימוש על ידי שרת אינטרנט. אם אתה משתמש בפורמט Windows ו-FAT על הדיסק שלך, עליך לדעת כי מערכת הקבצים אינה מאפשרת להוסיף הרשאות על קובץ, כך לא יכול להיות בטוח לחלוטין.',
 		'WarningsOnXLines' => 'אזהרות על קווי מקור <b>%s</b>',
 		'WarningNoDocumentModelActivated' => 'המודל לא, עבור הדור המסמך, הופעל. המודל יהיה choosed כברירת מחדל עד שתכניס ההתקנה מודול שלך.',
-		'WarningInstallDirExists' => ', אזהרה במדריך ההתקנה <b>(htdocs / להתקין)</b> עדיין קיים. זה חור אבטחה רציני. אתה צריך להסיר אותו מוקדם ככל האפשר.',
+		'WarningLockFileDoesNotExists' => 'Warning, once setup is finished, you must disable install/migrate tools by adding a file <b>install.lock</b> into directory <b>%s</b>. Missing this file is a security hole.',
 		'WarningUntilDirRemoved' => 'כל אזהרות האבטחה (גלוי על ידי המשתמשים מנהל בלבד) יישאר פעיל כל עוד הפגיעות קיים (או MAIN_REMOVE_INSTALL_WARNING קבוע נוסף על תוכנית ההתקנה של תוכנית ההתקנה של&gt; אחרים).',
+		'WarningCloseAlways' => 'Warning, closing is done even if amount differs between source and target elements. Enable this feature with caution.'
 );
 ?>

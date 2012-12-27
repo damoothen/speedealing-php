@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Nb av gjenværende tegn',
 		'SmsInfoNumero' => '(Format internasjonal dvs.: 33899701761)',
 		'DelayBeforeSending' => 'Forsinkelse før sending (minutter)',
-		'SmsNoPossibleRecipientFound' => 'Ingen mål tilgjengelig. Sjekk oppsettet av SMS-leverandør.',
+		'SmsNoPossibleRecipientFound' => 'Ingen mål tilgjengelig. Sjekk oppsettet av SMS-leverandør.'
 );
 ?>

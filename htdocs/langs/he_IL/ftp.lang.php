@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'נכשל נסיון להתחבר שרת FTP (שרת %s, יציאת %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'לא הצליחו להיכנס ל שרת FTP עם הכניסה מוגדר / סיסמה',
 		'FTPFailedToRemoveFile' => 'נכשל נסיון להסיר <b>%s</b> קבצים.',
-		'FTPFailedToRemoveDir' => 'נכשל נסיון להסיר <b>%s</b> במדריך (יש לבדוק את הרשאות הספריה ריקה).',
+		'FTPFailedToRemoveDir' => 'נכשל נסיון להסיר <b>%s</b> במדריך (יש לבדוק את הרשאות הספריה ריקה).'
 );
 ?>

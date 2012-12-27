@@ -20,8 +20,8 @@ $mails = array(
 		'EMailing' => 'E-Mailing',
 		'Mailings' => 'E-Mailings',
 		'EMailings' => 'E-Mailings',
-		'MailCard' => 'Fitxa E-Mailing',
 		'AllEMailings' => 'Tots els E-Mailings',
+		'MailCard' => 'Fitxa E-Mailing',
 		'MailTargets' => 'Destinataris',
 		'MailRecipients' => 'Destinataris',
 		'MailRecipient' => 'Destinatari',
@@ -60,8 +60,10 @@ $mails = array(
 		'MailingStatusError' => 'Error',
 		'MailingStatusNotSent' => 'No enviat',
 		'MailSuccessfulySent' => 'E-mail enviat correctament (de %s a %s)',
+		'MailingSuccessfullyValidated' => 'EMailing successfully validated',
 		'MailUnsubcribe' => 'Desubscriure',
 		'Unsuscribe' => 'Desubscriure',
+		'MailingStatusNotContact' => 'Don\'t contact anymore',
 		'ErrorMailRecipientIsEmpty' => 'L\'adreça del destinatari és buida',
 		'WarningNoEMailsAdded' => 'Cap nou e-mail a afegir a la llista destinataris.',
 		'ConfirmValidMailing' => 'Confirmeu la validació del E-Mailing?',
@@ -93,11 +95,12 @@ $mails = array(
 		'MailtoEMail' => 'mailto email (hyperlink)',
 		'ActivateCheckRead' => 'Activar confirmació de lectura i opció de Desubscripció',
 		'ActivateCheckReadKey' => 'Clau usada per xifrar la URL de la confirmació de lectura i la funció de desubscripció',
-		// Libelle des modules de liste de destinataires mailing==
+		// Libelle des modules de liste de destinataires mailing
 		'MailingModuleDescContactCompanies' => 'Contactes de tercers (clients potencials, clients, proveïdors ...)',
 		'MailingModuleDescDolibarrUsers' => 'Usuaris de Dolibarr',
 		'MailingModuleDescFundationMembers' => 'Membres',
 		'MailingModuleDescEmailsFromFile' => 'E-Mails d\'un arxiu (e-mail;nom;varis)',
+		'MailingModuleDescEmailsFromUser' => 'EMails from user input (email;lastname;firstname;other)',
 		'MailingModuleDescContactsCategories' => 'Tercers (per categoria)',
 		'MailingModuleDescDolibarrContractsLinesExpired' => 'Tercers amb línies de contractes de serveis expirats',
 		'MailingModuleDescContactsByCompanyCategory' => 'Contactes de tercers (per categoria de tercers)',
@@ -126,13 +129,17 @@ $mails = array(
 		'IdRecord' => 'ID registre',
 		'DeliveryReceipt' => 'Justificant de recepció',
 		'YouCanUseCommaSeparatorForSeveralRecipients' => 'Podeu usar el caràcter de separació <b>coma</b> per especificar múltiples destinataris.',
-		// Module Notifications==
+		'TagCheckMail' => 'Track mail opening',
+		'TagUnsubscribe' => 'Unsubscribe link',
+		'TagSignature' => 'Signature sending user',
+		'TagMailtoEmail' => 'Recipient EMail',
+		// Module Notifications
 		'Notifications' => 'Notificacions',
 		'NoNotificationsWillBeSent' => 'Cap notificació per e-mail està prevista per a aquest esdeveniment i empresa',
 		'ANotificationsWillBeSent' => '1 notificació serà enviada per e-mail',
 		'SomeNotificationsWillBeSent' => '%s notificacions seran enviades per e-mail',
 		'AddNewNotification' => 'Activar una nova sol·licitud de notificació',
 		'ListOfActiveNotifications' => 'Llista de les sol·licituds de notificacions actives',
-		'ListOfNotificationsDone' => 'Llista de notificacions d\'e-mails enviades',
+		'ListOfNotificationsDone' => 'Llista de notificacions d\'e-mails enviades'
 );
 ?>

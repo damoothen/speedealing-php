@@ -17,7 +17,8 @@
 $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Donation',
-		'Donationss' => 'Donationer',
+		'Donations' => 'Donationer',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Donor',
 		'Donors' => 'Donorer',
 		'AddDonation' => 'Tilføj en donation',
@@ -36,12 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => 'Udkast',
 		'DonationStatusPromiseValidatedShort' => 'Valideret',
 		'DonationStatusPaidShort' => 'Modtaget',
-		'ValidPromise' => 'Valider løfte',
+		'ValidPromess' => 'Validér løfte',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Build modtagelse',
 		'DonationsModels' => 'Dokumenter modeller for donation kvitteringer',
-		'Donations' => 'Donationer',
-		'ValidPromess' => 'Validér løfte',
 		'LastModifiedDonations' => 'Sidste %s ændret donationer',
 		'SearchADonation' => 'Søg en donation',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

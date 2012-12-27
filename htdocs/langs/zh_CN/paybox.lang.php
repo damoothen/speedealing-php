@@ -31,6 +31,7 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => '您将被重定向担保Paybox页，输入您的信用卡信息',
 		'PleaseBePatient' => '请耐心等待',
 		'Continue' => '未来',
+		'ToOfferALinkForOnlinePayment' => '网址为%s支付',
 		'ToOfferALinkForOnlinePaymentOnOrder' => '网址提供一个命令%s网上支付的用户界面',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => '网址提供发票一%s在线支付的用户界面',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => '网址提供了一个合同线%s在线支付的用户界面',
@@ -43,11 +44,10 @@ $paybox = array(
 		'AccountParameter' => '帐户参数',
 		'UsageParameter' => '使用参数',
 		'InformationToFindParameters' => '帮助，找到你的%s帐户信息',
-		'ToOfferALinkForOnlinePayment' => '网址为%s支付',
 		'PAYBOX_CGI_URL_V2' => '付款出纳CGI模块的网址',
 		'VendorName' => '供应商名称',
 		'CSSUrlForPaymentForm' => '付款方式的CSS样式表的URL',
 		'MessageOK' => '讯息验证支付返回页面',
-		'MessageKO' => '取消支付返回页面的讯息',
+		'MessageKO' => '取消支付返回页面的讯息'
 );
 ?>

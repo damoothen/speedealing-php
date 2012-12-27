@@ -35,6 +35,6 @@ $trips = array(
 		'TF_TRIP' => 'Trip',
 		'ListTripsAndExpenses' => 'Förteckning över resor och kostnader',
 		'ExpensesArea' => 'Resor och kostnader område',
-		'SearchATripAndExpense' => 'Sök en resa och kostnader',
+		'SearchATripAndExpense' => 'Sök en resa och kostnader'
 );
 ?>

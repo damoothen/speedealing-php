@@ -128,5 +128,13 @@ $exports = array(
 		'ExampleAnyRefFoundIntoElement' => 'השופט מצא עבור כל אלמנט <b>%s</b>',
 		'ExampleAnyCodeOrIdFoundIntoDictionnary' => 'כל קוד (או מזהה) מצאו את <b>%s</b> dictionnary',
 		'CSVFormatDesc' => '<b>מופרדים באמצעות פסיקים</b> הקובץ בפורמט <b>ערך</b> (. CSV). <br> זהו קובץ טקסט בפורמט שבו השדות מופרדים באמצעות מפריד [%s]. אם מפריד נמצא בתוך תוכן שדה, שדה מעוגל על ​​ידי דמות עגולה [%s]. לברוח אופי לברוח אופי עגול הוא [%s].',
+		'Excel95FormatDesc' => '<b>Excel</b> file format (.xls)<br>This is native Excel 95 format (BIFF5).',
+		'Excel2007FormatDesc' => '<b>Excel</b> file format (.xlsx)<br>This is native Excel 2007 format (SpreadsheetML).',
+		'TsvFormatDesc' => '<b>Tab Separated Value</b> file format (.tsv)<br>This is a text file format where fields are separated by a tabulator [tab].',
+		'ExportFieldAutomaticallyAdded' => 'Field <b>%s</b> was automatically added. It will avoid you to have similar lines to be treated as duplicate records (with this field added, all ligne will own its own id and will differ).',
+		'CsvOptions' => 'Csv Options',
+		'Separator' => 'Separator',
+		'Enclosure' => 'Enclosure',
+		'SuppliersProducts' => 'Suppliers Products'
 );
 ?>

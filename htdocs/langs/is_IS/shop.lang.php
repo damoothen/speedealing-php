@@ -24,6 +24,6 @@ $shop = array(
 		'LastCustomers' => 'Síðasta viðskiptavina',
 		'OSCommerceShop' => 'OsCommerce Vefverslun',
 		'OSCommerce' => 'OsCommerce',
-		'AddProd' => 'Sala á netinu',
+		'AddProd' => 'Sala á netinu'
 );
 ?>

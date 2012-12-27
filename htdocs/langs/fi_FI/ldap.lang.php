@@ -39,10 +39,10 @@ $ldap = array(
 		'LDAPFieldLastSubscriptionAmount' => 'Viimeisin tilaus määrä',
 		'SynchronizeDolibarr2Ldap' => 'Synkronoi käyttäjä (Dolibarr -> LDAP)',
 		'UserSynchronized' => 'Käyttäjän synkronoidaan',
-		'ForceSynchronize' => 'Force synkronointi Dolibarr -> LDAP',
-		'ErrorFailedToReadLDAP' => 'Lukeminen epäonnistui LDAP-tietokantaan. Tarkista LDAP-moduulin asennus ja tietokannan saavutettavuus.',
 		'GroupSynchronized' => 'Ryhmän synkronoidaan',
 		'MemberSynchronized' => 'Jäsen synkronoidaan',
 		'ContactSynchronized' => 'Yhteystiedot synkronoidaan',
+		'ForceSynchronize' => 'Force synkronointi Dolibarr -> LDAP',
+		'ErrorFailedToReadLDAP' => 'Lukeminen epäonnistui LDAP-tietokantaan. Tarkista LDAP-moduulin asennus ja tietokannan saavutettavuus.'
 );
 ?>

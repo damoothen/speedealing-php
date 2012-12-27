@@ -16,6 +16,7 @@
 
 $ftp = array(
 		'CHARSET' => 'UTF-8',
+		'FTPClientSetup' => 'FTP εγκατάσταση μονάδας πελάτη',
 		'NewFTPClient' => 'Νέα ρύθμιση της σύνδεσης FTP',
 		'FTPArea' => 'FTP Περιοχή',
 		'FTPAreaDesc' => 'Αυτή η οθόνη σας δείξει το περιεχόμενο μιας προβολής διακομιστή FTP',
@@ -24,7 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Αποτυχία για να συνδεθείτε με FTP server (server %s, λιμάνι %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Απέτυχε να κάνετε login για να FTP server με ορίζεται login / password',
 		'FTPFailedToRemoveFile' => 'Απέτυχε να αφαιρέσετε <b>%s</b> αρχείο.',
-		'FTPFailedToRemoveDir' => 'Απέτυχε να αφαιρέσετε <b>%s</b> κατάλογο (ελέγξτε τα δικαιώματα και ότι ο κατάλογος είναι κενός).',
-		'FTPClientSetup' => 'FTP εγκατάσταση μονάδας πελάτη',
+		'FTPFailedToRemoveDir' => 'Απέτυχε να αφαιρέσετε <b>%s</b> κατάλογο (ελέγξτε τα δικαιώματα και ότι ο κατάλογος είναι κενός).'
 );
 ?>

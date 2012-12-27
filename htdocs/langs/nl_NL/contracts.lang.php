@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'Valideer een contract',
 		'ActivateService' => 'Activeer een contract',
 		'ConfirmActivateService' => 'Weet u zeker dat u de dienst met de datum van <b>%s</b> wilt activeren?',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'Contractdatum',
 		'DateServiceActivate' => 'Datum van de dienstactivering',
 		'DateServiceUnactivate' => 'Datum van dienstdeactivatie',
@@ -69,6 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Lijst van lppende diensten',
 		'NotActivatedServices' => 'Inactieve diensten (onder gevalideerde contracten)',
 		'BoardNotActivatedServices' => 'Diensten te activeren onder gevalideerde contracten',
+		'LastContracts' => 'Laatste % contracten',
 		'LastActivatedServices' => 'Laatste %s geactiveerd diensten',
 		'LastModifiedServices' => 'Laatste %s bewerkte diensten',
 		'EditServiceLine' => 'Bewerk dienstenregel',
@@ -99,13 +101,13 @@ $contracts = array(
 		'PaymentRenewContractId' => 'Vernieuwing contractregel (%s)',
 		'ExpiredSince' => 'Verlopen sinds',
 		'RelatedContracts' => 'Gerelateerde contracten',
-		////////// Types de contacts ////////// = undefined
+		'NoExpiredServices' => 'Geen verlopen actieve diensten',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'Vertegenwoordiger ondertekening contract',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'Vertegenwoordiger opvolging contract',
 		'TypeContact_contrat_external_BILLING' => 'Afnemersfactuurcontactpersoon',
 		'TypeContact_contrat_external_CUSTOMER' => 'Contactpersoon die follow-up doet voor deze afnemer',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Ondertekening contract contactpersoon',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Constant CONTRACT_ADDON niet gedefinieerd',
-		'NoExpiredServices' => 'Geen verlopen actieve diensten',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Constant CONTRACT_ADDON niet gedefinieerd'
 );
 ?>

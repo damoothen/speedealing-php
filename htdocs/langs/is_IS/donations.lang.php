@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Framlög',
 		'Donations' => 'Fjárframlög',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Gjafa',
 		'Donors' => 'Styrktaraðila',
 		'AddDonation' => 'Bæta við framlag',
@@ -36,11 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => 'Víxill',
 		'DonationStatusPromiseValidatedShort' => 'Staðfestar',
 		'DonationStatusPaidShort' => 'Móttekin',
-		'ValidPromise' => 'Staðfesta loforð',
+		'ValidPromess' => 'Staðfesta loforð',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Byggja kvittun',
 		'DonationsModels' => 'Skjöl líkan fyrir kvittunum framlag',
-		'ValidPromess' => 'Staðfesta loforð',
 		'LastModifiedDonations' => 'Síðustu %s breytt framlög',
 		'SearchADonation' => 'Leita að framlag',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

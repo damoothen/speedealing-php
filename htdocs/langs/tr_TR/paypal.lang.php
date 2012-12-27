@@ -31,6 +31,6 @@ $paypal = array(
 		'PAYPAL_ADD_PAYMENT_URL' => 'Posta yoluyla bir belge gönderdiğinizde, Paypal ödeme url\'sini ekleyin',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'Anında ödeme bildirimi için e-posta adresi (NPI)',
 		'PredefinedMailContentLink' => 'Ödemenizi via PayPal\n\n%s\n\n ile yapmak için aşağıdaki güvenli bağlantıya tıklayabilirsiniz',
-		'YouAreCurrentlyInSandboxMode' => '"Sandbox" geçerli biçimindesiniz',
+		'YouAreCurrentlyInSandboxMode' => '"Sandbox" geçerli biçimindesiniz'
 );
 ?>

@@ -47,9 +47,11 @@ $sendings = array(
 		'StatusSendingCanceled' => 'Tühistatud',
 		'StatusSendingDraft' => 'Eelnõu',
 		'StatusSendingValidated' => 'Kinnitatud (tooted laevale või juba veetud)',
+		'StatusSendingProcessed' => 'Processed',
 		'StatusSendingCanceledShort' => 'Tühistatud',
 		'StatusSendingDraftShort' => 'Eelnõu',
 		'StatusSendingValidatedShort' => 'Valideeritud',
+		'StatusSendingProcessedShort' => 'Processed',
 		'SendingSheet' => 'Saates lehed',
 		'Carriers' => 'Vedajad',
 		'Carrier' => 'Kandja',
@@ -71,11 +73,14 @@ $sendings = array(
 		'ActionsOnShipping' => 'Sündmuste saadetise',
 		'LinkToTrackYourPackage' => 'Seos jälgida oma paketi',
 		'ShipmentCreationIsDoneFromOrder' => 'Praegu uue saadetise tehakse alates tellimuse kaart.',
+		'RelatedShippings' => 'Related shippings',
+		// Sending methods
 		'SendingMethodCATCH' => 'Saak kliendi',
 		'SendingMethodTRANS' => 'Transportija',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		// ModelDocument
 		'DocumentModelSirocco' => 'Simple dokumendi mudel kohaletoimetamisteatised',
 		'DocumentModelTyphon' => 'Täiuslikum dokument mudel kohaletoimetamisteatised (logo. ..)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Pidev EXPEDITION_ADDON_NUMBER ole määratletud',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Pidev EXPEDITION_ADDON_NUMBER ole määratletud'
 );
 ?>

@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'Корневая',
 		'ECMNewSection' => 'Новый каталог',
 		'ECMAddSection' => 'Добавить руководства каталог',
-		'ECMNewSection' => 'Новое руководство каталога',
 		'ECMNewDocument' => 'Новый документ',
 		'ECMCreationDate' => 'Дата создания',
 		'ECMNbOfFilesInDir' => 'Количество файлов в каталоге',
@@ -53,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Справочные документы',
 		'ECMTypeManual' => 'Руководство',
 		'ECMTypeAuto' => 'Автоматическая',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Документы, связанные с третьими сторонами',
 		'ECMDocsByProposals' => 'Документы, связанные с предложениями',
 		'ECMDocsByOrders' => 'Документы, связанные с заказчиками заказов',
@@ -67,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Удалена не представляется возможным, поскольку в нем содержатся некоторые файлы',
 		'ECMFileManager' => 'Файловый менеджер',
 		'ECMSelectASection' => 'Выберите каталог на левом дереве ...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

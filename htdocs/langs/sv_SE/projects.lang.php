@@ -44,6 +44,7 @@ $projects = array(
 		'NbOpenTasks' => 'Nb i öppnade uppgifter',
 		'NbOfProjects' => 'Nb av projekt',
 		'TimeSpent' => 'Tid som tillbringas',
+		'TimesSpent' => 'Tid',
 		'RefTask' => 'Ref. uppgift',
 		'LabelTask' => 'Label uppgift',
 		'NewTimeSpent' => 'Ny tid',
@@ -96,6 +97,19 @@ $projects = array(
 		'ProjectsDedicatedToThisThirdParty' => 'Projekt som arbetat med denna tredje part',
 		'NoTasks' => 'Inga uppgifter för detta projekt',
 		'LinkedToAnotherCompany' => 'Kopplat till annan tredje part',
+		'TaskIsNotAffectedToYou' => 'Uppgift tilldelas inte dig',
+		'ErrorTimeSpentIsEmpty' => 'Tid är tom',
+		'ThisWillAlsoRemoveTasks' => 'Denna åtgärd kommer också att ta bort alla aktiviteter av projekt <b>(%s</b> uppgifter på för tillfället) och alla ingångar för nedlagd tid.',
+		'IfNeedToUseOhterObjectKeepEmpty' => 'Om vissa objekt (faktura, order, ...), som tillhör en annan tredje part, måste kopplas till projektet för att skapa, hålla denna tomt för att få projektet att flera tredje part.',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Projektledare',
 		'TypeContact_project_external_PROJECTLEADER' => 'Projektledare',
 		'TypeContact_project_internal_CONTRIBUTOR' => 'Medarbetare',
@@ -104,11 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => 'Uppgift verkställande',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Medarbetare',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Medarbetare',
-		'DocumentModelBaleine' => 'En fullständig projektets rapport modellen (logo. ..)',
-		'TimesSpent' => 'Tid',
-		'TaskIsNotAffectedToYou' => 'Uppgift tilldelas inte dig',
-		'ErrorTimeSpentIsEmpty' => 'Tid är tom',
-		'ThisWillAlsoRemoveTasks' => 'Denna åtgärd kommer också att ta bort alla aktiviteter av projekt <b>(%s</b> uppgifter på för tillfället) och alla ingångar för nedlagd tid.',
-		'IfNeedToUseOhterObjectKeepEmpty' => 'Om vissa objekt (faktura, order, ...), som tillhör en annan tredje part, måste kopplas till projektet för att skapa, hålla denna tomt för att få projektet att flera tredje part.',
+		// Documents models
+		'DocumentModelBaleine' => 'En fullständig projektets rapport modellen (logo. ..)'
 );
 ?>

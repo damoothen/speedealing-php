@@ -19,6 +19,7 @@ $paybox = array(
 		'PayBoxSetup' => 'Configuração do módulo PayBox',
 		'PayBoxDesc' => 'Este módulo oferece uma página de pagamento através do fornecedor <a href="http://www.paybox.com" target="_blank">Paybox</a> para realizar qualquer pagamento ou um pagamento em relação a um objecto Dolibarr (facturas, pedidos ...)',
 		'FollowingUrlAreAvailableToMakePayments' => 'As seguintes URL estão disponiveis para permitir a um cliente efectuar um pagamento',
+		'PaymentForm' => 'Forma de pagamento',
 		'WelcomeOnPaymentPage' => 'Bem-vindo aos nossos serviços de pagamento online',
 		'ThisScreenAllowsYouToPay' => 'Esta tela permite que você faça o seu pagamento online destinado a %s.',
 		'ThisIsInformationOnPayment' => 'Aqui estão as informações de pagamento para fazer',
@@ -30,16 +31,14 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => 'Você será redirecionado para a página Paybox não se esqueça de indicar o seu cartão de crédito',
 		'PleaseBePatient' => 'Espere uns segundos',
 		'Continue' => 'Continuar',
+		'ToOfferALinkForOnlinePayment' => 'URL para o pagamento %s',
 		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL que fornece pagamento on-line interface% s com base no valor de um pedido de venda',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL que fornece pagamento on-line interface% s com base no valor de um projeto de lei',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL que fornece linha de pagamento  interface% com base na quantidade de uma linha de contrato',
 		'ToOfferALinkForOnlinePaymentOnFreeAmount' => 'URL que fornece pagamento on-line %s interface baseada numa quantidade livre',
+		'ToOfferALinkForOnlinePaymentOnMemberSubscription' => 'URL para oferecer uma interface on-line %s pagamento de uma subscrição de membro',
 		'YouCanAddTagOnUrl' => 'Você também pode adicionar o parâmetro url <b>&tag=<i>value</i></b>  para o endereço (exigida apenas para o pagamento livre) para ver o seu código próprio, observação do pagamento.',
 		'SetupPayBoxToHavePaymentCreatedAutomatically' => 'Configure o seu url PayBox <b>%s</b> para que o pagamento seja criado automaticamente ao confirmar.',
-		'PaymentForm' => 'Forma de pagamento',
-		'ToOfferALinkForOnlinePaymentOnMemberSubscription' => 'URL para oferecer uma interface on-line %s pagamento de uma subscrição de membro',
-		'MessageKO' => 'Mensagem na página de pagamento cancelado retorno',
-		'ToOfferALinkForOnlinePayment' => 'URL para o pagamento %s',
 		'YourPaymentHasBeenRecorded' => 'Esta página confirma que o pagamento tenha sido gravada. Obrigado.',
 		'YourPaymentHasNotBeenRecorded' => 'Você o pagamento não tenha sido gravada e transação foi cancelada. Obrigado.',
 		'AccountParameter' => 'Conta parâmetros',
@@ -49,5 +48,6 @@ $paybox = array(
 		'VendorName' => 'Nome do fornecedor',
 		'CSSUrlForPaymentForm' => 'CSS url folha de estilo para forma de pagamento',
 		'MessageOK' => 'Mensagem na página validado o pagamento de retorno',
+		'MessageKO' => 'Mensagem na página de pagamento cancelado retorno'
 );
 ?>

@@ -15,11 +15,11 @@
  */
 
 $sendings = array(
-		'﻿# Dolibarr language file - pt_PT - sendings' => '',
 		'CHARSET' => 'UTF-8',
 		'RefSending' => 'Ref. Envío',
 		'Sending' => 'Envío',
 		'Sendings' => 'Envíos',
+		'Shipments' => 'Envios',
 		'Receivings' => 'Recepções',
 		'SendingsArea' => 'Área Envíos',
 		'ListOfSendings' => 'Lista de Envíos',
@@ -44,10 +44,14 @@ $sendings = array(
 		'SendingsForSameOrder' => 'Expedições deste Pedido',
 		'SendingsAndReceivingForSameOrder' => 'Envíos e Recepções deste pedido',
 		'SendingsToValidate' => 'Envíos a Confirmar',
+		'StatusSendingCanceled' => 'Cancelado',
 		'StatusSendingDraft' => 'Rascunho',
 		'StatusSendingValidated' => 'Validado (produtos a enviar o enviados)',
+		'StatusSendingProcessed' => 'Processed',
+		'StatusSendingCanceledShort' => 'Cancelado',
 		'StatusSendingDraftShort' => 'Rascunho',
 		'StatusSendingValidatedShort' => 'Validado',
+		'StatusSendingProcessedShort' => 'Processed',
 		'SendingSheet' => 'Ficha de envío',
 		'Carriers' => 'Transportistas',
 		'Carrier' => 'Transportista',
@@ -59,17 +63,9 @@ $sendings = array(
 		'GenericTransport' => 'Transporte Genérico',
 		'Enlevement' => 'Pick-up por o Cliente',
 		'DocumentModelSimple' => 'Modelo Simples',
+		'DocumentModelMerou' => 'Mérou modelo A5',
 		'WarningNoQtyLeftToSend' => 'Atenção, nenhum produto à espera de ser enviado.',
 		'StatsOnShipmentsOnlyValidated' => 'Estatísticas sobre as transferências realizadas apenas validadas',
-		'SendingMethodCATCH' => 'Capturas por cliente',
-		'SendingMethodTRANS' => 'Transportador',
-		'SendingMethodCOLSUI' => 'Colissimo',
-		'DocumentModelSirocco' => 'documento simples, modelo de recibos de entrega',
-		'DocumentModelTyphon' => 'Documento modelo mais completo para a entrega recibos (logo. ..)',
-		'Shipments' => 'Envios',
-		'StatusSendingCanceled' => 'Cancelado',
-		'StatusSendingCanceledShort' => 'Cancelado',
-		'DocumentModelMerou' => 'Mérou modelo A5',
 		'DateDeliveryPlanned' => 'Data de entrega planeada',
 		'DateReceived' => 'Data da entrega recebida',
 		'SendShippingByEMail' => 'Enviar envio por e-mail',
@@ -77,6 +73,14 @@ $sendings = array(
 		'ActionsOnShipping' => 'Eventos em embarque',
 		'LinkToTrackYourPackage' => 'Link para acompanhar o seu pacote',
 		'ShipmentCreationIsDoneFromOrder' => 'Para o momento, a criação de uma nova remessa é feita a partir do pedido.',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'EXPEDITION_ADDON_NUMBER constante não definida',
+		'RelatedShippings' => 'Related shippings',
+		// Sending methods
+		'SendingMethodCATCH' => 'Capturas por cliente',
+		'SendingMethodTRANS' => 'Transportador',
+		'SendingMethodCOLSUI' => 'Colissimo',
+		// ModelDocument
+		'DocumentModelSirocco' => 'documento simples, modelo de recibos de entrega',
+		'DocumentModelTyphon' => 'Documento modelo mais completo para a entrega recibos (logo. ..)',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'EXPEDITION_ADDON_NUMBER constante não definida'
 );
 ?>

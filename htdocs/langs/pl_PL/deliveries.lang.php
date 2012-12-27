@@ -28,16 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Ustaw datę wysyłki',
 		'ValidateDeliveryReceipt' => 'Validate otrzymania dostawy',
 		'ValidateDeliveryReceiptConfirm' => 'Czy na pewno chcesz, aby potwierdzić dostawę otrzymania?',
+		'DeleteDeliveryReceipt' => 'Usuń potwierdzenia dostarczenia',
+		'DeleteDeliveryReceiptConfirm' => 'Czy na pewno chcesz usunąć <b>%s</b> potwierdzenia dostarczenia?',
 		'DeliveryMethod' => 'Metoda dostawy',
 		'TrackingNumber' => 'Numer',
+		'DeliveryNotValidated' => 'Dostawa nie zatwierdzone',
+		// merou PDF model
 		'NameAndSignature' => 'Nazwisko i podpis:',
 		'ToAndDate' => 'To___________________________________ na ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'Czy otrzymane towary powyżej w dobrym stanie,',
 		'Deliverer' => 'Dostawca:',
 		'Sender' => 'Nadawca',
-		'Recipient' => 'Odbiorca',
-		'DeleteDeliveryReceipt' => 'Usuń potwierdzenia dostarczenia',
-		'DeleteDeliveryReceiptConfirm' => 'Czy na pewno chcesz usunąć <b>%s</b> potwierdzenia dostarczenia?',
-		'DeliveryNotValidated' => 'Dostawa nie zatwierdzone',
+		'Recipient' => 'Odbiorca'
 );
 ?>

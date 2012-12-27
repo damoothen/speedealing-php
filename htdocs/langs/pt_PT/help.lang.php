@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Você pode chamar um assistente selecionado pelo Dolibarr para o seu idioma ( %s) clicando em seu Widget (status e preço máximo são atualizadas automaticamente):',
 		'PossibleLanguages' => 'Línguas de apoio',
 		'MakeADonation' => 'Ajuda Dolibarr projecto, faça uma doação',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

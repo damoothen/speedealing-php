@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Açık hesap',
 		'ShowCompany' => 'Firma göster',
 		'ShowStock' => 'Depo göster',
-		'DeleteArticle' => 'Bu maddeyi kaldırmak için tıkla',
+		'DeleteArticle' => 'Bu maddeyi kaldırmak için tıkla'
 );
 ?>

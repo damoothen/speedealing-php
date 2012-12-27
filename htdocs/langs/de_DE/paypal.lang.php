@@ -31,9 +31,6 @@ $paypal = array(
 		'PAYPAL_ADD_PAYMENT_URL' => 'Fügen Sie die Webadresse für Paypal Zahlungen hinzu, wenn Sie ein Dokument per E-Mail versenden.',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-Mail Adresse für sofortige Benachrichtigung der Zahlungen (IPN)',
 		'PredefinedMailContentLink' => 'Sie können unten auf den sicheren Link klicken, um Ihre Zahlung mit PayPal \n\n %s \n\n zu tätigen',
-		'YouAreCurrentlyInSandboxMode' => 'Sie befinden sich im &quot;Sandbox&quot;-Modus',
-		// no more required?
-		'PredefinedMailContentSendOrderWithPaypalLink' => 'Sie finden hier Ihre Bestellung __ORDERREF__\n\nSie können auf den nachfolgenden Sicherheits-Link klicken um Ihre Bezahlung per PayPal vorzunehmen.\n\n%s\n\nBeste Grüße\n\n',
-		'PredefinedMailContentSendInvoiceWithPaypalLink' => 'Sie finden hier Ihre Rechnung __FACREF__\n\nSie können auf den nachfolgenden Sicherheits-Link klicken um Ihre Bezahlung per PayPal vorzunehmen.\n\n%s\n\nBeste Grüße\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Sie befinden sich im &quot;Sandbox&quot;-Modus'
 );
 ?>

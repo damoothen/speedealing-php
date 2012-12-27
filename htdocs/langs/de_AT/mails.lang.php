@@ -140,6 +140,6 @@ $mails = array(
 		'SomeNotificationsWillBeSent' => '%s Benachrichtigungen werden per E-Mail versandt',
 		'AddNewNotification' => 'Aktivieren Sie eine neue E-Mail-Benachrichtigungsanfrage',
 		'ListOfActiveNotifications' => 'Liste aller aktiven E-Mail-Benachrichtigungen',
-		'ListOfNotificationsDone' => 'Liste aller versandten E-Mail-Benachrichtigungen',
+		'ListOfNotificationsDone' => 'Liste aller versandten E-Mail-Benachrichtigungen'
 );
 ?>

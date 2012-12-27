@@ -48,6 +48,6 @@ $paybox = array(
 		'VendorName' => 'שם הספק',
 		'CSSUrlForPaymentForm' => 'גיליון סגנון CSS URL עבור טופס התשלום',
 		'MessageOK' => 'הודעה בדף תוקף בתמורה לתשלום',
-		'MessageKO' => 'הודעה בדף בוטל בתמורה לתשלום',
+		'MessageKO' => 'הודעה בדף בוטל בתמורה לתשלום'
 );
 ?>

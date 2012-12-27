@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Tókst ekki að tengjast FTP miðlara (miðlara %s, höfn %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Ekki tókst að skrá þig inn á FTP þjóninum með skilgreint tenging / lykilorð',
 		'FTPFailedToRemoveFile' => 'Ekki tókst að fjarlægja skrá <b>%s.</b>',
-		'FTPFailedToRemoveDir' => 'Ekki tókst að fjarlægja skrá <b>%s</b> (Athugaðu heimildir og skrá er tóm).',
+		'FTPFailedToRemoveDir' => 'Ekki tókst að fjarlægja skrá <b>%s</b> (Athugaðu heimildir og skrá er tóm).'
 );
 ?>

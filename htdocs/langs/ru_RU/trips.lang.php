@@ -19,6 +19,7 @@ $trips = array(
 		'Trip' => 'Поездка',
 		'Trips' => 'Поездки',
 		'TripsAndExpenses' => 'Поездки и расходы',
+		'TripsAndExpensesStatistics' => 'Статистика поездок и расходов',
 		'TripCard' => 'Карточка поездки',
 		'AddTrip' => 'Добавить поездку',
 		'ListOfTrips' => 'Список поездок',
@@ -32,9 +33,8 @@ $trips = array(
 		'TF_OTHER' => 'Другое',
 		'TF_LUNCH' => 'Обед',
 		'TF_TRIP' => 'Поездка',
-		'TripsAndExpensesStatistics' => 'Статистика поездок и расходов',
 		'ListTripsAndExpenses' => 'Список поездок и расходов',
 		'ExpensesArea' => 'Область поездок и расходов',
-		'SearchATripAndExpense' => 'Поиск поездок и расходов',
+		'SearchATripAndExpense' => 'Поиск поездок и расходов'
 );
 ?>

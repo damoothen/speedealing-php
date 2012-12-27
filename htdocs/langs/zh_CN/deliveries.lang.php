@@ -28,16 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => '出货日期设置',
 		'ValidateDeliveryReceipt' => '验证送达回执',
 		'ValidateDeliveryReceiptConfirm' => '你确定要验证这个交货收据吗？',
+		'DeleteDeliveryReceipt' => '删除送达回执',
+		'DeleteDeliveryReceiptConfirm' => '你确定要删除送达回执<b>%s</b>吗？',
 		'DeliveryMethod' => '送货方式',
 		'TrackingNumber' => '追踪号码',
+		'DeliveryNotValidated' => '交付未验证',
+		// merou PDF model
 		'NameAndSignature' => '姓名及签署：',
 		'ToAndDate' => 'To___________________________________对____ / _____ / __________',
 		'GoodStatusDeclaration' => '上述货物已收到良好的条件，',
 		'Deliverer' => '发货人：',
 		'Sender' => '寄件人',
-		'Recipient' => '接受者',
-		'DeleteDeliveryReceipt' => '删除送达回执',
-		'DeleteDeliveryReceiptConfirm' => '你确定要删除送达回执<b>%s</b>吗？',
-		'DeliveryNotValidated' => '交付未验证',
+		'Recipient' => '接受者'
 );
 ?>

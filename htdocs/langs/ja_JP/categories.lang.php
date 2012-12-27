@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'このメンバは、任意のカテゴリではありません',
 		'ClassifyInCategory' => 'カテゴリに分類する',
 		'NoneCategory' => 'なし',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'このカテゴリには、このrefで既に存在している',
 		'ReturnInProduct' => '戻る製品/サービスカード',
 		'ReturnInSupplier' => 'サプライヤーカードにバックアップする',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'サプライヤーカテゴリの一覧',
 		'CatCusList' => '顧客/見込み客のカテゴリのリスト',
 		'CatProdList' => '製品カテゴリの一覧',
-		'CatMemberList' => 'メンバーカテゴリの一覧',
+		'CatMemberList' => 'メンバーカテゴリの一覧'
 );
 ?>

@@ -16,7 +16,6 @@
 
 $withdrawals = array(
 		'CHARSET' => 'UTF-8',
-		'Withdrawal' => 'Απόσυρση',
 		'StandingOrdersArea' => 'Πάγιες εντολές περιοχή',
 		'CustomersStandingOrdersArea' => 'Οι πελάτες πάγιες εντολές περιοχή',
 		'StandingOrders' => 'Πάγιες εντολές',
@@ -25,6 +24,7 @@ $withdrawals = array(
 		'StandingOrderToProcess' => 'Για την διαδικασία',
 		'StandingOrderProcessed' => 'Επεξεργασμένα',
 		'Withdrawals' => 'Αναλήψεις',
+		'Withdrawal' => 'Απόσυρση',
 		'WithdrawalsReceipts' => 'Απόσυρση εισπράξεις',
 		'WithdrawalReceipt' => 'Απόσυρση παραλαβή',
 		'WithdrawalReceiptShort' => 'Παραλαβή',
@@ -64,7 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => 'Λόγος απόρριψης',
 		'RefusedInvoicing' => 'Χρέωσης για την απόρριψη',
 		'NoInvoiceRefused' => 'Μην φορτίζετε την απόρριψη',
-		'InvoiceRefused' => 'Φορτίστε την απόρριψη στον πελάτη',
+		'InvoiceRefused' => 'Τιμολόγιο αρνήθηκε',
 		'Status' => 'Κατάσταση',
 		'StatusUnknown' => 'Άγνωστος',
 		'StatusWaiting' => 'Αναμονή',
@@ -97,6 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'Εμφάνιση Ανάληψη',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'Ωστόσο, εάν τιμολόγιο δεν έχει τουλάχιστον μια πληρωμή απόσυρση ακόμη σε επεξεργασία, δεν θα πρέπει να θέσει ως payed να επιτρέπει να διαχειρίζεται την απόσυρση πριν.',
 		'DoStandingOrdersBeforePayments' => 'Αυτό καρτέλες σας επιτρέπει να ζητήσετε για μια πάγια εντολή. Από τη στιγμή που θα τελειώσει, μπορείτε να πληκτρολογήσετε την πληρωμή για να κλείσετε το τιμολόγιο.',
+		////// Notifications
 		'InfoCreditSubject' => 'Η πληρωμή των πάγιων %s ώστε από την τράπεζα',
 		'InfoCreditMessage' => 'Η διαρκής %s ώστε έχει καταβληθεί από την τράπεζα <br> Στοιχεία πληρωμής: %s',
 		'InfoTransSubject' => 'Η μετάδοση της μόνιμης %s προκειμένου να τράπεζα',
@@ -105,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'Αυτό είναι ένα αυτοματοποιημένο μήνυμα που αποστέλλεται από Dolibarr',
 		'InfoRejectSubject' => 'Μόνιμη προκειμένου αρνήθηκε',
 		'InfoRejectMessage' => 'Γεια σας, <br><br> το standig σειρά του τιμολογίου %s που σχετίζονται με την %s εταιρεία, με το ποσό των %s έχει απορριφθεί από την τράπεζα. <br><br> - <br> % $',
-		'ModeWarning' => 'Επιλογή για την πραγματική κατάσταση, δεν είχε καθοριστεί, σταματάμε μετά από αυτή την προσομοίωση',
+		'ModeWarning' => 'Επιλογή για την πραγματική κατάσταση, δεν είχε καθοριστεί, σταματάμε μετά από αυτή την προσομοίωση'
 );
 ?>

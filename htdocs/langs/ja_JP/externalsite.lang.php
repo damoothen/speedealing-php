@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => '外部ウェブサイトへのリンクを設定',
-		'ExternalSiteURL' => '外部サイトのURL',
+		'ExternalSiteURL' => '外部サイトのURL'
 );
 ?>

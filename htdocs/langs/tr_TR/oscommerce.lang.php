@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => 'OS Ticaret Sunucusu host/ip',
 		'OSCommerceDatabaseName' => 'OS Ticaret veritabanı adı',
 		'OSCommercePrefix' => 'OS Ticaret tablo öneki',
-		'OSCommerceUser' => 'OS Ticaret veritabanı kullanıcı girişi',
+		'OSCommerceUser' => 'OS Ticaret veritabanı kullanıcı girişi'
 );
 ?>

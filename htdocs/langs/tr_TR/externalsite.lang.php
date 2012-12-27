@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => 'Dış web sitesi kurulumu',
-		'ExternalSiteURL' => 'Dış web sitesi URL si',
+		'ExternalSiteURL' => 'Dış web sitesi URL si'
 );
 ?>

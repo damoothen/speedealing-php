@@ -44,6 +44,7 @@ $projects = array(
 		'NbOpenTasks' => 'ATH að opna verkefni',
 		'NbOfProjects' => 'ATH verkefna',
 		'TimeSpent' => 'Tíma sem fer',
+		'TimesSpent' => 'Tími',
 		'RefTask' => 'Tilv. verkefni',
 		'LabelTask' => 'Merki verkefni',
 		'NewTimeSpent' => 'Nýr tími',
@@ -96,6 +97,19 @@ $projects = array(
 		'ProjectsDedicatedToThisThirdParty' => 'Verkefni hollur til þessa þriðja aðila',
 		'NoTasks' => 'Engin verkefni fyrir þetta verkefni',
 		'LinkedToAnotherCompany' => 'Tengjast öðrum þriðja aðila',
+		'TaskIsNotAffectedToYou' => 'Verkefni úthlutað ekki við þig',
+		'ErrorTimeSpentIsEmpty' => 'Tími er tómur',
+		'ThisWillAlsoRemoveTasks' => 'Þessi aðgerð mun einnig eyða öllum verkefnum verkefnisins <b>(%s</b> verkefni í augnablikinu) og allt inntak tíma varið.',
+		'IfNeedToUseOhterObjectKeepEmpty' => 'Ef sumir hlutir (nótum röð ...), sem tilheyra öðrum þriðja aðila, verður að vera í tengslum við verkefnið til að búa til, halda þessu tóm til að hafa verkefni verði fjölnota þriðja aðila.',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Project leiðtogi',
 		'TypeContact_project_external_PROJECTLEADER' => 'Project leiðtogi',
 		'TypeContact_project_internal_CONTRIBUTOR' => 'Framlög',
@@ -104,11 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => 'Verkefni framkvæmdastjóri',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Framlög',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Framlög',
-		'DocumentModelBaleine' => 'skýrslu lýkur verkefninu er líkan (logo. ..)',
-		'TimesSpent' => 'Tími',
-		'TaskIsNotAffectedToYou' => 'Verkefni úthlutað ekki við þig',
-		'ErrorTimeSpentIsEmpty' => 'Tími er tómur',
-		'ThisWillAlsoRemoveTasks' => 'Þessi aðgerð mun einnig eyða öllum verkefnum verkefnisins <b>(%s</b> verkefni í augnablikinu) og allt inntak tíma varið.',
-		'IfNeedToUseOhterObjectKeepEmpty' => 'Ef sumir hlutir (nótum röð ...), sem tilheyra öðrum þriðja aðila, verður að vera í tengslum við verkefnið til að búa til, halda þessu tóm til að hafa verkefni verði fjölnota þriðja aðila.',
+		// Documents models
+		'DocumentModelBaleine' => 'skýrslu lýkur verkefninu er líkan (logo. ..)'
 );
 ?>

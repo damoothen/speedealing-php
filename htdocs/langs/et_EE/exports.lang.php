@@ -128,5 +128,13 @@ $exports = array(
 		'ExampleAnyRefFoundIntoElement' => 'Iga ref leitud element <b>%s</b>',
 		'ExampleAnyCodeOrIdFoundIntoDictionnary' => 'Iga kood (või id) leitud sisse dictionnary <b>%s</b>',
 		'CSVFormatDesc' => '<b>Komadega eraldatud väärtused</b> vormingus (. Csv). <br> See on tekstifaili vormingus, kus väljad on eraldatud eraldaja [%s]. Kui eraldajaks on leitud sees välja sisu, välja ümardatakse poolt ümmargune märk [%s]. Paomärk põgeneda ümmargune märk on [%s].',
+		'Excel95FormatDesc' => '<b>Excel</b> file format (.xls)<br>This is native Excel 95 format (BIFF5).',
+		'Excel2007FormatDesc' => '<b>Excel</b> file format (.xlsx)<br>This is native Excel 2007 format (SpreadsheetML).',
+		'TsvFormatDesc' => '<b>Tab Separated Value</b> file format (.tsv)<br>This is a text file format where fields are separated by a tabulator [tab].',
+		'ExportFieldAutomaticallyAdded' => 'Field <b>%s</b> was automatically added. It will avoid you to have similar lines to be treated as duplicate records (with this field added, all ligne will own its own id and will differ).',
+		'CsvOptions' => 'Csv Options',
+		'Separator' => 'Separator',
+		'Enclosure' => 'Enclosure',
+		'SuppliersProducts' => 'Suppliers Products'
 );
 ?>

@@ -111,6 +111,6 @@ $commercial = array(
 		'NoData' => 'Aucune donnée',
 		'StatusProsp' => 'Status prospection',
 		'DraftPropals' => 'Propositions brouillons',
-		'SearchPropal' => 'Rechercher une proposition',
+		'SearchPropal' => 'Rechercher une proposition'
 );
 ?>

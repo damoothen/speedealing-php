@@ -101,6 +101,15 @@ $projects = array(
 		'ErrorTimeSpentIsEmpty' => '費やした時間は空です',
 		'ThisWillAlsoRemoveTasks' => 'このアクションは、プロジェクトのすべてのタスク（現時点では<b>%s</b>タスク）と過ごした時間のすべての入力を削除します。',
 		'IfNeedToUseOhterObjectKeepEmpty' => 'いくつかのオブジェクト（請求書、注文、...）、別の第三者に属するが、作成するプロジェクトにリンクする必要がある場合は、複数のサードパーティ中のプロジェクトを持っているこの空を保持します。',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'プロジェクトリーダー',
 		'TypeContact_project_external_PROJECTLEADER' => 'プロジェクトリーダー',
 		'TypeContact_project_internal_CONTRIBUTOR' => '貢献者',
@@ -109,6 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => 'タスクの幹部',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => '貢献者',
 		'TypeContact_project_task_external_CONTRIBUTOR' => '貢献者',
-		'DocumentModelBaleine' => '完全なプロジェクトのレポートモデル（logo. ..）',
+		// Documents models
+		'DocumentModelBaleine' => '完全なプロジェクトのレポートモデル（logo. ..）'
 );
 ?>

@@ -57,6 +57,7 @@ $withdrawals = array(
 		'Send' => 'Verzenden',
 		'Lines' => 'Regels',
 		'StandingOrderReject' => 'Geef een afwijzing',
+		'InvoiceRefused' => 'Factureer de afwijzing aan de afnemer',
 		'WithdrawalRefused' => 'Intrekking afwijzigingen',
 		'WithdrawalRefusedConfirm' => 'Weet u zeker dat u een intrekkingsafwijzing wilt invoeren',
 		'RefusedData' => 'Datum van de afwijzing',
@@ -94,7 +95,9 @@ $withdrawals = array(
 		'CreditDate' => 'Crediteer op',
 		'WithdrawalFileNotCapable' => 'Kon geen intrekkingsbewijsbestand creëren voor uw land',
 		'ShowWithdraw' => 'Toon intrekking',
-		////// Notifications  = 
+		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'Echter, als factuur is ten minste een terugtrekking betaling nog niet verwerkt, zal het niet worden ingesteld als betaald om tot terugtrekking te beheren voor.',
+		'DoStandingOrdersBeforePayments' => 'Deze tabs kunt u aanvraag voor een permanente opdracht. Zodra het zal worden afgewerkt, kunt u de betaling aan de factuur te sluiten.',
+		////// Notifications
 		'InfoCreditSubject' => 'Betaling van periodieke overboeking %s door de bank',
 		'InfoCreditMessage' => 'De periodieke overboeking %s is betaald door de bank<br>Gegevens van de betaling: %s',
 		'InfoTransSubject' => 'Transmissie van de periodieke overboeking %s naar bank',
@@ -103,8 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'Dit is een geautomatiseerd bericht verzonden door Dolibarr',
 		'InfoRejectSubject' => 'Periodieke overboeking geweigerd',
 		'InfoRejectMessage' => 'Hallo,<br><br>de periodieke overboeking van factuur %s gerelateerd aan het bedrijf %s, met het bedrag van %s is geweigerd door de bank.<br><br>--<br>%s',
-		'ModeWarning' => 'Optie voor echte modus was niet ingesteld, we stoppen na deze simulatie',
-		'DoStandingOrdersBeforePayments' => 'Deze tabs kunt u aanvraag voor een permanente opdracht. Zodra het zal worden afgewerkt, kunt u de betaling aan de factuur te sluiten.',
-		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'Echter, als factuur is ten minste een terugtrekking betaling nog niet verwerkt, zal het niet worden ingesteld als betaald om tot terugtrekking te beheren voor.',
+		'ModeWarning' => 'Optie voor echte modus was niet ingesteld, we stoppen na deze simulatie'
 );
 ?>

@@ -23,15 +23,16 @@ $bookmarks = array(
 		'ShowBookmark' => 'ブックマークを表示',
 		'OpenANewWindow' => '新しいウィンドウを開きます',
 		'ReplaceWindow' => '現在のウィンドウを置き換える',
+		'BookmarkTargetNewWindowShort' => '新しいウィンドウ',
+		'BookmarkTargetReplaceWindowShort' => '現在のウィンドウ',
+		'BookmarkTitle' => 'ブックマークのタイトル',
+		'UrlOrLink' => 'URL',
+		'BehaviourOnClick' => 'Behaviour when a URL is clicked',
+		'CreateBookmark' => 'ブックマークを作成します。',
 		'SetHereATitleForLink' => 'ブックマークのタイトルを設定する',
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => '外部のhttp URLまたは相対DolibarrのURLを使用して、',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'リンクで開いたページは、現在または新しいウィンドウに表示される必要がある場合に選択します。',
 		'BookmarksManagement' => 'ブックマークの管理',
-		'ListOfBookmarks' => 'ブックマークのリスト',
-		'BookmarkTargetNewWindowShort' => '新しいウィンドウ',
-		'BookmarkTargetReplaceWindowShort' => '現在のウィンドウ',
-		'BookmarkTitle' => 'ブックマークのタイトル',
-		'CreateBookmark' => 'ブックマークを作成します。',
-		'UrlOrLink' => 'URL',
+		'ListOfBookmarks' => 'ブックマークのリスト'
 );
 ?>

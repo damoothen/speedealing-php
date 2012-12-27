@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'No s\'ha pogut connectar amb el servidor FTP (servidor: %s, port %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'No s\'ha pogut connectar amb el login/contrasenya FTP configurats',
 		'FTPFailedToRemoveFile' => 'No s\'ha pogut suprimir el fitxer <b>%s</b>.',
-		'FTPFailedToRemoveDir' => 'No s\'ha pogut suprimir la carpeta <b>%s</b> (Comproveu els permisos i que el directori està buit).',
+		'FTPFailedToRemoveDir' => 'No s\'ha pogut suprimir la carpeta <b>%s</b> (Comproveu els permisos i que el directori està buit).'
 );
 ?>

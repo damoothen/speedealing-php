@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Brug en ekstern http URL eller en relativ Dolibarr URL',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Vælg om side åbnet ved linket skal stå på nuværende eller nyt vindue',
 		'BookmarksManagement' => 'Bogmærker forvaltning',
-		'ListOfBookmarks' => 'Liste over bogmærker',
+		'ListOfBookmarks' => 'Liste over bogmærker'
 );
 ?>

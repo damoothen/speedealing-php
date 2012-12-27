@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => 'Ρύθμιση συνδέσμου σε εξωτερικό δικτυακό τόπο',
-		'ExternalSiteURL' => 'Εξωτερικές διεύθυνση URL ιστοσελίδας',
+		'ExternalSiteURL' => 'Εξωτερικές διεύθυνση URL ιστοσελίδας'
 );
 ?>

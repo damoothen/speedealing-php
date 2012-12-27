@@ -119,7 +119,7 @@ $users = array(
 		'UserEnabled' => 'Потребителски %s активира',
 		'UserDeleted' => 'Потребителски %s отстранени',
 		'NewGroupCreated' => 'Група %s създаден',
-		'GroupModified' => 'Група %s промяна',
+		'GroupModified' => 'Група променена успешно',
 		'GroupDeleted' => 'Група %s отстранени',
 		'ConfirmCreateContact' => 'Сигурен ли сте, че искате да създадете акаунт Dolibarr за този контакт?',
 		'ConfirmCreateLogin' => 'Сигурен ли сте, че искате да създадете акаунт Dolibarr за този потребител?',
@@ -129,6 +129,6 @@ $users = array(
 		'YourRole' => 'Вашите роли',
 		'YourQuotaOfUsersIsReached' => 'Квотата на активните потребители е достигнато!',
 		'NbOfUsers' => 'Nb на потребителите',
-		'DontDowngradeSuperAdmin' => 'Само superadmin да понижи категорията на superadmin',
+		'DontDowngradeSuperAdmin' => 'Само superadmin да понижи категорията на superadmin'
 );
 ?>

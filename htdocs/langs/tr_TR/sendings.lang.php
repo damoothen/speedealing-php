@@ -74,13 +74,13 @@ $sendings = array(
 		'LinkToTrackYourPackage' => 'Paketinizi izleyeceğiniz bağlantı',
 		'ShipmentCreationIsDoneFromOrder' => 'Şu an için, yeni bir sevkiyat yaratılması amacıyla kart oluşturulur.',
 		'RelatedShippings' => 'İlgili sevkiyatlar',
-		// Sevkiyat yöntemleri
+		// Sending methods
 		'SendingMethodCATCH' => 'Müşteri tarafından alındı',
 		'SendingMethodTRANS' => 'Nakliyeci',
 		'SendingMethodCOLSUI' => 'Colissimo',
-		// Belge Modeli
+		// ModelDocument
 		'DocumentModelSirocco' => 'Teslimat makbuzları için basit belge modeli',
 		'DocumentModelTyphon' => 'Teslimat makbuzları için daha fazla eksiksiz doküman modeli (logo. ..)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'EXPEDITION_ADDON_NUMBER değişmezi tanımlanmamış',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'EXPEDITION_ADDON_NUMBER değişmezi tanımlanmamış'
 );
 ?>

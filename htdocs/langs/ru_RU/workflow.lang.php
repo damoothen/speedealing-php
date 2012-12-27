@@ -23,5 +23,7 @@ $workflow = array(
 		'descWORKFLOW_PROPAL_AUTOCREATE_INVOICE' => 'Создать счет клиента автоматически после коммерческое предложение подписано',
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Создать счет клиента автоматически после контракт проверяется',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Создать счет клиента автоматически после заказа клиента закрыт',
+		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Classify linked source proposal to billed when customer order is set to paid',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid'
 );
 ?>

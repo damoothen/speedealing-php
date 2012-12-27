@@ -19,7 +19,7 @@ $trips = array(
 		'Trip' => 'Deslocamento',
 		'Trips' => 'Deslocamentos',
 		'TripsAndExpenses' => 'Deslocamentos e Despesas',
-		'TripId' => 'Id de Viagens/Despesas notas',
+		'TripsAndExpensesStatistics' => 'Trips and expenses statistics',
 		'TripCard' => 'Ficha de Deslocamento',
 		'AddTrip' => 'Adicionar Deslocamento',
 		'ListOfTrips' => 'Lista de Deslocamentos',
@@ -34,5 +34,7 @@ $trips = array(
 		'TF_LUNCH' => 'Alimentação',
 		'TF_TRIP' => 'Viagem',
 		'ListTripsAndExpenses' => 'Lista de viagens e despesas',
+		'ExpensesArea' => 'Trips and expenses area',
+		'SearchATripAndExpense' => 'Search a trip and expense'
 );
 ?>

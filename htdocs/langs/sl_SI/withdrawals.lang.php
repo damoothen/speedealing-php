@@ -64,6 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => 'Razlog za zavrnitev',
 		'RefusedInvoicing' => 'Zaračunavanje zavrnitev',
 		'NoInvoiceRefused' => 'Ne zaračunaj zavrnitve',
+		'InvoiceRefused' => 'Zaračunaj zavrnitev kupcu',
 		'Status' => 'Status',
 		'StatusUnknown' => 'Neznano',
 		'StatusWaiting' => 'Na čakanju',
@@ -96,7 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'Prikaži nakazilo',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'Vendar, če ima račun najmanj eno neizvršeno nakazilo, ne bo označeno kot plačano, da bi bilo pred tem možno izvršiti nakazilo.',
 		'DoStandingOrdersBeforePayments' => 'Ti zavihki omogočajo zahtevo za trajnik. Ko je končano, lahko vnesete plačilo in zaprete račun.',
-		////// Notifications  = undefined
+		////// Notifications
 		'InfoCreditSubject' => 'Plačilo odprtega naročila %s s strani banke',
 		'InfoCreditMessage' => 'Odprto naročilo %s je bilo plačano s strani banke<br>Data of payment: %s',
 		'InfoTransSubject' => 'Prenos odprtega naročila %s na banko',
@@ -105,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'To sporočilo je avtomatsko poslal Dolibarr',
 		'InfoRejectSubject' => 'Odprto naročilo zavrnjeno',
 		'InfoRejectMessage' => 'Pozdravljeni,<br><br>odprto naročilo računa %s za podjetje %s, v vrednosti %s, je zavrnila banka.<br><br>--<br>%$',
-		'ModeWarning' => 'Opcija za delo v živo ni bila nastavljena, zato se bo sistem ustavil po simulaciji',
+		'ModeWarning' => 'Opcija za delo v živo ni bila nastavljena, zato se bo sistem ustavil po simulaciji'
 );
 ?>

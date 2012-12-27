@@ -25,6 +25,7 @@ $install = array(
 		'ConfFileCouldBeCreated' => '<b>%s</b> konfigurációs fájl sikeresen létrehozva.',
 		'ConfFileIsNotWritable' => '<b>%s</b> konfigurációs fájl NEM írható. Ellenõrizze a jogosúltságokat. Elsõ telepítés esetén, a web szervernek tudnia kell írni ebbe a fájlba a konfigurációs folyamat során (Unix alapu rendszer esetén "chmod 666").',
 		'ConfFileIsWritable' => '<b>%s</b> konfigurációs fájl írható.',
+		'ConfFileReload' => 'Minden újratöltése információt konfigurációs fájlban.',
 		'PHPSupportSessions' => 'Ez a PHP verzió támogatja a munkameneteket.',
 		'PHPSupportPOSTGETOk' => 'Ez a PHP verzió támogatja POST és GET változókat.',
 		'PHPSupportPOSTGETKo' => 'Lehetséges, hogy az alkalmazott PHP verzió NEM támogatja a POST és/vagy GET változókat. Ellenõrizze a  <b>variables_order</b> paramétert a php.ini fájlban.',
@@ -41,11 +42,14 @@ $install = array(
 		'ErrorWrongValueForParameter' => 'Lehet, hogy rossz értéket adott meg a(z) \'%s\' paraméter számára.',
 		'ErrorFailedToCreateDatabase' => 'Nem sikerült létrehozni a(z) \'%s\' adatbázist.',
 		'ErrorFailedToConnectToDatabase' => 'Nem sikerült csatlakozni a(z) \'%s\' adatbázishoz.',
+		'ErrorDatabaseVersionTooLow' => 'Database version (%s) too old. Version %s or higher is required.',
 		'ErrorPHPVersionTooLow' => 'Túl régi a PHP verzió. Legalább %s kell.',
+		'WarningPHPVersionTooLow' => 'PHP verzió túl régi. %s vagy több verzió várható. Ez a változat lehetővé teszi telepíteni, de nem támogatott.',
 		'ErrorConnectedButDatabaseNotFound' => 'Sikeres kapcsolódás az adatbázis szerverhez, de a(z) \'%s\' adatbázis nincs meg.',
 		'ErrorDatabaseAlreadyExists' => '\'%s\' adatbázis már létezik.',
 		'IfDatabaseNotExistsGoBackAndUncheckCreate' => 'Ha az adatbázis nem létezik akkor menjen vissza és jelölje ki az "Adatbázis létrehozása" opciót.',
 		'IfDatabaseExistsGoBackAndCheckCreate' => 'Ha az adatbázis már létezik, menjen vissza és ne válassza az "Adatbázis létrehozása" opciót.',
+		'WarningBrowserTooOld' => 'Too old version of browser. Upgrading your browser to a recent version of Firefox, Chrome or Opera is highly recommanded.',
 		'PHPVersion' => 'PHP Verzió',
 		'YouCanContinue' => 'Folytathatja...',
 		'PleaseBePatient' => 'Kerjük legyen türelemmel...',
@@ -65,6 +69,7 @@ $install = array(
 		'ServerPortDescription' => 'Adatbázis szerver port. Hagyja üresen ha nem tudja.',
 		'DatabaseServer' => 'Adatbázis szerver',
 		'DatabaseName' => 'Adatbázis név',
+		'DatabasePrefix' => 'Adatbázis tábla előtag',
 		'Login' => 'Bejelentkezés',
 		'AdminLogin' => 'Adatbázis tulajdonos bejelentkezési neve.',
 		'Password' => 'Jelszó',
@@ -147,11 +152,13 @@ $install = array(
 		'KeepDefaultValuesWamp' => 'A DoliWamp-ot használja a Dolibarr telepítéséhez, az itt lévõ értékek már optimalizálva vannak. Csak saját felelõsségre módosítsa ezeket.',
 		'KeepDefaultValuesDeb' => 'Ubuntun vagy Debian csomagból használja a telepítési varázslót, az itt lévõ értékek már optimalizálva vannak. Csak az adatbázis tulajdonosnak kell jelszót megadni. Csak saját felelõsségre módosítsa ezeket az értékeket.',
 		'KeepDefaultValuesMamp' => 'A DoliMamp-ot használja a Dolibarr telepítéséhez, az itt lévõ értékek már optimalizálva vannak. Csak saját felelõsségre módosítsa ezeket.',
+		'KeepDefaultValuesProxmox' => 'Ön használja az Dolibarr Setup Wizard egy Proxmox virtuális készüléket, így az itt javasolt értékek már optimalizálva. Megváltoztatni őket, ha tudod, mit csinálsz.',
 		'FieldRenamed' => 'Mezõ átnevezve',
 		'IfLoginDoesNotExistsCheckCreateUser' => 'Ha bejelentkezési adat nem létezik használja a "Felhasználó létrehozása" lehetõséget',
 		'ErrorConnection' => 'Server "<b>%s</b>", adatbázis név "<b>%s</b>", login "<b>%s</b>", vagy adatbázis jelszó rosszúl lett megadva vagy a PHP kliens verzió túl régi az adatbázis verzióhoz képest.',
 		'InstallChoiceRecommanded' => 'A javasolt választás <b>%s</b> verzióra frissítés a <b>%s</b> jelenlegi verzióról',
 		'InstallChoiceSuggested' => '<b>A telepítõ által javasolt választás</b>.',
+		'MigrateIsDoneStepByStep' => 'A megcélzott változat (%s) van egy rés a több változata, így telepítése varázsló vissza fog térni arra utalnak következő migráció egyszer ez is elkészül.',
 		'CheckThatDatabasenameIsCorrect' => 'Ellenõrizze hogy a(z) "<b>%s</b>" adatbázis név helyes.',
 		'IfAlreadyExistsCheckOption' => 'Ha a név jó és a megadott adatbázis nem létezik, használja az "Adatbázis létrehozása" opciót.',
 		'OpenBaseDir' => 'PHP openbasedir paraméter',
@@ -161,6 +168,10 @@ $install = array(
 		'MigrationCustomerOrderShipping' => 'Szállítási rendelések migrálása',
 		'MigrationShippingDelivery' => 'Szállítási tárló frissítése',
 		'MigrationShippingDelivery2' => 'Szállítási tárló frissítése 2',
+		'MigrationFinished' => 'Migráció befejezte',
+		'LastStepDesc' => '<strong>Utolsó lépés:</strong> Adjuk meg itt bejelentkezési név és jelszó használatát tervezi, hogy csatlakozik a szoftver. Ne laza ez, mivel a számla beadására az összes többi.',
+		'ActivateModule' => 'Modul aktiválása %s',
+		'ShowEditTechnicalParameters' => 'Click here to show/edit advanced parameters (expert mode)',
 		//////////////////
 		// upgrade
 		//////////////////
@@ -173,65 +184,44 @@ $install = array(
 		'MigrationSuccessfullUpdate' => 'A frissítés sikeres',
 		'MigrationUpdateFailed' => 'Sikeretelen frissítés',
 		'MigrationRelationshipTables' => 'Kapcsolati táblák migrációja (%s)',
-		// Payments Update
 		'MigrationPaymentsUpdate' => 'Fizetési adatok korrekciója',
 		'MigrationPaymentsNumberToUpdate' => '%s fizetés(ek) várn(nak) frissítésre',
 		'MigrationProcessPaymentUpdate' => 'Fizetések frissítése %s',
 		'MigrationPaymentsNothingToUpdate' => 'Nincs több tenni való',
 		'MigrationPaymentsNothingUpdatable' => 'Nincs több javítható fizetési adat',
-		// Contracts Update
 		'MigrationContractsUpdate' => 'Szerzõdési adatok javítása',
 		'MigrationContractsNumberToUpdate' => '%s szerzõdés(ek) várn(nak) frissítésre',
 		'MigrationContractsLineCreation' => '%s számú szerzõdés számára új sorok létrehozása',
 		'MigrationContractsNothingToUpdate' => 'Nincs több tenni való',
 		'MigrationContractsFieldDontExist' => 'fk_facture mezõ nem létezik többé. Nincs több tenni való.',
-		// Contracts Empty Dates Update
 		'MigrationContractsEmptyDatesUpdate' => 'Szerzõdés üres dátumának korrekciója',
 		'MigrationContractsEmptyDatesUpdateSuccess' => 'Szerzõdés üres dátumának korrekciója sikeresen lezajlott',
 		'MigrationContractsEmptyDatesNothingToUpdate' => 'Nincs szerzõdés üres dátummal',
 		'MigrationContractsEmptyCreationDatesNothingToUpdate' => 'Nincs szerzõdés üres létrehozási dátummal',
-		// Contracts Invalid Dates Update
 		'MigrationContractsInvalidDatesUpdate' => 'Szerzõdés érvénytelen dátumának korrekciója',
 		'MigrationContractsInvalidDateFix' => '%s szerzõdés korrekciója (Szerzõdés dátum=%s, Szolgáltatás kezdete min=%s)',
 		'MigrationContractsInvalidDatesNumber' => '%s szerzõdés módosítva',
 		'MigrationContractsInvalidDatesNothingToUpdate' => 'Nincs korrekcióra szoruló dátum',
-		// Contracts Incoherent Dates Update
 		'MigrationContractsIncoherentCreationDateUpdate' => 'Szerzõdés rossz létrehztási dátum korrekció',
 		'MigrationContractsIncoherentCreationDateUpdateSuccess' => 'Szerzõdés rossz létrehztási dátum korrekció sikeresen lezajlott',
 		'MigrationContractsIncoherentCreationDateNothingToUpdate' => 'Nincs korrekcióra szoruló szerzõdés',
-		// Reopening Contracts
 		'MigrationReopeningContracts' => 'Hiba miatt véletlenül lezárt szerzõdések újranyitása',
 		'MigrationReopenThisContract' => '%s szerzõdés újranyitása',
 		'MigrationReopenedContractsNumber' => '%s szerzõdés módosítva',
 		'MigrationReopeningContractsNothingToUpdate' => 'Nincs újranyitásra szoruló szerzõdés',
-		// Migration transfer
 		'MigrationBankTransfertsUpdate' => 'Linkek frissítése banki tranzakciók és banki átutalások között',
 		'MigrationBankTransfertsNothingToUpdate' => 'Minden link friss',
-		// Migration delivery
 		'MigrationShipmentOrderMatching' => 'Küldött bizonylatok frissítése',
 		'MigrationDeliveryOrderMatching' => 'Szállítási bizonylatok frissítése',
 		'MigrationDeliveryDetail' => 'Szállítások frissítése',
-		// Migration stock
 		'MigrationStockDetail' => 'Termékek készletének frissítése',
-		// Migration menus
 		'MigrationMenusDetail' => 'Dinamikus menük frissítése',
-		// Migration delivery address
 		'MigrationDeliveryAddress' => 'Szállítási címek frissítése',
-		// Migration project task actors
 		'MigrationProjectTaskActors' => 'Migárlás llx_projet_task_actors tábla részére',
-		// Migration project user resp
 		'MigrationProjectUserResp' => 'Adatok migrálása fk_user_resp/llx_projet llx_element_contact -ba',
-		// Migration project task time
 		'MigrationProjectTaskTime' => 'Frissítési idõ másodpercekben',
-		'LastStepDesc' => '<strong>Utolsó lépés:</strong> Adjuk meg itt bejelentkezési név és jelszó használatát tervezi, hogy csatlakozik a szoftver. Ne laza ez, mivel a számla beadására az összes többi.',
 		'MigrationActioncommElement' => 'Frissítés adatok akciók',
-		'ConfFileReload' => 'Minden újratöltése információt konfigurációs fájlban.',
-		'WarningPHPVersionTooLow' => 'PHP verzió túl régi. %s vagy több verzió várható. Ez a változat lehetővé teszi telepíteni, de nem támogatott.',
-		'DatabasePrefix' => 'Adatbázis tábla előtag',
-		'KeepDefaultValuesProxmox' => 'Ön használja az Dolibarr Setup Wizard egy Proxmox virtuális készüléket, így az itt javasolt értékek már optimalizálva. Megváltoztatni őket, ha tudod, mit csinálsz.',
-		'MigrateIsDoneStepByStep' => 'A megcélzott változat (%s) van egy rés a több változata, így telepítése varázsló vissza fog térni arra utalnak következő migráció egyszer ez is elkészül.',
-		'MigrationFinished' => 'Migráció befejezte',
-		'ActivateModule' => 'Modul aktiválása %s',
 		'MigrationPaymentMode' => 'Adatmigráció fizetési mód',
+		'MigrationCategorieAssociation' => 'Migration of categories'
 );
 ?>

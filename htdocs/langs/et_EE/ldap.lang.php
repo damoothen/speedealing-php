@@ -43,6 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => 'Liikmesriigid sünkroniseeritud',
 		'ContactSynchronized' => 'Võta sünkroniseeritud',
 		'ForceSynchronize' => 'Force sünkroonimine Dolibarr -> LDAP',
-		'ErrorFailedToReadLDAP' => 'Lugemine ebaõnnestus LDAP andmebaasi. Vaata LDAP moodul setup ja andmebaasi kättesaadavust.',
+		'ErrorFailedToReadLDAP' => 'Lugemine ebaõnnestus LDAP andmebaasi. Vaata LDAP moodul setup ja andmebaasi kättesaadavust.'
 );
 ?>

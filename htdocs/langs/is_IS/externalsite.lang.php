@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => 'Skipulag tengjast ytri vef',
-		'ExternalSiteURL' => 'Ytri Site URL',
+		'ExternalSiteURL' => 'Ytri Site URL'
 );
 ?>

@@ -43,6 +43,7 @@ $suppliers = array(
 		'Availability' => '可用性',
 		'ExportDataset_fournisseur_1' => 'サプライヤの請求書のリストと請求書の行',
 		'ExportDataset_fournisseur_2' => 'サプライヤーの請求書と支払い',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'この注文を承認',
 		'ConfirmApproveThisOrder' => 'あなたは、注文<b>%sを</b>承認してもよろしいですか？',
 		'DenyingThisOrder' => 'この順序を否定',
@@ -53,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'サプライヤーの順序を作成します。',
 		'AddSupplierInvoice' => 'サプライヤの請求書を作成します。',
 		'ListOfSupplierProductForSupplier' => 'サプライヤー<b>%s</b>の製品と価格の一覧',
-		'NoneOrBatchFileNeverRan' => 'noneまたはバッチ<b>%sは</b>最近走っていない',
+		'NoneOrBatchFileNeverRan' => 'noneまたはバッチ<b>%sは</b>最近走っていない'
 );
 ?>

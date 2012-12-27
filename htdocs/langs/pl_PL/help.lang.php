@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Możesz połączyć jedno z trenera wybranej przez Dolibarr dla danego języka ( %s), klikając jego Widget (status i maksymalną cenę są automatycznie uaktualniane):',
 		'PossibleLanguages' => 'Obsługiwane języki',
 		'MakeADonation' => 'Pomoc Dolibarr projektu, dokonać wpłaty',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

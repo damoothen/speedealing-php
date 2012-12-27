@@ -20,6 +20,11 @@ $bookmarks = array(
 		'Bookmark' => 'Könyvjelző',
 		'Bookmarks' => 'Könyvjelzők',
 		'NewBookmark' => 'Új könyvjelző',
+		'ShowBookmark' => 'Mutasd Könyvjelző',
+		'OpenANewWindow' => 'Nyisson meg egy új ablakban',
+		'ReplaceWindow' => 'Cserélje aktuális ablak',
+		'BookmarkTargetNewWindowShort' => 'Új ablak',
+		'BookmarkTargetReplaceWindowShort' => 'Aktuális ablak',
 		'BookmarkTitle' => 'Könyvjelzõnévbõl',
 		'UrlOrLink' => 'URL',
 		'BehaviourOnClick' => 'Viselkedés, ha egy URL-t kattintott',
@@ -28,11 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Egy külső http URL-t vagy relatív URL Dolibarr',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Válassza ki, egy oldalon nyitott a kapcsolatot fel kell tüntetni a jelenlegi, vagy új ablakban',
 		'BookmarksManagement' => 'Könyvjelzők kezelése',
-		'ListOfBookmarks' => 'Könyvjelzők listája',
-		'ShowBookmark' => 'Mutasd Könyvjelző',
-		'OpenANewWindow' => 'Nyisson meg egy új ablakban',
-		'ReplaceWindow' => 'Cserélje aktuális ablak',
-		'BookmarkTargetNewWindowShort' => 'Új ablak',
-		'BookmarkTargetReplaceWindowShort' => 'Aktuális ablak',
+		'ListOfBookmarks' => 'Könyvjelzők listája'
 );
 ?>

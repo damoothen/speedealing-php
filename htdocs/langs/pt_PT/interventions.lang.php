@@ -15,7 +15,6 @@
  */
 
 $interventions = array(
-		'﻿# Dolibarr language file - pt_PT - interventions' => '',
 		'CHARSET' => 'UTF-8',
 		'Intervention' => 'Intervenção',
 		'Interventions' => 'Intervenções',
@@ -24,6 +23,7 @@ $interventions = array(
 		'AddIntervention' => 'Criar Intervenção',
 		'ListOfInterventions' => 'Lista de Intervenções',
 		'EditIntervention' => 'Editar',
+		'ActionsOnFicheInter' => 'Ações de intervenção',
 		'LastInterventions' => 'As %s últimas Intervenções',
 		'AllInterventions' => 'Todas as Intervenções',
 		'CreateDraftIntervention' => 'Criar Rascunho',
@@ -31,6 +31,7 @@ $interventions = array(
 		'InterventionContact' => 'Contacto Intervenção',
 		'DeleteIntervention' => 'Eliminar Intervenção',
 		'ValidateIntervention' => 'Confirmar Intervenção',
+		'ModifyIntervention' => 'Modificar intervenção',
 		'DeleteInterventionLine' => 'Eliminar Linha de Intervenção',
 		'ConfirmDeleteIntervention' => 'Está seguro de querer eliminar esta intervenção?',
 		'ConfirmValidateIntervention' => 'Está seguro de querer Confirmar esta intervenção?',
@@ -38,19 +39,11 @@ $interventions = array(
 		'ConfirmDeleteInterventionLine' => 'Está seguro de querer eliminar esta linha?',
 		'NameAndSignatureOfInternalContact' => 'Nome e Assinatura do Participante:',
 		'NameAndSignatureOfExternalContact' => 'Nome e Assinatura do Cliente:',
-		'InterventionCardsAndInterventionLines' => 'Fichas e Linhas de Intervenção',
-		'InterId' => 'Id Intervenção',
-		'InterRef' => 'Ref. Intervenção',
-		'InterDateCreation' => 'Data Criação',
-		'InterDuration' => 'Duração Total',
-		'InterStatus' => 'Estado',
-		'InterNote' => 'Descrição',
-		'InterLine' => 'Linha Intervenção',
-		'InterLineId' => 'Id Linha Detalhe',
-		'InterLineDate' => 'Data Linha',
-		'InterLineDuration' => 'Duração Linha',
-		'InterLineDesc' => 'Descrição Linha',
 		'DocumentModelStandard' => 'Modelo da Norma Intervenção',
+		'ClassifyBilled' => 'Classificar &quot;Faturado&quot;',
+		'StatusInterInvoiced' => 'Faturados',
+		'RelatedInterventions' => 'Intervenções relacionadas',
+		'ShowIntervention' => 'Mostrar intervenção',
 		////////// Types de contacts //////////
 		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Responsável do Seguimiento da Intervenção',
 		'TypeContact_fichinter_internal_INTERVENING' => 'Interveniente',
@@ -60,12 +53,6 @@ $interventions = array(
 		'ArcticNumRefModelDesc1' => 'Modelo de numeração genérico',
 		'ArcticNumRefModelError' => 'Activação Impossivel',
 		'PacificNumRefModelDesc1' => 'Devolve o número com o formato %syymm-nnnn dónde yy é o ano, mm. O mês e nnnn um contador sequêncial sem ruptura e sem ficar a 0',
-		'PacificNumRefModelError' => 'Uma factura que começa por # $$syymm existe na base e é incompativel com esta numeração. Eliminia  ou renomea-la para activar este módulo.',
-		'ModifyIntervention' => 'Modificar intervenção',
-		'ActionsOnFicheInter' => 'Ações de intervenção',
-		'ClassifyBilled' => 'Classificar &quot;Faturado&quot;',
-		'StatusInterInvoiced' => 'Faturados',
-		'RelatedInterventions' => 'Intervenções relacionadas',
-		'ShowIntervention' => 'Mostrar intervenção',
+		'PacificNumRefModelError' => 'Uma factura que começa por # $$syymm existe na base e é incompativel com esta numeração. Eliminia  ou renomea-la para activar este módulo.'
 );
 ?>

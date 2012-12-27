@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => 'Gostiteljski strežnik/IP za Nakupovalni voziček',
 		'OSCommerceDatabaseName' => 'Ime baze podatkov za Nakupovalni voziček',
 		'OSCommercePrefix' => 'Predpone tabel za Nakupovalni voziček',
-		'OSCommerceUser' => 'Uporabniško ime za bazo podatkov za Nakupovalni voziček',
+		'OSCommerceUser' => 'Uporabniško ime za bazo podatkov za Nakupovalni voziček'
 );
 ?>

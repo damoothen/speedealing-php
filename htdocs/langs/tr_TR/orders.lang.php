@@ -19,6 +19,7 @@ $orders = array(
 		'OrdersArea' => 'Müşteri siparişleri alan',
 		'SuppliersOrdersArea' => 'Tedarikçi siparişleri alan',
 		'OrderCard' => 'Sipariş kartı',
+		'OrderId' => 'Order Id',
 		'Order' => 'Sipariş',
 		'Orders' => 'Siparişler',
 		'OrderLine' => 'Sipariş satırı',
@@ -48,6 +49,7 @@ $orders = array(
 		'StatusOrderOnProcessShort' => 'Kabul',
 		'StatusOrderProcessedShort' => 'İşlenmiş',
 		'StatusOrderToBillShort' => 'Faturalanacak',
+		'StatusOrderToBill2Short' => 'To bill',
 		'StatusOrderApprovedShort' => 'Onaylanmış',
 		'StatusOrderRefusedShort' => 'Reddedildi',
 		'StatusOrderToProcessShort' => 'İşlenecek',
@@ -59,6 +61,7 @@ $orders = array(
 		'StatusOrderOnProcess' => 'Alınmak için bekliyor',
 		'StatusOrderProcessed' => 'İşlenmiş',
 		'StatusOrderToBill' => 'Faturalanacak',
+		'StatusOrderToBill2' => 'To bill',
 		'StatusOrderApproved' => 'Onaylanmış',
 		'StatusOrderRefused' => 'Reddedildi',
 		'StatusOrderReceivedPartially' => 'Kısmen alındı',
@@ -67,6 +70,7 @@ $orders = array(
 		'DraftOrWaitingApproved' => 'Taslak veya onaylanmış henüz sipariş verilmemiş',
 		'DraftOrWaitingShipped' => 'Taslak veya onaylanmış henüz sevkedilmemiş',
 		'MenuOrdersToBill' => 'Faturalanacak siparişler',
+		'MenuOrdersToBill2' => 'Orders to bill',
 		'SearchOrder' => 'Sipariş ara',
 		'Sending' => 'Gönderme',
 		'Sendings' => 'Gönderimler',
@@ -105,6 +109,7 @@ $orders = array(
 		'ConfirmCancelOrder' => 'Bu siparişi iptal etmek istediğinizden emin misiniz?',
 		'ConfirmMakeOrder' => 'Bu siparişi <b>%s</b> üzerine yaptığınızı onaylamak istediğinizden emin misiniz?',
 		'GenerateBill' => 'Fatura oluştur',
+		'ClassifyShipped' => 'Classify delivered',
 		'ClassifyBilled' => '"Faturalandı" olarak sınıflandır',
 		'ComptaCard' => 'Muhasebe kartı',
 		'DraftOrders' => 'Taslak sipariş',
@@ -126,7 +131,7 @@ $orders = array(
 		'CloneOrder' => 'Siparişi klonla',
 		'ConfirmCloneOrder' => 'Bu <b>%s</b> siparişi klonlamak istediğinizden emin misiniz?',
 		'DispatchSupplierOrder' => '%s tedarikçi siparişini al',
-		////////// Kişi türleri //////////
+		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Müşteri siparişi izleme temsilcisi',
 		'TypeContact_commande_internal_SHIPPING' => 'Sevkiyat izleme temsilcisi',
 		'TypeContact_commande_external_BILLING' => 'Müşteri fatura yetkilisi',
@@ -141,7 +146,8 @@ $orders = array(
 		'Error_COMMANDE_ADDON_NotDefined' => 'Sabit COMMANDE_ADDON tanımlanmamış',
 		'Error_FailedToLoad_COMMANDE_SUPPLIER_ADDON_File' => 'Modül dosyası %s yüklenemedi',
 		'Error_FailedToLoad_COMMANDE_ADDON_File' => 'Modül dosyası %s yüklenemedi',
-		// Kaynaklar
+		'Error_OrderNotChecked' => 'No orders to invoice selected',
+		// Sources
 		'OrderSource0' => 'Ticari teklif',
 		'OrderSource1' => 'Internet',
 		'OrderSource2' => 'Posta kampanyası',
@@ -151,14 +157,18 @@ $orders = array(
 		'OrderSource6' => 'Mağaza',
 		'QtyOrdered' => 'Sipariş miktarı',
 		'AddDeliveryCostLine' => 'Siparişin ağırlığını belirten bir teslimat satırı ekleyin',
-		// Belge modelleri
+		// Documents models
 		'PDFEinsteinDescription' => 'Bir tam sipariş modeli (logo. ..)',
 		'PDFEdisonDescription' => 'Basit bir sipariş modeli',
-		// Sipariş biçimleri
+		// Orders modes
 		'OrderByMail' => 'Posta',
 		'OrderByFax' => 'Faks',
 		'OrderByEMail' => 'Eposta',
 		'OrderByWWW' => 'Çevrimiçi',
 		'OrderByPhone' => 'Telefon',
+		'CreateInvoiceForThisCustomer' => 'Bill orders',
+		'NoOrdersToInvoice' => 'No orders billable',
+		'CloseProcessedOrdersAutomatically' => 'Classify "Processed" all selected orders.',
+		'MenuOrdersToBill2' => 'Orders to bill'
 );
 ?>

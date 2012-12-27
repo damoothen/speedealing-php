@@ -21,12 +21,11 @@ $propal = array(
 		'ProposalShort' => 'Presupuesto',
 		'ProposalsDraft' => 'Presupuestos borrador',
 		'ProposalDraft' => 'Presupuesto borrador',
+		'ProposalsOpened' => 'Presupuestos abiertos',
 		'Prop' => 'Presupuestos',
 		'CommercialProposal' => 'Presupuesto',
 		'CommercialProposals' => 'Presupuestos',
-		'ProposalsOpened' => 'Presupuestos abiertos',
 		'ProposalCard' => 'Ficha presupuesto',
-		'NewProp' => 'Nuevo presupuesto',
 		'NewProp' => 'Nuevo presupuesto',
 		'NewProposal' => 'Nuevo presupuesto',
 		'NewPropal' => 'Nuevo presupuesto',
@@ -110,9 +109,8 @@ $propal = array(
 		'TypeContact_propal_internal_SALESREPFOLL' => 'Comercial seguimiento presupuesto',
 		'TypeContact_propal_external_BILLING' => 'Contacto cliente de facturación presupuesto',
 		'TypeContact_propal_external_CUSTOMER' => 'Contacto cliente seguimiento presupuesto',
-		// Documents models
+		// Document models
 		'DocModelAzurDescription' => 'Modelo de presupuesto completo (logo...)',
-		'DocModelJauneDescription' => 'Modelo de presupuesto Jaune',
-		'Numbershort' => 'N°',
+		'DocModelJauneDescription' => 'Modelo de presupuesto Jaune'
 );
 ?>

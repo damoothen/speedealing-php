@@ -35,6 +35,6 @@ $trips = array(
 		'TF_TRIP' => 'Pot',
 		'ListTripsAndExpenses' => 'Seznam poti in stroškov',
 		'ExpensesArea' => 'Področje poti in stroškov',
-		'SearchATripAndExpense' => 'Iskanje poti in stroška',
+		'SearchATripAndExpense' => 'Iskanje poti in stroška'
 );
 ?>

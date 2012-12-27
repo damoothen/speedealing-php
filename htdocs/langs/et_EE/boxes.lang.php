@@ -18,6 +18,7 @@ $boxes = array(
 		'CHARSET' => 'UTF-8',
 		'BoxLastRssInfos' => 'RSS info',
 		'BoxLastProducts' => 'Last %s toodete / teenuste',
+		'BoxProductsAlertStock' => 'Products in stock alert',
 		'BoxLastProductsInContract' => 'Last %s tellitud tooteid / teenuseid',
 		'BoxLastSupplierBills' => 'Last tarnija arved',
 		'BoxLastCustomerBills' => 'Last kliendi arved',
@@ -41,6 +42,7 @@ $boxes = array(
 		'BoxTitleNbOfCustomers' => 'Klientide arv',
 		'BoxTitleLastRssInfos' => 'Last %s uudiseid %s',
 		'BoxTitleLastProducts' => 'Last %s muundatud toodete / teenuste',
+		'BoxTitleProductsAlertStock' => 'Products in stock alert',
 		'BoxTitleLastCustomerOrders' => 'Last %s muuta klientide tellimused',
 		'BoxTitleLastSuppliers' => 'Last %s registreerida tarnijate',
 		'BoxTitleLastCustomers' => 'Last %s registreerida klientide',
@@ -68,6 +70,7 @@ $boxes = array(
 		'BoxTitleLastContracts' => 'Last %s lepingud',
 		'BoxTitleLastModifiedDonations' => 'Last %s muutmine annetusi',
 		'BoxTitleLastModifiedExpenses' => 'Last %s muutmine kulud',
+		'BoxGlobalActivity' => 'Global activity (invoices, proposals, orders)',
 		'FailedToRefreshDataInfoNotUpToDate' => 'Suutnud refresh RSS voog. Last eduka refresh kuupäev: %s',
 		'LastRefreshDate' => 'Last refresh kuupäev',
 		'NoRecordedBookmarks' => 'Ei järjehoidjaid määratletud.',
@@ -86,5 +89,9 @@ $boxes = array(
 		'NoRecordedProspects' => 'Ei salvestatud väljavaated',
 		'NoContractedProducts' => 'Ei ole tooteid / teenuseid tellitakse',
 		'NoRecordedContracts' => 'Ei salvestatud lepingud',
+		// Latest supplier orders
+		'BoxLatestSupplierOrders' => 'Latest supplier orders',
+		'BoxTitleLatestSupplierOrders' => '%s latest supplier orders',
+		'NoSupplierOrder' => 'No recorded supplier order'
 );
 ?>

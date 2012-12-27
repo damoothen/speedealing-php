@@ -18,6 +18,11 @@ $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal modul beállítása',
 		'PaypalDesc' => 'Ez a modul ajánlat oldalakat, hogy fizetést <a href="http://www.paypal.com" target="_blank">PayPal</a> ügyfelek. Ezt fel lehet használni a szabad fizetés vagy a fizetés egy adott Dolibarr objektum (számla, megrendelés, ...)',
+		'PaypalOrCBDoPayment' => 'Fizessen hitelkártyával vagy Paypal',
+		'PaypalDoPayment' => 'Fizetés Paypal',
+		'PaypalCBDoPayment' => 'Fizess bankkártyával',
+		'PAYPAL_API_SANDBOX' => 'Üzemmódban végzett vizsgálat / homokozó',
+		'PAYPAL_API_USER' => 'API felhasználónév',
 		'PAYPAL_API_PASSWORD' => 'API jelszó',
 		'PAYPAL_API_SIGNATURE' => 'API aláírás',
 		'PAYPAL_API_INTEGRAL_OR_PAYPALONLY' => 'Ajánlat fizetés &quot;szerves&quot; (hitelkártya + Paypal) vagy a &quot;Paypal&quot; csak',
@@ -25,11 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => 'Ez a tranzakció id: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Add az url a Paypal fizetési amikor a dokumentumot postán',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-mail cím az azonnali értesítést a fizetés (IPN)',
-		'PaypalOrCBDoPayment' => 'Fizessen hitelkártyával vagy Paypal',
-		'PaypalDoPayment' => 'Fizetés Paypal',
-		'PaypalCBDoPayment' => 'Fizess bankkártyával',
-		'PAYPAL_API_SANDBOX' => 'Üzemmódban végzett vizsgálat / homokozó',
-		'PAYPAL_API_USER' => 'API felhasználónév',
-		'YouAreCurrentlyInSandboxMode' => 'Ön jelenleg a &quot;sandbox&quot; mód',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Ön jelenleg a &quot;sandbox&quot; mód'
 );
 ?>

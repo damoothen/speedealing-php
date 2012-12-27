@@ -16,15 +16,15 @@
 
 $ftp = array(
 		'CHARSET' => 'UTF-8',
-		'FailedToConnectToFTPServer' => 'Connessione al server FTP fallita (server %s, porta %s)',
-		'FailedToConnectToFTPServerWithCredentials' => 'Login al server FTP fallito con le credenziali fornite (utente/password)',
+		'FTPClientSetup' => 'Impostazioni modulo FTP client',
+		'NewFTPClient' => 'Impostazioni nuova connessione FTP',
 		'FTPArea' => 'Area client FTP',
 		'FTPAreaDesc' => 'Questa pagina mostra il contenuto di un server FTP',
-		'FTPClientSetup' => 'Impostazioni modulo FTP client',
-		'FTPFailedToRemoveDir' => 'Impossibile rimuovere la directory <b>%s</b> (Controlla i permessi e che la directory sia vuota)',
-		'FTPFailedToRemoveFile' => 'Impossibile rimuovere il file <b>%s</b>',
-		'FTPFeatureNotSupportedByYourPHP' => 'L\'attuale installazione di PHP non supporta le funzioni FTP',
-		'NewFTPClient' => 'Impostazioni nuova connessione FTP',
 		'SetupOfFTPClientModuleNotComplete' => 'Le impostazioni del modulo FTP sono errate o incomplete',
+		'FTPFeatureNotSupportedByYourPHP' => 'L\'attuale installazione di PHP non supporta le funzioni FTP',
+		'FailedToConnectToFTPServer' => 'Connessione al server FTP fallita (server %s, porta %s)',
+		'FailedToConnectToFTPServerWithCredentials' => 'Login al server FTP fallito con le credenziali fornite (utente/password)',
+		'FTPFailedToRemoveFile' => 'Impossibile rimuovere il file <b>%s</b>',
+		'FTPFailedToRemoveDir' => 'Impossibile rimuovere la directory <b>%s</b> (Controlla i permessi e che la directory sia vuota)'
 );
 ?>

@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'Validera ett kontrakt',
 		'ActivateService' => 'Aktivera tjänsten',
 		'ConfirmActivateService' => 'Är du säker på att du vill aktivera denna tjänst med datum <b>%s?</b>',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'Kontraktsdatum',
 		'DateServiceActivate' => 'Service aktivering datum',
 		'DateServiceUnactivate' => 'Service avaktivering datum',
@@ -69,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Förteckning över körande tjänster',
 		'NotActivatedServices' => 'Inaktiv tjänster (bland valideras kontrakt)',
 		'BoardNotActivatedServices' => 'Tjänster för att aktivera bland validerade kontrakt',
-		'LastContracts' => 'Senast% kontrakt',
+		'LastContracts' => 'Senast %s ändrat avtal',
 		'LastActivatedServices' => 'Senaste %s aktiverad tjänster',
 		'LastModifiedServices' => 'Senast %s uppdaterad tjänster',
 		'EditServiceLine' => 'Redigera servicelinjen',
@@ -100,12 +101,13 @@ $contracts = array(
 		'PaymentRenewContractId' => 'Förnya kontrakt linje (nummer %s)',
 		'ExpiredSince' => 'Utgångsdatum',
 		'RelatedContracts' => 'Liknande avtal',
+		'NoExpiredServices' => 'Inga utgångna aktiva tjänster',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'Säljare undertecknar avtal',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'Försäljare följa upp avtal',
 		'TypeContact_contrat_external_BILLING' => 'Fakturering kundkontakt',
 		'TypeContact_contrat_external_CUSTOMER' => 'Uppföljning kundkontakt',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Undertecknande kontrakt kundkontakt',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Konstant CONTRACT_ADDON definieras inte',
-		'NoExpiredServices' => 'Inga utgångna aktiva tjänster',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Konstant CONTRACT_ADDON definieras inte'
 );
 ?>

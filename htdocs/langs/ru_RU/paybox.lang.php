@@ -31,13 +31,14 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => 'Вы будете перенаправлены по обеспеченным Paybox страницу для ввода данных кредитной карточки',
 		'PleaseBePatient' => 'Пожалуйста, будьте терпеливы',
 		'Continue' => 'Следующий',
+		'ToOfferALinkForOnlinePayment' => 'URL-адрес для оплаты %s',
 		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL предложить %s онлайн платежей пользовательский интерфейс для заказа',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL предложить %s онлайн платежей пользовательский интерфейс для счета',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL предложить% интернет-платежей с интерфейсом пользователя на контракт линия',
 		'ToOfferALinkForOnlinePaymentOnFreeAmount' => 'URL предложить% интернет-платежей с пользовательским интерфейсом для свободного сумму',
+		'ToOfferALinkForOnlinePaymentOnMemberSubscription' => 'URL предложить оплаты %s онлайн пользовательский интерфейс для членов подписки',
 		'YouCanAddTagOnUrl' => 'Вы также можете добавить URL параметр И <b>тег= <i>значение</i></b> для любой из этих URL (требуется только для свободного платежа), чтобы добавить свой комментарий оплаты метки.',
 		'SetupPayBoxToHavePaymentCreatedAutomatically' => 'Настройте PayBox с <b>URL %s</b> иметь платежей создается автоматически, когда подтверждено paybox.',
-		'ToOfferALinkForOnlinePaymentOnMemberSubscription' => 'URL предложить оплаты %s онлайн пользовательский интерфейс для членов подписки',
 		'YourPaymentHasBeenRecorded' => 'Эта страница подтверждает, что ваш платеж был записан. Спасибо.',
 		'YourPaymentHasNotBeenRecorded' => 'Вы платеж не был записан и сделка была отменена. Спасибо.',
 		'AccountParameter' => 'Счет параметры',
@@ -47,7 +48,6 @@ $paybox = array(
 		'VendorName' => 'Имя поставщика',
 		'CSSUrlForPaymentForm' => 'CSS-стилей URL для оплаты форме',
 		'MessageOK' => 'Сообщение на странице проверки возвращение оплаты',
-		'MessageKO' => 'Сообщение на странице отменен возврат оплаты',
-		'ToOfferALinkForOnlinePayment' => 'URL-адрес для оплаты %s',
+		'MessageKO' => 'Сообщение на странице отменен возврат оплаты'
 );
 ?>

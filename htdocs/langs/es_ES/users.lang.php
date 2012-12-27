@@ -119,6 +119,7 @@ $users = array(
 		'UserEnabled' => 'Usuario %s activado',
 		'UserDeleted' => 'Usuario %s eliminado',
 		'NewGroupCreated' => 'Grupo %s creado',
+		'GroupModified' => 'Grupo %s modificado',
 		'GroupDeleted' => 'Grupo %s eliminado',
 		'ConfirmCreateContact' => '¿Está seguro de querer crear una cuenta Dolibarr para este contacto?',
 		'ConfirmCreateLogin' => '¿Está seguro de que desea crear una cuenta Dolibarr para este miembro?',
@@ -128,6 +129,6 @@ $users = array(
 		'YourRole' => 'Sus roles',
 		'YourQuotaOfUsersIsReached' => '¡Ha llegado a su cuota de usuarios activos!',
 		'NbOfUsers' => 'Nº de usuarios',
-		'DontDowngradeSuperAdmin' => 'Sólo un superadmin puede degradar un superadmin',
+		'DontDowngradeSuperAdmin' => 'Sólo un superadmin puede degradar un superadmin'
 );
 ?>

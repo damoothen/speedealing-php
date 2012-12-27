@@ -60,6 +60,7 @@ $mails = array(
 		'MailingStatusError' => 'שגיאה',
 		'MailingStatusNotSent' => 'לא נשלח',
 		'MailSuccessfulySent' => 'מייל נשלח בהצלחה (מ %s כדי %s)',
+		'MailingSuccessfullyValidated' => 'EMailing successfully validated',
 		'MailUnsubcribe' => 'ביטול מנוי',
 		'Unsuscribe' => 'ביטול מנוי',
 		'MailingStatusNotContact' => 'לא לפנות יותר',
@@ -91,10 +92,15 @@ $mails = array(
 		'MailingStatusRead' => 'לקרוא',
 		'CheckRead' => 'קרא את קבלת',
 		'YourMailUnsubcribeOK' => '<b>%s</b> דוא&quot;ל נכון unsubcribe מרשימת התפוצה',
+		'MailtoEMail' => 'Hyper link to email',
+		'ActivateCheckRead' => 'Allow to use the Read receipt tracker and the unsubcribe link',
+		'ActivateCheckReadKey' => 'Key use to encrypt URL use for Read Receipt and unsubcribe function',
+		// Libelle des modules de liste de destinataires mailing
 		'MailingModuleDescContactCompanies' => 'אנשי הקשר של כל צד שלישי (, הלקוח האפשרות, ספק ...)',
 		'MailingModuleDescDolibarrUsers' => 'Dolibarr משתמשים',
 		'MailingModuleDescFundationMembers' => 'חברי הקרן עם מיילים',
 		'MailingModuleDescEmailsFromFile' => 'הודעות דוא&quot;ל מתוך קובץ טקסט (דוא&quot;ל, שם משפחה, שם פרטי, אחר)',
+		'MailingModuleDescEmailsFromUser' => 'EMails from user input (email;lastname;firstname;other)',
 		'MailingModuleDescContactsCategories' => 'צד שלישי (לפי קטגוריות)',
 		'MailingModuleDescDolibarrContractsLinesExpired' => 'לצדדים שלישיים עם קווים החוזה של פג',
 		'MailingModuleDescContactsByCompanyCategory' => 'אנשי קשר של צדדים שלישיים (על ידי צדדים שלישיים קטגוריות)',
@@ -123,12 +129,17 @@ $mails = array(
 		'IdRecord' => 'מזהה שיא',
 		'DeliveryReceipt' => 'משלוח קבלה',
 		'YouCanUseCommaSeparatorForSeveralRecipients' => 'ניתן להשתמש מפריד <b>פסיק</b> כדי לציין מספר נמענים.',
+		'TagCheckMail' => 'Track mail opening',
+		'TagUnsubscribe' => 'Unsubscribe link',
+		'TagSignature' => 'Signature sending user',
+		'TagMailtoEmail' => 'Recipient EMail',
+		// Module Notifications
 		'Notifications' => 'הודעות',
 		'NoNotificationsWillBeSent' => 'הודעות דואר אלקטרוני לא מתוכננים באירוע החברה',
 		'ANotificationsWillBeSent' => '1 ההודעה תישלח בדואר אלקטרוני',
 		'SomeNotificationsWillBeSent' => 'הודעות %s תישלח במייל',
 		'AddNewNotification' => 'הפעל בקשה חדשה הודעה בדוא&quot;ל',
 		'ListOfActiveNotifications' => 'לרשימת המעקב את כל הבקשות פעילים דוא&quot;ל',
-		'ListOfNotificationsDone' => 'רשימה של כל הודעות דוא&quot;ל שנשלחו',
+		'ListOfNotificationsDone' => 'רשימה של כל הודעות דוא&quot;ל שנשלחו'
 );
 ?>

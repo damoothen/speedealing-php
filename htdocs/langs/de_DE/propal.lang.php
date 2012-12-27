@@ -111,6 +111,6 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Partnerkontakt für Angebot',
 		// Document models
 		'DocModelAzurDescription' => 'Eine vollständige Angebotsvorlage (Logo, uwm.)',
-		'DocModelJauneDescription' => 'Angebotsvorlage <Jaune>',
+		'DocModelJauneDescription' => 'Angebotsvorlage <Jaune>'
 );
 ?>

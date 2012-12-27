@@ -43,6 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => 'Üye senkronize edildi',
 		'ContactSynchronized' => 'Kişi senkronize edildi',
 		'ForceSynchronize' => 'Dolibarr -> LDAP senkronizyona zorla',
-		'ErrorFailedToReadLDAP' => 'LDAP veritabanı okunamadı. LDAP modülü kurulumunu ve veritabanı erişilebilirliğini denetleyin.',
+		'ErrorFailedToReadLDAP' => 'LDAP veritabanı okunamadı. LDAP modülü kurulumunu ve veritabanı erişilebilirliğini denetleyin.'
 );
 ?>

@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'Bir sözleşme doğrula',
 		'ActivateService' => 'Hizmet etkinleştir',
 		'ConfirmActivateService' => '<b>%s</b> Tarihli bu hizmeti etkinleştirmek istediğiniz eminmisiniz?',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'Sözleşme tarihi',
 		'DateServiceActivate' => 'Hizmet etkinleştirme tarihi',
 		'DateServiceUnactivate' => 'Hizmet devre dışı bırakma tarihi',
@@ -69,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Yürülükteki hizmetler listesi',
 		'NotActivatedServices' => 'Etkin olmayan hizmetler (doğrulanmış sözleşmeler arasından)',
 		'BoardNotActivatedServices' => 'Doğrulanmış sözleşmeler arasındaki etkinleştirilecek hizmetler',
-		'LastContracts' => 'Son %s sözleşme',
+		'LastContracts' => 'Değiştirilen son %s sözleşme',
 		'LastActivatedServices' => 'Etkinleştirilen son %s hizmet',
 		'LastModifiedServices' => 'Değiştirilen son %s hizmet',
 		'EditServiceLine' => 'Hizmet satırı düzenle',
@@ -101,12 +102,12 @@ $contracts = array(
 		'ExpiredSince' => 'Süre doluş tarihi',
 		'RelatedContracts' => 'İlgili sözleşmeler',
 		'NoExpiredServices' => 'Süresi dolmamış etkin hizmetler',
-		////////// Kişi türleri //////////
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'Sözleşme imzalalayacak satış temsilcisi',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'Sözleşmeyi izleyecek satış temsilcisi',
 		'TypeContact_contrat_external_BILLING' => 'Müşteri fatura ilgilisi',
 		'TypeContact_contrat_external_CUSTOMER' => 'Müşteri izleme ilgilisi',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Sözleşme imzalayacak müşteri ilgilisi',
-		'Error_CONTRACT_ADDON_NotDefined' => 'CONTRACT_ADDON değişmezi tanımlanmamış',
+		'Error_CONTRACT_ADDON_NotDefined' => 'CONTRACT_ADDON değişmezi tanımlanmamış'
 );
 ?>

@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'Denna medlem är inte på något kategorier',
 		'ClassifyInCategory' => 'Klassificera i kategorin',
 		'NoneCategory' => 'Ingen',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'Denna kategori finns redan med denna ref',
 		'ReturnInProduct' => 'Tillbaka till produkt / tjänst kort',
 		'ReturnInSupplier' => 'Tillbaka till leverantör kort',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'Lista över leverantör kategorier',
 		'CatCusList' => 'Förteckning över kund / utsikterna kategorier',
 		'CatProdList' => 'Förteckning över produkter kategorier',
-		'CatMemberList' => 'Förteckning över medlemmar kategorier',
+		'CatMemberList' => 'Förteckning över medlemmar kategorier'
 );
 ?>

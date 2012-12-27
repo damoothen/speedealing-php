@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Kunne ikke forbinde til FTP server (server %s, port %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Kunne ikke logge på FTP server med defineret login / password',
 		'FTPFailedToRemoveFile' => 'Kunne ikke fjerne filen <b>%s.</b>',
-		'FTPFailedToRemoveDir' => 'Kunne ikke fjerne kataloget <b>%s</b> (Check tilladelser, og at biblioteket er tom).',
+		'FTPFailedToRemoveDir' => 'Kunne ikke fjerne kataloget <b>%s</b> (Check tilladelser, og at biblioteket er tom).'
 );
 ?>

@@ -42,6 +42,7 @@ $install = array(
 		'ErrorWrongValueForParameter' => 'ייתכן הקלדת ערך שגוי לפרמטר &quot;%s&quot;.',
 		'ErrorFailedToCreateDatabase' => 'נכשל נסיון ליצור &quot;%s&quot; מסד הנתונים.',
 		'ErrorFailedToConnectToDatabase' => 'נכשל נסיון להתחבר &quot;%s&quot; מסד הנתונים.',
+		'ErrorDatabaseVersionTooLow' => 'Database version (%s) too old. Version %s or higher is required.',
 		'ErrorPHPVersionTooLow' => 'PHP גרסה ישנה מדי. %s גרסה נדרשת.',
 		'WarningPHPVersionTooLow' => 'PHP גרסה ישנה מדי. %s גרסה או יותר צפוי. גרסה זו אמורה לאפשר להתקין אך לא נתמך.',
 		'ErrorConnectedButDatabaseNotFound' => 'חיבור לשרת מוצלחת אבל לא &quot;%s של מסד הנתונים נמצא.',
@@ -170,6 +171,10 @@ $install = array(
 		'MigrationFinished' => 'הגירה סיים',
 		'LastStepDesc' => '<strong>השלב האחרון:</strong> הגדרת כאן שם המשתמש והסיסמה אתה מתכוון להשתמש להתחבר לתוכנה. לא לאבד את זה כפי שהוא חשבון לנהל את כל האחרים.',
 		'ActivateModule' => 'להפעיל את מודול %s',
+		'ShowEditTechnicalParameters' => 'Click here to show/edit advanced parameters (expert mode)',
+		//////////////////
+		// upgrade
+		//////////////////
 		'MigrationFixData' => 'תיקון לנתונים denormalized',
 		'MigrationOrder' => 'העברת נתונים עבור הזמנות של לקוחות',
 		'MigrationSupplierOrder' => 'העברת נתונים עבור הזמנות של הספק',
@@ -217,5 +222,6 @@ $install = array(
 		'MigrationProjectTaskTime' => 'זמן עדכון בילה שניות',
 		'MigrationActioncommElement' => 'עדכון נתונים על פעולות',
 		'MigrationPaymentMode' => 'העברת נתונים על מצב תשלום',
+		'MigrationCategorieAssociation' => 'Migration of categories'
 );
 ?>

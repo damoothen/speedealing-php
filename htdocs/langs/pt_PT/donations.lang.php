@@ -15,10 +15,10 @@
  */
 
 $donations = array(
-		'﻿# Dolibarr language file - pt_PT - donations' => '',
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Doação',
-		'Donationss' => 'Doações',
+		'Donations' => 'Donativos',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Dador',
 		'Donors' => 'Dadores',
 		'AddDonation' => 'Adicionar Doação',
@@ -37,12 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => 'Não Validada',
 		'DonationStatusPromiseValidatedShort' => 'Validada',
 		'DonationStatusPaidShort' => 'Paga',
-		'ValidPromise' => 'Validar Promessa',
+		'ValidPromess' => 'Validar promessa',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Criar Recibo',
 		'DonationsModels' => 'Modelo de documento de recepção de Doação',
-		'Donations' => 'Donativos',
-		'ValidPromess' => 'Validar promessa',
 		'LastModifiedDonations' => '%s Última modificação doações',
 		'SearchADonation' => 'Procure uma doação',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

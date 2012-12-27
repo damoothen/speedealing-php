@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Кол-во оставшихся символов',
 		'SmsInfoNumero' => '(Международном формате, т.е.: +33899701761)',
 		'DelayBeforeSending' => 'Задержка перед отправкой (в минутах)',
-		'SmsNoPossibleRecipientFound' => 'Нет целевой доступны. Проверьте настройки вашего провайдера SMS.',
+		'SmsNoPossibleRecipientFound' => 'Нет целевой доступны. Проверьте настройки вашего провайдера SMS.'
 );
 ?>

@@ -162,6 +162,8 @@ $products = array(
 		'QtyMin' => 'כמות מינימום',
 		'PriceQty' => 'מחיר כמות זו',
 		'PriceQtyMin' => 'כמות מחיר דקות.',
+		'VATRateForSupplierProduct' => 'VAT Rate (for this supplier/product)',
+		'DiscountQtyMin' => 'Discount quantity min. (by default)',
 		'NoPriceDefinedForThisSupplier' => 'אין מחיר / כמות מוגדרת של הספק הזה / מוצר',
 		'NoSupplierPriceDefinedForThisProduct' => 'אין ספק מחיר / כמות מוגדרת של מוצר זה',
 		'RecordedProducts' => 'מוצרים נרשם',
@@ -185,5 +187,15 @@ $products = array(
 		'CustomCode' => 'קוד המכס',
 		'CountryOrigin' => 'מקור הארץ',
 		'HiddenIntoCombo' => 'מוסתר בתוך רשימות בחר',
+		'Nature' => 'Nature',
+		'ProductCodeModel' => 'Product code model',
+		'ServiceCodeModel' => 'Service code model',
+		'AddThisProductCard' => 'Create product card',
+		'HelpAddThisProductCard' => 'This option allows you to create or clone a product if it does not exist.',
+		'AddThisServiceCard' => 'Create service card',
+		'HelpAddThisServiceCard' => 'This option allows you to create or clone a service if it does not exist.',
+		'CurrentProductPrice' => 'Current price',
+		'AlwaysUseNewPrice' => 'Always use current price of product/service',
+		'AlwaysUseFixedPrice' => 'Use the fixed price'
 );
 ?>

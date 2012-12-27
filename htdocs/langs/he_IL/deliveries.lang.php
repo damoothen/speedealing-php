@@ -33,11 +33,12 @@ $deliveries = array(
 		'DeliveryMethod' => 'שיטת הצגה',
 		'TrackingNumber' => 'מעקב אחר מספר',
 		'DeliveryNotValidated' => 'משלוח לא תוקף',
+		// merou PDF model
 		'NameAndSignature' => 'שם וחתימה:',
 		'ToAndDate' => 'To___________________________________ על ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'קיבלו את הסחורה מעל במצב טוב,',
 		'Deliverer' => 'מושיע:',
 		'Sender' => 'שולח',
-		'Recipient' => 'מקבל',
+		'Recipient' => 'מקבל'
 );
 ?>

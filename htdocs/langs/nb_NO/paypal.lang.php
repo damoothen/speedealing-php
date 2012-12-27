@@ -16,6 +16,10 @@
 
 $paypal = array(
 		'CHARSET' => 'UTF-8',
+		'PaypalSetup' => 'PayPal modul oppsett',
+		'PaypalDesc' => 'Denne modulen tilbyr sider for å tillate betaling på <a href="http://www.paypal.com" target="_blank">PayPal</a> av kunder. Dette kan brukes til en gratis betaling eller for en betaling på en bestemt Dolibarr objekt (faktura, ordre, ...)',
+		'PaypalOrCBDoPayment' => 'Betal med kredittkort eller Paypal',
+		'PaypalDoPayment' => 'Betal med Paypal',
 		'PaypalCBDoPayment' => 'Betal med kredittkort',
 		'PAYPAL_API_SANDBOX' => 'Mode test / sandkasse',
 		'PAYPAL_API_USER' => 'API brukernavn',
@@ -26,10 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => 'Dette er id av transaksjonen: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Legg til url av Paypal betaling når du sender et dokument i posten',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-post adressen for øyeblikkelig varsling av betaling (IPN)',
-		'PaypalSetup' => 'PayPal modul oppsett',
-		'PaypalDesc' => 'Denne modulen tilbyr sider for å tillate betaling på <a href="http://www.paypal.com" target="_blank">PayPal</a> av kunder. Dette kan brukes til en gratis betaling eller for en betaling på en bestemt Dolibarr objekt (faktura, ordre, ...)',
-		'PaypalOrCBDoPayment' => 'Betal med kredittkort eller Paypal',
-		'PaypalDoPayment' => 'Betal med Paypal',
-		'YouAreCurrentlyInSandboxMode' => 'Du er for øyeblikket i &quot;sandbox&quot;-modus',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Du er for øyeblikket i &quot;sandbox&quot;-modus'
 );
 ?>

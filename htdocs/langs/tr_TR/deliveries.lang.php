@@ -39,6 +39,6 @@ $deliveries = array(
 		'GoodStatusDeclaration' => 'Yukarıdaki malzemeleri iyi durumda aldım,',
 		'Deliverer' => 'Teslim eden :',
 		'Sender' => 'Gönderen',
-		'Recipient' => 'Alıcı',
+		'Recipient' => 'Alıcı'
 );
 ?>

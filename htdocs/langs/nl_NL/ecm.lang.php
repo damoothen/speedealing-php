@@ -52,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Mappen van documenten',
 		'ECMTypeManual' => 'Handmatig',
 		'ECMTypeAuto' => 'Automatisch',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Documenten gekoppeld aan derden',
 		'ECMDocsByProposals' => 'Documenten gekoppeld aan offertes / voorstellen',
 		'ECMDocsByOrders' => 'Documenten gekoppeld aan afnemersorders',
@@ -66,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Verwijderen is niet mogelijk omdat het een aantal bestanden bevat',
 		'ECMFileManager' => 'Bestandsbeheer',
 		'ECMSelectASection' => 'Selecteer een map van de linker structuur',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

@@ -67,6 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Suppression impossible car des fichiers sont présents',
 		'ECMFileManager' => 'Gestionnaire fichier',
 		'ECMSelectASection' => 'Sélectionner un répertoire sur l\'arbre de gauche...',
-		'DirNotSynchronizedSyncFirst' => 'Ce répertoire a été crée ou modifié en dehors du module GED. Cliquer sur le bouton "Rafraichir" afin de resyncronizer les informations sur disque et la base pour voir le contenu de ce répertoire.',
+		'DirNotSynchronizedSyncFirst' => 'Ce répertoire a été crée ou modifié en dehors du module GED. Cliquer sur le bouton "Rafraichir" afin de resyncronizer les informations sur disque et la base pour voir le contenu de ce répertoire.'
 );
 ?>

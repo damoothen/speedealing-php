@@ -48,6 +48,6 @@ $paybox = array(
 		'VendorName' => 'Nimi müüja',
 		'CSSUrlForPaymentForm' => 'CSS style sheet url maksmise vorm',
 		'MessageOK' => 'Sõnum on kontrollitud makse tagasi lehele',
-		'MessageKO' => 'Sõnum on tühistatud makse tagasi lehele',
+		'MessageKO' => 'Sõnum on tühistatud makse tagasi lehele'
 );
 ?>

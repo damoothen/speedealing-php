@@ -15,7 +15,6 @@
  */
 
 $cashdesk = array(
-		// Language file - fr_FR - cashdesk
 		'CHARSET' => 'UTF-8',
 		'CashDeskMenu' => 'Point vente',
 		'CashDesk' => 'Caisse enregistreuse',
@@ -53,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Compte à créditer',
 		'ShowCompany' => 'Voir société',
 		'ShowStock' => 'Voir entrepôt',
-		'DeleteArticle' => 'Cliquez pour enlever cet article',
+		'DeleteArticle' => 'Cliquez pour enlever cet article'
 );
 ?>

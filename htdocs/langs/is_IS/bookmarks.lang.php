@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Notaðu utanáliggjandi http URL eða ættingja Dolibarr URL',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Veldu hvort á síðu opnar tengil á að birtast á núverandi eða nýr gluggi',
 		'BookmarksManagement' => 'Bókamerki stjórnun',
-		'ListOfBookmarks' => 'Listi yfir bókamerki',
+		'ListOfBookmarks' => 'Listi yfir bókamerki'
 );
 ?>

@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Anzahl der verbleibenden Zeichen',
 		'SmsInfoNumero' => '(Format der Rufnummer: ++33899701761)',
 		'DelayBeforeSending' => 'Warten vor dem Senden (in Minuten)',
-		'SmsNoPossibleRecipientFound' => 'Keine möglichen Empfänger gefunden. Prüfen Sie die Einstellungen Ihres SMS Anbieters.',
+		'SmsNoPossibleRecipientFound' => 'Keine möglichen Empfänger gefunden. Prüfen Sie die Einstellungen Ihres SMS Anbieters.'
 );
 ?>

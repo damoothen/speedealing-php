@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Nb af Stafir',
 		'SmsInfoNumero' => '(Snið International þ.e.: 33899701761)',
 		'DelayBeforeSending' => 'Töf áður en þú sendir (mínútur)',
-		'SmsNoPossibleRecipientFound' => 'Engin markmið í boði. Athugaðu uppsetningu SMS gefur.',
+		'SmsNoPossibleRecipientFound' => 'Engin markmið í boði. Athugaðu uppsetningu SMS gefur.'
 );
 ?>

@@ -35,6 +35,7 @@ $other = array(
 		'Notify_WITHDRAW_TRANSMIT' => 'Transmission prélèvement',
 		'Notify_WITHDRAW_CREDIT' => 'Créditer prélèvement',
 		'Notify_WITHDRAW_EMIT' => 'Emission prélèvement',
+		'Notify_ORDER_SENTBYMAIL' => 'Envoi commande client par email',
 		'Notify_COMPANY_CREATE' => 'Créer tiers',
 		'Notify_PROPAL_SENTBYMAIL' => 'Envoi propale par email',
 		'Notify_ORDER_SENTBYMAIL' => 'Envoi commande client par email',
@@ -217,6 +218,6 @@ $other = array(
 		'ToExport' => 'Exporter',
 		'NewExport' => 'Nouvel export',
 		////////// External sites //////////
-		'ExternalSites' => 'Sites externes',
+		'ExternalSites' => 'Sites externes'
 );
 ?>

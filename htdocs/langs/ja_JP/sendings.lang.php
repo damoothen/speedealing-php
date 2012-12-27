@@ -47,9 +47,11 @@ $sendings = array(
 		'StatusSendingCanceled' => 'キャンセル',
 		'StatusSendingDraft' => 'ドラフト',
 		'StatusSendingValidated' => '検証（製品が出荷する、またはすでに出荷されます）',
+		'StatusSendingProcessed' => 'Processed',
 		'StatusSendingCanceledShort' => 'キャンセル',
 		'StatusSendingDraftShort' => 'ドラフト',
 		'StatusSendingValidatedShort' => '検証',
+		'StatusSendingProcessedShort' => 'Processed',
 		'SendingSheet' => 'シートを送信する',
 		'Carriers' => 'キャリア',
 		'Carrier' => 'キャリア',
@@ -71,11 +73,14 @@ $sendings = array(
 		'ActionsOnShipping' => '出荷のイベント',
 		'LinkToTrackYourPackage' => 'あなたのパッケージを追跡するためのリンク',
 		'ShipmentCreationIsDoneFromOrder' => '現時点では、新たな出荷の作成は、注文カードから行われます。',
+		'RelatedShippings' => 'Related shippings',
+		// Sending methods
 		'SendingMethodCATCH' => '顧客がキャッチ',
 		'SendingMethodTRANS' => 'トランスポーター',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		// ModelDocument
 		'DocumentModelSirocco' => '配信確認のためのシンプルなドキュメントモデル',
 		'DocumentModelTyphon' => '配信確認のために、より完全なドキュメントモデル（logo. ..）',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => '定数EXPEDITION_ADDON_NUMBERが定義されていません',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => '定数EXPEDITION_ADDON_NUMBERが定義されていません'
 );
 ?>

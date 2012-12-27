@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Hívhatja az egyik előre kiválasztott az ön nyelvén (%s) tudó Dolibarr oktatót ha erre a Widget-re kattint (álltapot és maximális ár autómatikusan frissül):',
 		'PossibleLanguages' => 'Támogatott nyelvek',
 		'MakeADonation' => 'Segítse a Dolibarr projektet, adományozzon',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

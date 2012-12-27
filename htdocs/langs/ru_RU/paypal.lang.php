@@ -30,6 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => 'Это идентификатор сделки: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Добавить адрес Paypal оплата при отправке документа по почте',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'Адрес электронной почты для мгновенного уведомления об оплате (IPN)',
-		'YouAreCurrentlyInSandboxMode' => 'Вы в настоящее время в &quot;песочнице&quot; режим',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Вы в настоящее время в &quot;песочнице&quot; режим'
 );
 ?>

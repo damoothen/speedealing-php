@@ -162,6 +162,8 @@ $products = array(
 		'QtyMin' => 'Минимално количество',
 		'PriceQty' => 'Цена за това количество',
 		'PriceQtyMin' => 'Мин. Цена количество.',
+		'VATRateForSupplierProduct' => 'VAT Rate (for this supplier/product)',
+		'DiscountQtyMin' => 'Discount quantity min. (by default)',
 		'NoPriceDefinedForThisSupplier' => 'Няма цена / Количество, определени за този доставчик / продукт',
 		'NoSupplierPriceDefinedForThisProduct' => 'Не доставчик цена / Количество, определени за този продукт',
 		'RecordedProducts' => 'Записва продукти',
@@ -192,5 +194,8 @@ $products = array(
 		'HelpAddThisProductCard' => 'Тази опция ви позволява да създадете или клониране на продукта, ако тя не съществува.',
 		'AddThisServiceCard' => 'Създаване на карта на услугите',
 		'HelpAddThisServiceCard' => 'Тази опция ви позволява да създадете или клониране на услугата, ако тя не съществува.',
+		'CurrentProductPrice' => 'Current price',
+		'AlwaysUseNewPrice' => 'Always use current price of product/service',
+		'AlwaysUseFixedPrice' => 'Use the fixed price'
 );
 ?>

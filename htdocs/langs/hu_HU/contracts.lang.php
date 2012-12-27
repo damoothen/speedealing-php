@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'Szerződés hitelesítése',
 		'ActivateService' => 'Aktív szolgáltatás',
 		'ConfirmActivateService' => 'Biztos aktiválni akarja a <b>%s</b> dátummal ellátott szolgáltatást?',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'Szerződés dátuma',
 		'DateServiceActivate' => 'Szolgáltatás aktiválásának dátuma',
 		'DateServiceUnactivate' => 'Szolgáltatás deaktiválásának dátuma',
@@ -69,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Futó szolgáltatások listája',
 		'NotActivatedServices' => 'Inaktív szolgáltatások (a hitelesített szerződések között)',
 		'BoardNotActivatedServices' => 'Hitelesített szerződésekhez tartozó aktiválandó szolgáltatások',
-		'LastContracts' => 'Utulsó % szerződés',
+		'LastContracts' => 'Utolsó %s módosított szerződés',
 		'LastActivatedServices' => 'Utolós %s aktivált szolgáltatás',
 		'LastModifiedServices' => 'Utolsó %s módosított szolgáltatás',
 		'EditServiceLine' => 'Szolgáltatás sor szerkesztése',
@@ -100,13 +101,13 @@ $contracts = array(
 		'PaymentRenewContractId' => 'Szerződés sor megújítása (%s)',
 		'ExpiredSince' => 'Lejárati dátum',
 		'RelatedContracts' => 'Csatlakozó szerződések',
+		'NoExpiredServices' => 'Nincs lejárt aktív szolgáltatások',
 		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'Értékesítési képviselő a szerződés aláírásakor',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'Értékesítési képviselő a szerződés követésekor',
 		'TypeContact_contrat_external_BILLING' => 'Számlázandó ügyfél',
 		'TypeContact_contrat_external_CUSTOMER' => 'Ügyfél kapcsolat tartó',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'A szerződést aláíró ügyfél',
-		'NoExpiredServices' => 'Nincs lejárt aktív szolgáltatások',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Állandó CONTRACT_ADDON nincs definiálva',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Állandó CONTRACT_ADDON nincs definiálva'
 );
 ?>

@@ -23,6 +23,7 @@ $interventions = array(
 		'AddIntervention' => 'Προσθ. παρέμβασης',
 		'ListOfInterventions' => 'List of interventions',
 		'EditIntervention' => 'Edit intervention',
+		'ActionsOnFicheInter' => 'Δράσεις για την παρέμβαση',
 		'LastInterventions' => 'Last %s interventions',
 		'AllInterventions' => 'All interventions',
 		'CreateDraftIntervention' => 'Create draft',
@@ -39,6 +40,10 @@ $interventions = array(
 		'NameAndSignatureOfInternalContact' => 'Name and signature of intervening :',
 		'NameAndSignatureOfExternalContact' => 'Name and signature of customer :',
 		'DocumentModelStandard' => 'Standard document model for interventions',
+		'ClassifyBilled' => 'Ταξινομήστε &quot;Χρεώσεις&quot;',
+		'StatusInterInvoiced' => 'Τιμολογείται',
+		'RelatedInterventions' => 'Οι παρεμβάσεις που σχετίζονται',
+		'ShowIntervention' => 'Εμφάνιση παρέμβαση',
 		////////// Types de contacts //////////
 		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Representative following-up intervention',
 		'TypeContact_fichinter_internal_INTERVENING' => 'Intervening',
@@ -48,11 +53,6 @@ $interventions = array(
 		'ArcticNumRefModelDesc1' => 'Generic number model',
 		'ArcticNumRefModelError' => 'Failed to activate',
 		'PacificNumRefModelDesc1' => 'Return numero with format %syymm-nnnn where yy is year, mm is month and nnnn is a sequence with no break and no return to 0',
-		'PacificNumRefModelError' => 'An intervention card starting with $syymm already exists and is not compatible with this model of sequence. Remove it or rename it to activate this module.',
-		'ActionsOnFicheInter' => 'Δράσεις για την παρέμβαση',
-		'ClassifyBilled' => 'Ταξινομήστε &quot;Χρεώσεις&quot;',
-		'StatusInterInvoiced' => 'Τιμολογείται',
-		'RelatedInterventions' => 'Οι παρεμβάσεις που σχετίζονται',
-		'ShowIntervention' => 'Εμφάνιση παρέμβαση',
+		'PacificNumRefModelError' => 'An intervention card starting with $syymm already exists and is not compatible with this model of sequence. Remove it or rename it to activate this module.'
 );
 ?>

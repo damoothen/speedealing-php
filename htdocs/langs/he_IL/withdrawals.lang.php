@@ -64,7 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => 'סיבת הדחייה',
 		'RefusedInvoicing' => 'חיוב דחייה',
 		'NoInvoiceRefused' => 'אין לטעון את הדחייה',
-		'InvoiceRefused' => 'טען את דחיית ללקוח',
+		'InvoiceRefused' => 'חשבונית סירב',
 		'Status' => 'מצב',
 		'StatusUnknown' => 'לא ידוע',
 		'StatusWaiting' => 'המתנה',
@@ -97,6 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'הצג משיכה',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'עם זאת, אם חשבונית אחת לפחות תשלום הנסיגה לא מעובד עדיין, זה לא יהיה כפי שנקבע שילם כדי לאפשר לנהל את הנסיגה לפני.',
 		'DoStandingOrdersBeforePayments' => 'כרטיסיות זה מאפשר לך לבקש לסדר מעמד. ברגע שזה יושלם, תוכל להקליד את התשלום כדי לסגור את החשבונית.',
+		////// Notifications
 		'InfoCreditSubject' => 'תשלום %s הוראת קבע על ידי הבנק',
 		'InfoCreditMessage' => '%s הוראת קבע שולם על ידי הבנק <br> נתוני התשלום: %s',
 		'InfoTransSubject' => 'העברת %s הוראת קבע לבנק',
@@ -105,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'זוהי הודעה אוטומטית נשלחה על ידי Dolibarr',
 		'InfoRejectSubject' => 'הוראת קבע סירב',
 		'InfoRejectMessage' => 'שלום, <br><br> כדי standig של %s חשבוניות הקשורות %s החברה, עם כמות של %s סורב על ידי הבנק. <br><br> - <br> % $',
-		'ModeWarning' => 'אפשרות מצב אמיתי לא נקבע, אנחנו עוצרים אחרי סימולציה זו',
+		'ModeWarning' => 'אפשרות מצב אמיתי לא נקבע, אנחנו עוצרים אחרי סימולציה זו'
 );
 ?>

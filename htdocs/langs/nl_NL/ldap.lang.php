@@ -43,6 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => 'Lidmaatschap gesynchroniseerd',
 		'ContactSynchronized' => 'Contact gesynchroniseerd',
 		'ForceSynchronize' => 'Forceer synchronisatie Dolibarr -> LDAP',
-		'ErrorFailedToReadLDAP' => 'Kon niet lezen uit de LDAP-database. Controleer de instellingen van de LDAP module en database toegankelijkheid.',
+		'ErrorFailedToReadLDAP' => 'Kon niet lezen uit de LDAP-database. Controleer de instellingen van de LDAP module en database toegankelijkheid.'
 );
 ?>

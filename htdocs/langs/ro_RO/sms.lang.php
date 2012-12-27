@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'NB de caractere rămase',
 		'SmsInfoNumero' => '(Format internaţional şi anume: 33899701761)',
 		'DelayBeforeSending' => 'Întârziere înainte de a trimite (minute)',
-		'SmsNoPossibleRecipientFound' => 'Nu este disponibilă nicio ţintă. Verificaţi configurarea de furnizorul de SMS-uri.',
+		'SmsNoPossibleRecipientFound' => 'Nu este disponibilă nicio ţintă. Verificaţi configurarea de furnizorul de SMS-uri.'
 );
 ?>

@@ -23,6 +23,7 @@ $interventions = array(
 		'AddIntervention' => 'Intervenció hozzáadása',
 		'ListOfInterventions' => 'Intervenciók liskáta',
 		'EditIntervention' => 'Intervenció szerkesztése',
+		'ActionsOnFicheInter' => 'Műveletek az intervenciós',
 		'LastInterventions' => '%s utolsó intervenció',
 		'AllInterventions' => 'Minden intervenció',
 		'CreateDraftIntervention' => 'Vázlat létrehozása',
@@ -39,6 +40,10 @@ $interventions = array(
 		'NameAndSignatureOfInternalContact' => 'Beavatkozó neve és aláírása:',
 		'NameAndSignatureOfExternalContact' => 'Ügyfél neve és aláírása:',
 		'DocumentModelStandard' => 'Standard dokumentum modell intervenciókhoz',
+		'ClassifyBilled' => 'Classify &quot;számlázott&quot;',
+		'StatusInterInvoiced' => 'Számlázott',
+		'RelatedInterventions' => 'Kapcsolódó beavatkozások',
+		'ShowIntervention' => 'Mutasd beavatkozás',
 		////////// Types de contacts //////////
 		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Reprezentatív követési intervenció',
 		'TypeContact_fichinter_internal_INTERVENING' => 'Beavatkozás',
@@ -48,11 +53,6 @@ $interventions = array(
 		'ArcticNumRefModelDesc1' => 'Általános szám modell',
 		'ArcticNumRefModelError' => 'Sikertelen aktiválás',
 		'PacificNumRefModelDesc1' => 'Számot ad a következő formában: %syymm-nnnn ahol yy az év, mm a hónap és nnnn 4 szám 0-tól indúlva',
-		'PacificNumRefModelError' => 'Egy intervenciós kártya $syymm kezdéssel már létezik és nem kompatibilies ezzel a szekvencia modellel. Távolítsa el vagy nevezze át hogy aktiválhassa a modult.',
-		'ActionsOnFicheInter' => 'Műveletek az intervenciós',
-		'ClassifyBilled' => 'Classify &quot;számlázott&quot;',
-		'StatusInterInvoiced' => 'Számlázott',
-		'RelatedInterventions' => 'Kapcsolódó beavatkozások',
-		'ShowIntervention' => 'Mutasd beavatkozás',
+		'PacificNumRefModelError' => 'Egy intervenciós kártya $syymm kezdéssel már létezik és nem kompatibilies ezzel a szekvencia modellel. Távolítsa el vagy nevezze át hogy aktiválhassa a modult.'
 );
 ?>

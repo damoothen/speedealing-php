@@ -30,6 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => 'זה מזהה עסקה: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'להוסיף את כתובת האתר של Paypal תשלום בעת שליחת מסמך בדואר',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'כתובת דוא&quot;ל עבור הודעה מיידית של התשלום (IPN)',
-		'YouAreCurrentlyInSandboxMode' => 'אתה נמצא כעת במצב &quot;ארגז חול&quot;',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'אתה נמצא כעת במצב &quot;ארגז חול&quot;'
 );
 ?>

@@ -64,7 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => 'Motiu de devolució',
 		'RefusedInvoicing' => 'Facturació de la devolució',
 		'NoInvoiceRefused' => 'No facturar la devolució',
-		'InvoiceRefused' => 'Facturar la devolució al client',
+		'InvoiceRefused' => 'Factura tornada',
 		'Status' => 'Estat',
 		'StatusUnknown' => 'Desconegut',
 		'StatusWaiting' => 'En espera',
@@ -97,7 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'Veure domiciliació',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'No obstant això, si la factura té pendent algun pagament per domiciliació, no serà tancada per a permetre la gestió de la domiciliació.',
 		'DoStandingOrdersBeforePayments' => 'Aquesta pestanya us permet realitzar una petició de domiciliació. Un cop, podeu ingressar el pagament a la factura per procedir al seu tancament.',
-		////// Notifications 
+		////// Notifications
 		'InfoCreditSubject' => 'Abonament de domiciliació %s pel banc',
 		'InfoCreditMessage' => 'L\'ordre de domiciliació %s ha estat abonada pel banc <br> Data d\'abonament: %s',
 		'InfoTransSubject' => 'Enviament de domiciliació %s al banc',
@@ -106,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'Aquest és un missatge automàtic enviat per Dolibarr',
 		'InfoRejectSubject' => 'Domiciliació tornada',
 		'InfoRejectMessage' => 'Bon dia,<br><br>la domiciliació de la factura %s per compte de l\'empresa %s, amb un import de %s ha estat retornada pel banc.<br><br>--<br>%$',
-		'ModeWarning' => 'No s\'ha establert l\'opció de treball en real, ens aturarem després d\'aquesta simulació',
+		'ModeWarning' => 'No s\'ha establert l\'opció de treball en real, ens aturarem després d\'aquesta simulació'
 );
 ?>

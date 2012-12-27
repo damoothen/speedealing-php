@@ -41,6 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'אתה יכול לקרוא אחד המאמן שנבחרו מראש על ידי Dolibarr עבור השפה שלך (%s) על ידי לחיצה Widget שלו (מעמד המחיר המרבי מתעדכנים באופן אוטומטי):',
 		'PossibleLanguages' => 'תמיכה בשפות',
 		'MakeADonation' => 'עזרה בפרויקט Dolibarr, לתרום',
-		'SubscribeToFoundation' => 'עזרה בפרויקט Dolibarr, מנוי על קרן',
+		'SubscribeToFoundation' => 'עזרה בפרויקט Dolibarr, מנוי על קרן'
 );
 ?>

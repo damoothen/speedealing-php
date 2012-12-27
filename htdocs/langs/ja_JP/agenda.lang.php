@@ -81,12 +81,13 @@ $agenda = array(
 		'AgendaUrlOptions5' => 'ユーザー<b>%s</b>によって行われたアクションへの出力を制限する<b>logind = %s。</b>',
 		'AgendaShowBirthdayEvents' => '誕生日の連絡先を表示する',
 		'AgendaHideBirthdayEvents' => '誕生日の接点を隠す',
+		// External Sites ical
 		'ExportCal' => '輸出カレンダー',
 		'ExtSites' => '外部カレンダーをインポートする',
 		'ExtSitesEnableThisTool' => '議題に外部カレンダーを表示する',
 		'ExtSitesNbOfAgenda' => 'カレンダーの数',
 		'AgendaExtNb' => 'カレンダーNB %s',
 		'ExtSiteUrlAgenda' => '。iCalファイルにアクセスするためのURL',
-		'ExtSiteNoLabel' => '全く説明がありません',
+		'ExtSiteNoLabel' => '全く説明がありません'
 );
 ?>

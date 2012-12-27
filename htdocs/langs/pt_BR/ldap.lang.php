@@ -39,7 +39,10 @@ $ldap = array(
 		'LDAPFieldLastSubscriptionAmount' => 'Valor Última Adesão',
 		'SynchronizeDolibarr2Ldap' => 'Sincronizar usuário (Dolibarr -> LDAP)',
 		'UserSynchronized' => 'Usuário Sincronizado',
+		'GroupSynchronized' => 'Group synchronized',
+		'MemberSynchronized' => 'Member synchronized',
+		'ContactSynchronized' => 'Contact synchronized',
 		'ForceSynchronize' => 'forçar sincronização Dolibarr -> LDAP',
-		'ErrorFailedToReadLDAP' => 'Erro na leitura do anuário LDAP. Verificar a configuração do módulo LDAP e a acessibilidade do anuário.',
+		'ErrorFailedToReadLDAP' => 'Erro na leitura do anuário LDAP. Verificar a configuração do módulo LDAP e a acessibilidade do anuário.'
 );
 ?>

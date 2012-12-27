@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Adomány',
 		'Donations' => 'Adományok',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Donor',
 		'Donors' => 'Donorok',
 		'AddDonation' => 'Új adomány hozzáadása',
@@ -36,11 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => 'Vázlat',
 		'DonationStatusPromiseValidatedShort' => 'Hitelesített',
 		'DonationStatusPaidShort' => 'Kapott',
-		'ValidPromise' => 'Ígéret hitelesítése',
+		'ValidPromess' => 'Érvényesítés ígéret',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Nyugta készítése',
 		'DonationsModels' => 'Dokumentum modellek adományok nyugtájához',
-		'ValidPromess' => 'Érvényesítés ígéret',
 		'LastModifiedDonations' => 'Utolsó módosítás adományok %s',
 		'SearchADonation' => 'Keresés adományt',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

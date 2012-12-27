@@ -41,6 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Sie können einen, vom System für Ihre Sprache (%s) automatisch ausgewählten, Trainer über einen Klick auf sein Widget kontaktieren (Status und Maximalpreis aktualisieren sich automatisch):',
 		'PossibleLanguages' => 'Unterstützte Sprachen',
 		'MakeADonation' => 'Unterstützen Sie das Projekt über eine Spende',
-		'SubscribeToFoundation' => 'Helfen auch Sie dem Dolibarr Projekt und unterstützen uns mit einer Abo-Spende.',
+		'SubscribeToFoundation' => 'Helfen auch Sie dem Dolibarr Projekt und unterstützen uns mit einer Abo-Spende.'
 );
 ?>

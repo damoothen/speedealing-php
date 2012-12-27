@@ -15,7 +15,6 @@
  */
 
 $cashdesk = array(
-		// Language file - es_ES - cashdesk 
 		'CHARSET' => 'UTF-8',
 		'CashDeskMenu' => 'TPV',
 		'CashDesk' => 'Terminal Punto de Venta',
@@ -53,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Cuenta de cobro',
 		'ShowCompany' => 'Ver empresa',
 		'ShowStock' => 'Ver almacén',
-		'DeleteArticle' => 'Haga clic para quitar este artículo',
+		'DeleteArticle' => 'Haga clic para quitar este artículo'
 );
 ?>

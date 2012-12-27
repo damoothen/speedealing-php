@@ -101,6 +101,14 @@ $projects = array(
 		'ErrorTimeSpentIsEmpty' => 'Zeitaufwand ist leer',
 		'ThisWillAlsoRemoveTasks' => 'Diese Aktion löscht ebenfalls alle Aufgaben zum Projekt (<b>%s</b> akutelle Aufgaben) und alle Zeitaufwände.',
 		'IfNeedToUseOhterObjectKeepEmpty' => 'Wenn einige Zuordnungen (Rechnung, Bestellung, ...), einem Dritten gehören, müssen Sie erst alle mit dem Projekt verbinden, damit das Projekt auch Dritten zugänglich ist .',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
 		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Projektleiter',
 		'TypeContact_project_external_PROJECTLEADER' => 'Projektleiter',
@@ -111,6 +119,6 @@ $projects = array(
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Mitwirkender',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Mitwirkender',
 		// Documents models
-		'DocumentModelBaleine' => 'Eine vollständige Projektberichtsvorlage (Logo, uwm.)',
+		'DocumentModelBaleine' => 'Eine vollständige Projektberichtsvorlage (Logo, uwm.)'
 );
 ?>

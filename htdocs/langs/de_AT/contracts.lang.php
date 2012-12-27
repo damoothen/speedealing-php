@@ -108,6 +108,6 @@ $contracts = array(
 		'TypeContact_contrat_external_BILLING' => 'Rechnungskontakt des Kunden',
 		'TypeContact_contrat_external_CUSTOMER' => 'Nachverfolgung durch Kundenkontakt',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Vertragsunterzeichnung durch Kundenkontakt',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Constant CONTRACT_ADDON nicht definiert',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Constant CONTRACT_ADDON nicht definiert'
 );
 ?>

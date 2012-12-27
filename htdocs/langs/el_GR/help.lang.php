@@ -16,7 +16,6 @@
 
 $help = array(
 		'CHARSET' => 'UTF-8',
-		'NeedHelpCenter' => 'Χρειάζεστε βοήθεια ή υποστήριξη;',
 		'CommunitySupport' => 'Φόρουμ / Wiki υποστήριξη',
 		'EMailSupport' => 'Emails υποστήριξη',
 		'RemoteControlSupport' => 'Συνδεδεμένοι πραγματικό χρόνο / απομακρυσμένη υποστήριξη',
@@ -30,6 +29,7 @@ $help = array(
 		'TypeSupportCommunauty' => 'Κοινότητα (δωρεάν)',
 		'TypeSupportCommercial' => 'Εμπορική',
 		'TypeOfHelp' => 'Τύπος',
+		'NeedHelpCenter' => 'Χρειάζεστε βοήθεια ή υποστήριξη;',
 		'Efficiency' => 'Αποδοτικότητα',
 		'TypeHelpOnly' => 'Βοήθεια μόνο',
 		'TypeHelpDev' => 'Βοήθεια + Ανάπτυξης',
@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Μπορείτε να καλέσετε ένα από τα πούλμαν που έχουν επιλέξει Dolibarr για τη γλώσσα σας (%s) κάνοντας κλικ Widget του (κατάσταση και μέγιστη τιμή ενημερώνονται αυτόματα):',
 		'PossibleLanguages' => 'Υποστηριζόμενες γλώσσες',
 		'MakeADonation' => 'Βοήθεια Dolibarr έργο, κάνουν μια δωρεά',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Teil on võimalik helistada üks treener esivalittu poolt Dolibarr oma keel (%s), klõpsates oma Widget (staatus ja maksimaalne hind automaatselt uuendatud):',
 		'PossibleLanguages' => 'Toetatud keeled',
 		'MakeADonation' => 'Abi Dolibarr projekti teha annetuse',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

@@ -119,7 +119,7 @@ $users = array(
 		'UserEnabled' => 'Kasutaja %s aktiveeritud',
 		'UserDeleted' => 'Kasutaja %s eemaldada',
 		'NewGroupCreated' => 'Group %s loodud',
-		'GroupModified' => 'Group %s muutmine',
+		'GroupModified' => 'Group muutmine edukalt',
 		'GroupDeleted' => 'Group %s eemaldada',
 		'ConfirmCreateContact' => 'Oled kindel, et soovite luua Dolibarr moodustavad selle kontakti?',
 		'ConfirmCreateLogin' => 'Oled kindel, et soovite luua Dolibarr moodustavad selle liige?',
@@ -129,6 +129,6 @@ $users = array(
 		'YourRole' => 'Oma rolle',
 		'YourQuotaOfUsersIsReached' => 'Oma kvoodi Aktiivsete kasutajate arv on jõudnud!',
 		'NbOfUsers' => 'Nb kasutajaid',
-		'DontDowngradeSuperAdmin' => 'Ainult superadmin saab alandada superadmin',
+		'DontDowngradeSuperAdmin' => 'Ainult superadmin saab alandada superadmin'
 );
 ?>

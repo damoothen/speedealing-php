@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'مصادقة على العقود',
 		'ActivateService' => 'تفعيل الخدمة',
 		'ConfirmActivateService' => 'هل أنت متأكد من تفعيل هذه الخدمة في تاريخ <b>٪ ق؟</b>',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'تاريخ العقد',
 		'DateServiceActivate' => 'تاريخ تفعيل الخدمة',
 		'DateServiceUnactivate' => 'تاريخ خدمة unactivation',
@@ -69,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'لائحة ادارة الخدمات',
 		'NotActivatedServices' => 'لا تنشيط الخدمات) بين مصدق العقود)',
 		'BoardNotActivatedServices' => 'خدمات لتفعيل العقود بين مصدق',
-		'LastContracts' => 'العقود الماضية ٪',
+		'LastContracts' => 'آخر تعديل العقود ق ٪',
 		'LastActivatedServices' => 'ق الماضي ٪ تنشيط الخدمات',
 		'LastModifiedServices' => 'آخر تعديل ٪ ق الخدمات',
 		'EditServiceLine' => 'تعديل خط الخدمات',
@@ -99,13 +100,14 @@ $contracts = array(
 		'ConfirmMoveToAnotherContractQuestion' => 'اختيار القائمة التي العقد (من نفس الطرف الثالث) ، وترغب في نقل هذه الخدمة؟',
 		'PaymentRenewContractId' => 'تجديد العقد الخط (رقم ٪)',
 		'ExpiredSince' => 'تاريخ الانتهاء',
+		'RelatedContracts' => 'العقود ذات الصلة',
+		'NoExpiredServices' => 'أي نوع من الخدمات انتهت نشط',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'ممثل مبيعات توقيع العقد',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'ممثل مبيعات متابعة العقد',
 		'TypeContact_contrat_external_BILLING' => 'فواتير العملاء الاتصال',
 		'TypeContact_contrat_external_CUSTOMER' => 'متابعة العملاء الاتصال',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'توقيع عقد خدمات العملاء',
-		'RelatedContracts' => 'العقود ذات الصلة',
-		'Error_CONTRACT_ADDON_NotDefined' => 'لم يتم تعريف ثابت CONTRACT_ADDON',
-		'NoExpiredServices' => 'أي نوع من الخدمات انتهت نشط',
+		'Error_CONTRACT_ADDON_NotDefined' => 'لم يتم تعريف ثابت CONTRACT_ADDON'
 );
 ?>

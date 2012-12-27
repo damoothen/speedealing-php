@@ -16,14 +16,14 @@
 
 $shop = array(
 		'CHARSET' => 'UTF-8',
-		'OSCommerceShop' => 'osCommerceのショップ',
-		'OSCommerce' => 'osCommerceの',
-		'AddProd' => 'オンライン販売',
 		'Shop' => 'ショップ',
 		'ShopWeb' => 'ウェブショップ',
 		'LastOrders' => 'ラストオーダー',
 		'OnStandBy' => '待機して',
 		'TreatmentInProgress' => '進行中の治療',
 		'LastCustomers' => '最後のお客さま',
+		'OSCommerceShop' => 'osCommerceのショップ',
+		'OSCommerce' => 'osCommerceの',
+		'AddProd' => 'オンライン販売'
 );
 ?>

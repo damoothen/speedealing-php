@@ -30,6 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => 'Αυτό είναι id της συναλλαγής: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Προσθέστε το url του Paypal πληρωμής όταν στέλνετε ένα έγγραφο με το ταχυδρομείο',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'Διεύθυνση ηλεκτρονικού ταχυδρομείου για την άμεση κοινοποίηση της πληρωμής (IPN)',
-		'YouAreCurrentlyInSandboxMode' => 'Είστε αυτήν την περίοδο στο &quot;sandbox&quot; mode',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Είστε αυτήν την περίοδο στο &quot;sandbox&quot; mode'
 );
 ?>

@@ -60,6 +60,7 @@ $mails = array(
 		'MailingStatusError' => 'Fehler beim Versand',
 		'MailingStatusNotSent' => 'Nicht gesendet',
 		'MailSuccessfulySent' => 'E-Mail-Kampagne erfolgreich versandt (von %s an %s)',
+		'MailingSuccessfullyValidated' => 'EMailing successfully validated',
 		'MailUnsubcribe' => 'Abmelden',
 		'Unsuscribe' => 'Abmelden',
 		'MailingStatusNotContact' => 'Nicht mehr kontaktieren',
@@ -91,11 +92,15 @@ $mails = array(
 		'MailingStatusRead' => 'Lesen',
 		'CheckRead' => 'Lesebestätigung',
 		'YourMailUnsubcribeOK' => 'Die E-Mail-Adresse <b>%s</b> ist korrekt aus der Mailing-Liste ausgetragen.',
+		'MailtoEMail' => 'Hyper link to email',
+		'ActivateCheckRead' => 'Allow to use the Read receipt tracker and the unsubcribe link',
+		'ActivateCheckReadKey' => 'Key use to encrypt URL use for Read Receipt and unsubcribe function',
 		// Libelle des modules de liste de destinataires mailing
 		'MailingModuleDescContactCompanies' => 'Kontakte aller Partner (Kunden, Leads, Lieferanten, ...)',
 		'MailingModuleDescDolibarrUsers' => 'Alle Systembenutzer mit E-Mail-Adresse',
 		'MailingModuleDescFundationMembers' => 'Alle Stiftungsmitglieder mit E-Mail-Adresse',
 		'MailingModuleDescEmailsFromFile' => 'E-Mail-Adressen aus einer Text-Datei (Format: E-Mail, Vorname, Nachname)',
+		'MailingModuleDescEmailsFromUser' => 'EMails from user input (email;lastname;firstname;other)',
 		'MailingModuleDescContactsCategories' => 'Partnerkontakte (nach Kategorie)',
 		'MailingModuleDescDolibarrContractsLinesExpired' => 'Partner mit abgelaufenen Vertragspositionen',
 		'MailingModuleDescContactsByCompanyCategory' => 'Kontakt über Partner (durch Kategorie)',
@@ -124,6 +129,10 @@ $mails = array(
 		'IdRecord' => 'Eintrag-ID',
 		'DeliveryReceipt' => 'Zustellbestätigung',
 		'YouCanUseCommaSeparatorForSeveralRecipients' => 'Trennen Sie mehrere Empfänger mit einem <b>Komma</b>',
+		'TagCheckMail' => 'Track mail opening',
+		'TagUnsubscribe' => 'Unsubscribe link',
+		'TagSignature' => 'Signature sending user',
+		'TagMailtoEmail' => 'Recipient EMail',
 		// Module Notifications
 		'Notifications' => 'Benachrichtigungen',
 		'NoNotificationsWillBeSent' => 'Für dieses Ereignis und diesen Partner sind keine Benachrichtigungen geplant',
@@ -131,6 +140,6 @@ $mails = array(
 		'SomeNotificationsWillBeSent' => '%s Benachrichtigungen werden per E-Mail versandt',
 		'AddNewNotification' => 'Aktivieren Sie eine neue E-Mail-Benachrichtigungsanfrage',
 		'ListOfActiveNotifications' => 'Liste aller aktiven E-Mail Benachrichtigungen',
-		'ListOfNotificationsDone' => 'Liste aller versandten E-Mail Benachrichtigungen',
+		'ListOfNotificationsDone' => 'Liste aller versandten E-Mail Benachrichtigungen'
 );
 ?>

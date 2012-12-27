@@ -78,10 +78,9 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Enlèvement par le client',
 		'SendingMethodTRANS' => 'Transporteur',
 		'SendingMethodCOLSUI' => 'Colissimo Suivi',
-		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Modèle de bon de réception/livraison simple',
 		'DocumentModelTyphon' => 'Modèle de bon de réception/livraison complet (logo...)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constante EXPEDITION_ADDON_NUMBER non définie',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constante EXPEDITION_ADDON_NUMBER non définie'
 );
 ?>

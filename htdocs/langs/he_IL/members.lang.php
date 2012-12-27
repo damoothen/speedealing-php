@@ -136,7 +136,6 @@ $members = array(
 		'LastSubscriptionsModified' => '%s האחרונות שונה מנויים',
 		'AttributeName' => 'שם התכונה',
 		'FieldEdition' => 'מהדורת %s שדה',
-		'AlphaNumOnlyCharsAndNoSpace' => 'רק alphanumericals תווים ללא רווח',
 		'String' => 'חוט',
 		'Text' => 'טקסט',
 		'Int' => 'Int',
@@ -148,6 +147,8 @@ $members = array(
 		'ShowSubscription' => 'הצג מנוי',
 		'MemberModifiedInDolibarr' => 'משתמש שונה ב Dolibarr',
 		'SendAnEMailToMember' => 'שלח E-Mail מידע על חבר',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL_SUBJECT' => 'Subject of the e-mail received in case of auto-inscription of a guest',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL' => 'E-mail received in case of auto-inscription of a guest',
 		'DescADHERENT_AUTOREGISTER_MAIL_SUBJECT' => 'כותרת הודעת הדואר האלקטרוני של חבר autosubscription',
 		'DescADHERENT_AUTOREGISTER_MAIL' => 'דואר אלקטרוני של חבר autosubscription',
 		'DescADHERENT_MAIL_VALID_SUBJECT' => 'כותרת הודעת הדואר האלקטרוני לאימות חבר',
@@ -158,12 +159,12 @@ $members = array(
 		'DescADHERENT_MAIL_RESIL' => 'דואר אלקטרוני של חבר resiliation',
 		'DescADHERENT_MAIL_FROM' => 'שולח דואר אלקטרוני עבור הודעות דוא&quot;ל אוטומטיות',
 		'DescADHERENT_ETIQUETTE_TYPE' => 'עיצוב העמוד תוויות',
+		'DescADHERENT_ETIQUETTE_TEXT' => 'Text printed on member address sheets',
 		'DescADHERENT_CARD_TYPE' => 'עיצוב העמוד כרטיסים',
 		'DescADHERENT_CARD_HEADER_TEXT' => 'הטקסט המודפס על גבי כרטיסי חבר',
 		'DescADHERENT_CARD_TEXT' => 'טקסט מודפס על כרטיסי החברות (יישור משמאל)',
 		'DescADHERENT_CARD_TEXT_RIGHT' => 'טקסט מודפס על כרטיסי החברות (ליישר מימין)',
 		'DescADHERENT_CARD_FOOTER_TEXT' => 'טקסט המודפס על החלק התחתון של כרטיסי חבר',
-		'DescADHERENT_MAILMAN_LISTS' => 'רשימה (ות) עבור insription אוטומטית של חברים חדשים (מופרדים באמצעות פסיק)',
 		'GlobalConfigUsedIfNotDefined' => 'טקסט מוגדר בהגדרת מודול הקרן ישמשו אם לא מוגדרת כאן',
 		'MayBeOverwrited' => 'טקסט זה ניתן overwrited לפי ערך מוגדר לסוג של חבר',
 		'ShowTypeCard' => 'הצג מסוג &quot;%s&quot;',
@@ -210,6 +211,6 @@ $members = array(
 		'Collectivités' => 'ארגונים',
 		'Particuliers' => 'אישי',
 		'Entreprises' => 'חברות',
-		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'כדי לבצע תשלום המנוי שלך באמצעות העברה בנקאית, ראה עמוד <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a> . <br> לשלם באמצעות כרטיס אשראי או PayPal, לחץ על לחצן בחלק התחתון של דף זה. <br>',
+		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'כדי לבצע תשלום המנוי שלך באמצעות העברה בנקאית, ראה עמוד <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a> . <br> לשלם באמצעות כרטיס אשראי או PayPal, לחץ על לחצן בחלק התחתון של דף זה. <br>'
 );
 ?>

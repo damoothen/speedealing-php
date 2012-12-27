@@ -132,5 +132,9 @@ $exports = array(
 		'Excel2007FormatDesc' => '<b>Excel</b> файлов формат (XLSX) <br> Това е роден формат Excel 2007 (SpreadsheetML).',
 		'TsvFormatDesc' => '<b>Tab раздяла</b> формат <b>стойност</b> файл (TSV) <br> Това е формат текстов файл, където полетата са разделени с табулатор [Tab].',
 		'ExportFieldAutomaticallyAdded' => 'Полеви <b>%s</b> добавят автоматично. Тя ще ви избягват да има подобни линии, които да бъдат третирани като дублирани записи (с тази област, добави всички Ligne ще притежава своя номер и ще се различават).',
+		'CsvOptions' => 'Csv Options',
+		'Separator' => 'Separator',
+		'Enclosure' => 'Enclosure',
+		'SuppliersProducts' => 'Suppliers Products'
 );
 ?>

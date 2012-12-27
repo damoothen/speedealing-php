@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Välise http URL ega sugulane Dolibarr URL',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Vali kui leht avada link peab olema praeguse või uues aknas',
 		'BookmarksManagement' => 'Järjehoidjad juhtimine',
-		'ListOfBookmarks' => 'Järjehoidjad',
+		'ListOfBookmarks' => 'Järjehoidjad'
 );
 ?>

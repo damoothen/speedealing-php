@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Veloitustili',
 		'ShowCompany' => 'Näytä yrityksen',
 		'ShowStock' => 'Näytä varasto',
-		'DeleteArticle' => 'Poista napsauttamalla tämän artikkelin',
+		'DeleteArticle' => 'Poista napsauttamalla tämän artikkelin'
 );
 ?>

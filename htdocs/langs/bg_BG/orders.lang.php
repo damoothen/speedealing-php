@@ -49,6 +49,7 @@ $orders = array(
 		'StatusOrderOnProcessShort' => 'Прием',
 		'StatusOrderProcessedShort' => 'Обработен',
 		'StatusOrderToBillShort' => 'Доставени',
+		'StatusOrderToBill2Short' => 'To bill',
 		'StatusOrderApprovedShort' => 'Одобрен',
 		'StatusOrderRefusedShort' => 'Отказ',
 		'StatusOrderToProcessShort' => 'За да обработвате',
@@ -60,6 +61,7 @@ $orders = array(
 		'StatusOrderOnProcess' => 'Очаквам да получа',
 		'StatusOrderProcessed' => 'Обработен',
 		'StatusOrderToBill' => 'Доставени',
+		'StatusOrderToBill2' => 'To bill',
 		'StatusOrderApproved' => 'Одобрен',
 		'StatusOrderRefused' => 'Отказ',
 		'StatusOrderReceivedPartially' => 'Частично получено',
@@ -68,6 +70,7 @@ $orders = array(
 		'DraftOrWaitingApproved' => 'Проект или одобрен, все още не е осъден',
 		'DraftOrWaitingShipped' => 'Проект или потвърдено все още не са изпратени',
 		'MenuOrdersToBill' => 'Доставени поръчки',
+		'MenuOrdersToBill2' => 'Orders to bill',
 		'SearchOrder' => 'Търсене за',
 		'Sending' => 'Изпращане',
 		'Sendings' => 'Sendings',
@@ -128,6 +131,7 @@ $orders = array(
 		'CloneOrder' => 'Clone за',
 		'ConfirmCloneOrder' => 'Сигурен ли сте, че искате да клонирате за този <b>%s?</b>',
 		'DispatchSupplierOrder' => 'Получаване %s доставчика ред',
+		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Представител проследяване поръчка на клиента',
 		'TypeContact_commande_internal_SHIPPING' => 'Представител проследяване доставка',
 		'TypeContact_commande_external_BILLING' => 'Контакта с клиентите фактура',
@@ -143,6 +147,7 @@ $orders = array(
 		'Error_FailedToLoad_COMMANDE_SUPPLIER_ADDON_File' => 'Неуспешно зареждане на файл-модул, &quot;%s&quot;',
 		'Error_FailedToLoad_COMMANDE_ADDON_File' => 'Неуспешно зареждане на файл-модул, &quot;%s&quot;',
 		'Error_OrderNotChecked' => 'Няма поръчки на избрани фактура',
+		// Sources
 		'OrderSource0' => 'Търговско предложение',
 		'OrderSource1' => 'Интернет',
 		'OrderSource2' => 'Mail кампания',
@@ -152,12 +157,18 @@ $orders = array(
 		'OrderSource6' => 'Съхранявайте',
 		'QtyOrdered' => 'Количество нареди',
 		'AddDeliveryCostLine' => 'Добавяне на линия за цена за доставка се посочва теглото на поръчката',
+		// Documents models
 		'PDFEinsteinDescription' => 'Цялостен модел за (logo. ..)',
 		'PDFEdisonDescription' => 'Прост модел за',
+		// Orders modes
 		'OrderByMail' => 'Поща',
 		'OrderByFax' => 'Факс',
 		'OrderByEMail' => 'EMail',
 		'OrderByWWW' => 'Online',
 		'OrderByPhone' => 'Телефон',
+		'CreateInvoiceForThisCustomer' => 'Bill orders',
+		'NoOrdersToInvoice' => 'No orders billable',
+		'CloseProcessedOrdersAutomatically' => 'Classify "Processed" all selected orders.',
+		'MenuOrdersToBill2' => 'Orders to bill'
 );
 ?>

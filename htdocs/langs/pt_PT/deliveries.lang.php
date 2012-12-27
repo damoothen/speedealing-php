@@ -15,7 +15,6 @@
  */
 
 $deliveries = array(
-		'﻿# Dolibarr language file - pt_PT - deliveries' => '',
 		'CHARSET' => 'UTF-8',
 		'Delivery' => 'Envio',
 		'Deliveries' => 'Envios',
@@ -29,17 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Indicar a Data de Envío',
 		'ValidateDeliveryReceipt' => 'Confirmar a Nota de Entrega',
 		'ValidateDeliveryReceiptConfirm' => 'Está seguro de que deseja confirmar esta entrega?',
+		'DeleteDeliveryReceipt' => 'Excluir recibo de entrega',
+		'DeleteDeliveryReceiptConfirm' => 'Tem certeza de que deseja excluir <b>%s</b> recibo de entrega?',
 		'DeliveryMethod' => 'Método de Envio',
 		'TrackingNumber' => 'Nº de tracking',
+		'DeliveryNotValidated' => 'Entrega não validado',
 		// merou PDF model
 		'NameAndSignature' => 'Nome e assinatura:',
 		'ToAndDate' => 'Em___________________________________ a ____/_____/__________',
 		'GoodStatusDeclaration' => 'Recebi a mercadoria em bom estado,',
 		'Deliverer' => 'Destinatario:',
 		'Sender' => 'Origem',
-		'Recipient' => 'Destinatário',
-		'DeleteDeliveryReceipt' => 'Excluir recibo de entrega',
-		'DeleteDeliveryReceiptConfirm' => 'Tem certeza de que deseja excluir <b>%s</b> recibo de entrega?',
-		'DeliveryNotValidated' => 'Entrega não validado',
+		'Recipient' => 'Destinatário'
 );
 ?>

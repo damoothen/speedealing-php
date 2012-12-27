@@ -39,6 +39,6 @@ $deliveries = array(
 		'GoodStatusDeclaration' => 'He rebut la mercaderia en bon estat,',
 		'Deliverer' => 'Destinatari :',
 		'Sender' => 'Orige',
-		'Recipient' => 'Destinatari',
+		'Recipient' => 'Destinatari'
 );
 ?>

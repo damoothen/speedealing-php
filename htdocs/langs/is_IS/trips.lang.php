@@ -35,6 +35,6 @@ $trips = array(
 		'TF_TRIP' => 'Ferðalag',
 		'ListTripsAndExpenses' => 'Listi yfir ferðir og gjöld',
 		'ExpensesArea' => 'Ferðir og gjöld area',
-		'SearchATripAndExpense' => 'Leita ferð og kostnað',
+		'SearchATripAndExpense' => 'Leita ferð og kostnað'
 );
 ?>

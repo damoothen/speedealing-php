@@ -20,6 +20,7 @@ $help = array(
 		'EMailSupport' => 'رسائل البريد الإلكتروني لدعم',
 		'RemoteControlSupport' => 'الانترنت في الوقت الحقيقي / النائية الدعم',
 		'OtherSupport' => 'الدعم الأخرى',
+		'ToSeeListOfAvailableRessources' => 'للاتصال / انظر الموارد المتاحة :',
 		'ClickHere' => 'اضغط هنا',
 		'HelpCenter' => 'مركز المساعدة',
 		'DolibarrHelpCenter' => 'Dolibarr مركز المساعدة والدعم',
@@ -40,6 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'تستطيع الاتصال به من قبل المدرب مختار مسبقا لغتك Dolibarr (٪) عن طريق النقر فوق القطعة له (والحد الاعلى لسعر يتم تحديثها تلقائيا) :',
 		'PossibleLanguages' => 'وأيد لغات',
 		'MakeADonation' => 'مساعدة Dolibarr المشروع ، تقديم تبرع',
-		'ToSeeListOfAvailableRessources' => 'للاتصال / انظر الموارد المتاحة :',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

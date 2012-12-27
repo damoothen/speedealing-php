@@ -44,15 +44,15 @@ $interventions = array(
 		'StatusInterInvoiced' => 'Zaračunano',
 		'RelatedInterventions' => 'Odvisne intervencije',
 		'ShowIntervention' => 'Prikaži intervencijo',
-		////////// Types de contacts ////////// = undefined
+		////////// Types de contacts //////////
 		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Referent za nadaljnjo obravnavo intervencije',
 		'TypeContact_fichinter_internal_INTERVENING' => 'Serviser',
 		'TypeContact_fichinter_external_BILLING' => 'Kontakt za račun pri kupcu',
 		'TypeContact_fichinter_external_CUSTOMER' => 'Kontakt za nadaljnjo obravnavo pri kupcu',
-		// Modele numérotation = undefined
+		// Modele numérotation
 		'ArcticNumRefModelDesc1' => 'Generični številčni model',
 		'ArcticNumRefModelError' => 'Aktivacija ni uspela',
 		'PacificNumRefModelDesc1' => 'Predlaga številko v formatu %syymm-nnnn kjer je yy leto, mm mesec in nnnn zaporedna številka brez presledkov in različna od 0',
-		'PacificNumRefModelError' => 'Kartica intervencije, ki se začne z $syymm že obstaja in ni kompatibilna s tem modelom sekvence. Odstranite jo ali jo preimenujte, če želite aktivirati ta modul.',
+		'PacificNumRefModelError' => 'Kartica intervencije, ki se začne z $syymm že obstaja in ni kompatibilna s tem modelom sekvence. Odstranite jo ali jo preimenujte, če želite aktivirati ta modul.'
 );
 ?>

@@ -84,6 +84,7 @@ $companies = array(
 		'PhonePro' => 'Telefon berufl.',
 		'PhonePerso' => 'Telefon privat',
 		'PhoneMobile' => 'Mobiltelefon',
+		'No_Email' => 'Don\'t send mass e-mailings',
 		'Fax' => 'Fax',
 		'Zip' => 'PLZ',
 		'Town' => 'Stadt',
@@ -92,6 +93,7 @@ $companies = array(
 		'DefaultLang' => 'Standardsprache',
 		'VATIsUsed' => 'MwSt.-pflichtig',
 		'VATIsNotUsed' => 'Nicht MwSt-pflichtig',
+		'CopyAddressFromSoc' => 'Fill address with thirdparty address',
 		////////// Local Taxes //////////
 		'LocalTax1IsUsedES' => 'RE wird verwendet',
 		'LocalTax1IsNotUsedES' => 'RE wird nicht verwendet',
@@ -163,7 +165,7 @@ $companies = array(
 		'ProfId3DE' => 'Handelsregister-Nummer',
 		'ProfId4DE' => 'Steuernummer',
 		'ProfId5DE' => '-',
-		'PfovId6DE' => '-',
+		'ProfId6DE' => '-',
 		'ProfId1ES' => 'Prof Id 1 (CIF / NIF)',
 		'ProfId2ES' => 'Prof Id 2 (Social Security Number)',
 		'ProfId3ES' => 'Prof Id 3 (CNAE)',
@@ -193,7 +195,7 @@ $companies = array(
 		'ProfId3IN' => 'Prof Id 3',
 		'ProfId4IN' => 'Prof Id 4',
 		'ProfId5IN' => 'Prof Id 5',
-		'PaofId6IN' => 'Prof Id 6',
+		'ProfId6IN' => '-',
 		'ProfId1MA' => 'Id prof. 1 (R.C.)',
 		'ProfId2MA' => 'Id prof. 2 (Patente)',
 		'ProfId3MA' => 'Id prof. 3 (I.F.)',
@@ -217,7 +219,7 @@ $companies = array(
 		'ProfId3PT' => 'Prof Id 3 (Commercial Record-Nummer)',
 		'ProfId4PT' => 'Prof Id 4 (Konservatorium)',
 		'ProfId5PT' => '-',
-		'ProfID6PT' => '-',
+		'ProfId6PT' => '-',
 		'ProfId1SN' => 'RC',
 		'ProfId2SN' => 'NINEA',
 		'ProfId3SN' => '-',
@@ -407,6 +409,6 @@ $companies = array(
 		// Monkey
 		'MonkeyNumRefModelDesc' => 'Zurück NUMERO mit Format %syymm-nnnn für den Kunden-Code und syymm%-nnnn für die Lieferanten-Code ist, wenn JJ Jahr, MM Monat und nnnn ist eine Folge ohne Pause und kein Zurück mehr gibt, auf 0 gesetzt.',
 		// Leopard
-		'LeopardNumRefModelDesc' => 'Kunden / Lieferanten-Code ist frei. Dieser Code kann jederzeit geändert werden.',
+		'LeopardNumRefModelDesc' => 'Kunden / Lieferanten-Code ist frei. Dieser Code kann jederzeit geändert werden.'
 );
 ?>

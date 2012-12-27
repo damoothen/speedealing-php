@@ -70,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Liste des services actifs',
 		'NotActivatedServices' => 'Services non activés (parmi les contrats validés)',
 		'BoardNotActivatedServices' => 'Services à activer en contrat validé',
-		'LastContracts' => 'Les % derniers contrats',
+		'LastContracts' => 'Les %s derniers contrats modifiés',
 		'LastActivatedServices' => 'Les %s derniers services activés',
 		'LastModifiedServices' => 'Les %s derniers services modifiés',
 		'EditServiceLine' => 'Edition ligne du service',
@@ -93,9 +93,9 @@ $contracts = array(
 		'DraftContracts' => 'Contrats brouillons',
 		'CloseRefusedBecauseOneServiceActive' => 'Fermeture du contrat impossible car il y a au moins un service actif',
 		'CloseAllContracts' => 'Clôturer tous les services',
-		'MoveToAnotherContract' => 'Déplacer le service vers un autre contrat de ce tiers.',
 		'DeleteContractLine' => 'Supprimer ligne de contrat',
 		'ConfirmDeleteContractLine' => 'Êtes-vous sûr de vouloir supprimer cette ligne de contrat de service ?',
+		'MoveToAnotherContract' => 'Déplacer le service vers un autre contrat de ce tiers.',
 		'ConfirmMoveToAnotherContract' => 'J\'ai choisi le contrat cible et confirme le déplacement du service dans ce contrat.',
 		'ConfirmMoveToAnotherContractQuestion' => 'Choisissez vers quel autre contrat de ce même tiers, vous voulez déplacer ce service ?',
 		'PaymentRenewContractId' => 'Renouvellement service (numéro %s)',
@@ -108,6 +108,6 @@ $contracts = array(
 		'TypeContact_contrat_external_BILLING' => 'Contact client facturation contrat',
 		'TypeContact_contrat_external_CUSTOMER' => 'Contact client suivi contrat',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Contact client signataire contrat',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Constante CONTRACT_ADDON non définie',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Constante CONTRACT_ADDON non définie'
 );
 ?>

@@ -41,6 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'En cas contrari, podeu trucar immediatament a un dels assistents preseleccionats per Dolibarr per al seu idioma (%s) fent clic en el seu widget (disponibilitat i tarifa màxima actualitzades automàticament):',
 		'PossibleLanguages' => 'Idiomes disponibles',
 		'MakeADonation' => 'Ajudeu-nos al projecte Dolibarr, feu una donació',
-		'SubscribeToFoundation' => 'Ajudeu-nos al projecte Dolibarr, Adhereixi a l\'associació Dolibarr',
+		'SubscribeToFoundation' => 'Ajudeu-nos al projecte Dolibarr, Adhereixi a l\'associació Dolibarr'
 );
 ?>

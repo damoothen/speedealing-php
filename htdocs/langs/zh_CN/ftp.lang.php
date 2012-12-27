@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => '无法连接到FTP服务器（服务器%s，港口%s）',
 		'FailedToConnectToFTPServerWithCredentials' => '无法登录到FTP服务器的定义登录/密码',
 		'FTPFailedToRemoveFile' => '无法删除文件<b>%s。</b>',
-		'FTPFailedToRemoveDir' => '无法删除目录<b>%s（</b>检查权限和目录是空的）。',
+		'FTPFailedToRemoveDir' => '无法删除目录<b>%s（</b>检查权限和目录是空的）。'
 );
 ?>

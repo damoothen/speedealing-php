@@ -43,6 +43,7 @@ $suppliers = array(
 		'Availability' => 'Uygunluğu',
 		'ExportDataset_fournisseur_1' => 'Tedarikçi faturaları listesi ve fatura satırları',
 		'ExportDataset_fournisseur_2' => 'Tedarikçi faturaları ve ödemeleri',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'Bu siparişi onayla',
 		'ConfirmApproveThisOrder' => '<b>%s</b> siparişini onaylamak istediğinizden emin misiniz?',
 		'DenyingThisOrder' => 'Bu siparişi reddet',
@@ -53,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Tedarikçi siparişi oluştur',
 		'AddSupplierInvoice' => 'Tedarikçi faturası oluştur',
 		'ListOfSupplierProductForSupplier' => 'Tedarikçi <b>%s</b> ye ait ürün ve fiyat listesi',
-		'NoneOrBatchFileNeverRan' => 'Hiçbiri veya toplu <b>%s</b> yürütülmedi',
+		'NoneOrBatchFileNeverRan' => 'Hiçbiri veya toplu <b>%s</b> yürütülmedi'
 );
 ?>

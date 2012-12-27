@@ -128,5 +128,13 @@ $exports = array(
 		'ExampleAnyRefFoundIntoElement' => '任意のref要素の<b>%s</b>見つかりました',
 		'ExampleAnyCodeOrIdFoundIntoDictionnary' => 'dictionnary <b>%s</b>に発見されたコード（またはID）',
 		'CSVFormatDesc' => '<b>カンマ区切りファイル</b>形式（。CSV）。 <br>これは、フィールドがセパレータ[%s]で区切られたテキストフ​​ァイル形式です。区切り文字はフィールドの内容の中に発見されている場合は、フィールドが円形文字[%s]で丸められます。 [%s]は丸い文字をエスケープする文字をエスケープします。',
+		'Excel95FormatDesc' => '<b>Excel</b> file format (.xls)<br>This is native Excel 95 format (BIFF5).',
+		'Excel2007FormatDesc' => '<b>Excel</b> file format (.xlsx)<br>This is native Excel 2007 format (SpreadsheetML).',
+		'TsvFormatDesc' => '<b>Tab Separated Value</b> file format (.tsv)<br>This is a text file format where fields are separated by a tabulator [tab].',
+		'ExportFieldAutomaticallyAdded' => 'Field <b>%s</b> was automatically added. It will avoid you to have similar lines to be treated as duplicate records (with this field added, all ligne will own its own id and will differ).',
+		'CsvOptions' => 'Csv Options',
+		'Separator' => 'Separator',
+		'Enclosure' => 'Enclosure',
+		'SuppliersProducts' => 'Suppliers Products'
 );
 ?>

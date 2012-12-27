@@ -30,6 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => '这是交易编号<b>：%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => '当你邮寄一份文件，添加URL Paypal付款',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-mail地址，即时付款通知（IPN）',
-		'YouAreCurrentlyInSandboxMode' => '您目前在“沙箱”模式',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => '您目前在“沙箱”模式'
 );
 ?>

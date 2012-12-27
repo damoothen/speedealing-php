@@ -1383,6 +1383,6 @@ $admin = array(
 		'Chartofaccounts' => 'Plan comptable',
 		'Definechartofaccounts' => 'Définir un plan comptable',
 		'Selectchartofaccounts' => 'Sélection d\'un plan comptable',
-		'DoNotSuggestChart' => 'Ne pas suggérer de plan comptable',
+		'DoNotSuggestChart' => 'Ne pas suggérer de plan comptable'
 );
 ?>

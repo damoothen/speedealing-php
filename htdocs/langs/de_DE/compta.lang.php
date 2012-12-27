@@ -34,6 +34,8 @@ $compta = array(
 		'AccountsGeneral' => 'Konten',
 		'Account' => 'Konto',
 		'Accounts' => 'Konten',
+		'Accountparent' => 'Account parent',
+		'Accountsparent' => 'Accounts parent',
 		'BillsForSuppliers' => 'Lieferantenrechnungen',
 		'Income' => 'Einnahmen',
 		'Outcome' => 'Ausgaben',
@@ -159,5 +161,9 @@ $compta = array(
 		'AddRemind' => 'Verfügbare Menge zum Versenden',
 		'RemainToDivide' => 'Noch zu Versenden :',
 		'WarningDepositsNotIncluded' => 'Abschlagsrechnungen werden in dieser Version des Rechnungswesens nicht berücksichtigt.',
+		'DatePaymentTermCantBeLowerThanObjectDate' => 'Payment term date can\'t be lower than object date.',
+		'Pcg_version' => 'Pcg version',
+		'Pcg_type' => 'Pcg type',
+		'Pcg_subtype' => 'Pcg subtype'
 );
 ?>

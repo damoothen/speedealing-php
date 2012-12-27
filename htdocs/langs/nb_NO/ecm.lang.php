@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'Rot',
 		'ECMNewSection' => 'Ny mappe',
 		'ECMAddSection' => 'Legg til manuell mappe',
-		'ECMNewSection' => 'Ny manuell mappe',
 		'ECMNewDocument' => 'Nytt dokument',
 		'ECMCreationDate' => 'Opprettet den',
 		'ECMNbOfFilesInDir' => 'Antall filer i mappen',
@@ -53,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Mapper med dokumenter',
 		'ECMTypeManual' => 'Manuell',
 		'ECMTypeAuto' => 'Automatisk',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Dokumenter knyttet til tredjeparter',
 		'ECMDocsByProposals' => 'Dokumenter knyttet til tilbud',
 		'ECMDocsByOrders' => 'Dokumenter knyttet til kundeordre',
@@ -67,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Kunne ikke fjerne mappen, da den inneholder filer',
 		'ECMFileManager' => 'Filbehandler',
 		'ECMSelectASection' => 'Velg en mappe fra treet til venstre...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

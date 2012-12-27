@@ -92,6 +92,6 @@ $boxes = array(
 		// Latest supplier orders
 		'BoxLatestSupplierOrders' => 'Latest supplier orders',
 		'BoxTitleLatestSupplierOrders' => '%s latest supplier orders',
-		'NoSupplierOrder' => 'No recorded supplier order',
+		'NoSupplierOrder' => 'No recorded supplier order'
 );
 ?>

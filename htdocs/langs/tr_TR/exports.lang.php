@@ -128,5 +128,13 @@ $exports = array(
 		'ExampleAnyRefFoundIntoElement' => 'Herhangi bir ilgi öğesi <b>%s</b> bulundu',
 		'ExampleAnyCodeOrIdFoundIntoDictionnary' => 'Herhangi bir kod (veya id) <b>%s</b> sözlük içinde bulundu',
 		'CSVFormatDesc' => '<b>Virgülle Ayrılmış Değer</b> dosya biçimi(.csv).<br>Bu alanları ayırıcı ile ayrılmış bir metin dosyası biçimidir [ %s ]. Bir alan içeriğinde ayırıcı bulunursa, alan yuvarlatma karakteri ile yuvarlanır [ %s ]. Yuvarlatma karakterinden çıkmak için Escape karakteri kullanılır [%s].',
+		'Excel95FormatDesc' => '<b>Excel</b> file format (.xls)<br>This is native Excel 95 format (BIFF5).',
+		'Excel2007FormatDesc' => '<b>Excel</b> file format (.xlsx)<br>This is native Excel 2007 format (SpreadsheetML).',
+		'TsvFormatDesc' => '<b>Tab Separated Value</b> file format (.tsv)<br>This is a text file format where fields are separated by a tabulator [tab].',
+		'ExportFieldAutomaticallyAdded' => 'Field <b>%s</b> was automatically added. It will avoid you to have similar lines to be treated as duplicate records (with this field added, all ligne will own its own id and will differ).',
+		'CsvOptions' => 'Csv Options',
+		'Separator' => 'Separator',
+		'Enclosure' => 'Enclosure',
+		'SuppliersProducts' => 'Suppliers Products'
 );
 ?>

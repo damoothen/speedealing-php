@@ -31,6 +31,7 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => 'Preusmerjeni boste na varno Paybox stran za vnos podatkov o vaši kreditni kartici',
 		'PleaseBePatient' => 'Prosim, bodite potrpežljivi',
 		'Continue' => 'Naslednji',
+		'ToOfferALinkForOnlinePayment' => 'URL za %s plačila',
 		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL naslov s ponudbo %s vmesnika za online plačila naročil',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL naslov s ponudbo %s vmesnika za online plačila računov',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL naslov s ponudbo %s vmesnika za online plačila po pogodbi',
@@ -47,7 +48,6 @@ $paybox = array(
 		'VendorName' => 'Ime prodajalca',
 		'CSSUrlForPaymentForm' => 'url CSS vzorca obrazca plačila',
 		'MessageOK' => 'Sporočilo na strani za potrditev plačila',
-		'MessageKO' => 'Sporočilo na strani za preklic plačila',
-		'ToOfferALinkForOnlinePayment' => 'URL za %s plačila',
+		'MessageKO' => 'Sporočilo na strani za preklic plačila'
 );
 ?>

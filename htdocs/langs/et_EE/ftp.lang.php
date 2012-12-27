@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Ei õnnestunud ühendust FTP server (server %s, sadama %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Suutnud sisse logida FTP serverisse määratletud login / parool',
 		'FTPFailedToRemoveFile' => 'Suutnud eemaldada fail <b>%s.</b>',
-		'FTPFailedToRemoveDir' => 'Suutnud eemaldada kataloog <b>%s</b> (kontrolli õigusi ja et kataloog on tühi).',
+		'FTPFailedToRemoveDir' => 'Suutnud eemaldada kataloog <b>%s</b> (kontrolli õigusi ja et kataloog on tühi).'
 );
 ?>

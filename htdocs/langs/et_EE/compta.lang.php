@@ -34,6 +34,8 @@ $compta = array(
 		'AccountsGeneral' => 'Raamatupidamise',
 		'Account' => 'Konto',
 		'Accounts' => 'Raamatupidamise',
+		'Accountparent' => 'Account parent',
+		'Accountsparent' => 'Accounts parent',
 		'BillsForSuppliers' => 'Arveid, mille alusel tarnijad',
 		'Income' => 'Tulu',
 		'Outcome' => 'Kulu',
@@ -159,5 +161,9 @@ $compta = array(
 		'AddRemind' => 'Lähetamiseks kättesaadavaks summa',
 		'RemainToDivide' => 'Veel saata:',
 		'WarningDepositsNotIncluded' => 'Hoiuste arved ei kuulu selles versioonis seda raamatupidamise moodul.',
+		'DatePaymentTermCantBeLowerThanObjectDate' => 'Payment term date can\'t be lower than object date.',
+		'Pcg_version' => 'Pcg version',
+		'Pcg_type' => 'Pcg type',
+		'Pcg_subtype' => 'Pcg subtype'
 );
 ?>

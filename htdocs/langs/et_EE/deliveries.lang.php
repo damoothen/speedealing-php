@@ -33,11 +33,12 @@ $deliveries = array(
 		'DeliveryMethod' => 'Edastamise meetod',
 		'TrackingNumber' => 'Tracking number',
 		'DeliveryNotValidated' => 'Toimetaja ei ole kinnitatud',
+		// merou PDF model
 		'NameAndSignature' => 'Nimi ja allkiri:',
 		'ToAndDate' => 'To___________________________________ on ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'On saanud kauba üle heas seisukorras,',
 		'Deliverer' => 'Üleandjale:',
 		'Sender' => 'Saatja',
-		'Recipient' => 'Saaja',
+		'Recipient' => 'Saaja'
 );
 ?>

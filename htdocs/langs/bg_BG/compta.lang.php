@@ -161,8 +161,9 @@ $compta = array(
 		'AddRemind' => 'Изпращането наличната сума',
 		'RemainToDivide' => 'Останете изпращането:',
 		'WarningDepositsNotIncluded' => 'Депозити фактури не са включени в тази версия с този модул за счетоводството.',
+		'DatePaymentTermCantBeLowerThanObjectDate' => 'Payment term date can\'t be lower than object date.',
 		'Pcg_version' => 'PCG версия',
 		'Pcg_type' => 'PCG тип',
-		'Pcg_subtype' => 'PCG подтип',
+		'Pcg_subtype' => 'PCG подтип'
 );
 ?>

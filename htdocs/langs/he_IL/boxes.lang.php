@@ -18,6 +18,7 @@ $boxes = array(
 		'CHARSET' => 'UTF-8',
 		'BoxLastRssInfos' => 'RSS מידע',
 		'BoxLastProducts' => 'האחרונים %s מוצרים / שירותים',
+		'BoxProductsAlertStock' => 'Products in stock alert',
 		'BoxLastProductsInContract' => '%s האחרונות חלה מוצרים / שירותים',
 		'BoxLastSupplierBills' => 'הספק האחרון של חשבוניות',
 		'BoxLastCustomerBills' => 'הלקוח האחרון של חשבוניות',
@@ -41,6 +42,7 @@ $boxes = array(
 		'BoxTitleNbOfCustomers' => 'מספר הלקוחות',
 		'BoxTitleLastRssInfos' => '%s החדשות האחרונות מ %s',
 		'BoxTitleLastProducts' => '%s השתנה לאחרונה מוצרים / שירותים',
+		'BoxTitleProductsAlertStock' => 'Products in stock alert',
 		'BoxTitleLastCustomerOrders' => '%s השתנה לאחרונה הזמנות של לקוחות',
 		'BoxTitleLastSuppliers' => '%s האחרונות רשמה ספקים',
 		'BoxTitleLastCustomers' => '%s האחרונות לקוחות שנרשמו',
@@ -68,6 +70,7 @@ $boxes = array(
 		'BoxTitleLastContracts' => '%s החוזים האחרונים',
 		'BoxTitleLastModifiedDonations' => '%s האחרונות שונה תרומות',
 		'BoxTitleLastModifiedExpenses' => '%s האחרונות שונה הוצאות',
+		'BoxGlobalActivity' => 'Global activity (invoices, proposals, orders)',
 		'FailedToRefreshDataInfoNotUpToDate' => 'נכשל נסיון רענן RSS השטף. תאריך אחרון מוצלחת רענון: %s',
 		'LastRefreshDate' => 'המועד האחרון רענון',
 		'NoRecordedBookmarks' => 'הסימניות לא מוגדר.',
@@ -86,5 +89,9 @@ $boxes = array(
 		'NoRecordedProspects' => 'אין סיכויי מוקלטות',
 		'NoContractedProducts' => 'אין מוצרים / שירותים חוזה',
 		'NoRecordedContracts' => 'אין חוזים מוקלטות',
+		// Latest supplier orders
+		'BoxLatestSupplierOrders' => 'Latest supplier orders',
+		'BoxTitleLatestSupplierOrders' => '%s latest supplier orders',
+		'NoSupplierOrder' => 'No recorded supplier order'
 );
 ?>

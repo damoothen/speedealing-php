@@ -23,5 +23,7 @@ $workflow = array(
 		'descWORKFLOW_PROPAL_AUTOCREATE_INVOICE' => '商业提案签署后自动创建一个客户发票',
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => '创建一个客户发票，合同验证后自动',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => '创建一个客户发票，客户订单后自动关闭',
+		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Classify linked source proposal to billed when customer order is set to paid',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid'
 );
 ?>

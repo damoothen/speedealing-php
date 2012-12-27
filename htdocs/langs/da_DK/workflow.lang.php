@@ -23,5 +23,7 @@ $workflow = array(
 		'descWORKFLOW_PROPAL_AUTOCREATE_INVOICE' => 'Opret en kundefaktura automatisk efter en kommerciel forslag er underskrevet',
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Opret en kundefaktura automatisk efter en kontrakt er valideret',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Opret en kundefaktura automatisk efter en kundeordre er lukket',
+		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Classify linked source proposal to billed when customer order is set to paid',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid'
 );
 ?>

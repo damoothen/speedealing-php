@@ -52,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'מדריכים של מסמכים',
 		'ECMTypeManual' => 'ידני',
 		'ECMTypeAuto' => 'אוטומטי',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'המסמכים המקושרים לצדדים שלישיים',
 		'ECMDocsByProposals' => 'המסמכים המקושרים להצעות',
 		'ECMDocsByOrders' => 'מסמכים קשורים הזמנות הלקוחות',
@@ -66,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'לא ניתן להסיר כיוון שהוא מכיל מספר קבצים',
 		'ECMFileManager' => 'מנהל הקבצים',
 		'ECMSelectASection' => 'בחר מדריך על העץ השמאלי ...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

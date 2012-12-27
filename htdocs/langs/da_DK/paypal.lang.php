@@ -22,14 +22,15 @@ $paypal = array(
 		'PaypalDoPayment' => 'Betal med Paypal',
 		'PaypalCBDoPayment' => 'Betal med kreditkort',
 		'PAYPAL_API_SANDBOX' => 'Mode test / sandkasse',
-		'ThisIsTransactionId' => 'Dette er id af transaktionen: <b>%s</b>',
-		'PAYPAL_ADD_PAYMENT_URL' => 'Tilsæt url Paypal betaling, når du sender et dokument med posten',
-		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-mail-adresse til øjeblikkelig meddelelse om betaling (IPN)',
 		'PAYPAL_API_USER' => 'API brugernavn',
 		'PAYPAL_API_PASSWORD' => 'API kodeord',
 		'PAYPAL_API_SIGNATURE' => 'API signatur',
 		'PAYPAL_API_INTEGRAL_OR_PAYPALONLY' => 'Tilbyder betaling &quot;integreret&quot; (kreditkort + Paypal) eller &quot;Paypal&quot; kun',
 		'PAYPAL_CSS_URL' => 'Valgfrie Url af CSS stylesheet på betalingssiden',
-		'YouAreCurrentlyInSandboxMode' => 'Du er i øjeblikket i &quot;sandbox&quot; mode',
+		'ThisIsTransactionId' => 'Dette er id af transaktionen: <b>%s</b>',
+		'PAYPAL_ADD_PAYMENT_URL' => 'Tilsæt url Paypal betaling, når du sender et dokument med posten',
+		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-mail-adresse til øjeblikkelig meddelelse om betaling (IPN)',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Du er i øjeblikket i &quot;sandbox&quot; mode'
 );
 ?>

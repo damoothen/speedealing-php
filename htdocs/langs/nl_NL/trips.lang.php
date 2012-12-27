@@ -20,7 +20,6 @@ $trips = array(
 		'Trips' => 'Reizen',
 		'TripsAndExpenses' => 'Reizen en uitgaven',
 		'TripsAndExpensesStatistics' => 'Reizen en uitgaven statistieken',
-		'TripId' => 'Reis-ID',
 		'TripCard' => 'Reizenkaart',
 		'AddTrip' => 'Reis toevoegen',
 		'ListOfTrips' => 'Reizenlijst',
@@ -35,7 +34,7 @@ $trips = array(
 		'TF_LUNCH' => 'Lunch',
 		'TF_TRIP' => 'Reis',
 		'ListTripsAndExpenses' => 'Lijst van de reis- en onkosten',
-		'SearchATripAndExpense' => 'Zoek een reis en kosten',
 		'ExpensesArea' => 'Trips en uitgaven gebied',
+		'SearchATripAndExpense' => 'Zoek een reis en kosten'
 );
 ?>

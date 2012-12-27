@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Вы можете позвонить одному из отобранных тренеров Dolibarr на вашем языке (%s), выбрав его Виджет (статус и максимальная цена звонка обновляются автоматически):',
 		'PossibleLanguages' => 'Поддерживаемые языки',
 		'MakeADonation' => 'Помогите проекту Dolibarr, сделайте пожертвование',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

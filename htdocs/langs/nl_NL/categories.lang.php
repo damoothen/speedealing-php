@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'Dit lid behoort tot geen enkele categorie',
 		'ClassifyInCategory' => 'Classificeren naar categorie',
 		'NoneCategory' => 'Geen',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'Deze categorie bestaat al op hetzelfde niveau',
 		'ReturnInProduct' => 'Terug naar product- / dienstdetails',
 		'ReturnInSupplier' => 'Terug naar leverancierdetails',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'Leverancierscategorieënlijst',
 		'CatCusList' => 'afnemers- / prospectencategorieënlijst',
 		'CatProdList' => 'productencategorieënlijst',
-		'CatMemberList' => 'Ledencategorieënlijst',
+		'CatMemberList' => 'Ledencategorieënlijst'
 );
 ?>

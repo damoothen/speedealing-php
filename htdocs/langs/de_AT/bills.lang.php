@@ -411,6 +411,6 @@ $bills = array(
 		'PDFOursinDescription' => 'Rechnung Modell oursin',
 		// NumRef Modules
 		'TerreNumRefModelDesc1' => 'Zurück NUMERO mit Format %syymm-nnnn für Standardrechnungen und syymm%-nnnn für Gutschriften, wo ist JJ Jahr, MM Monat und nnnn ist eine Folge ohne Pause und keine Rückkehr auf 0',
-		'TerreNumRefModelError' => 'Eine Rechnung, beginnend mit $ syymm existiert bereits und ist nicht kompatibel mit diesem Modell der Reihe. Entfernen oder umbenennen, um dieses Modul.',
+		'TerreNumRefModelError' => 'Eine Rechnung, beginnend mit $ syymm existiert bereits und ist nicht kompatibel mit diesem Modell der Reihe. Entfernen oder umbenennen, um dieses Modul.'
 );
 ?>

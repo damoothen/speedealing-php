@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Konnte keine Verbindung zum FTP-Server aufbauen (Server %s, Port %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Anmeldung am FTP-Server mit dem eingegebenen Benutzername/Passwort-Paar fehlgeschlagen',
 		'FTPFailedToRemoveFile' => 'Konnte Datei <b>%s</b> nicht entfernen.',
-		'FTPFailedToRemoveDir' => 'Konnte Verzeichnis <b>%s</b> nicht entfernen. Überprüfen Sie die Berechtigungen und ob das Verzeichnis leer ist.',
+		'FTPFailedToRemoveDir' => 'Konnte Verzeichnis <b>%s</b> nicht entfernen. Überprüfen Sie die Berechtigungen und ob das Verzeichnis leer ist.'
 );
 ?>

@@ -28,17 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Angi leveringsdato',
 		'ValidateDeliveryReceipt' => 'Godkjenn leveringskvittering',
 		'ValidateDeliveryReceiptConfirm' => 'Er du sikker på at du vil godkjenne denne leveringskvitteringen?',
+		'DeleteDeliveryReceipt' => 'Slett levering kvittering',
+		'DeleteDeliveryReceiptConfirm' => 'Er du sikker på at du vil slette leveringskvitteringen <b>%s?</b>',
 		'DeliveryMethod' => 'Leveringsmåte',
 		'TrackingNumber' => 'Trackingnummer',
-		// merou PDF model						   
+		'DeliveryNotValidated' => 'Levering ikke validert',
+		// merou PDF model
 		'NameAndSignature' => 'Navn og signatur :',
 		'ToAndDate' => 'Til___________________________________ den ____/_____/__________',
 		'GoodStatusDeclaration' => 'Forsendelsen er mottatt uten skader,',
 		'Deliverer' => 'Transportør :',
 		'Sender' => 'Avsender',
-		'Recipient' => 'Mottaker',
-		'DeleteDeliveryReceipt' => 'Slett levering kvittering',
-		'DeleteDeliveryReceiptConfirm' => 'Er du sikker på at du vil slette leveringskvitteringen <b>%s?</b>',
-		'DeliveryNotValidated' => 'Levering ikke validert',
+		'Recipient' => 'Mottaker'
 );
 ?>

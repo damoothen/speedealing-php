@@ -28,17 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Szállítási dátum beállítása',
 		'ValidateDeliveryReceipt' => 'Szállítási bizonylat hitelesítése',
 		'ValidateDeliveryReceiptConfirm' => 'Biztos hitelesíteni akarja a szállítási bizonylatot?',
+		'DeleteDeliveryReceipt' => 'Törlés átvételi elismervényen',
+		'DeleteDeliveryReceiptConfirm' => 'Biztos benne, hogy törli átvételi elismervényen <b>%s?</b>',
 		'DeliveryMethod' => 'Szállítási mód',
 		'TrackingNumber' => 'Nyomonkövetési szám',
-		// merou PDF model						   
+		'DeliveryNotValidated' => 'Szállítási nem validált',
+		// merou PDF model
 		'NameAndSignature' => 'Név és aláírás :',
 		'ToAndDate' => 'To___________________________________ on ____/_____/__________',
 		'GoodStatusDeclaration' => 'Have received the goods above in good condition,',
 		'Deliverer' => 'Deliverer :',
 		'Sender' => 'Sender',
-		'Recipient' => 'Recipient',
-		'DeleteDeliveryReceipt' => 'Törlés átvételi elismervényen',
-		'DeleteDeliveryReceiptConfirm' => 'Biztos benne, hogy törli átvételi elismervényen <b>%s?</b>',
-		'DeliveryNotValidated' => 'Szállítási nem validált',
+		'Recipient' => 'Recipient'
 );
 ?>

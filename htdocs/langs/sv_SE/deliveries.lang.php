@@ -28,16 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Ställ in leveransdatum',
 		'ValidateDeliveryReceipt' => 'Validate kvitto',
 		'ValidateDeliveryReceiptConfirm' => 'Är du säker på att du vill godkänna detta kvitto?',
+		'DeleteDeliveryReceipt' => 'Bort kvitto',
+		'DeleteDeliveryReceiptConfirm' => 'Är du säker på att du vill ta bort <b>%s</b> kvitto?',
 		'DeliveryMethod' => 'Leveransmetod',
 		'TrackingNumber' => 'Spårningsnummer',
+		'DeliveryNotValidated' => 'Leverans inte validerade',
+		// merou PDF model
 		'NameAndSignature' => 'Namn och namnteckning:',
 		'ToAndDate' => 'To___________________________________ den ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'Har tagit emot varan ovan i gott skick,',
 		'Deliverer' => 'Befriare:',
 		'Sender' => 'Avsändare',
-		'Recipient' => 'Mottagare',
-		'DeleteDeliveryReceipt' => 'Bort kvitto',
-		'DeleteDeliveryReceiptConfirm' => 'Är du säker på att du vill ta bort <b>%s</b> kvitto?',
-		'DeliveryNotValidated' => 'Leverans inte validerade',
+		'Recipient' => 'Mottagare'
 );
 ?>

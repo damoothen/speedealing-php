@@ -52,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Dokumentumok könyvtárai',
 		'ECMTypeManual' => 'Kézi',
 		'ECMTypeAuto' => 'Automatikus',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Harmadik féllel kapcsolatban álló dokumentumok',
 		'ECMDocsByProposals' => 'Ajánlatokkat kapcsolatban álló dokumentumok',
 		'ECMDocsByOrders' => 'Megrendelésekkel kapcsolatban álló dokumentumok',
@@ -66,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Az eltvolítás nem lehetséges amig tartalmaz fájlokat',
 		'ECMFileManager' => 'Fájl kezelő',
 		'ECMSelectASection' => 'Válasszon könyvtárat a bal oldali fából...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

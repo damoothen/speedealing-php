@@ -15,10 +15,24 @@
  */
 
 $bookmarks = array(
-		'﻿# Dolibarr language file - pt_PT - marque pages' => '',
 		'CHARSET' => 'UTF-8',
-		'Bookm' => 'Favoritos',
-		'NewBookmark' => 'Novo Favorito',
 		'AddThisPageToBookmarks' => 'Adicionar esta página aos Favoritos',
+		'Bookmark' => 'Bookmark',
+		'Bookmarks' => 'Bookmarks',
+		'NewBookmark' => 'Novo Favorito',
+		'ShowBookmark' => 'Show bookmark',
+		'OpenANewWindow' => 'Open a new window',
+		'ReplaceWindow' => 'Replace current window',
+		'BookmarkTargetNewWindowShort' => 'New window',
+		'BookmarkTargetReplaceWindowShort' => 'Current window',
+		'BookmarkTitle' => 'Bookmark title',
+		'UrlOrLink' => 'URL',
+		'BehaviourOnClick' => 'Behaviour when a URL is clicked',
+		'CreateBookmark' => 'Create bookmark',
+		'SetHereATitleForLink' => 'Set a title for the bookmark',
+		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Use an external http URL or a relative Dolibarr URL',
+		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Choose if a page opened by link must appear on current or new window',
+		'BookmarksManagement' => 'Bookmarks management',
+		'ListOfBookmarks' => 'List of bookmarks'
 );
 ?>

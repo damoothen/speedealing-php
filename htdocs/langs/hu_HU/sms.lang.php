@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Nb a fennmaradó karakterek',
 		'SmsInfoNumero' => '(Nemzetközi formátum, azaz: 33899701761)',
 		'DelayBeforeSending' => 'Késleltetett küldés előtt (perc)',
-		'SmsNoPossibleRecipientFound' => 'Nincs cél elérhető. Ellenőrizze beállítása az SMS szolgáltató.',
+		'SmsNoPossibleRecipientFound' => 'Nincs cél elérhető. Ellenőrizze beállítása az SMS szolgáltató.'
 );
 ?>

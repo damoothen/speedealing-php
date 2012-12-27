@@ -42,6 +42,7 @@ $install = array(
 		'ErrorWrongValueForParameter' => 'Teil võib olla kirjutatud vale hinna parameeter &quot;%s&quot;.',
 		'ErrorFailedToCreateDatabase' => 'Suutnud luua andmebaasi \'%s &quot;.',
 		'ErrorFailedToConnectToDatabase' => 'Ei suutnud ühendada andmebaas &quot;%s&quot;.',
+		'ErrorDatabaseVersionTooLow' => 'Database version (%s) too old. Version %s or higher is required.',
 		'ErrorPHPVersionTooLow' => 'PHP versioon liiga vana. Version %s on vaja.',
 		'WarningPHPVersionTooLow' => 'PHP versioon liiga vana. Version %s või rohkem oodata. See versioon peaks võimaldama paigaldada, kuid ei toetata.',
 		'ErrorConnectedButDatabaseNotFound' => 'Ühendus server eduka kuid andmebaas &quot;%s&quot; ei leitud.',
@@ -170,6 +171,10 @@ $install = array(
 		'MigrationFinished' => 'Ränne lõppenud',
 		'LastStepDesc' => '<strong>Viimane samm:</strong> Määra siin kasutajanimi ja parool te kavatsete kasutada ühenduda tarkvara. Ära kaota seda on konto haldab kõiki teisi.',
 		'ActivateModule' => 'Aktiveerige moodul %s',
+		'ShowEditTechnicalParameters' => 'Click here to show/edit advanced parameters (expert mode)',
+		//////////////////
+		// upgrade
+		//////////////////
 		'MigrationFixData' => 'Määrama denormalized andmed',
 		'MigrationOrder' => 'Andmed migratsiooni kliendi korralduste',
 		'MigrationSupplierOrder' => 'Andmed migratsiooni tarnija tellimuste',
@@ -217,5 +222,6 @@ $install = array(
 		'MigrationProjectTaskTime' => 'Värskenda aega sekundites',
 		'MigrationActioncommElement' => 'Värskenda andmed meetmete kohta',
 		'MigrationPaymentMode' => 'Andmete migratsioon maksmise režiim',
+		'MigrationCategorieAssociation' => 'Migration of categories'
 );
 ?>

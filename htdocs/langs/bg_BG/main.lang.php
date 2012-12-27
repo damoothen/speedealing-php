@@ -17,9 +17,6 @@
 $main = array(
 		'CHARSET' => 'UTF-8',
 		'DIRECTION' => 'ltr',
-		//FONTFORPDF=Freemono
-		'FONTFORPDF' => 'DejaVuSans',
-		'FONTSIZEFORPDF' => '9',
 		'SeparatorDecimal' => '.',
 		'SeparatorThousand' => ',',
 		'FormatDateShort' => '%d.%m.%Y',
@@ -266,6 +263,8 @@ $main = array(
 		'MonthOfDay' => 'Месец на деня',
 		'HourShort' => 'H',
 		'Rate' => 'Процент',
+		'UseLocalTax' => 'Include tax',
+		'LocalTaxDesc' => 'Some countries apply 2 or 3 taxes on each invoice line. If this is the case, choose type for second and third tax and its rate. Possible type are:<br>1 : local tax apply on products and services without vat (vat is not applied on local tax)<br>2 : local tax apply on products and services before vat (vat is calculated on amount + localtax)<br>3 : local tax apply on products without vat (vat is not applied on local tax)<br>4 : local tax apply on products before vat (vat is calculated on amount + localtax)<br>5 : local tax apply on services without vat (vat is not applied on local tax)<br>6 : local tax apply on services before vat (vat is calculated on amount + localtax)<br>7 : local tax is a fix amount applied on global invoice',
 		'Bytes' => 'Bytes',
 		'KiloBytes' => 'Килобайтове',
 		'MegaBytes' => 'Мегабайта',
@@ -643,6 +642,7 @@ $main = array(
 		'LinkedToSpecificUsers' => 'Свързано с даден контакт на потребителя',
 		'DeleteAFile' => 'Изтриване на файл',
 		'ConfirmDeleteAFile' => 'Сигурен ли сте, че искате да изтриете файл',
+		// Week day
 		'Monday' => 'Понеделник',
 		'Tuesday' => 'Вторник',
 		'Wednesday' => 'Сряда',
@@ -670,6 +670,6 @@ $main = array(
 		'ShortThursday' => 'T',
 		'ShortFriday' => 'F',
 		'ShortSaturday' => 'S',
-		'ShortSunday' => 'S',
+		'ShortSunday' => 'S'
 );
 ?>

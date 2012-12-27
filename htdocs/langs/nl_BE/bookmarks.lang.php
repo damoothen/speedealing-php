@@ -21,7 +21,6 @@ $bookmarks = array(
 		'Bookmarks' => 'Bladwijzers',
 		'NewBookmark' => 'Nieuwe bladwijzer',
 		'ShowBookmark' => 'Toon bladwijzer',
-		'BookmarkThisPage' => 'Maak bladwijzer van deze pagina',
 		'OpenANewWindow' => 'Open een nieuw venster',
 		'ReplaceWindow' => 'Vervang huidig venster',
 		'BookmarkTargetNewWindowShort' => 'Nieuw venster',
@@ -34,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Gebruik een externe URL of een relatieve URL van Dolibarr',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Selecteer of de bladwijzer moet openen in een nieuw venster of in het huidig venster van de pagina',
 		'BookmarksManagement' => 'Bladwijzer beheer',
-		'ListOfBookmarks' => 'Lijst van bladwijzers',
+		'ListOfBookmarks' => 'Lijst van bladwijzers'
 );
 ?>

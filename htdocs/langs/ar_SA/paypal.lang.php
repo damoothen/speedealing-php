@@ -22,14 +22,15 @@ $paypal = array(
 		'PaypalDoPayment' => 'مع دفع بايبال',
 		'PaypalCBDoPayment' => 'تدفع بواسطة بطاقة ائتمان',
 		'PAYPAL_API_SANDBOX' => 'وضع الاختبار / رمل',
-		'PAYPAL_ADD_PAYMENT_URL' => 'إضافة رابط الدفع باي بال عند إرسال مستند عبر البريد',
-		'PAYPAL_IPN_MAIL_ADDRESS' => 'عنوان البريد الإلكتروني للإخطار لحظة الدفع (IPN)',
 		'PAYPAL_API_USER' => 'API المستخدم',
 		'PAYPAL_API_PASSWORD' => 'API كلمة السر',
 		'PAYPAL_API_SIGNATURE' => 'API توقيع',
 		'PAYPAL_API_INTEGRAL_OR_PAYPALONLY' => 'تقدم الدفع &quot;لا يتجزأ&quot; (بطاقة الائتمان + باي بال) أو &quot;باي بال&quot; فقط',
 		'PAYPAL_CSS_URL' => 'Optionnal عنوان الموقع من ورقة أنماط CSS في صفحة الدفع',
 		'ThisIsTransactionId' => 'هذا هو معرف من الصفقة: <b>%s</b>',
-		'YouAreCurrentlyInSandboxMode' => 'أنت حاليا في وضع &quot;رمل&quot;',
+		'PAYPAL_ADD_PAYMENT_URL' => 'إضافة رابط الدفع باي بال عند إرسال مستند عبر البريد',
+		'PAYPAL_IPN_MAIL_ADDRESS' => 'عنوان البريد الإلكتروني للإخطار لحظة الدفع (IPN)',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'أنت حاليا في وضع &quot;رمل&quot;'
 );
 ?>

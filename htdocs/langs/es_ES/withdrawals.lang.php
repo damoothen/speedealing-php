@@ -64,7 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => 'Motivo de devolución',
 		'RefusedInvoicing' => 'Facturación de la devolución',
 		'NoInvoiceRefused' => 'No facturar la devolución',
-		'InvoiceRefused' => 'Facturar la devolución al cliente',
+		'InvoiceRefused' => 'Factura devuelta',
 		'Status' => 'Estado',
 		'StatusUnknown' => 'Desconocido',
 		'StatusWaiting' => 'En espera',
@@ -97,7 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'Ver domiciliación',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'Sin embargo, si la factura tiene pendiente algún pago por domiciliación, no será cerrada para permitir la gestión de la domiciliación.',
 		'DoStandingOrdersBeforePayments' => 'Esta pestaña le permite realizar una petición de domiciliación. Una vez terminada, puede ingresar el pago en la factura para proceder a su cierre.',
-		////// Notifications 
+		////// Notifications
 		'InfoCreditSubject' => 'Abono de domiciliación %s por el banco',
 		'InfoCreditMessage' => 'La orden de domiciliación %s ha sido abonada por el banco<br>Fecha de abono: %s',
 		'InfoTransSubject' => 'Envío de domiciliación %s al banco',
@@ -106,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'Este es un mensaje automático enviado por Dolibarr',
 		'InfoRejectSubject' => 'Domiciliación devuelta',
 		'InfoRejectMessage' => 'Buenos días,<br><br>la domiciliación de la factura %s por cuenta de la empresa %s, con un importe de %s ha sido devuelta por el banco.<br><br>--<br>%$',
-		'ModeWarning' => 'No se ha establecido la opción de modo real, nos detendremos después de esta simulación',
+		'ModeWarning' => 'No se ha establecido la opción de modo real, nos detendremos después de esta simulación'
 );
 ?>

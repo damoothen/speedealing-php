@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'Juuri',
 		'ECMNewSection' => 'Uusi hakemisto',
 		'ECMAddSection' => 'Lisää käsikirja hakemistoon',
-		'ECMNewSection' => 'Uusi käsikirja hakemistoon',
 		'ECMNewDocument' => 'Uusi asiakirja',
 		'ECMCreationDate' => 'Luontipäivämäärä',
 		'ECMNbOfFilesInDir' => 'Määrä tiedostoja hakemistossa',
@@ -53,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Hakemistot asiakirjoja',
 		'ECMTypeManual' => 'Manuaalinen',
 		'ECMTypeAuto' => 'Automaattinen',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Asiakirjat liittyy kolmansien osapuolten',
 		'ECMDocsByProposals' => 'Asiakirjat liittyvät ehdotukset',
 		'ECMDocsByOrders' => 'Asiakirjat liittyvät asiakkaiden tilauksia',
@@ -67,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Poistetut ole mahdollista, koska se sisältää joitakin tiedostoja',
 		'ECMFileManager' => 'Tiedostonhallinta',
 		'ECMSelectASection' => 'Valitse hakemiston vasemmassa puu ...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

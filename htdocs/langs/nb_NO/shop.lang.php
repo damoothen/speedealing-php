@@ -24,6 +24,6 @@ $shop = array(
 		'LastCustomers' => 'Siste kunder',
 		'OSCommerceShop' => 'OSCommerce butikk',
 		'OSCommerce' => 'OSCommerce',
-		'AddProd' => 'Selg i nettbutikk',
+		'AddProd' => 'Selg i nettbutikk'
 );
 ?>

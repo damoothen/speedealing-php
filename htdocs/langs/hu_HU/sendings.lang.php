@@ -47,9 +47,11 @@ $sendings = array(
 		'StatusSendingCanceled' => 'Megszakítva',
 		'StatusSendingDraft' => 'Piszkozat',
 		'StatusSendingValidated' => 'Hitelesítve (már szállítva)',
+		'StatusSendingProcessed' => 'Processed',
 		'StatusSendingCanceledShort' => 'Megszakítva',
 		'StatusSendingDraftShort' => 'Piszkozat',
 		'StatusSendingValidatedShort' => 'Hitelesítve',
+		'StatusSendingProcessedShort' => 'Processed',
 		'SendingSheet' => 'Küldési adatlap',
 		'Carriers' => 'Fuvarozók',
 		'Carrier' => 'Fuvarozó',
@@ -66,6 +68,12 @@ $sendings = array(
 		'StatsOnShipmentsOnlyValidated' => 'A statisztika csak a hitelesített szállítmányokat veszi figyelembe',
 		'DateDeliveryPlanned' => 'Tervezett szállítási dátum',
 		'DateReceived' => 'Átvétel dátuma',
+		'SendShippingByEMail' => 'Küldés e-mailben szállítás',
+		'SendShippingRef' => 'Küldje szállítás %s',
+		'ActionsOnShipping' => 'Események a szállítás',
+		'LinkToTrackYourPackage' => 'Link követni a csomagot',
+		'ShipmentCreationIsDoneFromOrder' => 'Ebben a pillanatban, létrejön egy új szállítmány kerül sor a sorrendben kártyát.',
+		'RelatedShippings' => 'Related shippings',
 		// Sending methods
 		'SendingMethodCATCH' => 'Ügyfél fogád',
 		'SendingMethodTRANS' => 'Szállító',
@@ -73,11 +81,6 @@ $sendings = array(
 		// ModelDocument
 		'DocumentModelSirocco' => 'Egyszerű dokumentum modell bizonylatokhoz',
 		'DocumentModelTyphon' => 'Teljesebb dokumentum modell bizonylatokhoz (logo...)',
-		'SendShippingByEMail' => 'Küldés e-mailben szállítás',
-		'SendShippingRef' => 'Küldje szállítás %s',
-		'ActionsOnShipping' => 'Események a szállítás',
-		'LinkToTrackYourPackage' => 'Link követni a csomagot',
-		'ShipmentCreationIsDoneFromOrder' => 'Ebben a pillanatban, létrejön egy új szállítmány kerül sor a sorrendben kártyát.',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Állandó EXPEDITION_ADDON_NUMBER nincs definiálva',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Állandó EXPEDITION_ADDON_NUMBER nincs definiálva'
 );
 ?>

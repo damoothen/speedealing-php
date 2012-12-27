@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Nb на останалите герои',
 		'SmsInfoNumero' => '(Формат международната т.е.: 33899701761)',
 		'DelayBeforeSending' => 'Забавяне преди изпращане (минути)',
-		'SmsNoPossibleRecipientFound' => 'Целта на разположение. Проверете настройките на вашия доставчик на SMS.',
+		'SmsNoPossibleRecipientFound' => 'Целта на разположение. Проверете настройките на вашия доставчик на SMS.'
 );
 ?>

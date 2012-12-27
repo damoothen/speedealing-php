@@ -43,6 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => 'Συγχρονισμένη μέλος',
 		'ContactSynchronized' => 'Επικοινωνία συγχρονισμένη',
 		'ForceSynchronize' => 'Δύναμη συγχρονισμό Dolibarr -> LDAP',
-		'ErrorFailedToReadLDAP' => 'Αποτυχία ανάγνωσης LDAP βάση δεδομένων. Ελέγξτε LDAP εγκατάσταση μονάδας και την προσβασιμότητα της βάσης δεδομένων.',
+		'ErrorFailedToReadLDAP' => 'Αποτυχία ανάγνωσης LDAP βάση δεδομένων. Ελέγξτε LDAP εγκατάσταση μονάδας και την προσβασιμότητα της βάσης δεδομένων.'
 );
 ?>

@@ -21,10 +21,10 @@ $propal = array(
 		'ProposalShort' => 'Proposition',
 		'ProposalsDraft' => 'Propositions commerciales brouillons',
 		'ProposalDraft' => 'Proposition commerciale brouillon',
+		'ProposalsOpened' => 'Propositions commerciales ouvertes',
 		'Prop' => 'Propositions commerc.',
 		'CommercialProposal' => 'Proposition commerciale',
 		'CommercialProposals' => 'Propositions commerciales',
-		'ProposalsOpened' => 'Propositions commerciales ouvertes',
 		'ProposalCard' => 'Fiche proposition',
 		'NewProp' => 'Nouvelle proposition commerciale',
 		'NewProposal' => 'Nouvelle proposition commerciale',
@@ -96,7 +96,6 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Êtes-vous sûr de vouloir réouvrir la proposition commerciale <b>%s</b> ?',
 		'ProposalsAndProposalsLines' => 'Propositions commerciales clientes et lignes de propositions',
 		'ProposalLine' => 'Ligne de proposition',
-		'ProposalLines' => 'Lignes de proposition',
 		'AvailabilityPeriod' => 'Délai de livraison',
 		'SetAvailability' => 'Définir le délai de livraison',
 		'AfterOrder' => 'après commande',
@@ -110,9 +109,8 @@ $propal = array(
 		'TypeContact_propal_internal_SALESREPFOLL' => 'Commercial suivi propale',
 		'TypeContact_propal_external_BILLING' => 'Contact client facturation propale',
 		'TypeContact_propal_external_CUSTOMER' => 'Contact client suivi propale',
-		// Documents models
+		// Document models
 		'DocModelAzurDescription' => 'Modèle de propositions commerciales complet (logo...)',
-		'DocModelJauneDescription' => 'Modèle de proposition Jaune',
-		'Numbershort' => 'N°',
+		'DocModelJauneDescription' => 'Modèle de proposition Jaune'
 );
 ?>

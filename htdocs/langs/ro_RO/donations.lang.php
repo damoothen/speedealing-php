@@ -17,7 +17,8 @@
 $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Donation',
-		'Donationss' => 'Donatii',
+		'Donations' => 'Donatii',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Donator',
 		'Donors' => 'Donatori',
 		'AddDonation' => 'Adăugaţi o donatie',
@@ -36,12 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => 'Proiect',
 		'DonationStatusPromiseValidatedShort' => 'Validat',
 		'DonationStatusPaidShort' => 'Primit',
-		'ValidPromise' => 'Validate promisiune',
+		'ValidPromess' => 'Validare promisiune',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Construieste-primirea',
 		'DonationsModels' => 'Documente modele de donare încasări',
-		'Donations' => 'Donatii',
-		'ValidPromess' => 'Validare promisiune',
 		'LastModifiedDonations' => '%s Ultima modificare donaţii',
 		'SearchADonation' => 'Căutaţi o donaţie',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

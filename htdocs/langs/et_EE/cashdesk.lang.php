@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Charge Account',
 		'ShowCompany' => 'Näita ettevõte',
 		'ShowStock' => 'Näita ladu',
-		'DeleteArticle' => 'Vajuta, et eemaldada see artikkel',
+		'DeleteArticle' => 'Vajuta, et eemaldada see artikkel'
 );
 ?>

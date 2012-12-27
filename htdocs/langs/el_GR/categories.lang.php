@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'This member is not in any categories',
 		'ClassifyInCategory' => 'Classify in category',
 		'NoneCategory' => 'Καμία',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'This category already exists with this ref',
 		'ReturnInProduct' => 'Back to product/service card',
 		'ReturnInSupplier' => 'Back to supplier card',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'List of supplier categories',
 		'CatCusList' => 'List of customer/prospect categories',
 		'CatProdList' => 'List of products categories',
-		'CatMemberList' => 'List of members categories',
+		'CatMemberList' => 'List of members categories'
 );
 ?>

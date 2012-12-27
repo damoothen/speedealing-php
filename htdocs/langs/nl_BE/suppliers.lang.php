@@ -15,8 +15,8 @@
  */
 
 $suppliers = array(
-		'Suppliers' => 'Leveranciers',
 		'CHARSET' => 'UTF-8',
+		'Suppliers' => 'Leveranciers',
 		'Supplier' => 'Leverancier',
 		'AddSupplier' => 'Voeg een leverancier toe',
 		'SupplierRemoved' => 'Leverancier verwijderd',
@@ -28,17 +28,22 @@ $suppliers = array(
 		'ShowSupplier' => 'Toon leverancier',
 		'OrderDate' => 'Bestel datum',
 		'BuyingPrice' => 'Aankoopprijs',
+		'BuyingPriceMin' => 'Minimum buying price',
+		'BuyingPriceMinShort' => 'Min buying price',
 		'AddSupplierPrice' => 'Leveranciersprijs toevoegen',
 		'ChangeSupplierPrice' => 'Verander leveranciersprijs',
 		'ErrorQtyTooLowForThisSupplier' => 'Hoeveelheid te laag voor deze leverancier of geen prijs vastgesteld op dit product voor deze leverancier',
 		'ErrorSupplierCountryIsNotDefined' => 'Land voor deze leverancier is niet gedefinieerd. Corrigeer dit eerste.',
 		'ProductHasAlreadyReferenceInThisSupplier' => 'Dit product heeft al een referentie in deze leverancier',
+		'ReferenceSupplierIsAlreadyAssociatedWithAProduct' => 'This reference supplier is already associated with a reference: %s',
 		'NoRecordedSuppliers' => 'Geen leveranciers geregistreerd',
 		'SupplierPayment' => 'Leverancier betaling',
 		'SuppliersArea' => 'Leveranciers gebied',
 		'RefSupplierShort' => 'Ref. Leverancier',
+		'Availability' => 'Availability',
 		'ExportDataset_fournisseur_1' => 'Leverancier facturenlijst en facturen\' lijnen',
 		'ExportDataset_fournisseur_2' => 'Leverancier facturen en betalingen',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'Goedkeuren van deze bestelling',
 		'ConfirmApproveThisOrder' => 'Weet u zeker dat u deze bestelling wilt goedkeuren?',
 		'DenyingThisOrder' => 'Weiger deze bestelling',
@@ -49,5 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Maak leveranciersbestelling',
 		'AddSupplierInvoice' => 'Maak factuur voor leverancier',
 		'ListOfSupplierProductForSupplier' => 'Lijst van producten en de prijzen van <b>leverancier %s</b>',
+		'NoneOrBatchFileNeverRan' => 'None or batch <b>%s</b> not ran recently'
 );
 ?>

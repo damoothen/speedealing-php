@@ -48,6 +48,6 @@ $paybox = array(
 		'VendorName' => 'Satıcının Adı',
 		'CSSUrlForPaymentForm' => 'Ödeme formu için CSS stil sayfası url\'si',
 		'MessageOK' => 'Doğrulama sayfası mesajı',
-		'MessageKO' => 'İptal edilen ödeme sayfası mesajı',
+		'MessageKO' => 'İptal edilen ödeme sayfası mesajı'
 );
 ?>

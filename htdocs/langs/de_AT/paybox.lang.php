@@ -48,6 +48,6 @@ $paybox = array(
 		'VendorName' => 'Name of vendor',
 		'CSSUrlForPaymentForm' => 'CSS style sheet url for payment form',
 		'MessageOK' => 'Message on validated payment return page',
-		'MessageKO' => 'Message on canceled payment return page',
+		'MessageKO' => 'Message on canceled payment return page'
 );
 ?>

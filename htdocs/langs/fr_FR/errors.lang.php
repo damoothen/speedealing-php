@@ -15,7 +15,6 @@
  */
 
 $errors = array(
-		// Speedealing language file - fr_FR - errors
 		'CHARSET' => 'UTF-8',
 		'MenuManager' => 'Gestionnaire de menu',
 		// Errors
@@ -26,11 +25,10 @@ $errors = array(
 		'ErrorLoginAlreadyExists' => 'Le login %s existe déjà.',
 		'ErrorGroupAlreadyExists' => 'Le groupe %s existe déjà.',
 		'ErrorRecordNotFound' => 'Enregistrement non trouvé.',
-		'ErrorDuplicateTrigger' => 'Un fichier trigger de classe \'<b>%s</b>\' est présent plusieurs fois. Supprimer le doublon du répertoire \'<b>%s</b>\'.',
 		'ErrorFailToCopyFile' => 'Echec de la copie du fichier \'<b>%s</b>\' en \'<b>%s</b>\'.',
 		'ErrorFailToRenameFile' => 'Echec du renommage du fichier \'<b>%s</b>\' en \'<b>%s</b>\'.',
-		'ErrorFailToCreateFile' => 'Echec de la création du fichier \'<b>%s</b>\'.',
 		'ErrorFailToDeleteFile' => 'Echec de l\'effacement du fichier \'<b>%s</b>\'.',
+		'ErrorFailToCreateFile' => 'Echec de la création du fichier \'<b>%s</b>\'.',
 		'ErrorFailToRenameDir' => 'Echec du renommage du répertoire \'<b>%s</b>\' en \'<b>%s</b>\'.',
 		'ErrorFailToCreateDir' => 'Echec de création du répertoire \'<b>%s</b>\'.',
 		'ErrorFailToDeleteDir' => 'Echec de la suppression du répertoire \'<b>%s</b>\'.',
@@ -125,7 +123,9 @@ $errors = array(
 		'ErrNoZipEngine' => 'Pas de moteur pour décompresser le fichier %s dans ce PHP',
 		'ErrorFileMustBeADolibarrPackage' => 'Le fichier doit être un package Speedealing',
 		'ErrorFileRequired' => 'Il faut un fichier de package Speedealing',
-		'SESSIONEXPIRE' => 'La session est expirée',
+		'ErrorPhpCurlNotInstalled' => 'The PHP CURL is not installed, this is essential to talk with Paypal',
+		'ErrorFailedToAddToMailmanList' => 'Failed to add record to Mailman list or SPIP base',
+		'ErrorNewVaueCantMatchOldValue' => 'New value can\'t be equal to old one',
 		// Warnings
 		'WarningMandatorySetupNotComplete' => 'Les informations de configuration obligatoire doivent être renseignées',
 		'WarningSafeModeOnCheckExecDir' => 'Attention, l\'option PHP <b>safe_mode</b> est active, la commande doit dont être dans un répertoire déclaré dans le paramètre php <b>safe_mode_exec_dir</b>.',
@@ -138,6 +138,6 @@ $errors = array(
 		'WarningNoDocumentModelActivated' => 'Aucun modèle, pour la génération de document, n\'a été activé. Un modèle sera pris par défaut en attendant la correction de configuration du module.',
 		'WarningLockFileDoesNotExists' => 'Attention, une fois l\'installation terminée, les outils d\'installation/migration doivent être désactivés en ajoutant un fichier <b>install.lock</b> dans le répertoire <b>%s</b>. L\'absence de ce fichier représente une faille de sécurité.',
 		'WarningUntilDirRemoved' => 'Les alertes de sécurité sont visibles par les administrateurs uniquement et resteront actives tant que la vulnérabilité sera avérée (ou que la constante MAIN_REMOVE_INSTALL_WARNING aura été définie dans Configuration->Divers)',
-		'WarningCloseAlways' => 'Attention, la fermeture se fait même lorsque le montant diffère. N\'activez cette fonctionnalité qu\'en connaissance de cause.',
+		'WarningCloseAlways' => 'Attention, la fermeture se fait même lorsque le montant diffère. N\'activez cette fonctionnalité qu\'en connaissance de cause.'
 );
 ?>

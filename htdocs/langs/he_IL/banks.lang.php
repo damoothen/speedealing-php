@@ -152,11 +152,16 @@ $banks = array(
 		'PaymentNumberUpdateFailed' => 'מספר תשלומים לא יכול היה להיות מעודכן',
 		'PaymentDateUpdateSucceeded' => 'התשלום נקבע לעדכן בהצלחה',
 		'PaymentDateUpdateFailed' => 'התשלום לא יכול להיות מעודכן',
+		'Transactions' => 'Transactions',
 		'BankTransactionLine' => 'בנק העסקה',
 		'AllAccounts' => 'כל בנק / מזומן חשבונות',
 		'BackToAccount' => 'בחזרה לחשבון',
 		'ShowAllAccounts' => 'הצג את כל החשבונות',
 		'FutureTransaction' => 'עסקה futur. כל דרך לפייס.',
 		'SelectChequeTransactionAndGenerate' => 'בחר / לסנן בדיקות על מנת לכלול את קבלת הפיקדון הסימון ולחץ על &quot;צור&quot;.',
+		'InputReceiptNumber' => 'Choose the bank statement related with the conciliation. Use a sortable numeric value (such as, YYYYMM)',
+		'EventualyAddCategory' => 'Eventually, specify a category in which to classify the records',
+		'ToConciliate' => 'To conciliate?',
+		'ThenCheckLinesAndConciliate' => 'Then, check the lines present in the bank statement and click'
 );
 ?>

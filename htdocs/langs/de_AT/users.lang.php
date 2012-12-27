@@ -129,6 +129,6 @@ $users = array(
 		'YourRole' => 'Ihre Rolle',
 		'YourQuotaOfUsersIsReached' => 'Ihr Kontingent aktiver Benutzer ist erreicht',
 		'NbOfUsers' => 'Nb of users',
-		'DontDowngradeSuperAdmin' => 'Only a superadmin can downgrade a superadmin',
+		'DontDowngradeSuperAdmin' => 'Only a superadmin can downgrade a superadmin'
 );
 ?>

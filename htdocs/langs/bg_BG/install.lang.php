@@ -171,6 +171,10 @@ $install = array(
 		'MigrationFinished' => 'Миграцията работи',
 		'LastStepDesc' => '<strong>Последна стъпка:</strong> Определете тук потребителско име и парола, планирате да използвате, за да се свържете с софтуер. Не губят, тъй като това е акаунт за администриране на всички останали.',
 		'ActivateModule' => 'Активиране на модул %s',
+		'ShowEditTechnicalParameters' => 'Click here to show/edit advanced parameters (expert mode)',
+		//////////////////
+		// upgrade
+		//////////////////
 		'MigrationFixData' => 'Решете denormalized данни',
 		'MigrationOrder' => 'Миграция на данни за поръчки на клиента',
 		'MigrationSupplierOrder' => 'Миграция на данни за поръчки на доставчика',
@@ -218,5 +222,6 @@ $install = array(
 		'MigrationProjectTaskTime' => 'Актуализация на времето, прекарано в секунда',
 		'MigrationActioncommElement' => 'Актуализиране на данни за действия',
 		'MigrationPaymentMode' => 'Миграция на данни за плащане режим',
+		'MigrationCategorieAssociation' => 'Migration of categories'
 );
 ?>

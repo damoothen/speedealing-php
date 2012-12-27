@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => 'Opsætning link til ekstern hjemmeside',
-		'ExternalSiteURL' => 'Ekstern webstedwebadresse',
+		'ExternalSiteURL' => 'Ekstern webstedwebadresse'
 );
 ?>

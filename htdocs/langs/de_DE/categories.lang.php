@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'Dieses Mitglied ist in keiner Kategorie',
 		'ClassifyInCategory' => 'Folgender Kategorie zuweisen',
 		'NoneCategory' => 'Keine',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'Diese Kategorie existiert bereits auf diesem Level',
 		'ReturnInProduct' => 'Zurück zur Produktkarte',
 		'ReturnInSupplier' => 'Zurück zur Anbieterkarte',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'Liste der Lieferantenkategorien',
 		'CatCusList' => 'Liste der Kunden-/ Leadkategorien',
 		'CatProdList' => 'Liste der Produktkategorien',
-		'CatMemberList' => 'Liste der Kategoriemitglieder',
+		'CatMemberList' => 'Liste der Kategoriemitglieder'
 );
 ?>

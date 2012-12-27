@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Neuspešna povezava s FTP strežnikom (strežnik %s, port %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Neuspešna prijava na FTP strežnik z določenim uporabniškim imenom/geslom',
 		'FTPFailedToRemoveFile' => 'Neuspešna odstranitev datoteke <b>%s</b>.',
-		'FTPFailedToRemoveDir' => 'Neuspešna odstranitev mape <b>%s</b> (Preverite dovoljenja in če je ta mapa prazna).',
+		'FTPFailedToRemoveDir' => 'Neuspešna odstranitev mape <b>%s</b> (Preverite dovoljenja in če je ta mapa prazna).'
 );
 ?>

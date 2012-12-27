@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => '验证合同',
 		'ActivateService' => '激活服务',
 		'ConfirmActivateService' => '你确定要激活这项服务的日期<b>％s吗</b> ？',
+		'RefContract' => 'Contract reference',
 		'DateContract' => '合同日期',
 		'DateServiceActivate' => '服务激活日期',
 		'DateServiceUnactivate' => '服务停用日期',
@@ -69,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => '运行服务的列表',
 		'NotActivatedServices' => '不活跃的服务（除验证合同）',
 		'BoardNotActivatedServices' => '服务激活验证合同之间',
-		'LastContracts' => '上次％合同',
+		'LastContracts' => '最后％s的修改过的合同',
 		'LastActivatedServices' => '上次％s的激活服务',
 		'LastModifiedServices' => '最后％S修饰服务',
 		'EditServiceLine' => '编辑服务项目',
@@ -100,12 +101,13 @@ $contracts = array(
 		'PaymentRenewContractId' => '续订合同线（％s的数目）',
 		'ExpiredSince' => '失效日期',
 		'RelatedContracts' => '有关合同',
+		'NoExpiredServices' => '没有过期的主动服务',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => '销售代表签订合同',
 		'TypeContact_contrat_internal_SALESREPFOLL' => '销售代表随访合同',
 		'TypeContact_contrat_external_BILLING' => '结算客户联系',
 		'TypeContact_contrat_external_CUSTOMER' => '后续的客户联系',
 		'TypeContact_contrat_external_SALESREPSIGN' => '签约客户的联系',
-		'Error_CONTRACT_ADDON_NotDefined' => '恒CONTRACT_ADDON没有定义',
-		'NoExpiredServices' => '没有过期的主动服务',
+		'Error_CONTRACT_ADDON_NotDefined' => '恒CONTRACT_ADDON没有定义'
 );
 ?>

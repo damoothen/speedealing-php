@@ -138,6 +138,6 @@ $errors = array(
 		'WarningNoDocumentModelActivated' => 'Für das Erstellen von Dokumenten ist keine Vorlage gewählt. Eine Vorlage wird standardmäßig ausgewählt, bis Sie die Moduleinstellungen angepasst haben.',
 		'WarningLockFileDoesNotExists' => 'Warning, once setup is finished, you must disable install/migrate tools by adding a file <b>install.lock</b> into directory <b>%s</b>. Missing this file is a security hole.',
 		'WarningUntilDirRemoved' => 'Diese Warnung bleibt so lange aktiv, wie dieses Verzeichnis existiert (nur für Administratoren).',
-		'WarningCloseAlways' => 'Warning, closing is done even if amount differs between source and target elements. Enable this feature with caution.',
+		'WarningCloseAlways' => 'Warning, closing is done even if amount differs between source and target elements. Enable this feature with caution.'
 );
 ?>

@@ -24,6 +24,6 @@ $shop = array(
 		'LastCustomers' => 'אחרון הלקוחות',
 		'OSCommerceShop' => 'חנות osCommerce',
 		'OSCommerce' => 'OsCommerce',
-		'AddProd' => 'מוכר באופן מקוון',
+		'AddProd' => 'מוכר באופן מקוון'
 );
 ?>

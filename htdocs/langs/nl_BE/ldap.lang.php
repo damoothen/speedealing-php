@@ -39,7 +39,10 @@ $ldap = array(
 		'LDAPFieldLastSubscriptionAmount' => 'Laatste abonnement bedrag',
 		'SynchronizeDolibarr2Ldap' => 'Synchroniseren gebruiker (Dolibarr - LDAP)',
 		'UserSynchronized' => 'Gebruiker gesynchroniseerd',
+		'GroupSynchronized' => 'Group synchronized',
+		'MemberSynchronized' => 'Member synchronized',
+		'ContactSynchronized' => 'Contact synchronized',
 		'ForceSynchronize' => 'Force synchroniserende Dolibarr - LDAP',
-		'ErrorFailedToReadLDAP' => 'Failed to read LDAP-database. Check LDAP module setup en database toegankelijkheid.',
+		'ErrorFailedToReadLDAP' => 'Failed to read LDAP-database. Check LDAP module setup en database toegankelijkheid.'
 );
 ?>

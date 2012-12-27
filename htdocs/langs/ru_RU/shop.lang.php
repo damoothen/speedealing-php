@@ -24,6 +24,6 @@ $shop = array(
 		'LastCustomers' => 'Последние Покупатели',
 		'OSCommerceShop' => 'магазин OSCommerce',
 		'OSCommerce' => 'OSCommerce',
-		'AddProd' => 'Онлайн Продажа',
+		'AddProd' => 'Онлайн Продажа'
 );
 ?>

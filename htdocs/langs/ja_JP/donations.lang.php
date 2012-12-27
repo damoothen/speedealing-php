@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => '寄付',
 		'Donations' => '寄付',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'ドナー',
 		'Donors' => 'ドナー',
 		'AddDonation' => '寄付を追加します。',
@@ -37,9 +38,13 @@ $donations = array(
 		'DonationStatusPromiseValidatedShort' => '検証',
 		'DonationStatusPaidShort' => '受信された',
 		'ValidPromess' => '約束を検証する',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => '領収書を構築する',
 		'DonationsModels' => '寄付金の領収書のドキュメントモデル',
 		'LastModifiedDonations' => '最後%sは寄付を変更',
 		'SearchADonation' => '寄付を検索',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

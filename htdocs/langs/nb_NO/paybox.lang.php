@@ -31,6 +31,7 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => 'Du vil bli omdirigert på sikrede Paybox siden for å inndataene du kredittkortinformasjonen',
 		'PleaseBePatient' => 'Vær, være tålmodig',
 		'Continue' => 'Neste',
+		'ToOfferALinkForOnlinePayment' => 'URL for %s betaling',
 		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL for å tilby en %s online betaling brukergrensesnitt for en bestilling',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL for å tilby en %s online betaling brukergrensesnitt for en faktura',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL for å tilby en %s online betaling brukergrensesnitt for en kontrakt linje',
@@ -42,12 +43,11 @@ $paybox = array(
 		'YourPaymentHasNotBeenRecorded' => 'Du betaling ikke er registrert og transaksjonen har blitt kansellert. Takk.',
 		'AccountParameter' => 'Konto parametere',
 		'UsageParameter' => 'Parametere for bruk',
-		'ToOfferALinkForOnlinePayment' => 'URL for %s betaling',
 		'InformationToFindParameters' => 'Hjelp til å finne din %s kontoinformasjon',
 		'PAYBOX_CGI_URL_V2' => 'Url av PAYBOX CGI modul for betaling',
 		'VendorName' => 'Navn på leverandøren',
 		'CSSUrlForPaymentForm' => 'CSS-stilark url for betalingsformen',
 		'MessageOK' => 'Melding på godkjent betaling retur siden',
-		'MessageKO' => 'Melding om avbrutt betaling retur siden',
+		'MessageKO' => 'Melding om avbrutt betaling retur siden'
 );
 ?>

@@ -54,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Erzeuge Lieferantenbestellung',
 		'AddSupplierInvoice' => 'Erzeuge Lieferantenrechnung',
 		'ListOfSupplierProductForSupplier' => 'Produkt- und Preisliste für Anbieter <b>%s</b>',
-		'NoneOrBatchFileNeverRan' => 'Keiner oder Batch-Job <b>%s</b> wurde nie ausgeführt',
+		'NoneOrBatchFileNeverRan' => 'Keiner oder Batch-Job <b>%s</b> wurde nie ausgeführt'
 );
 ?>

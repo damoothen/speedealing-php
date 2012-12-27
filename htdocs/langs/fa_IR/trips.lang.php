@@ -19,6 +19,7 @@ $trips = array(
 		'Trip' => 'رحلة',
 		'Trips' => 'رحلات',
 		'TripsAndExpenses' => 'ونفقات الرحلات',
+		'TripsAndExpensesStatistics' => 'رحلات ونفقات إحصاءات',
 		'TripCard' => 'بطاقة زيارة',
 		'AddTrip' => 'إضافة رحلة',
 		'ListOfTrips' => 'قائمة الرحلات',
@@ -33,6 +34,7 @@ $trips = array(
 		'TF_LUNCH' => 'غداء',
 		'TF_TRIP' => 'رحلة',
 		'ListTripsAndExpenses' => 'قائمة الرحلات والمصاريف',
-		'TripsAndExpensesStatistics' => 'رحلات ونفقات إحصاءات',
+		'ExpensesArea' => 'Trips and expenses area',
+		'SearchATripAndExpense' => 'Search a trip and expense'
 );
 ?>

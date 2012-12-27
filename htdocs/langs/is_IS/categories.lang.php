@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'Þessi aðili er ekki í neinum flokkum',
 		'ClassifyInCategory' => 'Flokka í flokki',
 		'NoneCategory' => 'None',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'Þessi flokkur er þegar til með þessu tilv',
 		'ReturnInProduct' => 'Til baka vöru / þjónustu kort',
 		'ReturnInSupplier' => 'Til baka birgir kort',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'Listi yfir flokka birgir',
 		'CatCusList' => 'Listi yfir viðskiptavini / horfur flokkar',
 		'CatProdList' => 'Listi yfir vörur flokkar',
-		'CatMemberList' => 'Listi yfir meðlimi flokkar',
+		'CatMemberList' => 'Listi yfir meðlimi flokkar'
 );
 ?>

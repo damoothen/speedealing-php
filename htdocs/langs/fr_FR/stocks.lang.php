@@ -18,7 +18,7 @@ $stocks = array(
 		'CHARSET' => 'UTF-8',
 		'WarehouseCard' => 'Fiche entrepôt',
 		'Warehouse' => 'Entrepôt',
-		'Warehouse' => 'Entrepôts',
+		'Warehouses' => 'Warehouses',
 		'NewWarehouse' => 'Nouvel entrepôt ou zone de stockage',
 		'WarehouseEdit' => 'Edition entrepôt',
 		'MenuNewWarehouse' => 'Nouvel entrepôt',
@@ -102,6 +102,6 @@ $stocks = array(
 		'ThisWarehouseIsPersonalStock' => 'Cet entrepôt représente le stock personnel de %s %s',
 		'SelectWarehouseForStockDecrease' => 'Sélectionner l\'entrepôt à utiliser pour la décrémentation du stock',
 		'SelectWarehouseForStockIncrease' => 'Sélectionner l\'entrepôt à utiliser pour l\'incrémentation du stock',
-		'LastWaitingSupplierOrders' => 'Commandes en attente de réception',
+		'LastWaitingSupplierOrders' => 'Commandes en attente de réception'
 );
 ?>

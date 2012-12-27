@@ -60,6 +60,10 @@ $mails = array(
 		'MailingStatusError' => 'Hata',
 		'MailingStatusNotSent' => 'Gönderilmedi',
 		'MailSuccessfulySent' => 'Eposta başarıyla gönderildi (%s ten %s e)',
+		'MailingSuccessfullyValidated' => 'EMailing successfully validated',
+		'MailUnsubcribe' => 'Unsubscribe',
+		'Unsuscribe' => 'Unsubscribe',
+		'MailingStatusNotContact' => 'Don\'t contact anymore',
 		'ErrorMailRecipientIsEmpty' => 'E-posta alıcısı boş',
 		'WarningNoEMailsAdded' => 'Alıcının listesine ekli yeni Eposta yok.',
 		'ConfirmValidMailing' => 'Bu Epostayı doğrulamak istediğinizden emin misiniz?',
@@ -88,11 +92,15 @@ $mails = array(
 		'MailingStatusRead' => 'Okundu',
 		'CheckRead' => 'Okundu bilgisi',
 		'YourMailUnsubcribeOK' => '<b>%s</b> Epostası postalama listesinden başarıyla çıkarıldı',
-		// Alıcılar listesi Libelle modülü
+		'MailtoEMail' => 'Hyper link to email',
+		'ActivateCheckRead' => 'Allow to use the Read receipt tracker and the unsubcribe link',
+		'ActivateCheckReadKey' => 'Key use to encrypt URL use for Read Receipt and unsubcribe function',
+		// Libelle des modules de liste de destinataires mailing
 		'MailingModuleDescContactCompanies' => 'Tüm üçüncü partilerin kişileri (müşteri, aday, tedarikçi, ...)',
 		'MailingModuleDescDolibarrUsers' => 'Dolibarr kullanıcıları',
 		'MailingModuleDescFundationMembers' => 'Epostaları ile kurum üyeleri',
 		'MailingModuleDescEmailsFromFile' => 'Bir metin dosyası içinden Eposta (e-posta, soyadı, ilk adı, diğer)',
+		'MailingModuleDescEmailsFromUser' => 'EMails from user input (email;lastname;firstname;other)',
 		'MailingModuleDescContactsCategories' => 'Üçüncü partiler (kategoriye göre)',
 		'MailingModuleDescDolibarrContractsLinesExpired' => 'Süresi dolmuş sözleşme kalemleri ile üçüncü partiler',
 		'MailingModuleDescContactsByCompanyCategory' => 'Üçüncü parti kişileri (üçüncü parti kategorilerine göre)',
@@ -121,14 +129,17 @@ $mails = array(
 		'IdRecord' => 'Kimlik kayıtı',
 		'DeliveryReceipt' => 'Teslim makbuzu',
 		'YouCanUseCommaSeparatorForSeveralRecipients' => 'Birçok alıcı belirtmek için <b>virgül</b> ayırıcısını kullanabilirsiniz.',
-		// Bildirimler modülü
+		'TagCheckMail' => 'Track mail opening',
+		'TagUnsubscribe' => 'Unsubscribe link',
+		'TagSignature' => 'Signature sending user',
+		'TagMailtoEmail' => 'Recipient EMail',
+		// Module Notifications
 		'Notifications' => 'Bildirimler',
 		'NoNotificationsWillBeSent' => 'Bu eylem ve firma için hiçbir Eposta bildirimi planlanmamış',
 		'ANotificationsWillBeSent' => 'Eposta ile 1 bildirim gönderilecektir',
 		'SomeNotificationsWillBeSent' => 'Epostayala %s bildirim gönderilecektir',
 		'AddNewNotification' => 'Yeni bir e-posta bildirimi isteği etkinleştir',
 		'ListOfActiveNotifications' => 'Tüm etkin Eposta bildirimi istekleri',
-		'DateSending' => 'Gönderme tarihi',
-		'ListOfNotificationsDone' => 'Gönderilen tüm e-posta bildirimleri listesi',
+		'ListOfNotificationsDone' => 'Gönderilen tüm e-posta bildirimleri listesi'
 );
 ?>

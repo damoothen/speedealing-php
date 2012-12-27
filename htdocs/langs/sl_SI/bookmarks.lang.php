@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Uporabi zunanji http URL ali odvisni Dolibarr URL',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Izberi, če se mora stran, odprta z linkom, prikazati v trenutnem ali novem oknu',
 		'BookmarksManagement' => 'Urejanje zaznamkov',
-		'ListOfBookmarks' => 'Seznam zaznamkov',
+		'ListOfBookmarks' => 'Seznam zaznamkov'
 );
 ?>

@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'תרומה',
 		'Donations' => 'תרומות',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'תורם',
 		'Donors' => 'התורמים',
 		'AddDonation' => 'הוסף תרומה',
@@ -37,9 +38,13 @@ $donations = array(
 		'DonationStatusPromiseValidatedShort' => 'תוקף',
 		'DonationStatusPaidShort' => 'קיבל',
 		'ValidPromess' => 'לאמת את ההבטחה',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'בנה קבלת',
 		'DonationsModels' => 'מסמכים מודלים לאישור תרומה',
 		'LastModifiedDonations' => '%s האחרונות שונה תרומות',
 		'SearchADonation' => 'חפש תרומה',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

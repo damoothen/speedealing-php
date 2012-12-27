@@ -183,7 +183,7 @@ $admin = array(
 		'ExportOptions' => 'Options d\'exportation',
 		'AddDropDatabase' => 'Ajouter ordres DROP DATABASE',
 		'AddDropTable' => 'Ajouter ordres DROP TABLE',
-		'Structure' => 'Structure',
+		'ExportStructure' => 'Structure',
 		'Datas' => 'Données',
 		'NameColumn' => 'Nomme les colonnes',
 		'ExtendedInsert' => 'Instructions INSERT étendues',
@@ -939,10 +939,10 @@ $admin = array(
 		'SendmailOptionMayHurtBuggedMTA' => 'La fonction d\'envoi de mails par la méthode "PHP mail directe" génère une requete mail qui peut être mal interprété par certains serveurs buggués de réception de mail. Cela se traduit par des mails non lisibles chez les personnes hebergés par ces plateformes bugguées. C\'est le cas des clients de certains fournisseurs d\'accès internet (Ex: Orange). Ce n\'est pas un problème ni dans Speedealing ni dans PHP mais sur le serveur de réception. Vous pouvez toutefois ajouter l\'option MAIN_FIX_FOR_BUGGED_MTA à 1 dans configuration - divers pour modifier Speedealing afin de compenser le bug. Toutefois ce sont les serveurs respectueux du standard d\'envoi de mail qui pourront avoir des problèmes. L\'autre solution (recommandée) est d\'utiliser la méthode d\'envoi SMTP socket library qui n\'a aucun de ces inconvénients.',
 		'TranslationSetup' => 'Translation setup',
 		'TranslationDesc' => 'Le choix de la langue affichée à l\'écran se modifie:<br>* Soit de manière globale depuis le menu <strong>Accueil - Configuration - Affichage</strong><br>* Soit de manière spécifique à l\'utilisateur depuis l\'onglet <strong>Interface utilisateur</strong> de sa fiche utilisateur (cliquer sur le login en haut de l\'écran).',
-		'TotalNumberOfActivatedModules' => 'Total number of activated feature modules: <b>%s</b>',
-		'YouMustEnableOneModule' => 'You must at least enable 1 module',
+		'TotalNumberOfActivatedModules' => 'Nombre total de modules fonctionnels activés: <b>%s</b>',
+		'YouMustEnableOneModule' => 'Vous devez activer au moins une fonctionnalité',
 		'ClassNotFoundIntoPathWarning' => 'Class %s not found into PHP path',
-		////////// Module password generation=undefined
+		////////// Module password generation
 		'PasswordGenerationStandard' => 'Renvoie un mot de passe généré selon algorithme interne Speedealing: 8 caractères, chiffres et caractères en minuscules mélangés.',
 		'PasswordGenerationNone' => 'Ne propose pas de mots de passe générés. Le mot de passe est à saisir manuellement.',
 		////////// Users setup //////////
@@ -1184,7 +1184,7 @@ $admin = array(
 		'LDAPDescMembers' => 'Cette page permet de définir le nom des attributs de l\'arbre LDAP pour chaque information des membres du module adhérents Speedealing.',
 		'LDAPDescValues' => 'Les valeurs exemples sont adaptées à <b>OpenLDAP</b> avec les schémas suivant chargés: <b>core.schema, cosine.schema, inetorgperson.schema</b>). Si vous utilisez les valeurs suggérées et OpenLDAP, modifiez votre fichier de configuration LDAP <b>slapd.conf</b> pour avoir tous ces schémas actifs.',
 		'ForANonAnonymousAccess' => 'Pour un accès authentifié (pour accès en écriture par exemple)',
-		////////// Products/Services //////////
+		////////// Products //////////
 		'ProductSetup' => 'Configuration du module Produits',
 		'ServiceSetup' => 'Configuration du module Services',
 		'ProductServiceSetup' => 'Configuration des modules Produits et Services',
@@ -1383,6 +1383,6 @@ $admin = array(
 		'Chartofaccounts' => 'Plan comptable',
 		'Definechartofaccounts' => 'Définir un plan comptable',
 		'Selectchartofaccounts' => 'Sélection d\'un plan comptable',
-		'DoNotSuggestChart' => 'Ne pas suggérer de plan comptable',
+		'DoNotSuggestChart' => 'Ne pas suggérer de plan comptable'
 );
 ?>

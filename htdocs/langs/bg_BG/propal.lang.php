@@ -99,15 +99,18 @@ $propal = array(
 		'AvailabilityPeriod' => 'Наличност закъснение',
 		'SetAvailability' => 'Незабавно наличността',
 		'AfterOrder' => 'по поръчка',
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => 'Непосредствен',
 		'AvailabilityTypeAV_1W' => '1 седмица',
 		'AvailabilityTypeAV_2W' => '2 седмици',
 		'AvailabilityTypeAV_3W' => '3 седмици',
 		'AvailabilityTypeAV_1M' => '1 месец',
+		////////// Types de contacts //////////
 		'TypeContact_propal_internal_SALESREPFOLL' => 'Представител следното предложение',
 		'TypeContact_propal_external_BILLING' => 'Контакта с клиентите фактура',
 		'TypeContact_propal_external_CUSTOMER' => 'Контакт с клиентите следното предложение',
+		// Document models
 		'DocModelAzurDescription' => 'Цялостен модел за предложение (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune предложение модел',
+		'DocModelJauneDescription' => 'Jaune предложение модел'
 );
 ?>

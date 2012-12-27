@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'משתמש זה לא נמצא כל הקטגוריות',
 		'ClassifyInCategory' => 'לסווג בקטגוריה',
 		'NoneCategory' => 'אף אחד',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'קטגוריה זו כבר קיים עם השופט הזה',
 		'ReturnInProduct' => 'חזרה לכרטיס המוצר / שירות',
 		'ReturnInSupplier' => 'גיבוי לכרטיס הספק',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'רשימת קטגוריות הספק',
 		'CatCusList' => 'רשימת לקוחות / סיכוי הקטגוריות',
 		'CatProdList' => 'רשימת קטגוריות מוצרים',
-		'CatMemberList' => 'רשימה של חברי הקטגוריות',
+		'CatMemberList' => 'רשימה של חברי הקטגוריות'
 );
 ?>

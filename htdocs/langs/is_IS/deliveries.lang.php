@@ -28,16 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Setja skipum dagsetningu',
 		'ValidateDeliveryReceipt' => 'Staðfesta sending berst',
 		'ValidateDeliveryReceiptConfirm' => 'Ertu viss um að þú viljir að sannprófa þetta sending berst?',
+		'DeleteDeliveryReceipt' => 'Eyða afhendingu kvittun',
+		'DeleteDeliveryReceiptConfirm' => 'Ertu viss um að þú viljir eyða pósti móttöku <b>%s?</b>',
 		'DeliveryMethod' => 'Birtingarmáti',
 		'TrackingNumber' => 'Rekja spor númer',
+		'DeliveryNotValidated' => 'Afhending er ekki fullgilt',
+		// merou PDF model
 		'NameAndSignature' => 'Nafn og Undirskrift:',
 		'ToAndDate' => 'To___________________________________ á ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'Hafa fengið vöruna hér að ofan í góðu ásigkomulagi,',
 		'Deliverer' => 'Frelsari:',
 		'Sender' => 'Sendandi',
-		'Recipient' => 'Viðtakandi',
-		'DeleteDeliveryReceipt' => 'Eyða afhendingu kvittun',
-		'DeleteDeliveryReceiptConfirm' => 'Ertu viss um að þú viljir eyða pósti móttöku <b>%s?</b>',
-		'DeliveryNotValidated' => 'Afhending er ekki fullgilt',
+		'Recipient' => 'Viðtakandi'
 );
 ?>

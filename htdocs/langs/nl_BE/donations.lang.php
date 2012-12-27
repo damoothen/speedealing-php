@@ -17,7 +17,8 @@
 $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Donatie',
-		'Donationss' => 'Donaties',
+		'Donations' => 'Donations',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Donor',
 		'Donors' => 'Donoren',
 		'AddDonation' => 'Een donatie toevoegen',
@@ -36,8 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => 'Klad',
 		'DonationStatusPromiseValidatedShort' => 'Gevalideerd',
 		'DonationStatusPaidShort' => 'Ontvangen',
-		'ValidPromise' => 'Valideer belofte',
+		'ValidPromess' => 'Validate promise',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Creëer donatie ontvangst',
 		'DonationsModels' => 'Documenten modellen voor donatie ontvangsten',
+		'LastModifiedDonations' => 'Last %s modified donations',
+		'SearchADonation' => 'Search a donation',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

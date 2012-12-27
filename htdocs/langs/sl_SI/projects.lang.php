@@ -101,7 +101,15 @@ $projects = array(
 		'ErrorTimeSpentIsEmpty' => 'Ni porabljenega časa',
 		'ThisWillAlsoRemoveTasks' => 'Ta aktivnost bo tudi izbrisala vse naloge projekta (<b>%s</b> trenutne naloge) in vse vnose porabljenega časa.',
 		'IfNeedToUseOhterObjectKeepEmpty' => 'Če nekateri objekti (računi, naročila, ...), ki pripadajo drugemu partnerju, morajo biti vezani na projekt, ki se kreira, pustite polje prazno, da je projekt lahko vezan na več partnerjev.',
-		////////// Types de contacts ////////// = undefined
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Vodja projekta',
 		'TypeContact_project_external_PROJECTLEADER' => 'Vodja projekta',
 		'TypeContact_project_internal_CONTRIBUTOR' => 'Sodelavec',
@@ -110,7 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => 'Odgovorna oseba',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Sodelavec',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Sodelavec',
-		// Documents models = undefined
-		'DocumentModelBaleine' => 'Model poročila za celoten projekt (logo...)',
+		// Documents models
+		'DocumentModelBaleine' => 'Model poročila za celoten projekt (logo...)'
 );
 ?>

@@ -31,6 +31,7 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => 'Va a ser redirecionado a a página segura de  Paybox para indicar seu cartão de crédito',
 		'PleaseBePatient' => 'Espere uns segundos',
 		'Continue' => 'Continuar',
+		'ToOfferALinkForOnlinePayment' => 'URL for %s payment',
 		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL que oferece uma interface de pagamento on-line %s baseada no valor de un pedido de cliente',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL que oferece uma interface de pagamento on-line %s baseada no valor de uma fatura',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL que oferece uma interface de pagamento on-line %s baseada no valor de uma linha de contrato',
@@ -38,5 +39,15 @@ $paybox = array(
 		'ToOfferALinkForOnlinePaymentOnMemberSubscription' => 'URL fornecido pela interface de pagamento on-line %s em função da adesão encargos',
 		'YouCanAddTagOnUrl' => 'Também pode adicionar 0 parámetro url <b>&tag',
 		'SetupPayBoxToHavePaymentCreatedAutomatically' => 'Configure sua url PayBox <b>%s</b> para que o pagamento se crie automaticamente ao Confirmar.',
+		'YourPaymentHasBeenRecorded' => 'This page confirms that your payment has been recorded. Thank you.',
+		'YourPaymentHasNotBeenRecorded' => 'You payment has not been recorded and transaction has been canceled. Thank you.',
+		'AccountParameter' => 'Account parameters',
+		'UsageParameter' => 'Usage parameters',
+		'InformationToFindParameters' => 'Help to find your %s account information',
+		'PAYBOX_CGI_URL_V2' => 'Url of Paybox CGI module for payment',
+		'VendorName' => 'Name of vendor',
+		'CSSUrlForPaymentForm' => 'CSS style sheet url for payment form',
+		'MessageOK' => 'Message on validated payment return page',
+		'MessageKO' => 'Message on canceled payment return page'
 );
 ?>

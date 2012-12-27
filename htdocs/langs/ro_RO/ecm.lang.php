@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'Root',
 		'ECMNewSection' => 'Nou director',
 		'ECMAddSection' => 'Adauga un manual directorul',
-		'ECMNewSection' => 'Nou director manual',
 		'ECMNewDocument' => 'Document nou',
 		'ECMCreationDate' => 'Data creării',
 		'ECMNbOfFilesInDir' => 'Numărul de fişiere în directorul de',
@@ -53,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Directoare de documente',
 		'ECMTypeManual' => 'Manual',
 		'ECMTypeAuto' => 'Automat',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Documente legate de către terţe părţi',
 		'ECMDocsByProposals' => 'Documente legate de propuneri',
 		'ECMDocsByOrders' => 'Documente legate de ordinele de la clienţi',
@@ -67,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Ştearsă nu este posibil deoarece conţine câteva fişiere',
 		'ECMFileManager' => 'Manager fişiere',
 		'ECMSelectASection' => 'Selectaţi un director de pe stânga copac ...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

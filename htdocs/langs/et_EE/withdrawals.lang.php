@@ -64,7 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => 'Tagasilükkamise põhjuse',
 		'RefusedInvoicing' => 'Arve tagasilükkamine',
 		'NoInvoiceRefused' => 'Ärge laadige tagasilükkamine',
-		'InvoiceRefused' => 'Laadige tagasilükkamine kliendi',
+		'InvoiceRefused' => 'Arve keeldus',
 		'Status' => 'Staatus',
 		'StatusUnknown' => 'Tundmatu',
 		'StatusWaiting' => 'Ootan',
@@ -97,6 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'Näita Tõmmake',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'Siiski, kui arve on vähemalt üks tagasivõtmise makse ei ole veel töödeldud, siis ei tohiks seada payed võimaldab hallata taganeda enne.',
 		'DoStandingOrdersBeforePayments' => 'See kaarte saab taotleda püsikorraldus. Kui see valmib, saate tippida makse sulgeda arve.',
+		////// Notifications
 		'InfoCreditSubject' => 'Maksmise püsikorraldus %s panga poolt',
 		'InfoCreditMessage' => 'Püsikorralduse %s makstud panga poolt <br> Andmed makse: %s',
 		'InfoTransSubject' => 'Edastamise püsikorraldus %s panga',
@@ -105,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'See on automatiseeritud sõnum saata Dolibarr',
 		'InfoRejectSubject' => 'Püsikorralduse keeldus',
 		'InfoRejectMessage' => 'Tere, <br><br> standig et arve %s seotud firma %s, mille summa %s lükatud panga poolt. <br><br> - <br> % $',
-		'ModeWarning' => 'Valik päris režiim ei olnud seatud, siis peatus pärast seda simulatsioon',
+		'ModeWarning' => 'Valik päris režiim ei olnud seatud, siis peatus pärast seda simulatsioon'
 );
 ?>

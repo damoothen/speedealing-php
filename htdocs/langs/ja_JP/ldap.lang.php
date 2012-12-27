@@ -43,6 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => 'メンバーは、同期',
 		'ContactSynchronized' => '同期に連絡',
 		'ForceSynchronize' => 'Dolibarrを同期させる力 - &gt; LDAP',
-		'ErrorFailedToReadLDAP' => 'LDAPデータベースの読み込みに失敗しました。 LDAPモジュールの設定とデータベースのアクセシビリティをチェックします。',
+		'ErrorFailedToReadLDAP' => 'LDAPデータベースの読み込みに失敗しました。 LDAPモジュールの設定とデータベースのアクセシビリティをチェックします。'
 );
 ?>

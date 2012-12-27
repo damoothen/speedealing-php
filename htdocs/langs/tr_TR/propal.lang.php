@@ -99,18 +99,18 @@ $propal = array(
 		'AvailabilityPeriod' => 'Kabul edilebilir gecikme',
 		'SetAvailability' => 'Kabul edilebilir gecikmeyi ayarla',
 		'AfterOrder' => 'Siparişten sonra',
-		////////// Uygunluk //////////
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => 'Acil',
 		'AvailabilityTypeAV_1W' => '1 hafta',
 		'AvailabilityTypeAV_2W' => '2 hafta',
 		'AvailabilityTypeAV_3W' => '3 hafta',
 		'AvailabilityTypeAV_1M' => '1 ay',
-		////////// Kişi türleri //////////
+		////////// Types de contacts //////////
 		'TypeContact_propal_internal_SALESREPFOLL' => 'Teklif izleme temsilcisi',
 		'TypeContact_propal_external_BILLING' => 'Müşteri faturası ilgilisi',
 		'TypeContact_propal_external_CUSTOMER' => 'Müşteri teklif izleme ilgilisi',
 		// Document models
 		'DocModelAzurDescription' => 'Tam bir teklif modeli (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune modeli teklif',
+		'DocModelJauneDescription' => 'Jaune modeli teklif'
 );
 ?>

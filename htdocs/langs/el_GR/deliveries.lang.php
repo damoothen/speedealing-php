@@ -28,17 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Ορισμός ημερ. αποστολής',
 		'ValidateDeliveryReceipt' => 'Επικύρωση παράδοσης παραλαβής',
 		'ValidateDeliveryReceiptConfirm' => 'Are you sure you want to validate this delivery receipt ?',
+		'DeleteDeliveryReceipt' => 'Διαγραφή αποδεικτικό παράδοσης',
+		'DeleteDeliveryReceiptConfirm' => 'Είστε σίγουροι ότι θέλετε να διαγράψετε <b>%s</b> παραλαβής παράδοσης;',
 		'DeliveryMethod' => 'Μέθοδος διανομής',
 		'TrackingNumber' => 'Αριθμός παρακολούθησης',
-		// merou PDF model						   
+		'DeliveryNotValidated' => 'Η παράδοση δεν επικυρώνονται',
+		// merou PDF model
 		'NameAndSignature' => 'Όνομα και υπογραφή :',
 		'ToAndDate' => 'Σε ___________________________________ στις ____/_____/__________',
 		'GoodStatusDeclaration' => 'Παραδόθηκαν τα παραπάνω σε καλή κατάσταση',
 		'Deliverer' => 'Διανομέας :',
 		'Sender' => 'Αποστολέας',
-		'Recipient' => 'Παραλήπτης',
-		'DeleteDeliveryReceipt' => 'Διαγραφή αποδεικτικό παράδοσης',
-		'DeleteDeliveryReceiptConfirm' => 'Είστε σίγουροι ότι θέλετε να διαγράψετε <b>%s</b> παραλαβής παράδοσης;',
-		'DeliveryNotValidated' => 'Η παράδοση δεν επικυρώνονται',
+		'Recipient' => 'Παραλήπτης'
 );
 ?>

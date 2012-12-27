@@ -39,6 +39,6 @@ $mailmanspip = array(
 		'DeleteIntoSpip' => 'Махни от СПИП',
 		'DeleteIntoSpipConfirmation' => 'Сигурен ли сте, че искате да премахнете този потребител от СПИП?',
 		'DeleteIntoSpipError' => 'Неуспешно за подтискане на потребителя от СПИП',
-		'SPIPConnectionFailed' => 'Не може да се свържете с СПИП',
+		'SPIPConnectionFailed' => 'Не може да се свържете с СПИП'
 );
 ?>

@@ -44,6 +44,7 @@ $projects = array(
 		'NbOpenTasks' => 'Nyitott feladatok száma',
 		'NbOfProjects' => 'Projektek száma',
 		'TimeSpent' => 'Eltöltött idő',
+		'TimesSpent' => 'Töltött idő',
 		'RefTask' => 'Feladat ref#',
 		'LabelTask' => 'Feladat cimkéje',
 		'NewTimeSpent' => 'Új eltöltött idő',
@@ -96,6 +97,18 @@ $projects = array(
 		'ProjectsDedicatedToThisThirdParty' => 'Harmadik félhnek dedikált projektek',
 		'NoTasks' => 'Nincs a projekthez tartozó feladat',
 		'LinkedToAnotherCompany' => 'Harmadik félhez kapcsolva',
+		'TaskIsNotAffectedToYou' => 'Feladat nem osztottak neked',
+		'ErrorTimeSpentIsEmpty' => 'Töltött idő üres',
+		'ThisWillAlsoRemoveTasks' => 'Ez a művelet is törli az összes feladatot a projekt <b>(%s</b> feladatokat a pillanatban), és az összes bemenet eltöltött idő.',
+		'IfNeedToUseOhterObjectKeepEmpty' => 'Ha egyes tárgyakat (számla, megrendelés, ...), amelyek egy másik harmadik félnek kell kapcsolódniuk a projekt létrehozásához, tartsa ezt az üres, hogy a projekt, hogy több harmadik fél.',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
 		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Projekt vezető',
 		'TypeContact_project_external_PROJECTLEADER' => 'Projekt vezető',
@@ -106,11 +119,6 @@ $projects = array(
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Hozzájáruló',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Hozzájáruló',
 		// Documents models
-		'DocumentModelBaleine' => 'Teljes jelentés modell (logo, ...)',
-		'TimesSpent' => 'Töltött idő',
-		'TaskIsNotAffectedToYou' => 'Feladat nem osztottak neked',
-		'ErrorTimeSpentIsEmpty' => 'Töltött idő üres',
-		'ThisWillAlsoRemoveTasks' => 'Ez a művelet is törli az összes feladatot a projekt <b>(%s</b> feladatokat a pillanatban), és az összes bemenet eltöltött idő.',
-		'IfNeedToUseOhterObjectKeepEmpty' => 'Ha egyes tárgyakat (számla, megrendelés, ...), amelyek egy másik harmadik félnek kell kapcsolódniuk a projekt létrehozásához, tartsa ezt az üres, hogy a projekt, hogy több harmadik fél.',
+		'DocumentModelBaleine' => 'Teljes jelentés modell (logo, ...)'
 );
 ?>

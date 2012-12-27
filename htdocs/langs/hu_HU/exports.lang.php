@@ -128,5 +128,13 @@ $exports = array(
 		'ExampleAnyRefFoundIntoElement' => 'Minden ref talált elem <b>%s</b>',
 		'ExampleAnyCodeOrIdFoundIntoDictionnary' => 'Bármely kód (vagy azonosító) találtak a dictionnary <b>%s</b>',
 		'CSVFormatDesc' => '<b>Vesszővel elválasztott</b> fájlformátum (. Csv). <br> Ez egy szöveges fájl formátum ahol a mezők egymástól elválasztó [%s]. Ha az elválasztó belsejében található egy mező tartalmát, mező kerekíteni kerek karakter [%s]. Escape karakter menekülni kerek karakter [%s].',
+		'Excel95FormatDesc' => '<b>Excel</b> file format (.xls)<br>This is native Excel 95 format (BIFF5).',
+		'Excel2007FormatDesc' => '<b>Excel</b> file format (.xlsx)<br>This is native Excel 2007 format (SpreadsheetML).',
+		'TsvFormatDesc' => '<b>Tab Separated Value</b> file format (.tsv)<br>This is a text file format where fields are separated by a tabulator [tab].',
+		'ExportFieldAutomaticallyAdded' => 'Field <b>%s</b> was automatically added. It will avoid you to have similar lines to be treated as duplicate records (with this field added, all ligne will own its own id and will differ).',
+		'CsvOptions' => 'Csv Options',
+		'Separator' => 'Separator',
+		'Enclosure' => 'Enclosure',
+		'SuppliersProducts' => 'Suppliers Products'
 );
 ?>

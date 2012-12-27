@@ -93,23 +93,24 @@ $propal = array(
 		'UseCustomerContactAsPropalRecipientIfExist' => 'Gebruik,  indien ingesteld, het afnemerscontactadres als offerteontvangstadres in plaats van het adres van de derde partij',
 		'ClonePropal' => 'Kloon offerte',
 		'ConfirmClonePropal' => 'Weet u zeker dat u deze offerte <b>%s</b> wilt klonen?',
+		'ConfirmReOpenProp' => 'Weet je zeker dat je wilt openen weer de commerciële voorstel <b>%s?</b>',
 		'ProposalsAndProposalsLines' => 'Offertes en offerteregels',
 		'ProposalLine' => 'Offerteregels',
-		////////// Types de contacts ////////// = 
-		'TypeContact_propal_internal_SALESREPFOLL' => 'Vertegenwoordiger die de follow-up van de offerte doet',
-		'TypeContact_propal_external_BILLING' => 'Afnemersfactuurcontactpersoon',
-		'TypeContact_propal_external_CUSTOMER' => 'Afnemerscontactpersoon follow-up voorstel',
-		// Document models = undefined
-		'DocModelAzurDescription' => 'Een compleet offertemodel (logo, etc)',
-		'DocModelJauneDescription' => 'Jaune offertemodel',
 		'AvailabilityPeriod' => 'Beschikbaarheid van vertraging',
 		'SetAvailability' => 'Set beschikbaarheid vertraging',
-		'AvailabilityTypeAV_1M' => '1 maand',
 		'AfterOrder' => 'na bestelling',
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => 'Onmiddellijk',
 		'AvailabilityTypeAV_1W' => '1 week',
 		'AvailabilityTypeAV_2W' => '2 weken',
 		'AvailabilityTypeAV_3W' => '3 weken',
-		'ConfirmReOpenProp' => 'Weet je zeker dat je wilt openen weer de commerciële voorstel <b>%s?</b>',
+		'AvailabilityTypeAV_1M' => '1 maand',
+		////////// Types de contacts //////////
+		'TypeContact_propal_internal_SALESREPFOLL' => 'Vertegenwoordiger die de follow-up van de offerte doet',
+		'TypeContact_propal_external_BILLING' => 'Afnemersfactuurcontactpersoon',
+		'TypeContact_propal_external_CUSTOMER' => 'Afnemerscontactpersoon follow-up voorstel',
+		// Document models
+		'DocModelAzurDescription' => 'Een compleet offertemodel (logo, etc)',
+		'DocModelJauneDescription' => 'Jaune offertemodel'
 );
 ?>

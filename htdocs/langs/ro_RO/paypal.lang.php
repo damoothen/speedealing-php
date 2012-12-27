@@ -16,6 +16,9 @@
 
 $paypal = array(
 		'CHARSET' => 'UTF-8',
+		'PaypalSetup' => 'PayPal modul de configurare',
+		'PaypalDesc' => 'Această ofertă modul de pagini pentru a permite plata pe <a href="http://www.paypal.com" target="_blank">PayPal</a> de catre clientii. Acest lucru poate fi folosit pentru o plată gratuit sau pentru o plată pe un anumit obiect Dolibarr (facturi, ordine, ...)',
+		'PaypalOrCBDoPayment' => 'Plata cu card de credit sau Paypal',
 		'PaypalDoPayment' => 'Plata cu Paypal',
 		'PaypalCBDoPayment' => 'Plata cu card de credit',
 		'PAYPAL_API_SANDBOX' => 'Mod de încercare / sandbox',
@@ -26,10 +29,8 @@ $paypal = array(
 		'PAYPAL_CSS_URL' => 'Url-ul Optionnal de foaie de stil CSS pe pagina de plată',
 		'ThisIsTransactionId' => 'Acesta este ID-ul de tranzacţie: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Adăugaţi URL-ul de plată Paypal atunci când trimiteţi un document prin e-mail',
-		'PaypalSetup' => 'PayPal modul de configurare',
-		'PaypalDesc' => 'Această ofertă modul de pagini pentru a permite plata pe <a href="http://www.paypal.com" target="_blank">PayPal</a> de catre clientii. Acest lucru poate fi folosit pentru o plată gratuit sau pentru o plată pe un anumit obiect Dolibarr (facturi, ordine, ...)',
-		'PaypalOrCBDoPayment' => 'Plata cu card de credit sau Paypal',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-mail pentru notificarea instant de plată (IPN)',
-		'YouAreCurrentlyInSandboxMode' => 'Sunteţi în prezent în &quot;sandbox&quot; modul de',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Sunteţi în prezent în &quot;sandbox&quot; modul de'
 );
 ?>

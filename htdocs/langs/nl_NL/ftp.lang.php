@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Kon geen verbinding maken met de server (FTP-server: %s, poort: %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Inloggen op FTP met ingestelde gebruikernaam / wachtwoord mislukt',
 		'FTPFailedToRemoveFile' => 'Bestand <b>%s</b> kon niet verwijderd worden.',
-		'FTPFailedToRemoveDir' => 'Map <b>%s</b> kon niet verwijderd worden (Controleer de rechten en of de map leeg is).',
+		'FTPFailedToRemoveDir' => 'Map <b>%s</b> kon niet verwijderd worden (Controleer de rechten en of de map leeg is).'
 );
 ?>

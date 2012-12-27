@@ -16,13 +16,12 @@
 
 $oscommerce = array(
 		'CHARSET' => 'UTF-8',
-		'OSCommerceDatabaseName' => 'Nome database OS Commerce',
-		'OSCOmmerceDatabaseName' => 'Nome database OS Commerce',
 		'OSCommerce' => 'OS Commerce',
-		'OSCommercePrefix' => 'Prefisso tabelle database OS Commerce',
-		'OSCommerceServer' => 'Host/IP del server OS Commerce',
 		'OSCommerceSetup' => 'Impostazioni modulo OS Commerce',
 		'OSCommerceSetupSaved' => 'Impostazioni OS Commerce salvate',
-		'OSCOmmerceUser' => 'Utente database OS Commerce',
+		'OSCommerceServer' => 'Host/IP del server OS Commerce',
+		'OSCommerceDatabaseName' => 'Nome database OS Commerce',
+		'OSCommercePrefix' => 'Prefisso tabelle database OS Commerce',
+		'OSCommerceUser' => 'OS Commerce database login'
 );
 ?>

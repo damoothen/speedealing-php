@@ -43,6 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => 'Miembro sincronizado',
 		'ContactSynchronized' => 'Contacto sincronizado',
 		'ForceSynchronize' => 'Forzar sincronización Dolibarr -> LDAP',
-		'ErrorFailedToReadLDAP' => 'Error de la lectura del directorio LDAP. Comprobar la configuración del módulo LDAP y la accesibilidad del anuario.',
+		'ErrorFailedToReadLDAP' => 'Error de la lectura del directorio LDAP. Comprobar la configuración del módulo LDAP y la accesibilidad del anuario.'
 );
 ?>

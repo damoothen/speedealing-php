@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'ملحوظة من الأحرف المتبقية',
 		'SmsInfoNumero' => '(تنسيق دولي أي: +33899701761)',
 		'DelayBeforeSending' => 'تأخير قبل إرسال (دقائق)',
-		'SmsNoPossibleRecipientFound' => 'لا هدف متاح. تحقق الإعداد من مزود خدمات الرسائل القصيرة.',
+		'SmsNoPossibleRecipientFound' => 'لا هدف متاح. تحقق الإعداد من مزود خدمات الرسائل القصيرة.'
 );
 ?>

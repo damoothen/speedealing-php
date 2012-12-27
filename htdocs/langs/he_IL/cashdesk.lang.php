@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'חשבון הקפה',
 		'ShowCompany' => 'הצג החברה',
 		'ShowStock' => 'הצג מחסן',
-		'DeleteArticle' => 'לחץ כדי להסיר את המאמר הזה',
+		'DeleteArticle' => 'לחץ כדי להסיר את המאמר הזה'
 );
 ?>

@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'Root',
 		'ECMNewSection' => 'Ný mappa',
 		'ECMAddSection' => 'Bæta við handbók skrá',
-		'ECMNewSection' => 'Ný handbók skrá',
 		'ECMNewDocument' => 'Nýtt skjal',
 		'ECMCreationDate' => 'Creation dagsetning',
 		'ECMNbOfFilesInDir' => 'Fjöldi skrár í möppu',
@@ -53,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Möppur skjöl',
 		'ECMTypeManual' => 'Handbók',
 		'ECMTypeAuto' => 'Sjálfvirk',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Skjöl sem tengjast þriðju aðila',
 		'ECMDocsByProposals' => 'Skjöl tengd tillögum',
 		'ECMDocsByOrders' => 'Skjöl tengd viðskiptavinum pantanir',
@@ -67,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Fjarri ekki hægt því það inniheldur nokkrar skrár',
 		'ECMFileManager' => 'File Manager',
 		'ECMSelectASection' => 'Velja möppu á vinstri tré ...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

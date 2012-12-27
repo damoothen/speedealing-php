@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Nb järelejäänud tähemärki',
 		'SmsInfoNumero' => '(Formaat rahvusvaheline st: 33899701761)',
 		'DelayBeforeSending' => 'Viivitus enne saatmist (minutites)',
-		'SmsNoPossibleRecipientFound' => 'Ei siht olemas. Vaata setup oma SMS teenust.',
+		'SmsNoPossibleRecipientFound' => 'Ei siht olemas. Vaata setup oma SMS teenust.'
 );
 ?>

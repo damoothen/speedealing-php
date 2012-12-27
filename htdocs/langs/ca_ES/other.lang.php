@@ -35,6 +35,7 @@ $other = array(
 		'Notify_WITHDRAW_TRANSMIT' => 'Transmissió domiciliació',
 		'Notify_WITHDRAW_CREDIT' => 'Abonament domiciliació',
 		'Notify_WITHDRAW_EMIT' => 'Emissió domiciliació',
+		'Notify_ORDER_SENTBYMAIL' => 'Enviament comanda de client per e-mail',
 		'Notify_COMPANY_CREATE' => 'Creació tercer',
 		'Notify_PROPAL_SENTBYMAIL' => 'Enviament pressupost per e-mail',
 		'Notify_ORDER_SENTBYMAIL' => 'Enviament comanda de client per e-mail',
@@ -126,6 +127,8 @@ $other = array(
 		'VolumeUnitdm3' => 'dm3 (l)',
 		'VolumeUnitcm3' => 'cm3 (ml)',
 		'VolumeUnitmm3' => 'mm3 (µl)',
+		'VolumeUnitfoot3' => 'ft3',
+		'VolumeUnitinch3' => 'in3',
 		'VolumeUnitounce' => 'unça',
 		'VolumeUnitlitre' => 'litre',
 		'VolumeUnitgallon' => 'galó',
@@ -136,6 +139,7 @@ $other = array(
 		'SizeUnitmm' => 'mm',
 		'SizeUnitinch' => 'polzada',
 		'SizeUnitfoot' => 'peu',
+		'SizeUnitpoint' => 'point',
 		'BugTracker' => 'Incidències',
 		'SendNewPasswordDesc' => 'Aquest formulari permet enviar una nova contrasenya. S\'enviarà al e-mail de l\'usuari<br>La modificació de la contrasenya no serà efectiva fins que el usuaris feu clic en el link de confirmació inclòs en aquest e-mail.<br>Supervisant el seu correu.',
 		'BackToLoginPage' => 'Tornar a la pàgina de connexió',
@@ -183,11 +187,6 @@ $other = array(
 		'CancelUpload' => 'Cancel·lar transferència',
 		'FileIsTooBig' => 'L\'arxiu és massa gran',
 		'PleaseBePatient' => 'Preguem esperi uns instants...',
-		////////// Webcal //////////
-		'LoginWebcal' => 'Login Webcalendar',
-		'ErrorWebcalLoginNotDefined' => 'El login webcalendar associat al seu usuari Dolibarr <b>%s</b> no està definit',
-		////////// Phenix //////////
-		'ErrorPhenixLoginNotDefined' => 'El login Phenix associat al seu compte Dolibarrr <b>%s</b> no està definit',
 		////////// Calendar common //////////
 		'AddCalendarEntry' => 'Afegir entrada al calendari',
 		'NewCompanyToDolibarr' => 'Empresa %s inserida en Dolibarr',
@@ -219,6 +218,6 @@ $other = array(
 		'ToExport' => 'Exportar',
 		'NewExport' => 'Nova exportació',
 		////////// External sites //////////
-		'ExternalSites' => 'Llocs externs',
+		'ExternalSites' => 'Llocs externs'
 );
 ?>

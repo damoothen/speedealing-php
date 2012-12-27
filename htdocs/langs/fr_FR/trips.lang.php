@@ -20,7 +20,6 @@ $trips = array(
 		'Trips' => 'Déplacements',
 		'TripsAndExpenses' => 'Note de frais',
 		'TripsAndExpensesStatistics' => 'Statistiques notes de frais',
-		'TripId' => 'Id note frais',
 		'TripCard' => 'Fiche frais',
 		'AddTrip' => 'Créer note de frais',
 		'ListOfTrips' => 'Liste des frais',
@@ -36,6 +35,6 @@ $trips = array(
 		'TF_TRIP' => 'Déplacement',
 		'ListTripsAndExpenses' => 'Liste des notes de frais',
 		'ExpensesArea' => 'Espace Notes de frais',
-		'SearchATripAndExpense' => 'Rechercher une note de frais',
+		'SearchATripAndExpense' => 'Rechercher une note de frais'
 );
 ?>

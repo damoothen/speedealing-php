@@ -33,11 +33,12 @@ $deliveries = array(
 		'DeliveryMethod' => 'Начин',
 		'TrackingNumber' => 'Проследяващ номер',
 		'DeliveryNotValidated' => 'Доставката не валидирани',
+		// merou PDF model
 		'NameAndSignature' => 'Име и подпис:',
 		'ToAndDate' => 'To___________________________________ на ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'Стоките са получили по-горе в добро състояние,',
 		'Deliverer' => 'Избавител:',
 		'Sender' => 'Подател',
-		'Recipient' => 'Получател',
+		'Recipient' => 'Получател'
 );
 ?>

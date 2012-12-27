@@ -74,11 +74,13 @@ $sendings = array(
 		'LinkToTrackYourPackage' => 'Линк за проследяване на вашия пакет',
 		'ShipmentCreationIsDoneFromOrder' => 'За момента се извършва от картата с цел създаване на нова пратка.',
 		'RelatedShippings' => 'Свързани shippings',
+		// Sending methods
 		'SendingMethodCATCH' => 'Улов от клиента',
 		'SendingMethodTRANS' => 'Транспортьор',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		// ModelDocument
 		'DocumentModelSirocco' => 'Simple образеца на документа за доставка постъпления',
 		'DocumentModelTyphon' => 'Повече целия документ модел за доставка постъпления (logo. ..)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Постоянно EXPEDITION_ADDON_NUMBER не е определен',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Постоянно EXPEDITION_ADDON_NUMBER не е определен'
 );
 ?>

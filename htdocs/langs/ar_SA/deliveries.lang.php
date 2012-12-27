@@ -28,16 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'حدد تاريخ الشحن',
 		'ValidateDeliveryReceipt' => 'تحقق من إنجاز ورود',
 		'ValidateDeliveryReceiptConfirm' => 'هل أنت متأكد من أن هذا الإنجاز تحقق من ورود؟',
+		'DeleteDeliveryReceipt' => 'حذف إيصال',
+		'DeleteDeliveryReceiptConfirm' => 'هل أنت متأكد أنك تريد حذف <b>%s</b> إيصال؟',
 		'DeliveryMethod' => 'طريقة التسليم',
 		'TrackingNumber' => 'تتبع عدد',
+		'DeliveryNotValidated' => 'التسليم يتم التحقق من صحة',
+		// merou PDF model
 		'NameAndSignature' => 'الاسم والتوقيع :',
 		'ToAndDate' => 'To___________________________________ على ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'وتلقى البضائع الواردة أعلاه في حالة جيدة ،',
 		'Deliverer' => 'المنفذ :',
 		'Sender' => 'مرسل',
-		'Recipient' => 'المتلقي',
-		'DeleteDeliveryReceipt' => 'حذف إيصال',
-		'DeleteDeliveryReceiptConfirm' => 'هل أنت متأكد أنك تريد حذف <b>%s</b> إيصال؟',
-		'DeliveryNotValidated' => 'التسليم يتم التحقق من صحة',
+		'Recipient' => 'المتلقي'
 );
 ?>

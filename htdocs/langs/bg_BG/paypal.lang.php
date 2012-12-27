@@ -31,6 +31,6 @@ $paypal = array(
 		'PAYPAL_ADD_PAYMENT_URL' => 'Добавяне на URL адреса на Paypal плащане, когато ви изпрати документа по пощата',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'Е-мейл адрес за миг уведомление за плащането (IPN)',
 		'PredefinedMailContentLink' => 'Можете да кликнете върху сигурна връзка по-долу, за да направите плащане чрез PayPal \n\n %s \n\n',
-		'YouAreCurrentlyInSandboxMode' => 'В момента сте в режим &quot;пясък&quot;',
+		'YouAreCurrentlyInSandboxMode' => 'В момента сте в режим &quot;пясък&quot;'
 );
 ?>

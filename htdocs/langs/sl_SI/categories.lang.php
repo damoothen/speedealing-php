@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'Ta član ni v nobeni kategoriji',
 		'ClassifyInCategory' => 'Razvrsti v kategorijo',
 		'NoneCategory' => 'Nobena',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'Kategorija s to referenco že obstaja',
 		'ReturnInProduct' => 'Nazaj na kartico proizvodov/storitev',
 		'ReturnInSupplier' => 'Nazaj na kartico dobaviteljev',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'Seznam kategorij dobaviteljev',
 		'CatCusList' => 'Seznam kategorij kupcev/možnih strank',
 		'CatProdList' => 'Seznam kategorij proizvodov',
-		'CatMemberList' => 'Seznam kategorij članov',
+		'CatMemberList' => 'Seznam kategorij članov'
 );
 ?>

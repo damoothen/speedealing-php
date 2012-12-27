@@ -267,6 +267,7 @@ $dict = array(
 		'CivilityMR' => 'Κύριος',
 		'CivilityMLE' => 'Κυρία',
 		'CivilityMTRE' => 'Master',
+		'CivilityDR' => 'Doctor',
 		////////// Currencies //////////
 		'Currencyeuros' => '€',
 		'CurrencyAUD' => 'AU Dollars',
@@ -295,12 +296,17 @@ $dict = array(
 		'CurrencySingTND' => 'Tunisian dinar',
 		'CurrencyUSD' => 'US Dollars',
 		'CurrencySingUSD' => 'US Dollar',
+		'CurrencyUAH' => 'Γρίβνα',
+		'CurrencySingUAH' => 'Γρίβνα',
 		'CurrencyXAF' => 'CFA Francs BEAC',
 		'CurrencySingXAF' => 'CFA Franc BEAC',
 		'CurrencyXOF' => 'CFA Francs BCEAO',
 		'CurrencySingXOF' => 'CFA Franc BCEAO',
 		'CurrencyXPF' => 'CFP Francs',
 		'CurrencySingXPF' => 'CFP Franc',
+		'CurrencyCentSingEUR' => 'cent',
+		'CurrencyThousandthSingTND' => 'thousandth',
+		//////// Input reasons //////////
 		'DemandReasonTypeSRC_INTE' => 'Internet',
 		'DemandReasonTypeSRC_CAMP_MAIL' => 'Εκστρατεία για τις Ταχυδρομικές',
 		'DemandReasonTypeSRC_CAMP_EMAIL' => 'Στέλνοντας εκστρατεία',
@@ -308,7 +314,9 @@ $dict = array(
 		'DemandReasonTypeSRC_CAMP_FAX' => 'Εκστρατεία Fax',
 		'DemandReasonTypeSRC_COMM' => 'Εμπορική επικοινωνία',
 		'DemandReasonTypeSRC_SHOP' => 'Shop Επικοινωνία',
-		'CurrencyUAH' => 'Γρίβνα',
-		'CurrencySingUAH' => 'Γρίβνα',
+		'DemandReasonTypeSRC_WOM' => 'Word of mouth',
+		'DemandReasonTypeSRC_PARTNER' => 'Partner',
+		'DemandReasonTypeSRC_EMPLOYEE' => 'Employee',
+		'DemandReasonTypeSRC_SPONSORING' => 'Sponsorship'
 );
 ?>

@@ -41,6 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Bo parçaçcığı (widget) tıklayarak Dolibar tarafından sizin için dilinizde önseçilen eğitmeni arayabilirsiniz (durumu ve ençok ücreti otomatikmen güncellenir):',
 		'PossibleLanguages' => 'Desteklenen diller',
 		'MakeADonation' => 'Dolibarr projesine bağış yapın',
-		'SubscribeToFoundation' => 'Dolibarr projesine yardım edin, vakıfa abone olun',
+		'SubscribeToFoundation' => 'Dolibarr projesine yardım edin, vakıfa abone olun'
 );
 ?>

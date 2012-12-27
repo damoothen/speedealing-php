@@ -18,6 +18,7 @@ $boxes = array(
 		'CHARSET' => 'UTF-8',
 		'BoxLastRssInfos' => 'RSS情報',
 		'BoxLastProducts' => '最後%s製品/サービス',
+		'BoxProductsAlertStock' => 'Products in stock alert',
 		'BoxLastProductsInContract' => '最後%sは、製品/サービスを契約',
 		'BoxLastSupplierBills' => '最後のサプライヤーの請求書',
 		'BoxLastCustomerBills' => '最後に、顧客の請求書',
@@ -41,6 +42,7 @@ $boxes = array(
 		'BoxTitleNbOfCustomers' => 'クライアントの数',
 		'BoxTitleLastRssInfos' => '%s %sからの最後のニュース',
 		'BoxTitleLastProducts' => '最後%sは、製品/サービスを変更',
+		'BoxTitleProductsAlertStock' => 'Products in stock alert',
 		'BoxTitleLastCustomerOrders' => '最後%sは、顧客の注文を変更',
 		'BoxTitleLastSuppliers' => '最後%sのサプライヤーを記録',
 		'BoxTitleLastCustomers' => '最後%s記録された顧客',
@@ -68,6 +70,7 @@ $boxes = array(
 		'BoxTitleLastContracts' => '最後%s契約',
 		'BoxTitleLastModifiedDonations' => '最後%sは寄付を変更',
 		'BoxTitleLastModifiedExpenses' => '最後%sは経費を変更',
+		'BoxGlobalActivity' => 'Global activity (invoices, proposals, orders)',
 		'FailedToRefreshDataInfoNotUpToDate' => 'リフレッシュRSSフラックスに失敗しました。最後に成功し、リフレッシュした日：%s',
 		'LastRefreshDate' => '最後の更新日',
 		'NoRecordedBookmarks' => 'ブックマークが定義されていません。',
@@ -86,5 +89,9 @@ $boxes = array(
 		'NoRecordedProspects' => '全く記録された見通しなし',
 		'NoContractedProducts' => 'ない製品/サービスは、契約しない',
 		'NoRecordedContracts' => '全く記録された契約をしない',
+		// Latest supplier orders
+		'BoxLatestSupplierOrders' => 'Latest supplier orders',
+		'BoxTitleLatestSupplierOrders' => '%s latest supplier orders',
+		'NoSupplierOrder' => 'No recorded supplier order'
 );
 ?>

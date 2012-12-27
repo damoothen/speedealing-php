@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => 'OSCommerce server host / ip',
 		'OSCommerceDatabaseName' => 'OSCommerce databasenaam',
 		'OSCommercePrefix' => 'OSCommerce tabellen voorvoegsel',
-		'OSCommerceUser' => 'OSCommerce database login',
+		'OSCommerceUser' => 'OSCommerce database login'
 );
 ?>

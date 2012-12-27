@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => '铌的剩余字符',
 		'SmsInfoNumero' => '（国际格式如：33899701761）',
 		'DelayBeforeSending' => '延迟发送前（分钟）',
-		'SmsNoPossibleRecipientFound' => '没有目标。检查您的SMS提供商的设置。',
+		'SmsNoPossibleRecipientFound' => '没有目标。检查您的SMS提供商的设置。'
 );
 ?>

@@ -45,6 +45,6 @@ $donations = array(
 		'SearchADonation' => 'Rechercher un don',
 		'DonationRecipient' => 'Bénéficiaire des versements',
 		'ThankYou' => 'Merci',
-		'IConfirmDonationReception' => 'Le bénéficiaire reconnait avoir reçu au titre des versements ouvrant droit à réduction d\'impôt, la somme de',
+		'IConfirmDonationReception' => 'Le bénéficiaire reconnait avoir reçu au titre des versements ouvrant droit à réduction d\'impôt, la somme de'
 );
 ?>

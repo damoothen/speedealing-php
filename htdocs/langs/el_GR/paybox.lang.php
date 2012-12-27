@@ -31,6 +31,7 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => 'Θα μεταφερθείτε σε προστατευμένους σελίδα Paybox να εισάγετε τα στοιχεία της πιστωτικής σας κάρτας',
 		'PleaseBePatient' => 'Παρακαλώ, να είστε υπομονετικοί',
 		'Continue' => 'Επόμενη',
+		'ToOfferALinkForOnlinePayment' => 'URL για %s πληρωμής',
 		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL για να προσφέρει μια %s online διεπαφή χρήστη πληρωμή για την παραγγελία',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL για να προσφέρει μια %s online διεπαφή χρήστη για την πληρωμή του τιμολογίου',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL για να προσφέρει μια %s online διεπαφή χρήστη πληρωμή για μια γραμμή σύμβαση',
@@ -47,7 +48,6 @@ $paybox = array(
 		'VendorName' => 'Όνομα του πωλητή',
 		'CSSUrlForPaymentForm' => 'Url CSS φύλλο στυλ για το έντυπο πληρωμής',
 		'MessageOK' => 'Μήνυμα για την επικυρωμένη σελίδα επιστροφή πληρωμής',
-		'MessageKO' => 'Μήνυμα για την ακύρωση σελίδα επιστροφή πληρωμής',
-		'ToOfferALinkForOnlinePayment' => 'URL για %s πληρωμής',
+		'MessageKO' => 'Μήνυμα για την ακύρωση σελίδα επιστροφή πληρωμής'
 );
 ?>

@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Kundenkonto',
 		'ShowCompany' => 'Zeige Unternehmen',
 		'ShowStock' => 'Zeige Lager',
-		'DeleteArticle' => 'Klicken, um diesen Artikel zu entfernen',
+		'DeleteArticle' => 'Klicken, um diesen Artikel zu entfernen'
 );
 ?>

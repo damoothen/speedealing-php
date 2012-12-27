@@ -52,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Register över handlingar',
 		'ECMTypeManual' => 'Manuell',
 		'ECMTypeAuto' => 'Automatisk',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Dokument med koppling till tredje part',
 		'ECMDocsByProposals' => 'Dokument med koppling till förslagen',
 		'ECMDocsByOrders' => 'Dokument med koppling till kunderna order',
@@ -66,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Flyttat inte möjligt eftersom det innehåller några filer',
 		'ECMFileManager' => 'Filhanteraren',
 		'ECMSelectASection' => 'Välj en katalog på vänster träd ...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

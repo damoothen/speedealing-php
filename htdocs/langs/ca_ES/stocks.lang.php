@@ -52,8 +52,10 @@ $stocks = array(
 		'StockMovement' => 'Transferència',
 		'StockMovements' => 'Moviments d\'estoc',
 		'NumberOfUnit' => 'Nombre de peces',
+		'UnitPurchaseValue' => 'Unit purchase price',
 		'TotalStock' => 'Total en estoc',
 		'StockTooLow' => 'Estoc insuficient',
+		'StockLowerThanLimit' => 'Stock lower than alert limit',
 		'EnhancedValue' => 'Valor',
 		'PMPValue' => 'Valor (PMP)',
 		'PMPValueShort' => 'PMP',
@@ -100,6 +102,6 @@ $stocks = array(
 		'ThisWarehouseIsPersonalStock' => 'Aquest magatzem representa l\'estoc personal de %s %s',
 		'SelectWarehouseForStockDecrease' => 'Seleccioneu el magatzem a usar en el decrement d\'estoc',
 		'SelectWarehouseForStockIncrease' => 'Seleccioneu el magatzem a utilitzar en l\'increment d\'estoc',
-		'LastWaitingSupplierOrders' => 'Comandes en espera de recepció',
+		'LastWaitingSupplierOrders' => 'Comandes en espera de recepció'
 );
 ?>

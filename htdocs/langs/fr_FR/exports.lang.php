@@ -76,9 +76,9 @@ $exports = array(
 		'FileWithDataToImport' => 'Fichier contenant les données à importer',
 		'FileToImport' => 'Fichier source à importer',
 		'FileMustHaveOneOfFollowingFormat' => 'Le fichier à importer doit avoir un des formats suivants',
+		'DownloadEmptyExample' => 'Télécharger fichier vierge exemple',
 		'ChooseFormatOfFileToImport' => 'Choisissez le format de fichier à importer en cliquant sur le picto %s pour le sélectionner...',
 		'ChooseFileToImport' => 'Ajoutez le fichier à importer puis cliquez sur le picto %s pour le sélectionner comme fichier source d\'import...',
-		'DownloadEmptyExample' => 'Télécharger fichier vierge exemple',
 		'SourceFileFormat' => 'Format du fichier source',
 		'FieldsInSourceFile' => 'Champs dans le fichier source',
 		'FieldsInTargetDatabase' => 'Champs cibles dans la base Dolibarr',
@@ -135,6 +135,6 @@ $exports = array(
 		'CsvOptions' => 'Options du fichier Csv',
 		'Separator' => 'Séparateur de champs',
 		'Enclosure' => 'Encadrement des chaines de textes',
-		'SuppliersProducts' => 'Produits Fournisseurs',
+		'SuppliersProducts' => 'Produits Fournisseurs'
 );
 ?>

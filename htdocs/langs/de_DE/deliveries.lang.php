@@ -39,9 +39,6 @@ $deliveries = array(
 		'GoodStatusDeclaration' => 'Wir haben die oben genannten Waren in einwandfreiem Zustand erhalten,',
 		'Deliverer' => 'Lieferant:',
 		'Sender' => 'Absender',
-		'Recipient' => 'Empfänger',
-		'DeleteDeliveryReceipt' => 'Löschen Lieferschein',
-		'DeleteDeliveryReceiptConfirm' => 'Sind Sie sicher, Sie wollen Lieferschein <b>%s</b> löschen?',
-		'DeliveryNotValidated' => 'Lieferung nicht validiert',
+		'Recipient' => 'Empfänger'
 );
 ?>

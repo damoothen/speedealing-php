@@ -101,6 +101,15 @@ $projects = array(
 		'ErrorTimeSpentIsEmpty' => 'משך הזמן ריקה',
 		'ThisWillAlsoRemoveTasks' => 'פעולה זו תמחק גם את כל המשימות של הפרויקט (משימות <b>%s</b> כרגע) וכל תשומות הזמן המושקע.',
 		'IfNeedToUseOhterObjectKeepEmpty' => 'אם כמה חפצים (חשבונית, בסדר, ...), השייכים לגורם אחר 3, חייב להיות קשור הפרויקט ליצור, לשמור על ריק לקבל את הפרויקט להיות צדדים שלישיים רב.',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'מנהל הפרויקט',
 		'TypeContact_project_external_PROJECTLEADER' => 'מנהל הפרויקט',
 		'TypeContact_project_internal_CONTRIBUTOR' => 'תורם',
@@ -109,6 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => 'המשימות של הפועל',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'תורם',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'תורם',
-		'DocumentModelBaleine' => 'הדו&quot;ח מודל פרויקט שלם של (logo. ..)',
+		// Documents models
+		'DocumentModelBaleine' => 'הדו&quot;ח מודל פרויקט שלם של (logo. ..)'
 );
 ?>

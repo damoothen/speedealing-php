@@ -21,10 +21,10 @@ $propal = array(
 		'ProposalShort' => 'Pressupost',
 		'ProposalsDraft' => 'Pressupostos esborrany',
 		'ProposalDraft' => 'Pressupost esborrany',
+		'ProposalsOpened' => 'Pressupostos oberts',
 		'Prop' => 'Pressupostos',
 		'CommercialProposal' => 'Pressupost',
 		'CommercialProposals' => 'Pressupostos',
-		'ProposalsOpened' => 'Pressupostos oberts',
 		'ProposalCard' => 'Fitxa pressupost',
 		'NewProp' => 'Nou pressupost',
 		'NewProposal' => 'Nou pressupost',
@@ -109,9 +109,8 @@ $propal = array(
 		'TypeContact_propal_internal_SALESREPFOLL' => 'Comercial seguiment pressupost',
 		'TypeContact_propal_external_BILLING' => 'Contacte client de facturació pressupost',
 		'TypeContact_propal_external_CUSTOMER' => 'Contacte client seguiment pressupost',
-		// Documents models
+		// Document models
 		'DocModelAzurDescription' => 'Model de pressupost complet (logo...)',
-		'DocModelJauneDescription' => 'Model de pressupost Jaune',
-		'Numbershort' => 'Nº',
+		'DocModelJauneDescription' => 'Model de pressupost Jaune'
 );
 ?>

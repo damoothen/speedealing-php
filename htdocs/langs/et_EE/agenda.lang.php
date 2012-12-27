@@ -81,12 +81,13 @@ $agenda = array(
 		'AgendaUrlOptions5' => '<b>logind = %s</b> piirata väljundi poolt tehtud toimingute kasutaja <b>%s.</b>',
 		'AgendaShowBirthdayEvents' => 'Näita sünnipäeva kontaktid',
 		'AgendaHideBirthdayEvents' => 'Peida sünnipäev kontaktid',
+		// External Sites ical
 		'ExportCal' => 'Ekspordi kalender',
 		'ExtSites' => 'Import välise kalendrid',
 		'ExtSitesEnableThisTool' => 'Näita välised kalendreid sisse päevakorda',
 		'ExtSitesNbOfAgenda' => 'Mitmeid kalendrid',
 		'AgendaExtNb' => 'Kalender nb %s',
 		'ExtSiteUrlAgenda' => 'URL ligi pääseda. ICal fail',
-		'ExtSiteNoLabel' => 'Ei Kirjeldus',
+		'ExtSiteNoLabel' => 'Ei Kirjeldus'
 );
 ?>

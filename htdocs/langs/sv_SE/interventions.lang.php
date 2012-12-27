@@ -23,6 +23,7 @@ $interventions = array(
 		'AddIntervention' => 'Lägg till intervention',
 		'ListOfInterventions' => 'Förteckning över åtgärder',
 		'EditIntervention' => 'Redigera ingripande',
+		'ActionsOnFicheInter' => 'Åtgärder för ingripande',
 		'LastInterventions' => 'Senaste %s insatser',
 		'AllInterventions' => 'Alla insatser',
 		'CreateDraftIntervention' => 'Skapa utkast',
@@ -39,18 +40,19 @@ $interventions = array(
 		'NameAndSignatureOfInternalContact' => 'Namn och underskrift ingripa:',
 		'NameAndSignatureOfExternalContact' => 'Namn och underskrift av kund:',
 		'DocumentModelStandard' => 'Standarddokument modell för insatser',
-		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Representanten uppföljning ingripande',
-		'TypeContact_fichinter_internal_INTERVENING' => 'Ingripa',
-		'TypeContact_fichinter_external_BILLING' => 'Fakturering kundkontakt',
-		'TypeContact_fichinter_external_CUSTOMER' => 'Uppföljning kundkontakt',
-		'ArcticNumRefModelDesc1' => 'Generic nummer modell',
-		'ArcticNumRefModelError' => 'Misslyckades med att aktivera',
-		'PacificNumRefModelDesc1' => 'Återgå numero med format %syymm-nnnn där YY är år, mm månaden och nnnn är en sekvens utan avbrott och ingen återgång till 0',
-		'PacificNumRefModelError' => 'En intervention kort börjar med $ syymm finns redan och är inte förenligt med denna modell för sekvens. Ta bort den eller byta namn på den för att aktivera denna modul.',
-		'ActionsOnFicheInter' => 'Åtgärder för ingripande',
 		'ClassifyBilled' => 'Klassificera &quot;Fakturerade&quot;',
 		'StatusInterInvoiced' => 'Fakturerade',
 		'RelatedInterventions' => 'Insatserna',
 		'ShowIntervention' => 'Visar ingripande',
+		////////// Types de contacts //////////
+		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Representanten uppföljning ingripande',
+		'TypeContact_fichinter_internal_INTERVENING' => 'Ingripa',
+		'TypeContact_fichinter_external_BILLING' => 'Fakturering kundkontakt',
+		'TypeContact_fichinter_external_CUSTOMER' => 'Uppföljning kundkontakt',
+		// Modele numérotation
+		'ArcticNumRefModelDesc1' => 'Generic nummer modell',
+		'ArcticNumRefModelError' => 'Misslyckades med att aktivera',
+		'PacificNumRefModelDesc1' => 'Återgå numero med format %syymm-nnnn där YY är år, mm månaden och nnnn är en sekvens utan avbrott och ingen återgång till 0',
+		'PacificNumRefModelError' => 'En intervention kort börjar med $ syymm finns redan och är inte förenligt med denna modell för sekvens. Ta bort den eller byta namn på den för att aktivera denna modul.'
 );
 ?>

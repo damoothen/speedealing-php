@@ -23,6 +23,7 @@ $interventions = array(
 		'AddIntervention' => 'Bæta við íhlutun',
 		'ListOfInterventions' => 'Listi yfir inngrip',
 		'EditIntervention' => 'Breyta afskipti',
+		'ActionsOnFicheInter' => 'Aðgerðir á íhlutun',
 		'LastInterventions' => 'Last %s  inngrip',
 		'AllInterventions' => 'Öll inngrip',
 		'CreateDraftIntervention' => 'Búa til drög',
@@ -39,18 +40,19 @@ $interventions = array(
 		'NameAndSignatureOfInternalContact' => 'Nafn og undirritun íhlutun:',
 		'NameAndSignatureOfExternalContact' => 'Nafn og undirritun viðskiptavinar:',
 		'DocumentModelStandard' => 'Staðlað skjal líkan fyrir afskipti',
-		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Fulltrúi eftirfarandi upp afskipti',
-		'TypeContact_fichinter_internal_INTERVENING' => 'Íhlutun',
-		'TypeContact_fichinter_external_BILLING' => 'Innheimta viðskiptavina samband',
-		'TypeContact_fichinter_external_CUSTOMER' => 'Eftir upp viðskiptavina samband',
-		'ArcticNumRefModelDesc1' => 'Generic tala líkan',
-		'ArcticNumRefModelError' => 'Ekki tókst að virkja',
-		'PacificNumRefModelDesc1' => 'Fara aftur numero með snið %s yymm-NNNN þar YY er ári, mm er mánuður og NNNN er röð án brot og ekki aftur snúið til 0',
-		'PacificNumRefModelError' => 'Íhlutun kort sem byrjar á $ syymm er til nú þegar og er ekki með þessari tegund af röð. Fjarlægja hana eða gefa henni nýtt heiti þess að virkja þessa einingu.',
-		'ActionsOnFicheInter' => 'Aðgerðir á íhlutun',
 		'ClassifyBilled' => 'Flokka &quot;borgað&quot;',
 		'StatusInterInvoiced' => 'Billed',
 		'RelatedInterventions' => 'Tengdar inngrip',
 		'ShowIntervention' => 'Sýna afskipti',
+		////////// Types de contacts //////////
+		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Fulltrúi eftirfarandi upp afskipti',
+		'TypeContact_fichinter_internal_INTERVENING' => 'Íhlutun',
+		'TypeContact_fichinter_external_BILLING' => 'Innheimta viðskiptavina samband',
+		'TypeContact_fichinter_external_CUSTOMER' => 'Eftir upp viðskiptavina samband',
+		// Modele numérotation
+		'ArcticNumRefModelDesc1' => 'Generic tala líkan',
+		'ArcticNumRefModelError' => 'Ekki tókst að virkja',
+		'PacificNumRefModelDesc1' => 'Fara aftur numero með snið %s yymm-NNNN þar YY er ári, mm er mánuður og NNNN er röð án brot og ekki aftur snúið til 0',
+		'PacificNumRefModelError' => 'Íhlutun kort sem byrjar á $ syymm er til nú þegar og er ekki með þessari tegund af röð. Fjarlægja hana eða gefa henni nýtt heiti þess að virkja þessa einingu.'
 );
 ?>

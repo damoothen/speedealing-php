@@ -67,6 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Entfernen des Verzeichnisses nicht möglich, da es noch Dateien enthält',
 		'ECMFileManager' => 'Dateiverwaltung',
 		'ECMSelectASection' => 'Wählen Sie ein Verzeichnis aus der Baumansicht auf der linken Seite...',
-		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

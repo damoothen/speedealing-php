@@ -44,13 +44,15 @@ $interventions = array(
 		'StatusInterInvoiced' => 'Таксува',
 		'RelatedInterventions' => 'Подобни интервенции',
 		'ShowIntervention' => 'Покажи намеса',
+		////////// Types de contacts //////////
 		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Представител проследяване намеса',
 		'TypeContact_fichinter_internal_INTERVENING' => 'Намеса',
 		'TypeContact_fichinter_external_BILLING' => 'Контакт с клиента за фактуриране',
 		'TypeContact_fichinter_external_CUSTOMER' => 'Проследяване на контакт с клиентите',
+		// Modele numérotation
 		'ArcticNumRefModelDesc1' => 'Generic номер на модела',
 		'ArcticNumRefModelError' => 'Неуспешно да активирате',
 		'PacificNumRefModelDesc1' => 'Връщане Numero с формат %syymm-NNNN, където YY е годината, mm е месец и NNNN е последователност, без почивка и няма връщане назад 0',
-		'PacificNumRefModelError' => 'Интервенционната карта започва с $ syymm вече съществува и не е съвместим с този модел на последователност. Извадете го или го преименувайте да се активира този модул.',
+		'PacificNumRefModelError' => 'Интервенционната карта започва с $ syymm вече съществува и не е съвместим с този модел на последователност. Извадете го или го преименувайте да се активира този модул.'
 );
 ?>

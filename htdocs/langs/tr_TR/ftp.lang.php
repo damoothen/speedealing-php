@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'FTP sunucusuna bağlanamadı (sunucu %s, port %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Tanımlı kullanıcı/parola ile FTP sunucusuna bağlanılamadı',
 		'FTPFailedToRemoveFile' => '<b>%s</b> Dosyası kaldırılamadı.',
-		'FTPFailedToRemoveDir' => '=<b>%s</b> Dizini kaldırılamadı (İzinleri o dizinin boş olduğunu denetleyin).',
+		'FTPFailedToRemoveDir' => '=<b>%s</b> Dizini kaldırılamadı (İzinleri o dizinin boş olduğunu denetleyin).'
 );
 ?>

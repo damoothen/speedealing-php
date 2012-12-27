@@ -162,6 +162,6 @@ $banks = array(
 		'InputReceiptNumber' => 'Saisissez le relevé bancaire concerné par le rapprochement. Utilisez une valeur numérique triable (par exemple YYYYMM)',
 		'EventualyAddCategory' => 'Eventuellement, saisissez une catégorie dans laquelle classer les écritures',
 		'ToConciliate' => 'A rapprocher ?',
-		'ThenCheckLinesAndConciliate' => 'Ensuite, cochez les lignes présentes sur le relevé et cliquez sur',
+		'ThenCheckLinesAndConciliate' => 'Ensuite, cochez les lignes présentes sur le relevé et cliquez sur'
 );
 ?>

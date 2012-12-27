@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Αρ. υπόλοιπους χαρακτήρες',
 		'SmsInfoNumero' => '(Μορφή διεθνούς δηλαδή: 33899701761)',
 		'DelayBeforeSending' => 'Καθυστέρηση πριν από την αποστολή (λεπτά)',
-		'SmsNoPossibleRecipientFound' => 'Δεν στόχος διαθέσιμα. Ελέγξτε την εγκατάσταση του SMS τον παροχέα σας.',
+		'SmsNoPossibleRecipientFound' => 'Δεν στόχος διαθέσιμα. Ελέγξτε την εγκατάσταση του SMS τον παροχέα σας.'
 );
 ?>

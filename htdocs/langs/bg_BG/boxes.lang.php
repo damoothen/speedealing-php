@@ -18,6 +18,7 @@ $boxes = array(
 		'CHARSET' => 'UTF-8',
 		'BoxLastRssInfos' => 'Rss информация',
 		'BoxLastProducts' => 'Последно %s продукти / услуги',
+		'BoxProductsAlertStock' => 'Products in stock alert',
 		'BoxLastProductsInContract' => 'Последно %s договорените продукти / услуги',
 		'BoxLastSupplierBills' => 'Последно доставчика фактури',
 		'BoxLastCustomerBills' => 'Последно клиента фактури',
@@ -41,6 +42,7 @@ $boxes = array(
 		'BoxTitleNbOfCustomers' => 'Брой клиенти',
 		'BoxTitleLastRssInfos' => 'Последно %s новини от %s',
 		'BoxTitleLastProducts' => 'Последно %s модифицирани продукти / услуги',
+		'BoxTitleProductsAlertStock' => 'Products in stock alert',
 		'BoxTitleLastCustomerOrders' => 'Последно %s промяна на поръчки от клиенти',
 		'BoxTitleLastSuppliers' => 'Последно %s записва доставчици',
 		'BoxTitleLastCustomers' => 'Последните %s записани клиенти',
@@ -87,8 +89,9 @@ $boxes = array(
 		'NoRecordedProspects' => 'Няма регистрирани перспективи',
 		'NoContractedProducts' => 'Няма продукти / услуги, договорени',
 		'NoRecordedContracts' => 'Няма регистрирани договори',
+		// Latest supplier orders
 		'BoxLatestSupplierOrders' => 'Последни поръчки доставчика',
 		'BoxTitleLatestSupplierOrders' => '%s новите поръчки доставчика',
-		'NoSupplierOrder' => 'Не са познати доставчик за',
+		'NoSupplierOrder' => 'Не са познати доставчик за'
 );
 ?>

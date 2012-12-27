@@ -39,10 +39,10 @@ $ldap = array(
 		'LDAPFieldLastSubscriptionAmount' => 'الاكتتاب المبلغ الأخير',
 		'SynchronizeDolibarr2Ldap' => 'التزامن بين المستخدمين (Dolibarr --> LDAP)',
 		'UserSynchronized' => 'وتزامن المستخدم',
-		'ForceSynchronize' => 'واكبت قوة Dolibarr --> LDAP',
-		'ErrorFailedToReadLDAP' => 'فشل في قراءة قاعدة البيانات LDAP. LDAP وحدة التحقق من الإعداد ، وإمكانية الوصول إلى قاعدة البيانات.',
 		'GroupSynchronized' => 'مجموعة متزامنة',
 		'MemberSynchronized' => 'عضو متزامنة',
 		'ContactSynchronized' => 'وتزامن الاتصال',
+		'ForceSynchronize' => 'واكبت قوة Dolibarr --> LDAP',
+		'ErrorFailedToReadLDAP' => 'فشل في قراءة قاعدة البيانات LDAP. LDAP وحدة التحقق من الإعداد ، وإمكانية الوصول إلى قاعدة البيانات.'
 );
 ?>

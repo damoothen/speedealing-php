@@ -101,7 +101,15 @@ $projects = array(
 		'ErrorTimeSpentIsEmpty' => 'Harcanan süre boş',
 		'ThisWillAlsoRemoveTasks' => 'Bu eylem aynı zamanda projenin tüm görevlerini (şu andaki <b>%s</b> görevleri) ve tüm harcanan süre girişlernii siler .',
 		'IfNeedToUseOhterObjectKeepEmpty' => 'Eğer bazı nesneler başka bir üçüncü partiye aitse  (fatura, sipariş, ...), oluşturulması  için bu projeye bağlanmalıdır, projenin birden çok üçüncü partiye bağlı olması için bunu boş bırakın.',
-		////////// Kişi türleri //////////
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Proje önderi',
 		'TypeContact_project_external_PROJECTLEADER' => 'Proje önderi',
 		'TypeContact_project_internal_CONTRIBUTOR' => 'Katılımcı',
@@ -110,7 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => 'Görev yöneticisi',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Katılımcı',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Katılımcı',
-		// Belge modelleri
-		'DocumentModelBaleine' => 'Eksiksiz bir proje rapor modeli (logo. ..)',
+		// Documents models
+		'DocumentModelBaleine' => 'Eksiksiz bir proje rapor modeli (logo. ..)'
 );
 ?>

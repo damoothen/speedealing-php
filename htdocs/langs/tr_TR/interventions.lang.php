@@ -44,15 +44,15 @@ $interventions = array(
 		'StatusInterInvoiced' => 'Faturalandırılmış',
 		'RelatedInterventions' => 'İlgili müdahaleler',
 		'ShowIntervention' => 'Müdahale göster',
-		////////// Kişi türleri //////////
+		////////// Types de contacts //////////
 		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Müdahale izleme temsilcisi',
 		'TypeContact_fichinter_internal_INTERVENING' => 'Müdahalede',
 		'TypeContact_fichinter_external_BILLING' => 'Müşteri fatura ilgilisi',
 		'TypeContact_fichinter_external_CUSTOMER' => 'Müşteri izleme yetkilisi',
-		// Numaralandırma modeli
+		// Modele numérotation
 		'ArcticNumRefModelDesc1' => 'Genel numaralandırma modeli',
 		'ArcticNumRefModelError' => 'Etkinleştirme başarısız',
 		'PacificNumRefModelDesc1' => 'Sayıyı %syymm-nnnn olarak gösterir, yy: yıl, mm: ay ve nnnn: 0 olmayan bir sayı dizisidir',
-		'PacificNumRefModelError' => '$syymm Başlayan bir müdahale kartı zaten var ve sıra bu dizi modeli ile uyumlu değildir. Modülü etkinleştirmek için kaldırın ya da yeniden adlandırın.',
+		'PacificNumRefModelError' => '$syymm Başlayan bir müdahale kartı zaten var ve sıra bu dizi modeli ile uyumlu değildir. Modülü etkinleştirmek için kaldırın ya da yeniden adlandırın.'
 );
 ?>

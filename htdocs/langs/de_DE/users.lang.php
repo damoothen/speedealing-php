@@ -119,7 +119,7 @@ $users = array(
 		'UserEnabled' => 'Benutzer %s aktiviert',
 		'UserDeleted' => 'Benutzer %s entfernt',
 		'NewGroupCreated' => 'Gruppe %s erstellt',
-		'GroupModified' => 'Gruppe %s geändert',
+		'GroupModified' => 'Gruppe erfolgreich bearbeitet',
 		'GroupDeleted' => 'Gruppe %s entfernt',
 		'ConfirmCreateContact' => 'Möchten Sie für diesen Kontakt wirklich ein Systembenutzerkonto anlegen?',
 		'ConfirmCreateLogin' => 'Möchten Sie für dieses Mitglied wirklich ein Benutzerkonto erstellen?',
@@ -129,6 +129,6 @@ $users = array(
 		'YourRole' => 'Ihre Rolle',
 		'YourQuotaOfUsersIsReached' => 'Ihr Kontingent aktiver Benutzer ist erreicht',
 		'NbOfUsers' => 'Anzahl der Benutzer',
-		'DontDowngradeSuperAdmin' => 'Nur ein SuperAdmin kann einen SuperAdmin downgraden',
+		'DontDowngradeSuperAdmin' => 'Nur ein SuperAdmin kann einen SuperAdmin downgraden'
 );
 ?>

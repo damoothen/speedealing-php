@@ -30,6 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => 'Dit is id van de transactie: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Voeg de url van Paypal betaling wanneer u een document verzendt via e-mail',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-mail adres voor de directe kennisgeving van de betaling (IPN)',
-		'YouAreCurrentlyInSandboxMode' => 'U bevindt zich momenteel in de &quot;sandbox&quot;-modus',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'U bevindt zich momenteel in de &quot;sandbox&quot;-modus'
 );
 ?>

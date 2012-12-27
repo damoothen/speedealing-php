@@ -55,6 +55,7 @@ $stocks = array(
 		'UnitPurchaseValue' => 'Precio de compra unitario',
 		'TotalStock' => 'Total en stock',
 		'StockTooLow' => 'Stock insuficiente',
+		'StockLowerThanLimit' => 'Stock lower than alert limit',
 		'EnhancedValue' => 'Valor',
 		'PMPValue' => 'Valor (PMP)',
 		'PMPValueShort' => 'PMP',
@@ -101,6 +102,6 @@ $stocks = array(
 		'ThisWarehouseIsPersonalStock' => 'Este almacén representa el stock personal de %s %s',
 		'SelectWarehouseForStockDecrease' => 'Seleccione el almacén a usar en el decremento de stock',
 		'SelectWarehouseForStockIncrease' => 'Seleccione el almacén a usar en el incremento de stock',
-		'LastWaitingSupplierOrders' => 'Pedidos en espera de recepción',
+		'LastWaitingSupplierOrders' => 'Pedidos en espera de recepción'
 );
 ?>

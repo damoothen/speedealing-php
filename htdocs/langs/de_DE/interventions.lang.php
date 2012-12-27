@@ -53,6 +53,6 @@ $interventions = array(
 		'ArcticNumRefModelDesc1' => 'Generisches Nummernmodell',
 		'ArcticNumRefModelError' => 'Fehler beim aktivieren',
 		'PacificNumRefModelDesc1' => 'Liefere Nummer im Format %syymm-nnnn zurück, wobei yy das Jahr, mm das Monat und nnnn eine Zahlensequenz ohne Nullwert oder Leerzeichen ist',
-		'PacificNumRefModelError' => 'Eine Interventionskarte beginnend mit $syymm existiert bereits und ist nicht mir dieser Numerierungssequenz kompatibel. Bitte löschen oder umbenennen.',
+		'PacificNumRefModelError' => 'Eine Interventionskarte beginnend mit $syymm existiert bereits und ist nicht mir dieser Numerierungssequenz kompatibel. Bitte löschen oder umbenennen.'
 );
 ?>

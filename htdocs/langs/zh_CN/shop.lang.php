@@ -24,6 +24,6 @@ $shop = array(
 		'LastCustomers' => '最后客户',
 		'OSCommerceShop' => 'oscommerce的店铺',
 		'OSCommerce' => 'oscommerce的',
-		'AddProd' => '在线销售',
+		'AddProd' => '在线销售'
 );
 ?>

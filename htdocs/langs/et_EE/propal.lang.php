@@ -99,15 +99,18 @@ $propal = array(
 		'AvailabilityPeriod' => 'Saadavus viivitusega',
 		'SetAvailability' => 'Määra kättesaadavus viivitusega',
 		'AfterOrder' => 'pärast, et',
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => 'Vahetu',
 		'AvailabilityTypeAV_1W' => '1 nädal',
 		'AvailabilityTypeAV_2W' => '2 nädalat',
 		'AvailabilityTypeAV_3W' => '3 nädalat',
 		'AvailabilityTypeAV_1M' => '1 kuu',
+		////////// Types de contacts //////////
 		'TypeContact_propal_internal_SALESREPFOLL' => 'Esindaja järelmeetmeid ettepanek',
 		'TypeContact_propal_external_BILLING' => 'Kliendi arve kontaktandmed',
 		'TypeContact_propal_external_CUSTOMER' => 'Klientide kontaktandmeid järelmeetmeid ettepanek',
+		// Document models
 		'DocModelAzurDescription' => 'Täielikku ettepanekut mudel (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune ettepaneku mudel',
+		'DocModelJauneDescription' => 'Jaune ettepaneku mudel'
 );
 ?>

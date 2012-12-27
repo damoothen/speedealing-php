@@ -38,9 +38,13 @@ $donations = array(
 		'DonationStatusPromiseValidatedShort' => 'Validada',
 		'DonationStatusPaidShort' => 'Pagada',
 		'ValidPromess' => 'Validar promesa',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Crear rebut',
 		'DonationsModels' => 'Model de document de recepció de donació',
 		'LastModifiedDonations' => 'Less %s últimes donacions modificades',
 		'SearchADonation' => 'Cercar una donació',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

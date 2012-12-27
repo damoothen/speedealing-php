@@ -148,7 +148,7 @@ $bills = array(
 		'ActionsOnBill' => 'Действия по фактура',
 		'NewBill' => 'Нова фактура',
 		'Prélèvements' => 'Постоянния цел',
-		'Prélèvements' => 'Постоянните поръчки',
+		'Prélèvements' => 'Постоянния цел',
 		'LastBills' => 'Последно фактури %s',
 		'LastCustomersBills' => 'Последно %s клиенти фактури',
 		'LastSuppliersBills' => 'Последно %s доставчици фактури',
@@ -226,7 +226,7 @@ $bills = array(
 		'SupplierBillsToPay' => 'Доставчици фактури за плащане',
 		'CustomerBillsUnpaid' => 'Неплатени фактури на клиентите',
 		'DispenseMontantLettres' => 'Законопроектът, изготвен от механографски са освободени от реда, в писма',
-		'DispenseMontantLettres' => 'Писмените фактури чрез mecanographic процедури се разпределят по реда, в писма',
+		'DispenseMontantLettres' => 'Законопроектът, изготвен от механографски са освободени от реда, в писма',
 		'NonPercuRecuperable' => 'Невъзстановими',
 		'SetConditions' => 'Задайте условията за плащане',
 		'SetMode' => 'Задайте режим на плащане',
@@ -304,6 +304,7 @@ $bills = array(
 		'ConfirmRemoveDiscount' => 'Сигурен ли сте, че искате да премахнете тази отстъпка?',
 		'RelatedBill' => 'Свързани фактура',
 		'RelatedBills' => 'Свързани фактури',
+		// PaymentConditions
 		'PaymentConditionShortRECEP' => 'Непосредствен',
 		'PaymentConditionRECEP' => 'Непосредствен',
 		'PaymentConditionShort30D' => '30 дни',
@@ -320,6 +321,7 @@ $bills = array(
 		'PaymentConditionPT_ORDER' => 'По поръчка',
 		'PaymentConditionShortPT_5050' => '50-50',
 		'PaymentConditionPT_5050' => '50% авансово, 50% при доставка',
+		// PaymentType
 		'PaymentTypeVIR' => 'На влоговете в банките',
 		'PaymentTypeShortVIR' => 'На влоговете в банките',
 		'PaymentTypePRE' => 'Банката за',
@@ -394,6 +396,7 @@ $bills = array(
 		'PayedByThisPayment' => 'Плаща от това плащане',
 		'ClosePaidInvoicesAutomatically' => 'Класифицира &quot;ЗАПЛАЩАТ&quot; стандартно или заместващи фактури entierely ЗАПЛАЩАТ.',
 		'AllCompletelyPayedInvoiceWillBeClosed' => 'Всички фактура не остават да плати, ще бъде затворено автоматично статус &quot;Платени&quot;.',
+		////////// Types de contacts //////////
 		'TypeContact_facture_internal_SALESREPFOLL' => 'Представител проследяване клиент фактура',
 		'TypeContact_facture_external_BILLING' => 'Контакта с клиентите фактура',
 		'TypeContact_facture_external_SHIPPING' => 'Свържете се с отдел &quot;Работа с клиенти&quot; за доставка',
@@ -402,9 +405,12 @@ $bills = array(
 		'TypeContact_invoice_supplier_external_BILLING' => 'Свържи се с доставчика фактура',
 		'TypeContact_invoice_supplier_external_SHIPPING' => 'Свържи се с доставчика корабоплаване',
 		'TypeContact_invoice_supplier_external_SERVICE' => 'Свържи се с доставчика на услуги',
+		// crabe PDF Model
 		'PDFCrabeDescription' => 'Фактура PDF Crabe шаблон. Пълна шаблон фактура (Шаблон recommanded)',
+		// oursin PDF Model
 		'PDFOursinDescription' => 'Фактура PDF Oursin шаблон. Пълна шаблон фактура (Шаблон алтернатива)',
+		// NumRef Modules
 		'TerreNumRefModelDesc1' => 'Връщане Numero с формат %syymm-NNNN за стандартни фактури и %syymm-NNNN за кредитни отбелязва, където YY е годината, mm е месец и NNNN е последователност, без почивка и няма връщане назад 0',
-		'TerreNumRefModelError' => 'Законопроект, който започва с $ syymm вече съществува и не е съвместим с този модел на последователност. Извадете го или го преименувайте да се активира този модул.',
+		'TerreNumRefModelError' => 'Законопроект, който започва с $ syymm вече съществува и не е съвместим с този модел на последователност. Извадете го или го преименувайте да се активира този модул.'
 );
 ?>

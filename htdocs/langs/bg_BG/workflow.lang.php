@@ -24,6 +24,6 @@ $workflow = array(
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Създаване на фактура на клиента автоматично след договор е потвърден',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Създаване на фактура на клиента се затваря автоматично след поръчка на клиента',
 		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Класифицира свързан източник на предложение за Плоскоклюн при поръчка на клиента на платен',
-		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Класифицирайте свързани заявка на клиента източник на човка, когато клиент фактура е настроен на платен',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Класифицирайте свързани заявка на клиента източник на човка, когато клиент фактура е настроен на платен'
 );
 ?>

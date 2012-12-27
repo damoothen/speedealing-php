@@ -93,6 +93,8 @@ $companies = array(
 		'DefaultLang' => 'Език по подразбиране',
 		'VATIsUsed' => 'ДДС се използва',
 		'VATIsNotUsed' => 'ДДС не се използва',
+		'CopyAddressFromSoc' => 'Fill address with thirdparty address',
+		////////// Local Taxes //////////
 		'LocalTax1IsUsedES' => 'RE се използва',
 		'LocalTax1IsNotUsedES' => 'RE не се използва',
 		'LocalTax2IsUsedES' => 'IRPF се използва',
@@ -103,6 +105,7 @@ $companies = array(
 		'CustomerCodeModel' => 'Customer код модел',
 		'SupplierCodeModel' => 'Модел доставчик код',
 		'Gencod' => 'Бар код',
+		////////// Professional ID //////////
 		'ProfId1Short' => 'Проф. номер 1',
 		'ProfId2Short' => 'Проф. номер 2',
 		'ProfId3Short' => 'Проф. номер 3',
@@ -403,7 +406,9 @@ $companies = array(
 		'InActivity' => 'Отворен',
 		'ActivityCeased' => 'Затворен',
 		'ActivityStateFilter' => 'Състоянието на дейността',
+		// Monkey
 		'MonkeyNumRefModelDesc' => 'Връщане Numero с формат %syymm-NNNN за клиента код и %syymm-NNNN за доставчика код, където YY е годината, mm е месец и NNNN е последователност, без почивка и няма връщане назад до 0.',
-		'LeopardNumRefModelDesc' => 'Кодът е безплатно. Този код може да бъде променен по всяко време.',
+		// Leopard
+		'LeopardNumRefModelDesc' => 'Кодът е безплатно. Този код може да бъде променен по всяко време.'
 );
 ?>

@@ -15,7 +15,7 @@
  */
 
 $sms = array(
-		'CHARSET' => '',
+		'CHARSET' => 'UTF-8',
 		'Sms' => 'SMS',
 		'SmsSetup' => 'Nastavitev SMS',
 		'SmsDesc' => 'Ta stran omogoča defenicijo globalnih opcij za funkcije SMS',
@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Število preostalih znakov',
 		'SmsInfoNumero' => '(mednarodni format npr : +33899701761)',
 		'DelayBeforeSending' => 'Zakasnitev začetka pošiljanja (minut)',
-		'SmsNoPossibleRecipientFound' => 'Ni prejemnika. Preverite nastavitve vašega SMS providerja.',
+		'SmsNoPossibleRecipientFound' => 'Ni prejemnika. Preverite nastavitve vašega SMS providerja.'
 );
 ?>

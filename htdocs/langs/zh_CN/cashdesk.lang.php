@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => '负责帐户',
 		'ShowCompany' => '显示公司',
 		'ShowStock' => '显示仓库',
-		'DeleteArticle' => '点击删除此文章',
+		'DeleteArticle' => '点击删除此文章'
 );
 ?>

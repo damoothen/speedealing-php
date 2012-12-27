@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'Staðfesta samning',
 		'ActivateService' => 'Virkja þjónusta',
 		'ConfirmActivateService' => 'Ertu viss um að þú viljir virkja þessa þjónustu <b>með%</b> dagsetning <b>s?</b>',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'Samningur dagsetningu',
 		'DateServiceActivate' => 'Þjónusta Virkjunardagsetning',
 		'DateServiceUnactivate' => 'Þjónusta deactivation dagsetningu',
@@ -69,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Listi af hlaupandi þjónusta',
 		'NotActivatedServices' => 'Óvirkur þjónustu (meðal gildi samninga)',
 		'BoardNotActivatedServices' => 'Þjónusta til virkja meðal gildi samninga',
-		'LastContracts' => 'Síðasta %s amninga',
+		'LastContracts' => 'Last %s  breytt samninga',
 		'LastActivatedServices' => 'Last %s  virkt þjónusta',
 		'LastModifiedServices' => 'Last %s  breytt þjónusta',
 		'EditServiceLine' => 'Breyta þjónustu línu',
@@ -100,12 +101,13 @@ $contracts = array(
 		'PaymentRenewContractId' => 'Endurnýja samning línu (númer %s )',
 		'ExpiredSince' => 'Gildistími',
 		'RelatedContracts' => 'Svipaðir samningar',
+		'NoExpiredServices' => 'Engar útrunnin virk þjónusta',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'Sölufulltrúi undirrita samning',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'Sölufulltrúi eftirfarandi upp samningi',
 		'TypeContact_contrat_external_BILLING' => 'Innheimta viðskiptavina samband',
 		'TypeContact_contrat_external_CUSTOMER' => 'Eftirfylgni viðskiptavina samband',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Undirritun samnings viðskiptavina samband',
-		'NoExpiredServices' => 'Engar útrunnin virk þjónusta',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Constant CONTRACT_ADDON skilgreind ekki',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Constant CONTRACT_ADDON skilgreind ekki'
 );
 ?>

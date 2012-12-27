@@ -52,8 +52,9 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Directories of documents',
 		'ECMTypeManual' => 'Χειροκίνητα',
 		'ECMTypeAuto' => 'Αυτόματα',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Έγγραφα συνδεδεμένα με στοιχεία',
-		'ECMDocsByProposal' => 'Έγγραφα συνδεδεμένα με προτάσεις',
+		'ECMDocsByProposals' => 'Έγγραφα που σχετίζονται με τις προτάσεις',
 		'ECMDocsByOrders' => 'Έγγραφα συνδεδεμένα με παραγγελίες πελατών',
 		'ECMDocsByContracts' => 'Έγγραφα συνδεδεμένα με συμβόλαια',
 		'ECMDocsByInvoices' => 'Έγγραφα συνδεδεμένα με τιμολόγια πελατών',
@@ -66,6 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Removed not possible because it contains some files',
 		'ECMFileManager' => 'Διαχειριστής Αρχείων',
 		'ECMSelectASection' => 'Select a directory on left tree...',
-		'ECMDocsByProposals' => 'Έγγραφα που σχετίζονται με τις προτάσεις',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

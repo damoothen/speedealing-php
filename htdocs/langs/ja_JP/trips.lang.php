@@ -35,6 +35,6 @@ $trips = array(
 		'TF_TRIP' => '旅行',
 		'ListTripsAndExpenses' => '旅行や費用のリスト',
 		'ExpensesArea' => '旅行や経費エリア',
-		'SearchATripAndExpense' => '旅行と費用を検索',
+		'SearchATripAndExpense' => '旅行と費用を検索'
 );
 ?>

@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => '设置链接到外部网站',
-		'ExternalSiteURL' => '外部网站网址',
+		'ExternalSiteURL' => '外部网站网址'
 );
 ?>

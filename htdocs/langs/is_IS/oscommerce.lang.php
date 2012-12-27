@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => 'OS Commerce miðlara gestgjafi / ip',
 		'OSCommerceDatabaseName' => 'OS Commerce gagnasafn nafn',
 		'OSCommercePrefix' => 'OS Commerce matskeið forskeyti',
-		'OSCommerceUser' => 'OS Commerce gagnasafn Innskráning',
+		'OSCommerceUser' => 'OS Commerce gagnasafn Innskráning'
 );
 ?>

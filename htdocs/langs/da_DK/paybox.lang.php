@@ -31,17 +31,14 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => 'Du bliver omdirigeret om sikret Paybox siden til input du kreditkort informationer',
 		'PleaseBePatient' => 'Vær tålmodig',
 		'Continue' => 'Næste',
+		'ToOfferALinkForOnlinePayment' => 'URL til %s betaling',
 		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL til at tilbyde en %s online betaling brugergrænseflade til en ordre',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL til at tilbyde en %s online betaling brugergrænseflade til en faktura',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL til at tilbyde en %s online betaling brugergrænseflade til en kontrakt linje',
 		'ToOfferALinkForOnlinePaymentOnFreeAmount' => 'URL til at tilbyde en %s online betaling brugergrænseflade til et frit beløb',
+		'ToOfferALinkForOnlinePaymentOnMemberSubscription' => 'URL til at tilbyde en %s online betaling brugergrænseflade til et medlem abonnement',
 		'YouCanAddTagOnUrl' => 'Du kan også tilføje webadresseparameter <b>& tag= <i>værdi</i></b> til nogen af disse URL (kræves kun for fri betaling) for at tilføje din egen betaling kommentere tag.',
 		'SetupPayBoxToHavePaymentCreatedAutomatically' => 'Opret din PayBox med <b>url %s</b> for at få betaling oprettes automatisk, når valideret af paybox.',
-		'ToOfferALinkForOnlinePaymentOnMemberSubscription' => 'URL til at tilbyde en %s online betaling brugergrænseflade til et medlem abonnement',
-		'CSSUrlForPaymentForm' => 'CSS stylesheet url til indbetalingskort',
-		'MessageOK' => 'Besked på validerede betaling tilbage side',
-		'MessageKO' => 'Besked om annulleret betaling tilbage side',
-		'ToOfferALinkForOnlinePayment' => 'URL til %s betaling',
 		'YourPaymentHasBeenRecorded' => 'Denne side bekræfter, at din betaling er registreret. Tak.',
 		'YourPaymentHasNotBeenRecorded' => 'Du betalingen ikke er blevet registreret, og transaktionen er blevet aflyst. Tak.',
 		'AccountParameter' => 'Konto parametre',
@@ -49,5 +46,8 @@ $paybox = array(
 		'InformationToFindParameters' => 'Hjælp til at finde din %s kontooplysninger',
 		'PAYBOX_CGI_URL_V2' => 'URL PAYBOX CGI-modul til betaling',
 		'VendorName' => 'Navn på leverandør',
+		'CSSUrlForPaymentForm' => 'CSS stylesheet url til indbetalingskort',
+		'MessageOK' => 'Besked på validerede betaling tilbage side',
+		'MessageKO' => 'Besked om annulleret betaling tilbage side'
 );
 ?>

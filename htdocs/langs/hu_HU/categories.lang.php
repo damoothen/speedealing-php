@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'Ez a tag nincs egy kategóriában sem',
 		'ClassifyInCategory' => 'Kategorizálni',
 		'NoneCategory' => 'Nincs',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'Ez a kategória ezzel a ref# -el már létezik',
 		'ReturnInProduct' => 'Vissza a termék/szolgáltatás kártyához',
 		'ReturnInSupplier' => 'Vissza a beszállító kártyához',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'Beszállítói kategóriák listázása',
 		'CatCusList' => 'Ügyfél/kilátás kategóriák listázása',
 		'CatProdList' => 'Termék kategóriák listázása',
-		'CatMemberList' => 'Tag kategóriák listázása',
+		'CatMemberList' => 'Tag kategóriák listázása'
 );
 ?>

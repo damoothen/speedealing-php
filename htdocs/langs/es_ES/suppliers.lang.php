@@ -32,6 +32,7 @@ $suppliers = array(
 		'BuyingPriceMinShort' => 'Precio mín compra',
 		'AddSupplierPrice' => 'Añadir precio de proveedor',
 		'ChangeSupplierPrice' => 'Modificar precio de proveedor',
+		'ErrorQtyTooLowForThisSupplier' => 'Quantity too low for this supplier or no price defined on this product for this supplier',
 		'ErrorSupplierCountryIsNotDefined' => 'El país de este proveedor no está definido, corrígalo en su ficha',
 		'ProductHasAlreadyReferenceInThisSupplier' => 'Este producto ya tiene una referencia en este proveedor',
 		'ReferenceSupplierIsAlreadyAssociatedWithAProduct' => 'Esta referencia de proveedor ya está asociada a la referencia: %s',
@@ -53,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Crear pedido a proveedor',
 		'AddSupplierInvoice' => 'Crear factura de proveedor',
 		'ListOfSupplierProductForSupplier' => 'Listado de productos y precios del proveedor <b>%s</b>',
-		'NoneOrBatchFileNeverRan' => 'Ninguno o lote <b>%s</b> no se ha ejecutado recientemente',
+		'NoneOrBatchFileNeverRan' => 'Ninguno o lote <b>%s</b> no se ha ejecutado recientemente'
 );
 ?>

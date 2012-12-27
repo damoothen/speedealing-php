@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Yhteyden muodostaminen epäonnistui FTP-palvelimen (palvelin %s, portti %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Epäonnistui kirjautua FTP-palvelimeen on määritelty / salasana',
 		'FTPFailedToRemoveFile' => 'Ole poistanut tiedoston <b>%s.</b>',
-		'FTPFailedToRemoveDir' => 'Ole poistanut hakemistoon <b>%s</b> (Tarkista oikeudet ja että hakemisto on tyhjä).',
+		'FTPFailedToRemoveDir' => 'Ole poistanut hakemistoon <b>%s</b> (Tarkista oikeudet ja että hakemisto on tyhjä).'
 );
 ?>

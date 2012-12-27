@@ -215,6 +215,7 @@ $admin = array(
 		'AutomaticIfJavascriptDisabled' => 'Автоматично Ако Javascript е деактивиран',
 		'AvailableOnlyIfJavascriptNotDisabled' => 'Предлага се само ако JavaScript не е забранен',
 		'AvailableOnlyIfJavascriptAndAjaxNotDisabled' => 'Предлага се само ако JavaScript не е забранен',
+		'NotInstalled' => 'Not installed',
 		'Required' => 'Длъжен',
 		'Security' => 'Сигурност',
 		'Passwords' => 'Паролите',
@@ -278,6 +279,7 @@ $admin = array(
 		'ModuleFamilyECM' => 'Електронен Content Management (ECM)',
 		'MenuHandlers' => 'Меню работещи',
 		'MenuAdmin' => 'Menu Editor',
+		'DoNotUseInProduction' => 'Do not use in production',
 		'ThisIsProcessToFollow' => 'Това е настройка на процеса:',
 		'StepNb' => 'Стъпка %s',
 		'FindPackageFromWebSite' => 'Намери пакет, който осигурява функция искате (например относно официалния уеб сайт %s).',
@@ -348,6 +350,8 @@ $admin = array(
 		'EnterRefToBuildUrl' => 'Въведете справка за обект %s',
 		'GetSecuredUrl' => 'Изчислява URL',
 		'ButtonHideUnauthorized' => 'Скриване на бутоните за неправомерни действия, вместо да се показва с увреждания бутони',
+		'TotalNumberOfActivatedModules' => 'Общ брой на активирани модули са: <b>%s</b>',
+		'YouMustEnableOneModule' => 'Трябва да даде възможност на най-малко 1 модул',
 		'ModulesSystemTools' => 'Модули инструменти',
 		'ProductVatMassChange' => 'Промяната в масата ДДС',
 		'ProductVatMassChangeDesc' => 'Тази страница може да се използва за промяна на ДДС ставката, определена за продукти или услуги от стойността на друг. Внимание, тази промяна се прави на цялата база данни.',
@@ -355,6 +359,12 @@ $admin = array(
 		'NewVATRates' => 'Нов ставка на ДДС',
 		'PriceBaseTypeToChange' => 'Промяна на цените с база референтна стойност, определена на',
 		'MassConvert' => 'Стартиране маса конвертирате',
+		'String' => 'String',
+		'TextLong' => 'Long text',
+		'Int' => 'Integer',
+		'Float' => 'Float',
+		'DateAndTime' => 'Date and hour',
+		// Modules
 		'Module0Name' => 'Потребители и групи',
 		'Module0Desc' => 'Управление на потребители и групи',
 		'Module1Name' => 'Трети страни',
@@ -429,6 +439,10 @@ $admin = array(
 		'Module400Desc' => 'Управление на проекти вътре в други модули',
 		'Module410Name' => 'Webcalendar',
 		'Module410Desc' => 'Webcalendar интеграция',
+		'Module420Name' => 'Affaires',
+		'Module420Desc' => 'Gestion des affaires',
+		'Module430Name' => 'Gestion d\'équipes',
+		'Module430Desc' => 'Gestion des objectifs',
 		'Module500Name' => 'Данъци, социални осигуровки и дивиденти',
 		'Module500Desc' => 'Данъци и управление на осигурителната вноска',
 		'Module600Name' => 'Известия',
@@ -463,6 +477,8 @@ $admin = array(
 		'Module2900Desc' => 'GeoIP MaxMind реализации възможности',
 		'Module5000Name' => 'Multi-компания',
 		'Module5000Desc' => 'Позволява ви да управлявате няколко фирми',
+		'Module20000Name' => 'Holidays',
+		'Module20000Desc' => 'Declare and follow employees holidays',
 		'Module50000Name' => 'Paybox',
 		'Module50000Desc' => 'Модул предлага онлайн страница на плащане с кредитна карта с Paybox',
 		'Module50100Name' => 'Точка на продажбите',
@@ -663,6 +679,12 @@ $admin = array(
 		'Permission1237' => 'EXPORT доставчик поръчки и техните детайли',
 		'Permission1251' => 'Пусни масов внос на външни данни в базата данни (данни товара)',
 		'Permission1321' => 'Износ на клиентите фактури, атрибути и плащания',
+		'Permission1401' => 'Lire le plan de compte',
+		'Permission1402' => 'Créer/modifier un plan de compte',
+		'Permission1403' => 'Clôturer un plan de compte',
+		'Permission1411' => 'Lire les mouvements comptables',
+		'Permission1412' => 'Créer/modifier/annuler les mouvements comptables',
+		'Permission1415' => 'Lire CA, bilans, résultats, journaux, grands livres',
 		'Permission1421' => 'Износ на клиентски поръчки и атрибути',
 		'Permission2401' => 'Прочетете действия (събития или задачи), свързани с неговата сметка',
 		'Permission2402' => 'Създаване / промяна действия (събития или задачи), свързани с неговата сметка',
@@ -702,6 +724,7 @@ $admin = array(
 		'DictionnaryOrderMethods' => 'Подреждане методи',
 		'DictionnarySource' => 'Произход на предложения / поръчки',
 		'DictionnaryAccountancyplan' => 'Сметкоплан',
+		'DictionnaryAccountancysystem' => 'Models for chart of accounts',
 		'SetupSaved' => 'Setup спаси',
 		'BackToModuleList' => 'Обратно към модули списък',
 		'BackToDictionnaryList' => 'Обратно към речници списък',
@@ -711,6 +734,7 @@ $admin = array(
 		'VATIsNotUsedDesc' => 'По подразбиране предложената ДДС е 0, които могат да бъдат използвани за подобни случаи сдружения, лицата ОУ малките фирми.',
 		'VATIsUsedExampleFR' => 'Във Франция, това означава, фирми или организации, с реална фискална система (опростен реални или нормални реално). Система, в която ДДС е обявен.',
 		'VATIsNotUsedExampleFR' => 'Във Франция, това означава, асоциации, които са извън декларирания ДДС или фирми, организации или свободните професии, които са избрали фискалната система на микропредприятие (с ДДС франчайз) и се изплаща франчайз ДДС без ДДС декларация. Този избор ще покаже позоваване на &quot;неприлаганите ДДС - арт-293B CGI&quot; във фактурите.',
+		////////// Local Taxes //////////
 		'LocalTax1ManagementES' => 'RE Управление',
 		'LocalTax1IsUsedDescES' => 'RE процент по подразбиране при създаването на перспективите, фактури, поръчки и т.н. следват активна стандартното правило: <br> Ако те купувача не се подлага на RE RE по подразбиране = 0. Край на правило. <br> Ако купувачът се подлага на RE RE по подразбиране. Край на правило. <br>',
 		'LocalTax1IsNotUsedDescES' => 'По подразбиране предложения RE е 0. Край на правило.',
@@ -739,6 +763,7 @@ $admin = array(
 		'VirtualServerName' => 'Виртуален сървър име',
 		'AllParameters' => 'Всички параметри',
 		'OS' => 'OS',
+		'Php' => 'Php',
 		'PhpEnv' => 'Околна среда &quot;',
 		'PhpModules' => 'Модули',
 		'PhpConf' => 'Conf',
@@ -770,6 +795,7 @@ $admin = array(
 		'MenuNewUser' => 'Нов потребител',
 		'MenuTopManager' => 'Горното меню мениджър',
 		'MenuLeftManager' => 'Ляво меню мениджър',
+		'MenuManager' => 'Gestionnaire du menu standard',
 		'MenuSmartphoneManager' => 'Smartphone Menu Manager',
 		'DefaultMenuTopManager' => 'Горното меню мениджър',
 		'DefaultMenuLeftManager' => 'Ляво меню мениджър',
@@ -902,6 +928,8 @@ $admin = array(
 		'MAIN_PROXY_PASS' => 'Парола, за да използвате прокси сървър',
 		'DefineHereComplementaryAttributes' => 'Определете тук всички atributes, не е налична по подразбиране, и че искате да се поддържа за %s.',
 		'ExtraFields' => 'Допълнителни атрибути',
+		'ExtraFieldsThirdParties' => 'Complementary attributes (thirdparty)',
+		'ExtraFieldsContacts' => 'Complementary attributes (contact/address)',
 		'ExtraFieldHasWrongValue' => 'Attribut %s има грешна стойност.',
 		'AlphaNumOnlyCharsAndNoSpace' => 'само героите alphanumericals без пространство',
 		'SendingMailSetup' => 'Настройка на sendings по електронна поща',
@@ -913,8 +941,11 @@ $admin = array(
 		'TranslationDesc' => 'Избор на език виждат на екрана може да бъде променена: <br> * В световен мащаб от менюто <strong>Начало - Setup - Display</strong> <br> * За потребител само от <strong>дисплея</strong> раздела <strong>Потребител</strong> на потребителя карта (кликнете за вход в горната част на екрана).',
 		'TotalNumberOfActivatedModules' => 'Общ брой на активирани модули са: <b>%s</b>',
 		'YouMustEnableOneModule' => 'Трябва да даде възможност на най-малко 1 модул',
+		'ClassNotFoundIntoPathWarning' => 'Class %s not found into PHP path',
+		////////// Module password generation
 		'PasswordGenerationStandard' => 'Върнете парола, генерирана в съответствие с вътрешен алгоритъм Dolibarr: 8 символа, съдържащи общи цифри и символи с малки.',
 		'PasswordGenerationNone' => 'Не предлагаме някакви генерирана парола. Паролата трябва да въведете ръчно.',
+		////////// Users setup //////////
 		'UserGroupSetup' => 'Потребители и групи модул за настройка',
 		'GeneratePassword' => 'Предложи генерирана парола',
 		'RuleForGeneratedPasswords' => 'Член за генериране на предложените пароли или проверката на пароли',
@@ -923,6 +954,7 @@ $admin = array(
 		'DisableForgetPasswordLinkOnLogonPage' => 'Да не се показват връзката &quot;Забравена парола&quot; на страницата за вход',
 		'UsersSetup' => 'Потребители модул за настройка',
 		'UserMailRequired' => 'Имейл задължително да създадете нов потребител',
+		////////// Company setup //////////
 		'CompanySetup' => 'Фирми модул за настройка',
 		'CompanyCodeChecker' => 'Модул за трети страни за генериране на кода и проверка (клиент или доставчик)',
 		'AccountCodeManager' => 'Модул за генериране на отчетност код (клиент или доставчик)',
@@ -937,6 +969,7 @@ $admin = array(
 		'CompanyIdProfChecker' => 'Професионална Id уникален',
 		'MustBeUnique' => 'Трябва да е уникален?',
 		'Miscellanous' => 'Разни',
+		////////// Webcal setup //////////
 		'WebCalSetup' => 'Настройка webcalendar връзка',
 		'WebCalSyncro' => 'Да Добавяне на Dolibarr събития да WebCalendar',
 		'WebCalAllways' => 'Винаги, не иска',
@@ -960,6 +993,7 @@ $admin = array(
 		'WebCalAddEventOnStatusMember' => 'Добавяне на събитие календар на членовете промяна в статуса',
 		'WebCalUrlForVCalExport' => 'За износ на линк към <b>%s</b> формат е на разположение на следния линк: %s',
 		'WebCalCheckWebcalSetup' => 'Може би Webcal настройка модул не е вярно.',
+		////////// Invoices //////////
 		'BillsSetup' => 'Фактури модул за настройка',
 		'BillsDate' => 'Фактури дата',
 		'BillsNumberingModule' => 'Фактури и кредитни известия, номериране модул',
@@ -976,6 +1010,7 @@ $admin = array(
 		'SuggestPaymentByChequeToAddress' => 'Предложи плащане с чек до',
 		'FreeLegalTextOnInvoices' => 'Свободен текст на фактури',
 		'WatermarkOnDraftInvoices' => 'Воден знак върху проекти на фактури (всяка ако е празно)',
+		////////// Proposals //////////
 		'PropalSetup' => 'Модул за настройка на търговски предложения',
 		'CreateForm' => 'Създаване на формуляри',
 		'NumberOfProductLines' => 'Брой на продуктовите линии',
@@ -988,6 +1023,7 @@ $admin = array(
 		'UseOptionLineIfNoQuantity' => 'Линия на продукт / услуга с нулева сума се разглежда като вариант',
 		'FreeLegalTextOnProposal' => 'Свободен текст на търговски предложения',
 		'WatermarkOnDraftProposal' => 'Воден знак върху проектите за търговски предложения (всеки ако е празно)',
+		////////// Orders //////////
 		'OrdersSetup' => 'Настройка за управление на поръчки',
 		'OrdersNumberingModules' => 'Поръчки номериране модули',
 		'OrdersModelModule' => 'Поръчка документи модели',
@@ -995,22 +1031,28 @@ $admin = array(
 		'ValidOrderAfterPropalClosed' => 'Да се ​​потвърди ред след предложението близо, това прави възможно да не се увеличат с временния ред',
 		'FreeLegalTextOnOrders' => 'Свободен текст на поръчки',
 		'WatermarkOnDraftOrders' => 'Воден знак върху черновите на поръчките (всеки ако е празно)',
+		////////// Clicktodial //////////
 		'ClickToDialSetup' => 'Кликнете, за да наберете настройка модул',
 		'ClickToDialUrlDesc' => 'Адреса нарича, когато се извършва едно кликване на телефона пиктограма. URL, можете да използвате маркери <br> <b>__PHONETO__,</b> Които ще бъдат заменени с телефонния номер на лицето, да се обадите <br> <b>__PHONEFROM__,</b> Че ще бъде заменен с телефонния номер на повикващата лице (твое) <br> <b>__LOGIN__,</b> Които ще бъдат заменени с clicktodial вход (определено на вашето потребителско карта) <br> <b>__PASS__,</b> Които ще бъдат заменени с clicktodial вашата парола (определено на вашето потребителско карта).',
+		////////// Bookmark4u //////////
 		'Bookmark4uSetup' => 'Bookmark4u модул за настройка',
+		////////// Interventions //////////
 		'InterventionsSetup' => 'Интервенциите модул за настройка',
 		'FreeLegalTextOnInterventions' => 'Свободен текст на интервенционни документи',
 		'FicheinterNumberingModules' => 'Модули за намеса номериране',
 		'TemplatePDFInterventions' => 'Намеса карти документи модели',
 		'WatermarkOnDraftInterventionCards' => 'Воден знак върху документи намеса карти (всеки ако е празно)',
+		////////// Contracts //////////
 		'ContractsSetup' => 'Договори модул за настройка',
 		'ContractsNumberingModules' => 'Договори за номериране модули',
+		////////// Members //////////
 		'MembersSetup' => 'Потребители модул за настройка',
 		'MemberMainOptions' => 'Основни параметри',
 		'AddSubscriptionIntoAccount' => 'Предложи по подразбиране, за да се създаде модул на банка, банков превод, при добавяне на нов платено абонамент',
 		'AdherentLoginRequired' => 'Управление на вход за всяка държава',
 		'AdherentMailRequired' => 'EMail необходимо да се създаде нов член',
 		'MemberSendInformationByMailByDefault' => 'Checkbox да изпрати потвърждение поща на членовете (валидиране или нов абонамент) е включена по подразбиране',
+		////////// LDAP setup //////////
 		'LDAPSetup' => 'LDAP Setup',
 		'LDAPGlobalParameters' => 'Глобални параметри',
 		'LDAPUsersSynchro' => 'Потребители',
@@ -1142,6 +1184,7 @@ $admin = array(
 		'LDAPDescMembers' => 'Тази страница ви позволява да дефинирате LDAP атрибути име в LDAP дърво за всеки намерени данни на Dolibarr членове модул.',
 		'LDAPDescValues' => 'Примерни стойности са предназначени за <b>OpenLDAP</b> със следните заредени схеми: <b>core.schema, cosine.schema, inetorgperson.schema).</b> Ако използвате thoose ценности и OpenLDAP, променете LDAP <b>slapd.conf</b> конфигурационен файл, за да има всички thoose схеми натоварени.',
 		'ForANonAnonymousAccess' => 'За заверено достъп (достъп за писане например)',
+		////////// Products //////////
 		'ProductSetup' => 'Продукти модул за настройка',
 		'ServiceSetup' => 'Услуги модул за настройка',
 		'ProductServiceSetup' => 'Продукти и услуги модули за настройка',
@@ -1156,6 +1199,7 @@ $admin = array(
 		'SetDefaultBarcodeTypeThirdParties' => 'Тип баркод по подразбиране за трети страни',
 		'ProductCodeChecker' => 'Модул за генериране и проверка на кода на продукта (продукт или услуга)',
 		'ProductOtherConf' => 'Продукт / услуга конфигурация',
+		////////// Syslog //////////
 		'SyslogSetup' => 'Дневници модул за настройка',
 		'SyslogOutput' => 'Логове изходи',
 		'SyslogSyslog' => 'Syslog',
@@ -1166,8 +1210,10 @@ $admin = array(
 		'YouCanUseDOL_DATA_ROOT' => 'Можете да използвате DOL_DATA_ROOT / dolibarr.log за лог файл в Dolibarr директория &quot;документи&quot;. Можете да зададете различен път, за да се съхранява този файл.',
 		'ErrorUnknownSyslogConstant' => 'Постоянни %s не е известен Syslog постоянно',
 		'OnlyWindowsLOG_USER' => 'Windows поддържа само LOG_USER',
+		////////// Donations //////////
 		'DonationsSetup' => 'Настройка Дарение модул',
 		'DonationsReceiptModel' => 'Шаблон на получаване на дарение',
+		////////// Barcode //////////
 		'BarcodeSetup' => 'Баркод настройка',
 		'PaperFormatModule' => 'Печат модул формат',
 		'BarcodeEncodeModule' => 'Баркод кодиране тип',
@@ -1181,37 +1227,46 @@ $admin = array(
 		'BarcodeDescISBN' => 'Баркод от тип ISBN',
 		'BarcodeDescC39' => 'Баркод от типа С39',
 		'BarcodeDescC128' => 'Баркод от тип C128',
+		////////// Prelevements //////////
 		'WithdrawalsSetup' => 'Настройка Оттегляне модул',
+		////////// ExternalRSS //////////
 		'ExternalRSSSetup' => 'Външен RSS вноса настройка',
 		'NewRSS' => 'Ню RSS Feed',
 		'RSSUrl' => 'RSS URL',
 		'RSSUrlExample' => 'Интересен RSS емисия',
+		////////// Mailing //////////
 		'MailingSetup' => 'Електронната поща модул за настройка',
 		'MailingEMailFrom' => 'Изпращача (От) за имейли, изпратени по електронната поща модул',
 		'MailingEMailError' => 'Върнете имейл (грешки) за имейли с грешки',
+		////////// Notification //////////
 		'NotificationSetup' => 'Уведомление бу имейл настройка модул',
 		'NotificationEMailFrom' => 'Изпращача (От) за имейли, изпратени за уведомления',
 		'ListOfAvailableNotifications' => 'Списък на наличните уведомления (Този списък зависи от активирани модули)',
+		////////// Sendings //////////
 		'SendingsSetup' => 'Изпращане модул за настройка',
 		'SendingsReceiptModel' => 'Изпращане получаване модел',
 		'SendingsNumberingModules' => 'Sendings номериране модули',
 		'SendingsAbility' => 'Подкрепа sendings листове за доставки на клиентите',
 		'NoNeedForDeliveryReceipts' => 'В повечето случаи, sendings постъпления се използват както за листа за клиентите доставки (списък на продукти за изпращане) и листове, че е recevied и подписан от клиента. Така че продукти доставки постъпления е дублирана функция и рядко се активира.',
 		'FreeLegalTextOnShippings' => 'Свободен текст на shippings',
+		////////// Deliveries //////////
 		'DeliveryOrderNumberingModules' => 'Продукти доставки получаване номерацията модул',
 		'DeliveryOrderModel' => 'Продукти доставки получаване модел',
 		'DeliveriesOrderAbility' => 'Поддръжка продукти доставки постъпления',
 		'FreeLegalTextOnDeliveryReceipts' => 'Свободен текст на разписки за доставка',
+		////////// FCKeditor //////////
 		'AdvancedEditor' => 'Разширено редактор',
 		'ActivateFCKeditor' => 'Активирайте разширен редактор за:',
 		'FCKeditorForCompany' => 'WYSIWIG създаване / редактиране на елементи на описание и бележка (с изключение на продукти / услуги)',
 		'FCKeditorForProduct' => 'WYSIWIG създаване / редактиране на продукти / услуги описание и бележка',
 		'FCKeditorForProductDetails' => 'WYSIWIG създаване / редактиране на линии продукти подробности за всички предприятия (предложения, поръчки, фактури и др.) <font class="warning">Внимание: Използването на тази опция за този случай сериозно не се recommanded, тъй като това може да създаде проблеми със специални символи и оформление на страница при изграждането на PDF файлове.</font>',
 		'FCKeditorForMailing' => 'WYSIWIG създаване / редактиране на писма',
+		////////// OSCommerce 1 //////////
 		'OSCommerceErrorConnectOkButWrongDatabase' => 'Връзка успял, но базата данни не изглежда да бъде една база данни на OSCommerce (Ключови %s не е намерен в таблицата %s).',
 		'OSCommerceTestOk' => 'Връзка към &quot;%s&quot; сървър на &quot;%s&quot; база данни с успешен потребителски %s.',
 		'OSCommerceTestKo1' => 'Свързване към сървър &quot;%s успее, но база данни&quot; %s &quot;не може да бъде постигнато.',
 		'OSCommerceTestKo2' => 'Връзка към сървъра &quot;%s&quot; с потребителя %s &quot;се провали.',
+		////////// Mantis //////////
 		'MantisSetup' => 'Mantis връзка настройка',
 		'MantisURL' => 'URL за достъп Mantis',
 		'MantisServer' => 'Хостинг сървър Mantis база данни',
@@ -1222,8 +1277,10 @@ $admin = array(
 		'MantisTestKo1' => 'Свързване към сървър &quot;%s успее, но база данни&quot; %s &quot;не може да бъде постигнато.',
 		'MantisTestKo2' => 'Връзка към сървъра &quot;%s&quot; с потребителя %s &quot;се провали.',
 		'MantisErrorConnectOkButWrongDatabase' => 'Връзка успял, но базата данни не изглежда да е база данни, Mantis.',
+		////////// Stock //////////
 		'StockSetup' => 'Наличност модулна конфигурация',
 		'UserWarehouse' => 'Използване на потребителски поименни акции',
+		////////// Menu //////////
 		'MenuDeleted' => 'Меню заличават',
 		'TreeMenu' => 'Tree менюта',
 		'Menus' => 'Менюта',
@@ -1246,6 +1303,7 @@ $admin = array(
 		'DetailRight' => 'Условие, за да се покаже неразрешени менюта сиви',
 		'DetailLangs' => 'Lang името на файла за превод на етикета код',
 		'DetailUser' => 'Intern / EXTERN /',
+		'Target' => 'Target',
 		'DetailTarget' => 'Цел за връзки (_blank върха отвори в нов прозорец)',
 		'DetailLevel' => 'Level (-1: горното меню, 0: хедър, меню&gt; 0 меню и подменю)',
 		'ModifMenu' => 'Меню промяна',
@@ -1253,6 +1311,7 @@ $admin = array(
 		'ConfirmDeleteMenu' => 'Сигурен ли сте, че искате да изтриете <b>%s</b> елемент от менюто?',
 		'DeleteLine' => 'Изтрий ред',
 		'ConfirmDeleteLine' => 'Сигурен ли сте, че искате да изтриете тази линия?',
+		////////// Tax //////////
 		'TaxSetup' => 'Данъци, социални осигуровки и дивиденти модул за настройка',
 		'OptionVatMode' => 'Дължимия ДДС',
 		'OptionVATDefault' => 'Стандарт',
@@ -1270,10 +1329,15 @@ $admin = array(
 		'InvoiceDateUsed' => 'Дата на фактура използва',
 		'YourCompanyDoesNotUseVAT' => 'Вашата фирма е определена да не се използва ДДС (Начало - Setup - Фирма / Фондация &quot;), така че е без ДДС опции за настройка.',
 		'AccountancyCode' => 'Счетоводството кодекс',
+		'AccountancyCodeSell' => 'Sale account. code',
+		'AccountancyCodeBuy' => 'Purchase account. code',
+		////////// Agenda //////////
 		'AgendaSetup' => 'Събития и натъкмяване на дневен ред модул',
 		'PasswordTogetVCalExport' => ', За да разреши износ връзка',
 		'PastDelayVCalExport' => 'Не изнася случай по-стари от',
+		////////// ClickToDial //////////
 		'ClickToDialDesc' => 'Този модул позволява да добавите икона след телефонни номера. Кликнете върху тази икона ще призове сървър с определен URL адрес можете да зададете по-долу. Това може да се използва, за да се обадя на кол център система от Dolibarr, че да се обаждат на телефонен номер на SIP система, например.',
+		////////// Point Of Sales (CashDesk) //////////
 		'CashDesk' => 'Точка на продажбите',
 		'CashDeskSetup' => 'Точка на продажбите модул за настройка',
 		'CashDeskThirdPartyForSell' => 'Generic трета страна да използва за продава',
@@ -1281,13 +1345,16 @@ $admin = array(
 		'CashDeskBankAccountForCheque' => 'Акаунт по подразбиране да се използва за получаване на плащания с чек',
 		'CashDeskBankAccountForCB' => 'Акаунт по подразбиране да се използва за получаване на парични плащания с кредитни карти',
 		'CashDeskIdWareHouse' => 'Склад да се използва за продава',
+		////////// Bookmark //////////
 		'BookmarkSetup' => 'Bookmark настройка модул',
 		'BookmarkDesc' => 'Този модул ви позволява да управлявате маркери. Можете също да добавите команди за бърз достъп до всички страници Dolibarr или externale уеб сайтове на лявата си меню.',
 		'NbOfBoomarkToShow' => 'Максимален брой маркери, за да се показват в менюто в ляво',
+		////////// WebServices //////////
 		'WebServicesSetup' => 'WebServices модул за настройка',
 		'WebServicesDesc' => 'С активирането на този модул, Dolibarr се превърне в уеб сървъра на услугата за предоставяне на различни уеб услуги.',
 		'WSDLCanBeDownloadedHere' => 'WSDL ЕВРОВОК файлове на предоставяните услуги може да изтеглите от тук',
 		'EndPointIs' => 'SOAP клиентите трябва да изпратят своите заявки на разположение на Адреса на крайна точка Dolibarr',
+		////////// Bank //////////
 		'BankSetupModule' => 'Модул за настройка на банката',
 		'FreeLegalTextOnChequeReceipts' => 'Свободен текст чековите разписки',
 		'BankOrderShow' => 'Показване ред на банкови сметки за страни, които използват &quot;подробен номер на банкова',
@@ -1295,18 +1362,27 @@ $admin = array(
 		'BankOrderGlobalDesc' => 'Обща дисплей за',
 		'BankOrderES' => 'Испански',
 		'BankOrderESDesc' => 'Испански дисплей за',
+		////////// Multicompany //////////
 		'MultiCompanySetup' => 'Multi-модул за настройка компания',
+		////////// Suppliers //////////
 		'SuppliersSetup' => 'Настройка доставчик модул',
 		'SuppliersCommandModel' => 'Пълна шаблон на доставчика за (logo. ..)',
 		'SuppliersInvoiceModel' => 'Пълна образец на фактура на доставчика (logo. ..)',
+		////////// GeoIPMaxmind //////////
 		'GeoIPMaxmindSetup' => 'GeoIP MaxMind модул за настройка',
 		'PathToGeoIPMaxmindCountryDataFile' => 'Пътят към файла, съдържащ MaxMind-IP в страната превод. <br> Пример: / ЮЕсАр / местни / акции / GeoIP / GeoIP.dat',
 		'NoteOnPathLocation' => 'Имайте предвид, че ИП в страната файла с данни трябва да е в директория PHP ви да прочетете (Проверете PHP open_basedir настройка и разрешения файловата система).',
 		'YouCanDownloadFreeDatFileTo' => 'Можете да изтеглите <b>безплатна демо версия</b> на файла GeoIP MaxMind страната в %s.',
 		'YouCanDownloadAdvancedDatFileTo' => 'Можете също да изтеглите <b>по-пълна версия, с актуализации</b> на файла GeoIP MaxMind страната в %s.',
 		'TestGeoIPResult' => 'Тест на преобразуване IP -> страната',
+		////////// Projects //////////
 		'ProjectsNumberingModules' => 'Проекти номериране модул',
 		'ProjectsSetup' => 'Инсталационния проект модул',
 		'ProjectsModelModule' => 'Проект доклади документ модел',
+		//////// Accountancy ////////
+		'Chartofaccounts' => 'Plan comptable',
+		'Definechartofaccounts' => 'Définir un plan comptable',
+		'Selectchartofaccounts' => 'Sélection d\'un plan comptable',
+		'DoNotSuggestChart' => 'Ne pas suggérer de plan comptable'
 );
 ?>

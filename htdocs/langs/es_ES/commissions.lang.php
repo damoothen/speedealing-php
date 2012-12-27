@@ -43,5 +43,7 @@ $commissions = array(
 		'StartDate' => 'Fecha de inicio',
 		'EndDate' => 'Fecha de fin',
 		'Launch' => 'Comenzar',
+		'AgentContactType' => 'Contact type used for commissioning',
+		'AgentContactTypeDetails' => 'Défine what contact type (linked on invoices) will be associated with commercial agents'
 );
 ?>

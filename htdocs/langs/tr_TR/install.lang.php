@@ -42,6 +42,7 @@ $install = array(
 		'ErrorWrongValueForParameter' => 'Parametresi \'%s\' için yanlış değer yazmış olabilirsiniz\'.',
 		'ErrorFailedToCreateDatabase' => 'Veritabanı \'%s\' oluşturulamadı.',
 		'ErrorFailedToConnectToDatabase' => 'Veritabanı \'%s\' e bağlanılamadı.',
+		'ErrorDatabaseVersionTooLow' => 'Database version (%s) too old. Version %s or higher is required.',
 		'ErrorPHPVersionTooLow' => 'PHP sürümü çok eski. %s Sürümü gereklidir.',
 		'WarningPHPVersionTooLow' => 'PHP sürümü çok eski. %s Sürümü ya da daha yükseği gerekiyor. Bu sürüm kuruluma izin verir, ancak desteklenmemektedir.',
 		'ErrorConnectedButDatabaseNotFound' => 'Sunucu bağlantısı başarılı ancak veritabanı \'%s\' bulunamadı.',
@@ -170,8 +171,9 @@ $install = array(
 		'MigrationFinished' => 'Taşıma bitti',
 		'LastStepDesc' => '<strong>Son adım</strong>: Burada yazılıma bağlanmayı düşündüğünüz kullanıcı adı ve parolayı tanımlayın. Herkesi yönetecek hesap olduğundan dolayı bu bilgileri kaybetmeyin.',
 		'ActivateModule' => '%s Modülünü etkinleştir',
+		'ShowEditTechnicalParameters' => 'Click here to show/edit advanced parameters (expert mode)',
 		//////////////////
-		// Yükseltme
+		// upgrade
 		//////////////////
 		'MigrationFixData' => 'Standart dışı veri onarımı',
 		'MigrationOrder' => 'Müşteri siparişleri için veri taşıma',
@@ -182,24 +184,20 @@ $install = array(
 		'MigrationSuccessfullUpdate' => 'Yükseltme başarılı',
 		'MigrationUpdateFailed' => 'Yükseltme işlemi başarısız',
 		'MigrationRelationshipTables' => 'İlişki tabloları (%s) için veri taşıma',
-		// Ödeme güncelleme
 		'MigrationPaymentsUpdate' => 'Ödeme verisi düzeltme',
 		'MigrationPaymentsNumberToUpdate' => 'Güncellenecek %s ödeme var',
 		'MigrationProcessPaymentUpdate' => '%s Ödeme güncelle',
 		'MigrationPaymentsNothingToUpdate' => 'Daha fazla yapacak şey yok',
 		'MigrationPaymentsNothingUpdatable' => 'Düzeltilebilecek hiç ödeme yok',
-		// Sözleşme güncelleme
 		'MigrationContractsUpdate' => 'Sözleşme verisi düzeltme',
 		'MigrationContractsNumberToUpdate' => 'Güncellenecek %s sözleşme(ler) var',
 		'MigrationContractsLineCreation' => 'Sözleşme ref %s için sözleşme satırı oluştur',
 		'MigrationContractsNothingToUpdate' => 'Daha fazla yapacak şey yok',
 		'MigrationContractsFieldDontExist' => 'fk_facture Alanı artık yok. Hiçbir şey yapmaya gerek yok.',
-		// Boş sözleşme tarihi güncelleme
 		'MigrationContractsEmptyDatesUpdate' => 'Boş sözleşme tarihi düzeltme',
 		'MigrationContractsEmptyDatesUpdateSuccess' => 'Boş sözleşme tarihi başarıyla düzeltildi',
 		'MigrationContractsEmptyDatesNothingToUpdate' => 'Düzeltilecek boş sözleşme tarihi yok',
 		'MigrationContractsEmptyCreationDatesNothingToUpdate' => 'Düzeltilecek sözleşme oluşturma tarihi yok',
-		// Geçersiz sözleşme tarihi günceleme
 		'MigrationContractsInvalidDatesUpdate' => 'Sözleşme düzeltmede hatalı değer',
 		'MigrationContractsInvalidDateFix' => '%s Sözleşmesini düzelt (Sözleşme Tarihi)',
 		'MigrationContractsInvalidDatesNumber' => '%s Sözleşme değiştirildi',
@@ -207,33 +205,23 @@ $install = array(
 		'MigrationContractsIncoherentCreationDateUpdate' => 'Sözleşme oluşturma tarihindeki hatalı değeri düzeltme',
 		'MigrationContractsIncoherentCreationDateUpdateSuccess' => 'Sözleşme oluşturma tarihindeki hatalı değer başarı ile düzeltildi',
 		'MigrationContractsIncoherentCreationDateNothingToUpdate' => 'Sözleşme oluşturma tarihinde düzeltilecek hatalı değer yok',
-		// Sözleşmelerin yeniden açılması
 		'MigrationReopeningContracts' => 'Açık sözleşme yanlışlıkla kapatıldı',
 		'MigrationReopenThisContract' => '%s Sözleşmesini yeniden aç',
 		'MigrationReopenedContractsNumber' => '%s Sözleşme değiştirildi',
 		'MigrationReopeningContractsNothingToUpdate' => 'Açılacak kapalı sözleşme yok',
-		// Göç transferi
 		'MigrationBankTransfertsUpdate' => 'Banka işlemi ve banka havalesi arasındaki bağlantıları güncelle',
 		'MigrationBankTransfertsNothingToUpdate' => 'Tüm bağlantılar güncel',
-		// Teslimat göçü
 		'MigrationShipmentOrderMatching' => 'Sevkiyat fişi güncelleme',
 		'MigrationDeliveryOrderMatching' => 'Teslim bilgisi güncelleme',
 		'MigrationDeliveryDetail' => 'Teslimat güncelleme',
-		// Stok göçü
 		'MigrationStockDetail' => 'Ürünlerin stok değerini güncelle',
-		// Menü göçü
 		'MigrationMenusDetail' => 'Dinamik menüler tablolarını güncelle',
-		// Teslim adresleri göçü
 		'MigrationDeliveryAddress' => 'Yüklemelerde teslimat adresini güncelle',
-		// Proje görev oyuncuları göçü
 		'MigrationProjectTaskActors' => 'llx_projet_task_actors table için veri taşıma tablosu',
-		// Migration project user resp
 		'MigrationProjectUserResp' => 'Veri taşıma alanı fk_user_resp of llx_projet to llx_element_contact',
-		// Proje görev süresi göçü
 		'MigrationProjectTaskTime' => 'Saniyede olarak harcanan süreyi güncelle',
-		// Eylem göçü
 		'MigrationActioncommElement' => 'Eylemlere ilişkin veri güncellemesi',
-		// Ödeme biçimi göçü
 		'MigrationPaymentMode' => 'Ödeme biçimi için veri taşıma',
+		'MigrationCategorieAssociation' => 'Migration of categories'
 );
 ?>

@@ -262,12 +262,13 @@ $dict = array(
 		'CountryME' => 'Črna Gora',
 		'CountryBL' => 'Saint Barthelemy',
 		'CountryMF' => 'Saint Martin',
-		////////// Civilities ////////// = undefined
+		////////// Civilities //////////
 		'CivilityMME' => 'Ga.',
 		'CivilityMR' => 'G.',
 		'CivilityMLE' => 'Gdč.',
 		'CivilityMTRE' => 'Mojster',
-		////////// Currencies ////////// = undefined
+		'CivilityDR' => 'Doctor',
+		////////// Currencies //////////
 		'Currencyeuros' => 'EUR',
 		'CurrencyAUD' => 'Avstralski Dolarji',
 		'CurrencySingAUD' => 'Avstralski Dolar',
@@ -295,13 +296,17 @@ $dict = array(
 		'CurrencySingTND' => 'Tunizijski dinar',
 		'CurrencyUSD' => 'Ameriški Dolarji',
 		'CurrencySingUSD' => 'Ameriški Dolar',
+		'CurrencyUAH' => 'Grivna',
+		'CurrencySingUAH' => 'Grivna',
 		'CurrencyXAF' => 'CFA Francs BEAC',
 		'CurrencySingXAF' => 'CFA Franc BEAC',
 		'CurrencyXOF' => 'CFA Francs BCEAO',
 		'CurrencySingXOF' => 'CFA Franc BCEAO',
 		'CurrencyXPF' => 'CFP Francs',
 		'CurrencySingXPF' => 'CFP Franc',
-		//////// Input reasons ////////// = 
+		'CurrencyCentSingEUR' => 'cent',
+		'CurrencyThousandthSingTND' => 'thousandth',
+		//////// Input reasons //////////
 		'DemandReasonTypeSRC_INTE' => 'Internet',
 		'DemandReasonTypeSRC_CAMP_MAIL' => 'Poštna kampanja',
 		'DemandReasonTypeSRC_CAMP_EMAIL' => 'Kampanja po elektronski pošti',
@@ -309,7 +314,9 @@ $dict = array(
 		'DemandReasonTypeSRC_CAMP_FAX' => 'Kampanja po faksu',
 		'DemandReasonTypeSRC_COMM' => 'Komercialni kontakt',
 		'DemandReasonTypeSRC_SHOP' => 'Kontakt v prodajalni',
-		'CurrencyUAH' => 'Grivna',
-		'CurrencySingUAH' => 'Grivna',
+		'DemandReasonTypeSRC_WOM' => 'Word of mouth',
+		'DemandReasonTypeSRC_PARTNER' => 'Partner',
+		'DemandReasonTypeSRC_EMPLOYEE' => 'Employee',
+		'DemandReasonTypeSRC_SPONSORING' => 'Sponsorship'
 );
 ?>

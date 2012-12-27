@@ -30,6 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => 'See on id tehing: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Lisa URL Paypal makse, kui saadate dokumendi mail',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'E-posti aadress instant tasumise teate (IPN)',
-		'YouAreCurrentlyInSandboxMode' => 'Sa oled praegu &quot;liivakasti&quot; režiimis',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Sa oled praegu &quot;liivakasti&quot; režiimis'
 );
 ?>

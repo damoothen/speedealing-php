@@ -95,6 +95,7 @@ $mails = array(
 		'MailtoEMail' => 'Хипер-връзка на приятел',
 		'ActivateCheckRead' => 'Оставя се да се използва за четене тракер получаване и връзката unsubcribe',
 		'ActivateCheckReadKey' => 'Key използване за криптиране на използването на URL адрес за обратна разписка и функция unsubcribe',
+		// Libelle des modules de liste de destinataires mailing
 		'MailingModuleDescContactCompanies' => 'Контакти на всички трети лица (клиенти, перспектива, доставчици, ...)',
 		'MailingModuleDescDolibarrUsers' => 'Dolibarr потребители',
 		'MailingModuleDescFundationMembers' => 'Фондация членове с имейли',
@@ -132,12 +133,13 @@ $mails = array(
 		'TagUnsubscribe' => 'Отписване връзка',
 		'TagSignature' => 'Подпис изпращане на потребителя',
 		'TagMailtoEmail' => 'Имейл на получателя',
+		// Module Notifications
 		'Notifications' => 'Известия',
 		'NoNotificationsWillBeSent' => 'Не са планирани за това събитие и компания известия по имейл',
 		'ANotificationsWillBeSent' => '1 уведомление, ще се изпращат по електронна поща',
 		'SomeNotificationsWillBeSent' => '%s нотификации ще бъдат изпратени по електронна поща',
 		'AddNewNotification' => 'Активиране на ново искане за уведомяване имейл',
 		'ListOfActiveNotifications' => 'Списък на всички активни заявки за уведомяване имейл',
-		'ListOfNotificationsDone' => 'Списък на всички имейли, изпратени уведомления',
+		'ListOfNotificationsDone' => 'Списък на всички имейли, изпратени уведомления'
 );
 ?>

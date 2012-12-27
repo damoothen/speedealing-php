@@ -24,6 +24,6 @@ $shop = array(
 		'LastCustomers' => 'Utolsó vásárlók',
 		'OSCommerceShop' => 'OSCommerce bolt',
 		'OSCommerce' => 'OSCommerce',
-		'AddProd' => 'Online eladás',
+		'AddProd' => 'Online eladás'
 );
 ?>

@@ -23,5 +23,7 @@ $workflow = array(
 		'descWORKFLOW_PROPAL_AUTOCREATE_INVOICE' => 'Criar uma factura de cliente automaticamente, após uma proposta comercial ser assinada',
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Criar uma factura de cliente automaticamente depois de um contrato ser validado',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Criar uma factura de cliente automaticamente após um pedido do cliente estar fechado',
+		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Classify linked source proposal to billed when customer order is set to paid',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid'
 );
 ?>

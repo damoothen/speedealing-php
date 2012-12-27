@@ -19,6 +19,7 @@ $trips = array(
 		'Trip' => 'Verplaatsing',
 		'Trips' => 'Verplaatsingen',
 		'TripsAndExpenses' => 'Verplaatsingen en kosten',
+		'TripsAndExpensesStatistics' => 'Trips and expenses statistics',
 		'TripCard' => 'Verplaatsingskaart',
 		'AddTrip' => 'Verplaatsing toevoegen',
 		'ListOfTrips' => 'Lijst van verplaatsingen',
@@ -29,9 +30,11 @@ $trips = array(
 		'FeesKilometersOrAmout' => 'Bedrag of kilometers',
 		'DeleteTrip' => 'Verwijderen verplaatsing',
 		'ConfirmDeleteTrip' => 'Weet u zeker dat u deze verplaatsing wilt verwijderen?',
-		'Person' => 'Persoon',
 		'TF_OTHER' => 'Ander',
 		'TF_LUNCH' => 'Lunch',
 		'TF_TRIP' => 'Verplaatsing',
+		'ListTripsAndExpenses' => 'List of trips and expenses',
+		'ExpensesArea' => 'Trips and expenses area',
+		'SearchATripAndExpense' => 'Search a trip and expense'
 );
 ?>

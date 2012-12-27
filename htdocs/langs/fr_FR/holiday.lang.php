@@ -118,6 +118,7 @@ $holiday = array(
 		'nbHolidayDeductedCP' => 'Nombre de congés payés à déduire par jour de congé pris',
 		'nbHolidayEveryMonthCP' => 'Nombre de congés payés ajoutés chaque mois',
 		'Module27130Name' => 'Gestion des congés',
+		'Module27130Desc' => 'Management of holidays',
 		'TitleOptionMainCP' => 'Réglages principaux des congés',
 		'TitleOptionEventCP' => 'Réglages des congés liés à des évènements',
 		'ValidEventCP' => 'Valider',
@@ -141,6 +142,6 @@ $holiday = array(
 		'Jours' => 'jours',
 		'nbJours' => 'Nombre jours',
 		'TitleAdminCP' => 'Configuration des Congés',
-		'Permission20001' => 'Lire / Créer / modifier ses congès',
+		'Permission20001' => 'Lire / Créer / modifier ses congès'
 );
 ?>

@@ -81,6 +81,6 @@ $sendings = array(
 		// ModelDocument
 		'DocumentModelSirocco' => 'Model simple nota de lliurament',
 		'DocumentModelTyphon' => 'Model complet de nota de lliurament (logo...)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constant EXPEDITION_ADDON_NUMBER no definida',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constant EXPEDITION_ADDON_NUMBER no definida'
 );
 ?>

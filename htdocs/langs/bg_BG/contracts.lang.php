@@ -70,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Списък на стартираните услуги',
 		'NotActivatedServices' => 'Неактивни услуги (сред валидирани договори)',
 		'BoardNotActivatedServices' => 'Услуги за да активирате сред утвърдени договори',
-		'LastContracts' => 'Последните договори%',
+		'LastContracts' => 'Последно %s промяна на договорите',
 		'LastActivatedServices' => 'Последно %s активира услуги',
 		'LastModifiedServices' => 'Последно %s промяна услуги',
 		'EditServiceLine' => 'Редактиране на сервизна линия',
@@ -102,11 +102,12 @@ $contracts = array(
 		'ExpiredSince' => 'Срок на годност',
 		'RelatedContracts' => 'Подобни договори',
 		'NoExpiredServices' => 'Не изтекъл активни услуги',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'Търговски представител подписване на договора',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'Търговски представител проследяване договор',
 		'TypeContact_contrat_external_BILLING' => 'Контакт с клиента за фактуриране',
 		'TypeContact_contrat_external_CUSTOMER' => 'Следвайте контакт с клиентите',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Подписване на договор клиента контакт',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Постоянно CONTRACT_ADDON не е определен',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Постоянно CONTRACT_ADDON не е определен'
 );
 ?>

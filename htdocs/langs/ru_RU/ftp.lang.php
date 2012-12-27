@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Не удалось подключиться к FTP-серверу (сервер %s, порт %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Не удалось войти на FTP-сервер с указанными Логином и паролем',
 		'FTPFailedToRemoveFile' => 'Не удалось удалить файл <b>%s</b>.',
-		'FTPFailedToRemoveDir' => 'Не удалось удалить каталог <b>%s</b> (Проверьте разрешения и убедитесь, что каталог пуст).',
+		'FTPFailedToRemoveDir' => 'Не удалось удалить каталог <b>%s</b> (Проверьте разрешения и убедитесь, что каталог пуст).'
 );
 ?>

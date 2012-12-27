@@ -15,7 +15,6 @@
  */
 
 $projects = array(
-		'﻿# Dolibarr language file - pt_PT - projects' => '',
 		'CHARSET' => 'UTF-8',
 		'Project' => 'Projeto',
 		'Projects' => 'Projetos',
@@ -102,6 +101,14 @@ $projects = array(
 		'ErrorTimeSpentIsEmpty' => 'Tempo dispensado está vazio',
 		'ThisWillAlsoRemoveTasks' => 'Esta ação também vai excluir todas as tarefas do projeto (<b>%s</b> tarefas no momento) e todas as entradas de tempo dispensadas.',
 		'IfNeedToUseOhterObjectKeepEmpty' => 'Caso alguns objetos (fatura, encomenda, ...), pertencentes a um terceiro, deve estar vinculado ao projeto para criar, manter este vazio para ter o projeto sendo multi-terceiros.',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
 		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Líder do projeto',
 		'TypeContact_project_external_PROJECTLEADER' => 'Líder do projeto',
@@ -112,6 +119,6 @@ $projects = array(
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Contribuinte',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Contribuinte',
 		// Documents models
-		'DocumentModelBaleine' => 'modelo de um projeto completo do relatório (logo. ..)',
+		'DocumentModelBaleine' => 'modelo de um projeto completo do relatório (logo. ..)'
 );
 ?>

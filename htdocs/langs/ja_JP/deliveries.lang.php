@@ -33,11 +33,12 @@ $deliveries = array(
 		'DeliveryMethod' => '配送方法',
 		'TrackingNumber' => '追跡番号',
 		'DeliveryNotValidated' => '配信検証されません',
+		// merou PDF model
 		'NameAndSignature' => '名前と署名：',
 		'ToAndDate' => 'To___________________________________ ____ / _____ / __________で',
 		'GoodStatusDeclaration' => '、良好な状態で上記の品物を受け取っている',
 		'Deliverer' => '配達：',
 		'Sender' => '差出人',
-		'Recipient' => '受信者',
+		'Recipient' => '受信者'
 );
 ?>

@@ -34,6 +34,8 @@ $compta = array(
 		'AccountsGeneral' => 'חשבונות',
 		'Account' => 'חשבון',
 		'Accounts' => 'חשבונות',
+		'Accountparent' => 'Account parent',
+		'Accountsparent' => 'Accounts parent',
 		'BillsForSuppliers' => 'חשבונות ספקים',
 		'Income' => 'הכנסה',
 		'Outcome' => 'הוצאה',
@@ -159,5 +161,9 @@ $compta = array(
 		'AddRemind' => 'לשלוח כמות זמינה',
 		'RemainToDivide' => 'להישאר לשלוח:',
 		'WarningDepositsNotIncluded' => 'חשבוניות פיקדונות אינם כלולים בגרסה זו עם מודול זה ראיית חשבון.',
+		'DatePaymentTermCantBeLowerThanObjectDate' => 'Payment term date can\'t be lower than object date.',
+		'Pcg_version' => 'Pcg version',
+		'Pcg_type' => 'Pcg type',
+		'Pcg_subtype' => 'Pcg subtype'
 );
 ?>

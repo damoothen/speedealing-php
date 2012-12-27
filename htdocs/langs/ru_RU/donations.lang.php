@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Пожертвование',
 		'Donations' => 'Пожертвования',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Донор',
 		'Donors' => 'Доноры',
 		'AddDonation' => 'Добавить пожертвование',
@@ -36,11 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => 'Проект',
 		'DonationStatusPromiseValidatedShort' => 'Подтверждено',
 		'DonationStatusPaidShort' => 'Получено',
-		'ValidPromise' => 'Подтвердить обещание',
+		'ValidPromess' => 'Подтвердить обещание',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Создать подтверждение получения',
 		'DonationsModels' => 'Модели документов для подтверждение получения пожертвования',
 		'LastModifiedDonations' => 'Последние %s измененных пожертвований',
 		'SearchADonation' => 'Поиск пожертвования',
-		'ValidPromess' => 'Подтвердить обещание',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

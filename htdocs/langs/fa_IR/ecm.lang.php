@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'جذور',
 		'ECMNewSection' => 'دليل جديد',
 		'ECMAddSection' => 'إضافة دليل دليل',
-		'ECMNewSection' => 'الدليل الجديد ودليل',
 		'ECMNewDocument' => 'وثيقة جديدة',
 		'ECMCreationDate' => 'تاريخ الإنشاء',
 		'ECMNbOfFilesInDir' => 'عدد من الملفات في دليل',
@@ -53,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'أدلة وثائق',
 		'ECMTypeManual' => 'دليل',
 		'ECMTypeAuto' => 'التلقائي',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'وثائق مرتبطة أطراف ثالثة',
 		'ECMDocsByProposals' => 'وثائق مرتبطة مقترحات',
 		'ECMDocsByOrders' => 'وثائق مرتبطة أوامر العملاء',
@@ -67,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'لا يمكن إزالتها لأنه يحتوي على بعض الملفات',
 		'ECMFileManager' => 'مدير الملفات',
 		'ECMSelectASection' => 'اختر دليل على ترك شجرة...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

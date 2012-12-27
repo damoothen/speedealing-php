@@ -32,6 +32,7 @@ $suppliers = array(
 		'BuyingPriceMinShort' => 'Preu mín compra',
 		'AddSupplierPrice' => 'Afegir preu de proveïdor',
 		'ChangeSupplierPrice' => 'Canviar preu de proveïdor',
+		'ErrorQtyTooLowForThisSupplier' => 'Quantity too low for this supplier or no price defined on this product for this supplier',
 		'ErrorSupplierCountryIsNotDefined' => 'El país d\'aquest proveïdor no està definit, arregle-ho a la seva fitxa',
 		'ProductHasAlreadyReferenceInThisSupplier' => 'Aquest producte ja té una referència en aquest proveïdor',
 		'ReferenceSupplierIsAlreadyAssociatedWithAProduct' => 'Aquesta referència de proveïdor ja està associada a la referència: %s',
@@ -42,6 +43,7 @@ $suppliers = array(
 		'Availability' => 'Disponibilitat',
 		'ExportDataset_fournisseur_1' => 'Factures de proveïdors i línies de factura',
 		'ExportDataset_fournisseur_2' => 'Factures proveïdors i pagaments',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'Aprovar aquesta comanda',
 		'ConfirmApproveThisOrder' => 'Esteu segur de voler aprovar la comanda a proveïdor <b>%s</b>?',
 		'DenyingThisOrder' => 'Denegar aquesta comanda',
@@ -52,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Crear comanda a proveïdor',
 		'AddSupplierInvoice' => 'Crear factura de proveïdor',
 		'ListOfSupplierProductForSupplier' => 'Llistat de productes i preus del proveïdor <b>%s</b>',
-		'NoneOrBatchFileNeverRan' => 'Cap o lot <b>%s</b> no s\'ha executat recentment',
+		'NoneOrBatchFileNeverRan' => 'Cap o lot <b>%s</b> no s\'ha executat recentment'
 );
 ?>

@@ -119,6 +119,6 @@ $projects = array(
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Participante',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Participante',
 		// Documents models
-		'DocumentModelBaleine' => 'Modelo de informe de proyecto completo (logo...)',
+		'DocumentModelBaleine' => 'Modelo de informe de proyecto completo (logo...)'
 );
 ?>

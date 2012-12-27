@@ -64,7 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => 'Motif du rejet',
 		'RefusedInvoicing' => 'Facturation du rejet',
 		'NoInvoiceRefused' => 'Ne Pas Facturer le rejet',
-		'InvoiceRefused' => 'Facturer le rejet au client',
+		'InvoiceRefused' => 'Facture rejeté',
 		'Status' => 'État',
 		'StatusUnknown' => 'Inconnu',
 		'StatusWaiting' => 'En attente',
@@ -97,7 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'Voir prélèvement',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'Toutefois, si la facture a au moins un paiement par prélèvement non traité, elle ne le sera pas afin de permettre la gestion du prélèvement d\'abord.',
 		'DoStandingOrdersBeforePayments' => 'Cet onglet permet de faire une demande de pélèvement bancaire. Une fois réalisé, vous pourrez saisir le paiement sur la facture pour la clore.',
-		////// Notifications 
+		////// Notifications
 		'InfoCreditSubject' => 'Credit prélèvement %s a la banque',
 		'InfoCreditMessage' => 'Le bon de prélèvement %s a eté credité par la banque.<br>Date credit : %s',
 		'InfoTransSubject' => 'Transmission du prélèvement %s a la banque',
@@ -106,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'Ceci est un message automatique envoye par Dolibarr',
 		'InfoRejectSubject' => 'Prélèvement rejeté',
 		'InfoRejectMessage' => 'Bonjour,<br><br>Le prelevement de la facture %s pour le compte de la societé %s, d\'un montant de %s a été rejeté par la banque.<br><br>--<br>%$',
-		'ModeWarning' => 'Option mode réel non établi, nous allons arrêter après cette simulation',
+		'ModeWarning' => 'Option mode réel non établi, nous allons arrêter après cette simulation'
 );
 ?>

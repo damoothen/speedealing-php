@@ -162,6 +162,8 @@ $products = array(
 		'QtyMin' => '量の最小値',
 		'PriceQty' => 'この量の価格',
 		'PriceQtyMin' => '価格数量分。',
+		'VATRateForSupplierProduct' => 'VAT Rate (for this supplier/product)',
+		'DiscountQtyMin' => 'Discount quantity min. (by default)',
 		'NoPriceDefinedForThisSupplier' => '価格/数量このサプライヤー/製品用に定義されません',
 		'NoSupplierPriceDefinedForThisProduct' => 'この製品に対して定義されたサプライヤ価格なし/数量',
 		'RecordedProducts' => '記録された製品',
@@ -185,5 +187,15 @@ $products = array(
 		'CustomCode' => '税関コード',
 		'CountryOrigin' => '原産国',
 		'HiddenIntoCombo' => 'selectリストの中に隠れて',
+		'Nature' => 'Nature',
+		'ProductCodeModel' => 'Product code model',
+		'ServiceCodeModel' => 'Service code model',
+		'AddThisProductCard' => 'Create product card',
+		'HelpAddThisProductCard' => 'This option allows you to create or clone a product if it does not exist.',
+		'AddThisServiceCard' => 'Create service card',
+		'HelpAddThisServiceCard' => 'This option allows you to create or clone a service if it does not exist.',
+		'CurrentProductPrice' => 'Current price',
+		'AlwaysUseNewPrice' => 'Always use current price of product/service',
+		'AlwaysUseFixedPrice' => 'Use the fixed price'
 );
 ?>

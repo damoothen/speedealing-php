@@ -99,6 +99,9 @@ $holiday = array(
 		'alreadyCPexist' => 'Искането за почивка вече е направено на този период.',
 		'UserName' => 'Име',
 		'Employee' => 'Служителите',
+		'FirstDayOfHoliday' => 'First day of holiday',
+		'LastDayOfHoliday' => 'Last day of holiday',
+		//// Configuration du Module ////
 		'ConfCP' => 'Конфигурация празници модул',
 		'DescOptionCP' => 'Описание на опцията',
 		'ValueOptionCP' => 'Стойност',
@@ -139,6 +142,6 @@ $holiday = array(
 		'Jours' => 'ден',
 		'nbJours' => 'Брой дни',
 		'TitleAdminCP' => 'Конфигурация на празници',
-		'Permission20001' => '/ Промяна на всички искания празници',
+		'Permission20001' => '/ Промяна на всички искания празници'
 );
 ?>

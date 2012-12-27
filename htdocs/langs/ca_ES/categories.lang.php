@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'Aquest membre no es troba en cap categoria en particular',
 		'ClassifyInCategory' => 'Classificar en la categoria',
 		'NoneCategory' => 'Cap',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'Aquesta categoria ja existeix per aquesta referència',
 		'ReturnInProduct' => 'Tornar a la fitxa producte/servei',
 		'ReturnInSupplier' => 'Tornar a la fitxa proveïdor',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'Llista de categories de proveïdors',
 		'CatCusList' => 'Llista de categories de clients/potencials',
 		'CatProdList' => 'Llista de categories de productes',
-		'CatMemberList' => 'Llista de categories de membres',
+		'CatMemberList' => 'Llista de categories de membres'
 );
 ?>

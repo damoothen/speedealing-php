@@ -19,6 +19,7 @@ $trips = array(
 		'Trip' => 'Reise',
 		'Trips' => 'Reisen',
 		'TripsAndExpenses' => 'Reise- und Fahrtspesen',
+		'TripsAndExpensesStatistics' => 'Reise- und Spesenstatistiken',
 		'TripCard' => 'Reise-Karte',
 		'AddTrip' => 'Reise hinzufügen',
 		'ListOfTrips' => 'Liste der Reisen',
@@ -33,8 +34,7 @@ $trips = array(
 		'TF_LUNCH' => 'Essen',
 		'TF_TRIP' => 'Reise',
 		'ListTripsAndExpenses' => 'Liste der Reisen und Spesen',
-		'TripsAndExpensesStatistics' => 'Reise- und Spesenstatistiken',
 		'ExpensesArea' => 'Spesenübersicht',
-		'SearchATripAndExpense' => 'Suchen nach einer Reise oder Aufwänden',
+		'SearchATripAndExpense' => 'Suchen nach einer Reise oder Aufwänden'
 );
 ?>

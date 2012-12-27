@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'Kalan karakter sayısı',
 		'SmsInfoNumero' => '(Uluslar arası biçim örneği: +33899701761)',
 		'DelayBeforeSending' => 'Gönderimden önceki bekletme (Dakika)',
-		'SmsNoPossibleRecipientFound' => 'Hedef yok. SMS sağlayıcı kurulumu kontrol edin.',
+		'SmsNoPossibleRecipientFound' => 'Hedef yok. SMS sağlayıcı kurulumu kontrol edin.'
 );
 ?>

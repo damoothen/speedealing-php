@@ -24,6 +24,6 @@ $workflow = array(
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Crear una factura a cliente automáticamente a la validación de un contrato',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Crear una factura a cliente automáticamente al cierre de un pedido de cliente',
 		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Clasificar como facturado el presupuesto cuando el pedido de cliente relacionado se clasifique como pagado',
-		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Clasificar como facturados los pedidos cuando la factura relacionada se clasifique como pagada',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Clasificar como facturados los pedidos cuando la factura relacionada se clasifique como pagada'
 );
 ?>

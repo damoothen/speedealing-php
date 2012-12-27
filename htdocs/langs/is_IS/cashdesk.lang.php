@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Gjald reiknings',
 		'ShowCompany' => 'Sýna fyrirtæki',
 		'ShowStock' => 'Sýna vöruhús',
-		'DeleteArticle' => 'Smelltu til að fjarlægja þessa grein',
+		'DeleteArticle' => 'Smelltu til að fjarlægja þessa grein'
 );
 ?>

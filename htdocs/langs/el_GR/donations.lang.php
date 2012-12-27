@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Δωρεά',
 		'Donations' => 'Δωρεές',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Δωρεά',
 		'Donors' => 'Δωρεές',
 		'AddDonation' => 'Προσθήκη δωρεάς',
@@ -37,9 +38,13 @@ $donations = array(
 		'DonationStatusPromiseValidatedShort' => 'Επικυρωμένη',
 		'DonationStatusPaidShort' => 'Ληφθήσα',
 		'ValidPromess' => 'Επικύρωση υπόσχεσης',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Δημιουργία απόδειξης',
 		'DonationsModels' => 'Documents models for donation receipts',
 		'LastModifiedDonations' => 'Τελευταία %s τροποποίηση δωρεές',
 		'SearchADonation' => 'Αναζήτηση μια δωρεά',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

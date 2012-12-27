@@ -87,14 +87,6 @@ $propal = array(
 		'Estimate' => 'Estimate :',
 		'EstimateShort' => 'Estimate',
 		'OtherPropals' => 'Άλλες προτάσεις',
-		'AvailabilityPeriod' => 'Καθυστέρηση Διαθεσιμότητα',
-		'SetAvailability' => 'Ορισμός καθυστέρηση διαθεσιμότητα',
-		'AfterOrder' => 'μετά την παραγγελία',
-		'AvailabilityTypeAV_NOW' => 'Άμεση',
-		'AvailabilityTypeAV_1W' => '1 εβδομάδα',
-		'AvailabilityTypeAV_2W' => '2 εβδομάδες',
-		'AvailabilityTypeAV_3W' => '3 εβδομάδες',
-		'AvailabilityTypeAV_1M' => '1 μήνα',
 		'CopyPropalFrom' => 'Δημιουργία εμπορική πρόταση με την αντιγραφή υφιστάμενη πρόταση',
 		'CreateEmptyPropal' => 'Δημιουργία κενών εμπορικών vierge προτάσεις ή από την λίστα των προϊόντων / υπηρεσιών',
 		'DefaultProposalDurationValidity' => 'Προεπιλογή εμπορική διάρκεια ισχύος πρόταση (σε ημέρες)',
@@ -104,10 +96,21 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Είστε βέβαιοι ότι θέλετε να ανοίξετε ξανά τις εμπορικές <b>%s</b> πρόταση;',
 		'ProposalsAndProposalsLines' => 'Εμπορικές προτάσεις και γραμμές',
 		'ProposalLine' => 'Πρόταση γραμμή',
+		'AvailabilityPeriod' => 'Καθυστέρηση Διαθεσιμότητα',
+		'SetAvailability' => 'Ορισμός καθυστέρηση διαθεσιμότητα',
+		'AfterOrder' => 'μετά την παραγγελία',
+		////////// Availability //////////
+		'AvailabilityTypeAV_NOW' => 'Άμεση',
+		'AvailabilityTypeAV_1W' => '1 εβδομάδα',
+		'AvailabilityTypeAV_2W' => '2 εβδομάδες',
+		'AvailabilityTypeAV_3W' => '3 εβδομάδες',
+		'AvailabilityTypeAV_1M' => '1 μήνα',
+		////////// Types de contacts //////////
 		'TypeContact_propal_internal_SALESREPFOLL' => 'Εκπρόσωπος παρακολουθώντας πρόταση',
 		'TypeContact_propal_external_BILLING' => 'Πελάτης επαφή τιμολόγιο',
 		'TypeContact_propal_external_CUSTOMER' => 'Πελάτης επαφή την παρακολούθηση πρόταση',
+		// Document models
 		'DocModelAzurDescription' => 'Ένα πλήρες μοντέλο πρόταση (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune μοντέλο πρόταση',
+		'DocModelJauneDescription' => 'Jaune μοντέλο πρόταση'
 );
 ?>

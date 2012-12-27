@@ -31,6 +31,7 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => 'U wordt doorverwezen naar een beveiligde Paybox pagina om uw credit card informatie in te voeren',
 		'PleaseBePatient' => 'Een moment geduld a.u.b.',
 		'Continue' => 'Volgende',
+		'ToOfferALinkForOnlinePayment' => 'URL voor %s betaling',
 		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL om een %s online betalingsgebruikersinterface aan te bieden voor een order',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL om een %s online betalingsgebruikersinterface aan te bieden voor een factuur',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL om een %s online betalingsgebruikersinterface aan te bieden voor een contractregel',
@@ -47,7 +48,6 @@ $paybox = array(
 		'VendorName' => 'Verkopersnaam',
 		'CSSUrlForPaymentForm' => 'URL van het CSS-stijlbestand voor het betalingsformulier',
 		'MessageOK' => 'Bericht opde  bevestigingspagina van een gevalideerde betaling',
-		'MessageKO' => 'Bericht op de bevestigingspagina van een geannuleerde betaling',
-		'ToOfferALinkForOnlinePayment' => 'URL voor %s betaling',
+		'MessageKO' => 'Bericht op de bevestigingspagina van een geannuleerde betaling'
 );
 ?>

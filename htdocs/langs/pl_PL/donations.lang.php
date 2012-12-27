@@ -17,7 +17,8 @@
 $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Darowizna',
-		'Donationss' => 'Darowizny',
+		'Donations' => 'Darowizny',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Donor',
 		'Donors' => 'Darczyńcy',
 		'AddDonation' => 'Dodaj darowiznę',
@@ -36,12 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => 'Szkic',
 		'DonationStatusPromiseValidatedShort' => 'Zatwierdzona',
 		'DonationStatusPaidShort' => 'Odebrane',
-		'ValidPromise' => 'Validate obietnicy',
+		'ValidPromess' => 'Sprawdź obietnicy',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Zbuduj otrzymania',
 		'DonationsModels' => 'Dokumenty modeli oddawania wpływy',
-		'Donations' => 'Darowizny',
-		'ValidPromess' => 'Sprawdź obietnicy',
 		'LastModifiedDonations' => 'Ostatnie %s modyfikowane darowizn',
 		'SearchADonation' => 'Szukaj darowiznę',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

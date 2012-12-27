@@ -16,14 +16,14 @@
 
 $shop = array(
 		'CHARSET' => 'UTF-8',
-		'AddProd' => 'Vendita online',
-		'LastCustomers' => 'Ultimi clienti',
-		'LastOrders' => 'Ultimi ordini',
-		'OnStandBy' => 'In standby',
-		'OSCommerce' => 'OSCommerce',
-		'OSCommerceShop' => 'Negozio OSCommerce',
 		'Shop' => 'Negozio',
 		'ShopWeb' => 'Negozio online',
+		'LastOrders' => 'Ultimi ordini',
+		'OnStandBy' => 'In standby',
 		'TreatmentInProgress' => 'Trattamento in corso',
+		'LastCustomers' => 'Ultimi clienti',
+		'OSCommerceShop' => 'Negozio OSCommerce',
+		'OSCommerce' => 'OSCommerce',
+		'AddProd' => 'Vendita online'
 );
 ?>

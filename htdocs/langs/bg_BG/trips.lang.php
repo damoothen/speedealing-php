@@ -35,6 +35,6 @@ $trips = array(
 		'TF_TRIP' => 'Екскурзия',
 		'ListTripsAndExpenses' => 'Списък на пътувания и разходи',
 		'ExpensesArea' => 'Екскурзии и разходи площ',
-		'SearchATripAndExpense' => 'Търсене на пътуване и разходи',
+		'SearchATripAndExpense' => 'Търсене на пътуване и разходи'
 );
 ?>

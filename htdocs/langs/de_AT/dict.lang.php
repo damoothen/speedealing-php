@@ -317,6 +317,6 @@ $dict = array(
 		'DemandReasonTypeSRC_WOM' => 'Word of mouth',
 		'DemandReasonTypeSRC_PARTNER' => 'Partner',
 		'DemandReasonTypeSRC_EMPLOYEE' => 'Employee',
-		'DemandReasonTypeSRC_SPONSORING' => 'Sponsorship',
+		'DemandReasonTypeSRC_SPONSORING' => 'Sponsorship'
 );
 ?>

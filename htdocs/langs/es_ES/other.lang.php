@@ -35,6 +35,7 @@ $other = array(
 		'Notify_WITHDRAW_TRANSMIT' => 'Transmisión domiciliación',
 		'Notify_WITHDRAW_CREDIT' => 'Abono domiciliación',
 		'Notify_WITHDRAW_EMIT' => 'Emisión domiciliación',
+		'Notify_ORDER_SENTBYMAIL' => 'Envío pedido de cliente por e-mail',
 		'Notify_COMPANY_CREATE' => 'Creación tercero',
 		'Notify_PROPAL_SENTBYMAIL' => 'Envío presupuesto por e-mail',
 		'Notify_ORDER_SENTBYMAIL' => 'Envío pedido de cliente por e-mail',
@@ -59,6 +60,7 @@ $other = array(
 		'MaxSize' => 'Tamaño máximo',
 		'AttachANewFile' => 'Adjuntar nuevo archivo/documento',
 		'LinkedObject' => 'Objeto adjuntado',
+		'Miscellanous' => 'Miscellaneous',
 		'NbOfActiveNotifications' => 'Número notificaciones',
 		'PredefinedMailTest' => 'Esto es un correo de prueba.\nLas 2 líneas están separadas por un retorno de carro a la línea.',
 		'PredefinedMailTestHtml' => 'Esto es un e-mail de <b>prueba</b>(la palabra prueba debe de estar en negrita).<br>Las 2 líneas están separadas por un retorno de carro en la línea',
@@ -125,6 +127,8 @@ $other = array(
 		'VolumeUnitdm3' => 'dm3 (l)',
 		'VolumeUnitcm3' => 'cm3 (ml)',
 		'VolumeUnitmm3' => 'mm3 (µl)',
+		'VolumeUnitfoot3' => 'ft3',
+		'VolumeUnitinch3' => 'in3',
 		'VolumeUnitounce' => 'onza',
 		'VolumeUnitlitre' => 'litro',
 		'VolumeUnitgallon' => 'galón',
@@ -214,6 +218,6 @@ $other = array(
 		'ToExport' => 'Exportar',
 		'NewExport' => 'Nueva exportación',
 		////////// External sites //////////
-		'ExternalSites' => 'Sitios externos',
+		'ExternalSites' => 'Sitios externos'
 );
 ?>

@@ -38,7 +38,7 @@ $other = array(
 		'Notify_ORDER_SENTBYMAIL' => 'Поръчка на клиента, изпратено по пощата',
 		'Notify_COMPANY_CREATE' => 'От трета страна е създаден',
 		'Notify_PROPAL_SENTBYMAIL' => 'Търговско предложение, изпратено по пощата',
-		'Notify_ORDER_SENTBYMAIL' => 'POR електронна поща envío pedido',
+		'Notify_ORDER_SENTBYMAIL' => 'Поръчка на клиента, изпратено по пощата',
 		'Notify_BILL_PAYED' => 'Клиентът фактура плаща',
 		'Notify_BILL_CANCEL' => 'Клиентът фактура отменен',
 		'Notify_BILL_SENTBYMAIL' => 'Клиентът фактура, изпратена по пощата',
@@ -139,6 +139,7 @@ $other = array(
 		'SizeUnitmm' => 'mm',
 		'SizeUnitinch' => 'инч',
 		'SizeUnitfoot' => 'крак',
+		'SizeUnitpoint' => 'point',
 		'BugTracker' => 'Свържете се с нас',
 		'SendNewPasswordDesc' => 'Тази форма ви позволява да поиска нова парола. Тя ще бъде изпратена на вашия имейл адрес. <br> Промяната ще бъде в сила само след като щракнете върху връзката за потвърждение вътре този имейл. <br> Проверете своя имейл софтуер четец.',
 		'BackToLoginPage' => 'Назад към страницата за вход',
@@ -186,6 +187,7 @@ $other = array(
 		'CancelUpload' => 'Анулиране на качването',
 		'FileIsTooBig' => 'Files е твърде голям',
 		'PleaseBePatient' => 'Моля, бъдете търпеливи ...',
+		////////// Calendar common //////////
 		'AddCalendarEntry' => 'Добави запис в календара %s',
 		'NewCompanyToDolibarr' => 'Фирма %s добавя в Dolibarr',
 		'ContractValidatedInDolibarr' => 'Поръчки %s заверени в Dolibarr',
@@ -205,6 +207,7 @@ $other = array(
 		'MemberDeletedInDolibarr' => 'Държавите-%s изтрит от Dolibarr',
 		'MemberSubscriptionAddedInDolibarr' => 'Абонамент за държавите %s добави Dolibarr',
 		'ShipmentValidatedInDolibarr' => 'Превоз %s валидирани в Dolibarr',
+		////////// Export //////////
 		'Export' => 'Износ',
 		'ExportsArea' => 'Износът площ',
 		'AvailableFormats' => 'Налични формати',
@@ -214,6 +217,7 @@ $other = array(
 		'NoExportableData' => 'Не са изнасяни данни (няма модули с изнасяни данни натоварен, или липсващи разрешения)',
 		'ToExport' => 'Износ',
 		'NewExport' => 'Нов износ',
-		'ExternalSites' => 'Външни сайтове',
+		////////// External sites //////////
+		'ExternalSites' => 'Външни сайтове'
 );
 ?>

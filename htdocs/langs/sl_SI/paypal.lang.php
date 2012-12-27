@@ -30,6 +30,7 @@ $paypal = array(
 		'ThisIsTransactionId' => 'To je ID transakcije: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Pri pošiljanju dokumenta po pošti dodaj url Paypal plačila',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'Naslov e-pošte za takojšnje obvestilo o plačilu (IPN)',
-		'YouAreCurrentlyInSandboxMode' => 'Trenutno ste v &quot;peskovniku&quot; načinu',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Trenutno ste v &quot;peskovniku&quot; načinu'
 );
 ?>

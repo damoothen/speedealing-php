@@ -33,12 +33,12 @@ $deliveries = array(
 		'DeliveryMethod' => 'Méthode de livraison',
 		'TrackingNumber' => 'Numéro de suivi',
 		'DeliveryNotValidated' => 'Bon de réception non validée',
-		// merou PDF model						   
+		// merou PDF model
 		'NameAndSignature' => 'Nom et Signature :',
 		'ToAndDate' => 'A___________________________________ le ____/_____/__________',
 		'GoodStatusDeclaration' => 'Déclare avoir reçu les marchandises ci-dessus en bon état,',
 		'Deliverer' => 'Livreur(s) :',
 		'Sender' => 'Expéditeur',
-		'Recipient' => 'Destinataire',
+		'Recipient' => 'Destinataire'
 );
 ?>

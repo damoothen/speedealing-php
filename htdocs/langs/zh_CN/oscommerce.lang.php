@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => '商业服务器操作系统的主机/ IP',
 		'OSCommerceDatabaseName' => '操作系统商业数据库的名称',
 		'OSCommercePrefix' => '操作系统商务部表前缀',
-		'OSCommerceUser' => '操作系统商业数据库登录',
+		'OSCommerceUser' => '操作系统商业数据库登录'
 );
 ?>

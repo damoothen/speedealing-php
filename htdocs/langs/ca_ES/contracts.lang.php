@@ -70,6 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Llistat de serveis actius',
 		'NotActivatedServices' => 'Serveis no activats (amb els contractes validats)',
 		'BoardNotActivatedServices' => 'Serveis a activar amb els contractes validats',
+		'LastContracts' => 'Els % darrers contractes',
 		'LastActivatedServices' => 'Els %s darrers serveis activats',
 		'LastModifiedServices' => 'Els  %s darrers serveis modificats',
 		'EditServiceLine' => 'Edició línia del servei',
@@ -92,9 +93,9 @@ $contracts = array(
 		'DraftContracts' => 'Contractes esborrany',
 		'CloseRefusedBecauseOneServiceActive' => 'El contracte no pot ser tancat ja que conté almenys un servei obert.',
 		'CloseAllContracts' => 'Tancar tots els serveis',
-		'MoveToAnotherContract' => 'Moure el servei a un altre contracte d\'aquest tercer.',
 		'DeleteContractLine' => 'Eliminar línia de contracte',
 		'ConfirmDeleteContractLine' => 'Esteu segur de voler eliminar aquesta línia de contracte de servei?',
+		'MoveToAnotherContract' => 'Moure el servei a un altre contracte d\'aquest tercer.',
 		'ConfirmMoveToAnotherContract' => 'He triat el contracte i confirmo el canvi de servei en aquest contracte',
 		'ConfirmMoveToAnotherContractQuestion' => 'Escolliu qualsevol altre contracte del mateix tercer, voleu moure aquest servei?',
 		'PaymentRenewContractId' => 'Renovació servei (número %s)',
@@ -107,6 +108,6 @@ $contracts = array(
 		'TypeContact_contrat_external_BILLING' => 'Contacte client de facturació del contracte',
 		'TypeContact_contrat_external_CUSTOMER' => 'Contacte client seguiment del contracte',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Contacte client signant del contracte',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Constant CONTRACT_ADDON no definida',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Constant CONTRACT_ADDON no definida'
 );
 ?>

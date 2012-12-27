@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Käytä ulkoista http URL tai suhteellisen Dolibarr URL',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Valitse jos sivu avattu yhteys on oltava nykyiseen tai uuteen ikkunaan',
 		'BookmarksManagement' => 'Kirjanmerkkien hallinta',
-		'ListOfBookmarks' => 'Luetteloosi',
+		'ListOfBookmarks' => 'Luetteloosi'
 );
 ?>

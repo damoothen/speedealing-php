@@ -19,6 +19,7 @@ $trips = array(
 		'Trip' => 'Gezi',
 		'Trips' => 'Geziler',
 		'TripsAndExpenses' => 'Geziler ve giderler',
+		'TripsAndExpensesStatistics' => 'Gezi ve gider istatistikleri',
 		'TripCard' => 'Gezi kartı',
 		'AddTrip' => 'Gezi ekle',
 		'ListOfTrips' => 'Gezi listesi',
@@ -33,8 +34,7 @@ $trips = array(
 		'TF_LUNCH' => 'Öğle yemeği',
 		'TF_TRIP' => 'Gezi',
 		'ListTripsAndExpenses' => 'Geziler ve giderler listesi',
-		'TripsAndExpensesStatistics' => 'Gezi ve gider istatistikleri',
-		'SearchATripAndExpense' => 'Bir gezi ve gider ara',
 		'ExpensesArea' => 'Geziler ve giderler alanı',
+		'SearchATripAndExpense' => 'Bir gezi ve gider ara'
 );
 ?>

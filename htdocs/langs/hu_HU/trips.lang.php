@@ -35,6 +35,6 @@ $trips = array(
 		'TF_TRIP' => 'Trip',
 		'ListTripsAndExpenses' => 'Utak és kiadások listája',
 		'ExpensesArea' => 'Kirándulások és kiadások területén',
-		'SearchATripAndExpense' => 'Keresés út és költségek',
+		'SearchATripAndExpense' => 'Keresés út és költségek'
 );
 ?>

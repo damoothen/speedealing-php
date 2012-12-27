@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'فشل الاتصال بخادم بروتوكول نقل الملفات (%s الخادم ، %s منفذ)',
 		'FailedToConnectToFTPServerWithCredentials' => 'فشل في تسجيل الدخول إلى خادم بروتوكول نقل الملفات مع تعريف الدخول / كلمة المرور',
 		'FTPFailedToRemoveFile' => 'فشل لإزالة <b>%s</b> الملف.',
-		'FTPFailedToRemoveDir' => 'فشل لإزالة <b>%s</b> الدليل (راجع الأذونات وهذا الدليل فارغ).',
+		'FTPFailedToRemoveDir' => 'فشل لإزالة <b>%s</b> الدليل (راجع الأذونات وهذا الدليل فارغ).'
 );
 ?>

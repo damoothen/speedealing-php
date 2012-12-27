@@ -47,9 +47,11 @@ $sendings = array(
 		'StatusSendingCanceled' => 'Ακυρώθηκε',
 		'StatusSendingDraft' => 'Σχέδιο',
 		'StatusSendingValidated' => 'Επικυρωμένη (προϊόντα με πλοίο ή που έχουν ήδη αποσταλεί)',
+		'StatusSendingProcessed' => 'Processed',
 		'StatusSendingCanceledShort' => 'Ακυρώθηκε',
 		'StatusSendingDraftShort' => 'Σχέδιο',
 		'StatusSendingValidatedShort' => 'Επικυρωμένη',
+		'StatusSendingProcessedShort' => 'Processed',
 		'SendingSheet' => 'Αποστολή φύλλο',
 		'Carriers' => 'Carriers',
 		'Carrier' => 'Μεταφορέας',
@@ -70,12 +72,15 @@ $sendings = array(
 		'SendShippingRef' => 'Αποστολή %s ναυτιλία',
 		'ActionsOnShipping' => 'Acions στη ναυτιλία',
 		'LinkToTrackYourPackage' => 'Link για να παρακολουθείτε το πακέτο σας',
+		'ShipmentCreationIsDoneFromOrder' => 'Προς το παρόν, η δημιουργία ενός νέου αποστολή γίνεται από την κάρτα τάξη.',
+		'RelatedShippings' => 'Related shippings',
+		// Sending methods
 		'SendingMethodCATCH' => 'Πιάσε από τον πελάτη',
 		'SendingMethodTRANS' => 'Μεταφορέας',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		// ModelDocument
 		'DocumentModelSirocco' => 'Απλό μοντέλο έγγραφο για αποδεικτικά παράδοσης',
 		'DocumentModelTyphon' => 'Πληρέστερη πρότυπο έγγραφο για αποδεικτικά παράδοσης (logo. ..)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Σταθερή EXPEDITION_ADDON_NUMBER δεν ορίζεται',
-		'ShipmentCreationIsDoneFromOrder' => 'Προς το παρόν, η δημιουργία ενός νέου αποστολή γίνεται από την κάρτα τάξη.',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Σταθερή EXPEDITION_ADDON_NUMBER δεν ορίζεται'
 );
 ?>

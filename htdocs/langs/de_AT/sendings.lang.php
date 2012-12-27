@@ -81,6 +81,6 @@ $sendings = array(
 		// ModelDocument
 		'DocumentModelSirocco' => 'Einfache Dokumentvorlage Scirocco für die Lieferungscheine',
 		'DocumentModelTyphon' => 'Vollständig Dokumentvorlage für die Lieferungscheine (Logo, ...)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constant EXPEDITION_ADDON_NUMBER not defined',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constant EXPEDITION_ADDON_NUMBER not defined'
 );
 ?>

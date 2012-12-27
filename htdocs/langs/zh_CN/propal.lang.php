@@ -25,6 +25,7 @@ $propal = array(
 		'Prop' => '商业建议',
 		'CommercialProposal' => '商业建议',
 		'CommercialProposals' => '商业建议',
+		'ProposalCard' => '建议卡',
 		'NewProp' => '新的商业建议',
 		'NewProposal' => '新的商业建议',
 		'NewPropal' => '新建议',
@@ -92,22 +93,24 @@ $propal = array(
 		'UseCustomerContactAsPropalRecipientIfExist' => '使用客户联系地址，如果定义的，而不是作为提案的第三党的地址收件人地址',
 		'ClonePropal' => '克隆的商业建议',
 		'ConfirmClonePropal' => '你确定要克隆这种商业建议<b>％s吗</b> ？',
+		'ConfirmReOpenProp' => '你确定你要打开商业建议<b>%s</b>吗？',
 		'ProposalsAndProposalsLines' => '商业建议和行',
 		'ProposalLine' => '建议行',
-		'TypeContact_propal_internal_SALESREPFOLL' => '代表随访的建议',
-		'TypeContact_propal_external_BILLING' => '客户发票接触',
-		'TypeContact_propal_external_CUSTOMER' => '客户联系随访的建议',
-		'DocModelAzurDescription' => '一个完整的方案模型（logo. ..）',
-		'DocModelJauneDescription' => '特贾恩方案模型',
-		'ProposalCard' => '建议卡',
-		'ConfirmReOpenProp' => '你确定你要打开商业建议<b>%s</b>吗？',
 		'AvailabilityPeriod' => '可用性延迟',
 		'SetAvailability' => '设置可用性延迟',
 		'AfterOrder' => '订单后',
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => '即时',
 		'AvailabilityTypeAV_1W' => '1个星期',
 		'AvailabilityTypeAV_2W' => '2个星期',
 		'AvailabilityTypeAV_3W' => '3个星期',
 		'AvailabilityTypeAV_1M' => '1个月',
+		////////// Types de contacts //////////
+		'TypeContact_propal_internal_SALESREPFOLL' => '代表随访的建议',
+		'TypeContact_propal_external_BILLING' => '客户发票接触',
+		'TypeContact_propal_external_CUSTOMER' => '客户联系随访的建议',
+		// Document models
+		'DocModelAzurDescription' => '一个完整的方案模型（logo. ..）',
+		'DocModelJauneDescription' => '特贾恩方案模型'
 );
 ?>

@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => '捐款',
 		'Donations' => '捐赠',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => '捐赠者',
 		'Donors' => '捐助者',
 		'AddDonation' => '添加捐赠',
@@ -36,11 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => '草案',
 		'DonationStatusPromiseValidatedShort' => '验证',
 		'DonationStatusPaidShort' => '收稿',
-		'ValidPromise' => '验证承诺',
+		'ValidPromess' => '验证承诺',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => '建立收据',
 		'DonationsModels' => '捐赠收据的文件模式',
-		'ValidPromess' => '验证承诺',
 		'LastModifiedDonations' => '最后%s修改捐款',
 		'SearchADonation' => '搜索捐赠',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

@@ -31,6 +31,7 @@ $paybox = array(
 		'YouWillBeRedirectedOnPayBox' => 'Þú verður vísað á að tryggja Paybox síðu til inntak þú upplýsingar um greiðslukort',
 		'PleaseBePatient' => 'Vinsamlegast sýndu þolinmæði',
 		'Continue' => 'Næsti',
+		'ToOfferALinkForOnlinePayment' => 'Slóð fyrir %s greiðslu',
 		'ToOfferALinkForOnlinePaymentOnOrder' => 'URL að bjóða upp á %s inni greiðslu notandi tengi fyrir röð',
 		'ToOfferALinkForOnlinePaymentOnInvoice' => 'URL að bjóða upp á %s inni greiðslu notandi tengi fyrir reikning',
 		'ToOfferALinkForOnlinePaymentOnContractLine' => 'URL að bjóða upp á %s inni greiðslu notandi tengi fyrir samning línu',
@@ -38,8 +39,6 @@ $paybox = array(
 		'ToOfferALinkForOnlinePaymentOnMemberSubscription' => 'URL að bjóða upp á %s inni greiðslu notandi tengi fyrir aðild áskrift',
 		'YouCanAddTagOnUrl' => 'Þú getur einnig bætt við url stika <b>& tag = <i>gildi</i></b> til allir af þessir URL (einungis fyrir frjáls greiðslu) til að bæta tag þína eigin greiðslu athugasemd.',
 		'SetupPayBoxToHavePaymentCreatedAutomatically' => 'Skipulag PayBox með url <b>%s</b> að hafa greiðslu búinn til sjálfkrafa þegar staðfest með því að paybox.',
-		'MessageKO' => 'Skilaboð á niður greiðslu aftur síðu',
-		'ToOfferALinkForOnlinePayment' => 'Slóð fyrir %s greiðslu',
 		'YourPaymentHasBeenRecorded' => 'Þessi síða staðfestir að greiðsla hefur verið skráð. Þakka þér.',
 		'YourPaymentHasNotBeenRecorded' => 'Þú greiðsla hefur ekki verið skráð og viðskipti hefur verið aflýst. Þakka þér.',
 		'AccountParameter' => 'Skráningin breytur',
@@ -49,5 +48,6 @@ $paybox = array(
 		'VendorName' => 'Nafn seljanda',
 		'CSSUrlForPaymentForm' => 'CSS stíll lak url fyrir formi greiðslu',
 		'MessageOK' => 'Skilaboð á staðfest greiðslu aftur síðu',
+		'MessageKO' => 'Skilaboð á niður greiðslu aftur síðu'
 );
 ?>

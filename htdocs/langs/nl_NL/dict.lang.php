@@ -262,12 +262,13 @@ $dict = array(
 		'CountryME' => 'Montenegro',
 		'CountryBL' => 'Saint Barthelemy',
 		'CountryMF' => 'Saint Martin',
-		////////// Civilities ////////// = 
+		////////// Civilities //////////
 		'CivilityMME' => 'Mej.',
 		'CivilityMR' => 'Dhr.',
 		'CivilityMLE' => 'Mevr.',
 		'CivilityMTRE' => 'Meester',
-		////////// Currencies ////////// = 
+		'CivilityDR' => 'Doctor',
+		////////// Currencies //////////
 		'Currencyeuros' => 'Euro',
 		'CurrencyAUD' => 'Australische Dollars',
 		'CurrencySingAUD' => 'Australische Dollar',
@@ -291,22 +292,21 @@ $dict = array(
 		'CurrencySingMUR' => 'Mauritius rupee',
 		'CurrencyNOK' => 'Noorse kronen',
 		'CurrencySingNOK' => 'Noorse kroon',
-		'CurrencySUR' => 'Roebels',
-		'CurrencySingSUR' => 'Roebel',
 		'CurrencyTND' => 'Tunisian dinars',
 		'CurrencySingTND' => 'Tunisian dinar',
-		'CurrencyTRL' => 'Turkse lira',
-		'CurrencySingTRL' => 'Turkse lira',
 		'CurrencyUSD' => 'US Dollars',
 		'CurrencySingUSD' => 'US dollar',
+		'CurrencyUAH' => 'Hryvnia',
+		'CurrencySingUAH' => 'Hryvnia',
 		'CurrencyXAF' => 'Francs CFA BEAC',
 		'CurrencySingXAF' => 'Franc CFA BEAC',
 		'CurrencyXOF' => 'Francs CFA BCEAO',
 		'CurrencySingXOF' => 'Franc CFA BCEAO',
 		'CurrencyXPF' => 'Francs CFP',
 		'CurrencySingXPF' => 'Franc CFP',
-		'CurrencyUAH' => 'Hryvnia',
-		'CurrencySingUAH' => 'Hryvnia',
+		'CurrencyCentSingEUR' => 'cent',
+		'CurrencyThousandthSingTND' => 'thousandth',
+		//////// Input reasons //////////
 		'DemandReasonTypeSRC_INTE' => 'Internet',
 		'DemandReasonTypeSRC_CAMP_MAIL' => 'Mailing campagne',
 		'DemandReasonTypeSRC_CAMP_EMAIL' => 'E-mailen campagne',
@@ -314,5 +314,9 @@ $dict = array(
 		'DemandReasonTypeSRC_CAMP_FAX' => 'Fax-campagne',
 		'DemandReasonTypeSRC_COMM' => 'Commercieel contact',
 		'DemandReasonTypeSRC_SHOP' => 'Winkel contact',
+		'DemandReasonTypeSRC_WOM' => 'Word of mouth',
+		'DemandReasonTypeSRC_PARTNER' => 'Partner',
+		'DemandReasonTypeSRC_EMPLOYEE' => 'Employee',
+		'DemandReasonTypeSRC_SPONSORING' => 'Sponsorship'
 );
 ?>

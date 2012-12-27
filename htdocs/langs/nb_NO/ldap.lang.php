@@ -39,10 +39,10 @@ $ldap = array(
 		'LDAPFieldLastSubscriptionAmount' => 'Siste abonnementsbeløp',
 		'SynchronizeDolibarr2Ldap' => 'Synkroniser bruker (Dolibarr -> LDAP)',
 		'UserSynchronized' => 'Brukeren er synkronisert',
-		'ForceSynchronize' => 'Tving synkronisering Dolibarr -> LDAP',
-		'ErrorFailedToReadLDAP' => 'Kunne ikke lese LDAP-databasen. Sjekk LDAP-modulens innstillinger og databasetilgjengelighet.',
 		'GroupSynchronized' => 'Gruppe synkronisert',
 		'MemberSynchronized' => 'Medlem synkronisert',
 		'ContactSynchronized' => 'Kontakt synkronisert',
+		'ForceSynchronize' => 'Tving synkronisering Dolibarr -> LDAP',
+		'ErrorFailedToReadLDAP' => 'Kunne ikke lese LDAP-databasen. Sjekk LDAP-modulens innstillinger og databasetilgjengelighet.'
 );
 ?>

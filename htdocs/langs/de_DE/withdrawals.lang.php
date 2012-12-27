@@ -64,7 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => 'Ablehnungsgrund',
 		'RefusedInvoicing' => 'Ablehnung in Rechnung stellen',
 		'NoInvoiceRefused' => 'Ablehnung nicht in Rechnung stellen',
-		'InvoiceRefused' => 'Ablehnung in Rechnung stellen',
+		'InvoiceRefused' => 'Rechnung abgelehnt',
 		'Status' => 'Status',
 		'StatusUnknown' => 'Unbekannt',
 		'StatusWaiting' => 'Wartend',
@@ -97,7 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'Zeige Abbuchung',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'Wenn eine Rechnung mindestens eine noch zu bearbeitende Verbuchung vorweist, kann diese nicht als bezahlt markiert werden.',
 		'DoStandingOrdersBeforePayments' => 'Dies erlaubt Ihnen, einen Dauerauftrag anzulegen.',
-		////// Notifications 
+		////// Notifications
 		'InfoCreditSubject' => 'Zahlung des Dauerauftrags %s',
 		'InfoCreditMessage' => 'Der Dauerauftrag %s wurde von der Bank gebucht<br>Zahlungsdaten: %s',
 		'InfoTransSubject' => 'Übertragung des Dauerauftrags %s',
@@ -106,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'Dies ist eine automatisierte Nachricht von Dolibarr',
 		'InfoRejectSubject' => 'Dauerauftrag abgelehnt',
 		'InfoRejectMessage' => 'Hallo,<br><br>der Dauerauftrag zur Rechnung %s der Firma %s, über den Betrag von %s wurde abgelehnt.<br><br>--<br>%$',
-		'ModeWarning' => 'Echtzeit-Modus wurde nicht aktiviert, wir stoppen nach der Simulation.',
+		'ModeWarning' => 'Echtzeit-Modus wurde nicht aktiviert, wir stoppen nach der Simulation.'
 );
 ?>

@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Nu a reuşit să se conecteze la serverul FTP (%s server, %s port)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Nu a reuşit să login la serverul FTP cu login definite / parolă',
 		'FTPFailedToRemoveFile' => 'Nu reuşeau să îndepărteze <b>%s</b> fişier.',
-		'FTPFailedToRemoveDir' => 'Nu am putut şterge directorul <b>%s</b> (verificaţi permisiunile şi că directorul este gol).',
+		'FTPFailedToRemoveDir' => 'Nu am putut şterge directorul <b>%s</b> (verificaţi permisiunile şi că directorul este gol).'
 );
 ?>

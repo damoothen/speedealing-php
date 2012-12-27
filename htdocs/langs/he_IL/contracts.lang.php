@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'תוקף החוזה',
 		'ActivateService' => 'הפעלת שירות',
 		'ConfirmActivateService' => 'האם אתה בטוח שברצונך להפעיל את השירות הזה עם <b>%s</b> התאריך?',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'חוזה תאריך',
 		'DateServiceActivate' => 'הפעלת שירות תאריך',
 		'DateServiceUnactivate' => 'שחרור משרות שירות תאריך',
@@ -69,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'רשימת השירותים הפועלים',
 		'NotActivatedServices' => 'שירותים לא פעילים (בין תוקף חוזי)',
 		'BoardNotActivatedServices' => 'כדי להפעיל שירותים בין חוזים תוקף',
-		'LastContracts' => '% החוזים האחרונים',
+		'LastContracts' => '%s השתנה לאחרונה על חוזים',
 		'LastActivatedServices' => '%s האחרונים מופעלים שירותים',
 		'LastModifiedServices' => '%s השתנה לאחרונה שירותים',
 		'EditServiceLine' => 'עריכת שירות מקוון',
@@ -101,11 +102,12 @@ $contracts = array(
 		'ExpiredSince' => 'תאריך תפוגה',
 		'RelatedContracts' => 'בנושא חוזים',
 		'NoExpiredServices' => 'אין שירותים פעילים פג',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'נציג מכירות חתימת החוזה',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'מכירות הבאה, נציג את החוזה',
 		'TypeContact_contrat_external_BILLING' => 'חיוב הלקוח קשר',
 		'TypeContact_contrat_external_CUSTOMER' => 'מעקב לקוחות צור קשר',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'חתימת הלקוח קשר חוזה',
-		'Error_CONTRACT_ADDON_NotDefined' => 'CONTRACT_ADDON קבוע לא מוגדר',
+		'Error_CONTRACT_ADDON_NotDefined' => 'CONTRACT_ADDON קבוע לא מוגדר'
 );
 ?>

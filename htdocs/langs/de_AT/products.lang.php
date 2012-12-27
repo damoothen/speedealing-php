@@ -196,6 +196,6 @@ $products = array(
 		'HelpAddThisServiceCard' => 'This option allows you to create or clone a service if it does not exist.',
 		'CurrentProductPrice' => 'Current price',
 		'AlwaysUseNewPrice' => 'Always use current price of product/service',
-		'AlwaysUseFixedPrice' => 'Use the fixed price',
+		'AlwaysUseFixedPrice' => 'Use the fixed price'
 );
 ?>

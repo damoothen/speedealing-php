@@ -34,6 +34,8 @@ $compta = array(
 		'AccountsGeneral' => 'Hesaplar',
 		'Account' => 'Hesap',
 		'Accounts' => 'Hesaplar',
+		'Accountparent' => 'Account parent',
+		'Accountsparent' => 'Accounts parent',
 		'BillsForSuppliers' => 'Tedarikçi faturaları',
 		'Income' => 'Gelir',
 		'Outcome' => 'Gider',
@@ -136,7 +138,7 @@ $compta = array(
 		'VATReportByQuartersInDueDebtMode' => 'Alınan ve ödenen müşteri KDV oranı raporu (KDV oranı)',
 		'SeeVATReportInInputOutputMode' => 'Standart bir hesaplama için <b>%sKDV kapsamı%s</b> raporuna bak',
 		'SeeVATReportInDueDebtMode' => 'Akış seçenekli bir hesaplama için <b>%sKDV akışı%s</b> raporuna bak',
-		'RulesVATIn' => 'Hizmetler için, rapor ödeme tarihindeki alınan ya da yayınlanam KDV düzenlemelerini içerir.<br>- Maddi varlıklar için, fatura tarihi baz alınarak fatura KDV lerini içerir.',
+		'RulesVATInServices' => '- For services, the report includes the VAT regulations actually received or issued on the basis of the date of payment.<br>- For material assets, it includes the VAT invoices on the basis of the invoice date.',
 		'RulesVATInProducts' => '- Maddi varlıklar için, fatura tarihi baz alınarak fatura KDV lerini içerir.',
 		'RulesVATDueServices' => '- Hizmetler için, ödenmiş ya da ödenmemiş fatura tarihini baz alan rapor fatura KDV lerini içerir.',
 		'RulesVATDueProducts' => '- Maddi varlıklar için, fatura tarihi baz alınarak fatura KDV lerini içerir.',
@@ -159,5 +161,9 @@ $compta = array(
 		'AddRemind' => 'Sevkedilebilir miktar',
 		'RemainToDivide' => 'Gönderilmek üzere kalır:',
 		'WarningDepositsNotIncluded' => 'Teminat faturaları bu muhasebe modülü ile bu sürümde içerilmez.',
+		'DatePaymentTermCantBeLowerThanObjectDate' => 'Payment term date can\'t be lower than object date.',
+		'Pcg_version' => 'Pcg version',
+		'Pcg_type' => 'Pcg type',
+		'Pcg_subtype' => 'Pcg subtype'
 );
 ?>

@@ -152,11 +152,16 @@ $banks = array(
 		'PaymentNumberUpdateFailed' => 'Makse number ei saa uuendatud',
 		'PaymentDateUpdateSucceeded' => 'Makse kuupäev uuendamiseks edukalt',
 		'PaymentDateUpdateFailed' => 'Makse kuupäev ei saa uuendatud',
+		'Transactions' => 'Transactions',
 		'BankTransactionLine' => 'Pangaoperatsioon',
 		'AllAccounts' => 'Kõik pank / raha raamatupidamise',
 		'BackToAccount' => 'Tagasi oma konto',
 		'ShowAllAccounts' => 'Näita kõik kontod',
 		'FutureTransaction' => 'Tehing Tulevik. Kuidagi lepitada.',
 		'SelectChequeTransactionAndGenerate' => 'Vali / filtreerida kontrolli et: kaasata kontrolli tagatisraha laekumise ja vajuta &quot;Create&quot;.',
+		'InputReceiptNumber' => 'Choose the bank statement related with the conciliation. Use a sortable numeric value (such as, YYYYMM)',
+		'EventualyAddCategory' => 'Eventually, specify a category in which to classify the records',
+		'ToConciliate' => 'To conciliate?',
+		'ThenCheckLinesAndConciliate' => 'Then, check the lines present in the bank statement and click'
 );
 ?>

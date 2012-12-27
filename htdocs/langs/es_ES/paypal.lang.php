@@ -31,6 +31,6 @@ $paypal = array(
 		'PAYPAL_ADD_PAYMENT_URL' => 'Añadir la url del pago Paypal al enviar un documento por e-mail',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'Dirección e-mail para las notificaciones instantáneas de pago (IPN)',
 		'PredefinedMailContentLink' => 'Puede hacer clic en el enlace seguro de abajo para realizar su pago a través de PayPal\n\n%s\n\n',
-		'YouAreCurrentlyInSandboxMode' => 'Actualmente se encuentra en modo "sandbox"',
+		'YouAreCurrentlyInSandboxMode' => 'Actualmente se encuentra en modo "sandbox"'
 );
 ?>

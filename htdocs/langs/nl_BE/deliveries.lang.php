@@ -28,13 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Stel verzenddatum in',
 		'ValidateDeliveryReceipt' => 'Valideer ontvangstbewijs',
 		'ValidateDeliveryReceiptConfirm' => 'Weet u zeker dat u dit ontvangstbewijs wilt valideren?',
+		'DeleteDeliveryReceipt' => 'Delete delivery receipt',
+		'DeleteDeliveryReceiptConfirm' => 'Are you sure you want to delete delivery receipt <b>%s</b> ?',
 		'DeliveryMethod' => 'Leveringsmethode',
 		'TrackingNumber' => 'Volgnummer',
+		'DeliveryNotValidated' => 'Delivery not validated',
+		// merou PDF model
 		'NameAndSignature' => 'Naam en handtekening:',
 		'ToAndDate' => 'Aan___________________________________ op ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'Heeft de bovenvermelde goederen in goede staat ontvangen,',
 		'Deliverer' => 'Verlosser:',
 		'Sender' => 'Afzender',
-		'Recipient' => 'Ontvanger',
+		'Recipient' => 'Ontvanger'
 );
 ?>

@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'Validate a contract',
 		'ActivateService' => 'Ενεργοποίηση Υπηρεσίας',
 		'ConfirmActivateService' => 'Are you sure you want to activate this service with date <b>%s</b> ?',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'Contract date',
 		'DateServiceActivate' => 'Service activation date',
 		'DateServiceUnactivate' => 'Service deactivation date',
@@ -100,12 +101,13 @@ $contracts = array(
 		'PaymentRenewContractId' => 'Renew contract line (number %s)',
 		'ExpiredSince' => 'Expiration date',
 		'RelatedContracts' => 'Σχετιζόμενα συμβόλαια',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Σταθερή CONTRACT_ADDON δεν ορίζεται',
+		'NoExpiredServices' => 'Δεν έληξε ενεργές υπηρεσίες',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'Σύμβαση πώλησης υπογραφή εκπροσώπου',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'Πωλήσεις εκπρόσωπος παρακολούθηση των συμβάσεων',
 		'TypeContact_contrat_external_BILLING' => 'Χρέωση επαφή με τον πελάτη',
 		'TypeContact_contrat_external_CUSTOMER' => 'Παρακολούθηση της επαφής με τον πελάτη',
-		'NoExpiredServices' => 'Δεν έληξε ενεργές υπηρεσίες',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Υπογραφή σύμβασης επαφή με τον πελάτη',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Σταθερή CONTRACT_ADDON δεν ορίζεται'
 );
 ?>

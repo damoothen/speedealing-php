@@ -43,6 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => '会员同步',
 		'ContactSynchronized' => '联系同步',
 		'ForceSynchronize' => '力同步Dolibarr - &gt;的LDAP',
-		'ErrorFailedToReadLDAP' => '无法读取LDAP数据库。检查的LDAP模块设置和数据库获取。',
+		'ErrorFailedToReadLDAP' => '无法读取LDAP数据库。检查的LDAP模块设置和数据库获取。'
 );
 ?>

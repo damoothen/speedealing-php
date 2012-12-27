@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Þú getur hringt í einn þjálfara preselected eftir Dolibarr fyrir þitt tungumál ( %s ) með því að smella Búnaður hans (staða og hámarksverð eru sjálfkrafa uppfærðar):',
 		'PossibleLanguages' => 'Styður tungumálum',
 		'MakeADonation' => 'Hjálp Dolibarr verkefni, gera a framlag',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

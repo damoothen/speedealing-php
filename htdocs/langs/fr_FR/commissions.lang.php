@@ -44,6 +44,6 @@ $commissions = array(
 		'EndDate' => 'Date de fin',
 		'Launch' => 'Démarrer',
 		'AgentContactType' => 'Type de contact commissionné',
-		'AgentContactTypeDetails' => 'Permet de définir le type de contact associé aux factures qui sera associé aux agents commerciaux',
+		'AgentContactTypeDetails' => 'Permet de définir le type de contact associé aux factures qui sera associé aux agents commerciaux'
 );
 ?>

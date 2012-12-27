@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => 'Beállítás linket külső weboldal',
-		'ExternalSiteURL' => 'Külső oldal URL',
+		'ExternalSiteURL' => 'Külső oldal URL'
 );
 ?>

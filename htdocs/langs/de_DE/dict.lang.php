@@ -314,5 +314,9 @@ $dict = array(
 		'DemandReasonTypeSRC_CAMP_FAX' => 'Fax Kampagne',
 		'DemandReasonTypeSRC_COMM' => 'Kaufmännischer Ansprechpartner',
 		'DemandReasonTypeSRC_SHOP' => 'Shop-Kontakt',
+		'DemandReasonTypeSRC_WOM' => 'Word of mouth',
+		'DemandReasonTypeSRC_PARTNER' => 'Partner',
+		'DemandReasonTypeSRC_EMPLOYEE' => 'Employee',
+		'DemandReasonTypeSRC_SPONSORING' => 'Sponsorship'
 );
 ?>

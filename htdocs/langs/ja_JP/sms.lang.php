@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => '残りの文字のNb',
 		'SmsInfoNumero' => '（フォーマット国際例：33899701761）',
 		'DelayBeforeSending' => '送信する前に、遅延時間（分）',
-		'SmsNoPossibleRecipientFound' => '利用可能なターゲットはありません。 SMSプロバイダの設定を確認してください。',
+		'SmsNoPossibleRecipientFound' => '利用可能なターゲットはありません。 SMSプロバイダの設定を確認してください。'
 );
 ?>

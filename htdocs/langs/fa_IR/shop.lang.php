@@ -24,6 +24,6 @@ $shop = array(
 		'LastCustomers' => 'آخر الزبائن',
 		'OSCommerceShop' => 'OSCommerce متجر',
 		'OSCommerce' => 'OSCommerce',
-		'AddProd' => 'بيع على الانترنت',
+		'AddProd' => 'بيع على الانترنت'
 );
 ?>

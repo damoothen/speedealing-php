@@ -15,16 +15,17 @@
  */
 
 $propal = array(
-		// 2012      Vinícius Nogueira        <viniciusvgn@gmail.com>
 		'CHARSET' => 'UTF-8',
 		'Proposals' => 'Orçamentos',
 		'Proposal' => 'Orçamento',
+		'ProposalShort' => 'Proposal',
 		'ProposalsDraft' => 'Orçamentos Rascunho',
 		'ProposalDraft' => 'Orçamento Rascunho',
+		'ProposalsOpened' => 'Orçamentos Abertos',
 		'Prop' => 'Orçamentos',
 		'CommercialProposal' => 'Orçamento',
 		'CommercialProposals' => 'Orçamentos',
-		'ProposalsOpened' => 'Orçamentos Abertos',
+		'ProposalCard' => 'Proposal card',
 		'NewProp' => 'Novo Orçamento',
 		'NewProposal' => 'Novo Orçamento',
 		'NewPropal' => 'Novo Orçamento',
@@ -82,8 +83,6 @@ $propal = array(
 		'CloseAs' => 'Fechado como',
 		'ClassifyBilled' => 'Classificar Faturado',
 		'BuildBill' => 'Criar Fatura',
-		'RelatedBill' => 'Fatura Associada',
-		'RelatedBills' => 'Faturas associadas',
 		'ErrorPropalNotFound' => 'Orçamento %s Inexistente',
 		'Estimate' => 'Orçamento:',
 		'EstimateShort' => 'Orç.',
@@ -94,10 +93,24 @@ $propal = array(
 		'UseCustomerContactAsPropalRecipientIfExist' => 'Utilizar endereço contato de seguimento de cliente definido em vez do endereço do Fornecedor como destinatário dos Orçamentos',
 		'ClonePropal' => 'Colonar Proposta Comercial',
 		'ConfirmClonePropal' => 'Tem a certeza que deseja colonar a proposta comercial <b>%s</b>?',
+		'ConfirmReOpenProp' => 'Are you sure you want to open back the commercial proposal <b>%s</b> ?',
 		'ProposalsAndProposalsLines' => 'Propostas para clientes e diretrizes para apresentação de propostas',
 		'ProposalLine' => 'Linha da Proposta',
-		// Documents models
+		'AvailabilityPeriod' => 'Availability delay',
+		'SetAvailability' => 'Set availability delay',
+		'AfterOrder' => 'after order',
+		////////// Availability //////////
+		'AvailabilityTypeAV_NOW' => 'Immediate',
+		'AvailabilityTypeAV_1W' => '1 week',
+		'AvailabilityTypeAV_2W' => '2 weeks',
+		'AvailabilityTypeAV_3W' => '3 weeks',
+		'AvailabilityTypeAV_1M' => '1 month',
+		////////// Types de contacts //////////
+		'TypeContact_propal_internal_SALESREPFOLL' => 'Representative following-up proposal',
+		'TypeContact_propal_external_BILLING' => 'Customer invoice contact',
+		'TypeContact_propal_external_CUSTOMER' => 'Customer contact following-up proposal',
+		// Document models
 		'DocModelAzurDescription' => 'Modelo de orçamento completo (logo...)',
-		'DocModelJauneDescription' => 'Modelo de Orçamento Jaune',
+		'DocModelJauneDescription' => 'Modelo de Orçamento Jaune'
 );
 ?>

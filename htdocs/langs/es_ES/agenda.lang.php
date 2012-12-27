@@ -29,8 +29,8 @@ $agenda = array(
 		'MyEvents' => 'Mis eventos',
 		'OtherEvents' => 'Otros eventos',
 		'ListOfActions' => 'Listado de eventos',
-		'EventOnFullDay' => 'Evento para todo el día',
 		'Location' => 'Localización',
+		'EventOnFullDay' => 'Evento para todo el día',
 		'SearchAnAction' => 'Buscar un evento/tarea',
 		'MenuToDoActions' => 'Eventos incompletos',
 		'MenuDoneActions' => 'Eventos terminados',
@@ -88,6 +88,6 @@ $agenda = array(
 		'ExtSitesNbOfAgenda' => 'Número de calendarios',
 		'AgendaExtNb' => 'Calendario nº %s',
 		'ExtSiteUrlAgenda' => 'Url de acceso al archivo .ical',
-		'ExtSiteNoLabel' => 'Sin descripción',
+		'ExtSiteNoLabel' => 'Sin descripción'
 );
 ?>

@@ -262,10 +262,13 @@ $dict = array(
 		'CountryME' => 'Montenegro',
 		'CountryBL' => 'Saint Barthelemy',
 		'CountryMF' => 'Saint Martin',
+		////////// Civilities //////////
 		'CivilityMME' => 'Pr.',
 		'CivilityMR' => 'Hr.',
 		'CivilityMLE' => 'Proua',
 		'CivilityMTRE' => 'Kapten',
+		'CivilityDR' => 'Doctor',
+		////////// Currencies //////////
 		'Currencyeuros' => 'Krooni',
 		'CurrencyAUD' => 'AU dollarit',
 		'CurrencySingAUD' => 'AU Dollar',
@@ -301,6 +304,9 @@ $dict = array(
 		'CurrencySingXOF' => 'CFA frank BCEAO',
 		'CurrencyXPF' => 'CFP frank',
 		'CurrencySingXPF' => 'CFP frank',
+		'CurrencyCentSingEUR' => 'cent',
+		'CurrencyThousandthSingTND' => 'thousandth',
+		//////// Input reasons //////////
 		'DemandReasonTypeSRC_INTE' => 'Internet',
 		'DemandReasonTypeSRC_CAMP_MAIL' => 'Mailing kampaania',
 		'DemandReasonTypeSRC_CAMP_EMAIL' => 'Elekter kampaania',
@@ -308,5 +314,9 @@ $dict = array(
 		'DemandReasonTypeSRC_CAMP_FAX' => 'Faks kampaania',
 		'DemandReasonTypeSRC_COMM' => 'Commercial kontakt',
 		'DemandReasonTypeSRC_SHOP' => 'Pood Kontakt',
+		'DemandReasonTypeSRC_WOM' => 'Word of mouth',
+		'DemandReasonTypeSRC_PARTNER' => 'Partner',
+		'DemandReasonTypeSRC_EMPLOYEE' => 'Employee',
+		'DemandReasonTypeSRC_SPONSORING' => 'Sponsorship'
 );
 ?>

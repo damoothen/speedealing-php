@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'Einen Vertrag freigeben',
 		'ActivateService' => 'Service aktivieren',
 		'ConfirmActivateService' => 'Möchten Sie diesen Service wirklich mit Datum <b>%s</b> aktivieren?',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'Vertragsdatum',
 		'DateServiceActivate' => 'Service-Aktivierungsdatum',
 		'DateServiceUnactivate' => 'Service-Deaktivierungsdatum',
@@ -69,7 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Liste aktiver Services',
 		'NotActivatedServices' => 'Inaktive Services (in freigegebenen Verträgen)',
 		'BoardNotActivatedServices' => 'Zu aktivierende Services (in freigegebenen Verträgen)',
-		'LastContracts' => '%s neueste Verträge',
+		'LastContracts' => '%s zuletzt geänderte Verträge',
 		'LastActivatedServices' => '%s zuletzt aktivierte Services',
 		'LastModifiedServices' => '%s zuletzt bearbeitete Services',
 		'EditServiceLine' => 'Service-Position bearbeiten',
@@ -107,6 +108,6 @@ $contracts = array(
 		'TypeContact_contrat_external_BILLING' => 'Rechnungskontakt des Kunden',
 		'TypeContact_contrat_external_CUSTOMER' => 'Nachverfolgung durch Kundenkontakt',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Vertragsunterzeichnung durch Kundenkontakt',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Die Konstante CONTRACT_ADDON ist nicht definiert',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Die Konstante CONTRACT_ADDON ist nicht definiert'
 );
 ?>

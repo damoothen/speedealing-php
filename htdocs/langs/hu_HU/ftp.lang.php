@@ -25,6 +25,6 @@ $ftp = array(
 		'FailedToConnectToFTPServer' => 'Nem sikerült csatlakozni az FTP szerverhez (szerver %s, port %s)',
 		'FailedToConnectToFTPServerWithCredentials' => 'Nem sikerült bejelentkezni FTP szerverre a megadott felhasználó névvel/jelszóval.',
 		'FTPFailedToRemoveFile' => 'Nem sikerült eltávolítani: <b>%s</b>.',
-		'FTPFailedToRemoveDir' => 'Nem sikerült eltávolítani <b>%s</b> (Engedélyek? Üres a könyvtár?).',
+		'FTPFailedToRemoveDir' => 'Nem sikerült eltávolítani <b>%s</b> (Engedélyek? Üres a könyvtár?).'
 );
 ?>

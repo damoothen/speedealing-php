@@ -99,15 +99,18 @@ $propal = array(
 		'AvailabilityPeriod' => '可用性の遅延',
 		'SetAvailability' => '可用性の遅延を設定',
 		'AfterOrder' => 'ご注文後',
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => '即時の',
 		'AvailabilityTypeAV_1W' => '1週間',
 		'AvailabilityTypeAV_2W' => '2週間',
 		'AvailabilityTypeAV_3W' => '3週間',
 		'AvailabilityTypeAV_1M' => '1ヶ月',
+		////////// Types de contacts //////////
 		'TypeContact_propal_internal_SALESREPFOLL' => '代表的なフォローアップの提案',
 		'TypeContact_propal_external_BILLING' => '顧客の請求書の連絡先',
 		'TypeContact_propal_external_CUSTOMER' => '顧客の連絡先フォローアップ提案',
+		// Document models
 		'DocModelAzurDescription' => '完全な提案モデル（logo. ..）',
-		'DocModelJauneDescription' => 'Jauneの提案モデル',
+		'DocModelJauneDescription' => 'Jauneの提案モデル'
 );
 ?>

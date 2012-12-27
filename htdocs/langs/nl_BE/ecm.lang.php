@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'Root',
 		'ECMNewSection' => 'Nieuwe directorie',
 		'ECMAddSection' => 'Maak manueel een directorie aan',
-		'ECMNewSection' => 'Nieuwe manuele directorie',
 		'ECMNewDocument' => 'Nieuw document',
 		'ECMCreationDate' => 'Aanmaakdatum',
 		'ECMNbOfFilesInDir' => 'Aantal bestanden in de directorie',
@@ -53,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Directories van documenten',
 		'ECMTypeManual' => 'Manueel',
 		'ECMTypeAuto' => 'Automatisch',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Documenten in verband met derden',
 		'ECMDocsByProposals' => 'Documenten in verband met voorstellen',
 		'ECMDocsByOrders' => 'Documenten in verband met klantenbestellingen',
@@ -67,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Verwijderden niet mogelijk omdat het een aantal bestanden bevat',
 		'ECMFileManager' => 'Bestandsbeheer',
 		'ECMSelectASection' => 'Selecteer een map op de linker tak-structuur ...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

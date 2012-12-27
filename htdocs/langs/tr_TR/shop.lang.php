@@ -24,6 +24,6 @@ $shop = array(
 		'LastCustomers' => 'Son müşteriler',
 		'OSCommerceShop' => 'OSCommerce mağazası',
 		'OSCommerce' => 'OSCommerce',
-		'AddProd' => 'Çevrimiçi satış',
+		'AddProd' => 'Çevrimiçi satış'
 );
 ?>

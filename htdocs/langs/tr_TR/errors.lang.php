@@ -17,7 +17,7 @@
 $errors = array(
 		'CHARSET' => 'UTF-8',
 		'MenuManager' => 'Menü yöneticisi',
-		// Hatalar
+		// Errors
 		'Error' => 'Hata',
 		'Errors' => 'Hatalar',
 		'ErrorBadEMail' => '%s EPostası yanlış',
@@ -119,7 +119,15 @@ $errors = array(
 		'ErrorBothFieldCantBeNegative' => '%s ve %s alanlarının ikisi birden eksi olamaz',
 		'ErrorWebServerUserHasNotPermission' => 'Web sunucusunu çalıştırmak için kullanılan <b>%s</b> kullanıcı hesabnın bunun için izni yok',
 		'ErrorNoActivatedBarcode' => 'Etkinleştirilmiş barkod türü yok',
-		// Uyarılar
+		'ErrUnzipFails' => 'Failed to unzip %s with ZipArchive',
+		'ErrNoZipEngine' => 'No engine to unzip %s file in this PHP',
+		'ErrorFileMustBeADolibarrPackage' => 'The file %s must be a Dolibarr zip package',
+		'ErrorFileRequired' => 'It takes a package Dolibarr file',
+		'ErrorPhpCurlNotInstalled' => 'The PHP CURL is not installed, this is essential to talk with Paypal',
+		'ErrorFailedToAddToMailmanList' => 'Failed to add record to Mailman list or SPIP base',
+		'ErrorNewVaueCantMatchOldValue' => 'New value can\'t be equal to old one',
+		// Warnings
+		'WarningMandatorySetupNotComplete' => 'Mandatory setup parameters are not yet defined',
 		'WarningSafeModeOnCheckExecDir' => 'Uyarı, PHP seçeneği <b>güvenli_mode</b> açıktır, böylece komut php parametresi <b>güvenli_mode_exec_dir</b> tarafından bildirilen bir dizine saklanabilir.',
 		'WarningAllowUrlFopenMustBeOn' => '<b>allow_url_fopen</b> Parametresi <b>php.ini</b> dosyalayıcısında bu modülün tam olarak çalışması için <b>on</b> ye ayarlanmalıdır. Bu dosyayı el ile değiştirmeniz gerekir.',
 		'WarningBuildScriptNotRunned' => '<b>%s</b> komut dizisi henüz grafik oluşturmak için çalıştırılmadı ya da gösterilecek veri yok.',
@@ -128,7 +136,8 @@ $errors = array(
 		'WarningConfFileMustBeReadOnly' => 'Uyarı, web sunucusu tarafından yapılandırma dosyanızın (<b>htdocs/conf/conf.php</b>)  üzerine üzerine yazılabilir.Bu ciddi bir güvenlik açığıdır. Web sunucusun kullandığı sistem kullanıcısının çalışması için dosyadaki izinleri sadece okumaya değiştirin. Windows ve disk için FAT biçimini kullanıyorsanız, bu dosya sisteminin dosya izinleri eklemek izin vermediğini bilmelisiniz, bu nedenle tamamen güvenli olamaz.',
 		'WarningsOnXLines' => '<b>%s</b> kaynak satırlarındaki uyarılar',
 		'WarningNoDocumentModelActivated' => 'Hiçbir model, belge üretimi için aktive edilmemiştir. Modül kurulumunuzu kontrol edene kadar bir model varsayılan olarak seçilecektir.',
-		'WarningInstallDirExists' => 'Uyarı, kurulum bir kez tamalanırsa,  <b>install.lock</b> dosyasını <b>%s</b> dizinine ekleyerek kur/taşıma aracını devre dışı bırakmalısınız. Bu dosyanın olmaması ciddi bir güvenlik açığıdır.',
+		'WarningLockFileDoesNotExists' => 'Warning, once setup is finished, you must disable install/migrate tools by adding a file <b>install.lock</b> into directory <b>%s</b>. Missing this file is a security hole.',
 		'WarningUntilDirRemoved' => 'Tüm güvenlik uyarıları (sadece admin kullanıcıları tarafından görülebilir) savunmasızlık olduğu sürece etkin olur (ya da MAIN_REMOVE_INSTALL_WARNING değişmezi Kurulum->Diğer menüsünde kuruluma eklenir).',
+		'WarningCloseAlways' => 'Warning, closing is done even if amount differs between source and target elements. Enable this feature with caution.'
 );
 ?>

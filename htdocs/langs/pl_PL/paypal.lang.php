@@ -16,6 +16,9 @@
 
 $paypal = array(
 		'CHARSET' => 'UTF-8',
+		'PaypalSetup' => 'PayPal konfiguracji modułu',
+		'PaypalDesc' => 'Ta oferta moduł stron, umożliwiających płatności w <a href="http://www.paypal.com" target="_blank">systemie PayPal</a> przez klientów. Może to być wykorzystywane do bezpłatnego opłatę lub wpłaty na konkretnego obiektu Dolibarr (faktura, zamówienie, ...)',
+		'PaypalOrCBDoPayment' => 'Zapłać kartą kredytową lub poprzez system Paypal',
 		'PaypalDoPayment' => 'Zapłać z PayPal',
 		'PaypalCBDoPayment' => 'Płatności kartą kredytową',
 		'PAYPAL_API_SANDBOX' => 'Tryb testu / sandbox',
@@ -26,10 +29,8 @@ $paypal = array(
 		'PAYPAL_CSS_URL' => 'Opcjonalnej Url arkusza stylów CSS na stronie płatności',
 		'ThisIsTransactionId' => 'Jest to id transakcji: <b>%s</b>',
 		'PAYPAL_ADD_PAYMENT_URL' => 'Dodaj url płatności PayPal podczas wysyłania dokumentów pocztą',
-		'PaypalSetup' => 'PayPal konfiguracji modułu',
-		'PaypalDesc' => 'Ta oferta moduł stron, umożliwiających płatności w <a href="http://www.paypal.com" target="_blank">systemie PayPal</a> przez klientów. Może to być wykorzystywane do bezpłatnego opłatę lub wpłaty na konkretnego obiektu Dolibarr (faktura, zamówienie, ...)',
-		'PaypalOrCBDoPayment' => 'Zapłać kartą kredytową lub poprzez system Paypal',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'Adres e-mail do natychmiastowego powiadamiania o płatności (BPP)',
-		'YouAreCurrentlyInSandboxMode' => 'Jesteś obecnie w trybie &quot;sandbox&quot;',
+		'PredefinedMailContentLink' => 'You can click on the secure link below to make your payment via PayPal\n\n%s\n\n',
+		'YouAreCurrentlyInSandboxMode' => 'Jesteś obecnie w trybie &quot;sandbox&quot;'
 );
 ?>

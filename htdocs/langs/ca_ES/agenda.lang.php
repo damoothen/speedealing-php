@@ -29,8 +29,8 @@ $agenda = array(
 		'MyEvents' => 'Els meus events',
 		'OtherEvents' => 'Altres events',
 		'ListOfActions' => 'Llista d\'esdeveniments',
-		'EventOnFullDay' => 'Esdeveniment per tot el dia',
 		'Location' => 'Localització',
+		'EventOnFullDay' => 'Esdeveniment per tot el dia',
 		'SearchAnAction' => 'Cercar un esdeveniment/tasca',
 		'MenuToDoActions' => 'Esdeveniments incomplets',
 		'MenuDoneActions' => 'Esdeveniments acabats',
@@ -88,6 +88,6 @@ $agenda = array(
 		'ExtSitesNbOfAgenda' => 'Nombre de calendaris',
 		'AgendaExtNb' => 'Calendari nº %s',
 		'ExtSiteUrlAgenda' => 'Url d\'accés a l\'arxiu. ical',
-		'ExtSiteNoLabel' => 'Sense descripció',
+		'ExtSiteNoLabel' => 'Sense descripció'
 );
 ?>

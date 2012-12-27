@@ -119,6 +119,6 @@ $projects = array(
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Mitwirkender',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Mitwirkender',
 		// Documents models
-		'DocumentModelBaleine' => 'Eine vollständige Projektberichtsvorlage (Logo, ...)',
+		'DocumentModelBaleine' => 'Eine vollständige Projektberichtsvorlage (Logo, ...)'
 );
 ?>

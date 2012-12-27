@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => 'OS המסחר מארח שרת / IP',
 		'OSCommerceDatabaseName' => 'OS המסחר שם מסד הנתונים',
 		'OSCommercePrefix' => 'מערכת ההפעלה שולחנות מסחר להקדים',
-		'OSCommerceUser' => 'OS המסחר באתר התחברות',
+		'OSCommerceUser' => 'OS המסחר באתר התחברות'
 );
 ?>

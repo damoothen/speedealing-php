@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Hitelszámla',
 		'ShowCompany' => 'Mutasd cég',
 		'ShowStock' => 'Mutasd raktár',
-		'DeleteArticle' => 'Kattintson, hogy távolítsa el ezt a cikket',
+		'DeleteArticle' => 'Kattintson, hogy távolítsa el ezt a cikket'
 );
 ?>

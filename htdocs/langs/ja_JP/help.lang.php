@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'あなたは彼のウィジェット（ステータスおよび最大価格が自動的に更新されます）をクリックして言語（%s）にDolibarrによって事前に選択コーチのいずれかを呼び出すことができます。',
 		'PossibleLanguages' => 'サポートされる言語',
 		'MakeADonation' => 'Dolibarrプロジェクトを支援、寄付をする',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

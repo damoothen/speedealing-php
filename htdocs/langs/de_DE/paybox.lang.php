@@ -48,6 +48,6 @@ $paybox = array(
 		'VendorName' => 'Name des Anbieters',
 		'CSSUrlForPaymentForm' => 'CSS-Datei für das Zahlungsmodul',
 		'MessageOK' => 'Nachrichtenseite für bestätigte Zahlung',
-		'MessageKO' => 'Nachrichtenseite für abgebrochene Zahlung',
+		'MessageKO' => 'Nachrichtenseite für abgebrochene Zahlung'
 );
 ?>

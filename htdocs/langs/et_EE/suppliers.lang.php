@@ -43,6 +43,7 @@ $suppliers = array(
 		'Availability' => 'Kättesaadavus',
 		'ExportDataset_fournisseur_1' => 'Tarnija arvete nimekirja ja arve oma read',
 		'ExportDataset_fournisseur_2' => 'Tarnija arved ja maksed',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'Kinnitab seda, et',
 		'ConfirmApproveThisOrder' => 'Oled sa kindel, et soovid kinnitab, et <b>%s?</b>',
 		'DenyingThisOrder' => 'Eitada seda, et',
@@ -53,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Loo tarnija et',
 		'AddSupplierInvoice' => 'Loo tarnija arve',
 		'ListOfSupplierProductForSupplier' => 'Toodete nimekirja ja hinnad tarnija <b>%s</b>',
-		'NoneOrBatchFileNeverRan' => 'Puudub või partii <b>%s</b> ole jooksis hiljuti',
+		'NoneOrBatchFileNeverRan' => 'Puudub või partii <b>%s</b> ole jooksis hiljuti'
 );
 ?>

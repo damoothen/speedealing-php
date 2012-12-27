@@ -409,6 +409,6 @@ $companies = array(
 		// Monkey
 		'MonkeyNumRefModelDesc' => 'Zurück NUMERO mit Format %syymm-nnnn für den Kunden-Code und syymm%-nnnn für die Lieferanten-Code ist, wenn JJ Jahr, MM Monat und nnnn ist eine Folge ohne Pause und kein Zurück mehr gibt, auf 0 gesetzt.',
 		// Leopard
-		'LeopardNumRefModelDesc' => 'Kunden / Lieferanten-Code ist frei. Dieser Code kann jederzeit geändert werden.',
+		'LeopardNumRefModelDesc' => 'Kunden / Lieferanten-Code ist frei. Dieser Code kann jederzeit geändert werden.'
 );
 ?>

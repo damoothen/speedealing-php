@@ -262,12 +262,13 @@ $dict = array(
 		'CountryME' => 'Karadağ',
 		'CountryBL' => 'Saint Barthelemy',
 		'CountryMF' => 'Saint Martin',
-		////////// Hitap //////////
+		////////// Civilities //////////
 		'CivilityMME' => 'Bayan',
 		'CivilityMR' => 'Bay',
 		'CivilityMLE' => 'Ms',
 		'CivilityMTRE' => 'Müdür',
-		////////// Para birimleri //////////
+		'CivilityDR' => 'Doctor',
+		////////// Currencies //////////
 		'Currencyeuros' => 'Euro',
 		'CurrencyAUD' => 'AU Doları',
 		'CurrencySingAUD' => 'AU Doları',
@@ -303,11 +304,9 @@ $dict = array(
 		'CurrencySingXOF' => 'CFA Frangı BCEAO',
 		'CurrencyXPF' => 'CFP Frangı',
 		'CurrencySingXPF' => 'CFP Frangı',
-		'CurrencyTRL' => 'Türk Lirası',
-		'CurrencySingTRL' => 'Türk Lirası',
 		'CurrencyCentSingEUR' => 'cent',
 		'CurrencyThousandthSingTND' => 'thousandth',
-		//////// Giriş nedenleri //////////
+		//////// Input reasons //////////
 		'DemandReasonTypeSRC_INTE' => 'Internet',
 		'DemandReasonTypeSRC_CAMP_MAIL' => 'Posta kampanyası',
 		'DemandReasonTypeSRC_CAMP_EMAIL' => 'E-posta kampanyası',
@@ -315,5 +314,9 @@ $dict = array(
 		'DemandReasonTypeSRC_CAMP_FAX' => 'Faks kampanyası',
 		'DemandReasonTypeSRC_COMM' => 'Ticari görüşme',
 		'DemandReasonTypeSRC_SHOP' => 'İş yerinde görüşme',
+		'DemandReasonTypeSRC_WOM' => 'Word of mouth',
+		'DemandReasonTypeSRC_PARTNER' => 'Partner',
+		'DemandReasonTypeSRC_EMPLOYEE' => 'Employee',
+		'DemandReasonTypeSRC_SPONSORING' => 'Sponsorship'
 );
 ?>

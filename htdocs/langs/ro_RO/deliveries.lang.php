@@ -28,16 +28,17 @@ $deliveries = array(
 		'SetDeliveryDate' => 'Setaţi data de expediere',
 		'ValidateDeliveryReceipt' => 'Validate livrare la primirea',
 		'ValidateDeliveryReceiptConfirm' => 'Sunteţi sigur că doriţi pentru a valida acest livrare primire?',
+		'DeleteDeliveryReceipt' => 'Ştergeţi confirmare de primire',
+		'DeleteDeliveryReceiptConfirm' => 'Sunteţi sigur că doriţi să ştergeţi <b>%s</b> de livrare de primire?',
 		'DeliveryMethod' => 'Metoda de livrare',
 		'TrackingNumber' => 'Număr de urmărire',
+		'DeliveryNotValidated' => 'De livrare nu au fost validate',
+		// merou PDF model
 		'NameAndSignature' => 'Nume şi Semnătura:',
 		'ToAndDate' => 'To___________________________________ pe ____ / _____ / __________',
 		'GoodStatusDeclaration' => 'Au primit bunurile în bună stare de mai sus,',
 		'Deliverer' => 'Eliberator:',
 		'Sender' => 'Expeditor',
-		'Recipient' => 'Recipient',
-		'DeleteDeliveryReceipt' => 'Ştergeţi confirmare de primire',
-		'DeleteDeliveryReceiptConfirm' => 'Sunteţi sigur că doriţi să ştergeţi <b>%s</b> de livrare de primire?',
-		'DeliveryNotValidated' => 'De livrare nu au fost validate',
+		'Recipient' => 'Recipient'
 );
 ?>

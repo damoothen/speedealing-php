@@ -99,15 +99,18 @@ $propal = array(
 		'AvailabilityPeriod' => 'Elérhetőség késleltetés',
 		'SetAvailability' => 'Állítsa be a rendelkezésre álló késedelem',
 		'AfterOrder' => 'rendezés után',
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => 'Azonnali',
 		'AvailabilityTypeAV_1W' => '1 hét',
 		'AvailabilityTypeAV_2W' => '2 hét',
 		'AvailabilityTypeAV_3W' => '3 hét',
 		'AvailabilityTypeAV_1M' => '1 hónap',
+		////////// Types de contacts //////////
 		'TypeContact_propal_internal_SALESREPFOLL' => 'Képviselő-up a következő javaslatot',
 		'TypeContact_propal_external_BILLING' => 'Ügyfél számla Kapcsolat',
 		'TypeContact_propal_external_CUSTOMER' => 'Ügyfélkapcsolati nyomon követése javaslat',
+		// Document models
 		'DocModelAzurDescription' => 'A javaslat teljes modell (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune javaslat modell',
+		'DocModelJauneDescription' => 'Jaune javaslat modell'
 );
 ?>

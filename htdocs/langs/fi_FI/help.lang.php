@@ -20,6 +20,7 @@ $help = array(
 		'EMailSupport' => 'Sähköpostit tukea',
 		'RemoteControlSupport' => 'Online reaaliajassa / etätuki',
 		'OtherSupport' => 'Muut tuet',
+		'ToSeeListOfAvailableRessources' => 'Voit ottaa yhteyttä / nähdä käytettävissä olevat varat:',
 		'ClickHere' => 'Klikkaa tästä',
 		'HelpCenter' => 'Ohjekeskukseen',
 		'DolibarrHelpCenter' => 'Dolibarr apua ja tukea keskus',
@@ -40,6 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Voit soittaa yksi valmentaja valittua on Dolibarr for your language ( %s) napsauttamalla hänen Widget (status ja enimmäishinta päivittyvät automaattisesti):',
 		'PossibleLanguages' => 'Tuetut kielet',
 		'MakeADonation' => 'Ohje Dolibarr hanke, tee lahjoitus',
-		'ToSeeListOfAvailableRessources' => 'Voit ottaa yhteyttä / nähdä käytettävissä olevat varat:',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

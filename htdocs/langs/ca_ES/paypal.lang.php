@@ -31,6 +31,6 @@ $paypal = array(
 		'PAYPAL_ADD_PAYMENT_URL' => 'Afegir la url del pagament Paypal en enviar un document per e-mail',
 		'PAYPAL_IPN_MAIL_ADDRESS' => 'Adreça e-mail per les notificacions instantànies de pagament (IPN)',
 		'PredefinedMailContentLink' => 'Podeu fer clic a l\'enllaç assegurança de sota per realitzar el seu pagament a través de PayPal\n\n%s\n\n',
-		'YouAreCurrentlyInSandboxMode' => 'Actualment es troba en mode "sandbox"',
+		'YouAreCurrentlyInSandboxMode' => 'Actualment es troba en mode "sandbox"'
 );
 ?>

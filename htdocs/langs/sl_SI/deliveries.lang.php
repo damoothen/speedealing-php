@@ -33,12 +33,12 @@ $deliveries = array(
 		'DeliveryMethod' => 'Način dobave',
 		'TrackingNumber' => 'Številka za sledenje',
 		'DeliveryNotValidated' => 'Dobava ni potrjena',
-		// merou PDF model						    = undefined
+		// merou PDF model
 		'NameAndSignature' => 'Ime in podpis :',
 		'ToAndDate' => 'Za___________________________________ dne ____/_____/__________',
 		'GoodStatusDeclaration' => 'Potrjujem prejem zgornjega blaga v dobrem stanju,',
 		'Deliverer' => 'Dostavil :',
 		'Sender' => 'Pošiljatelj',
-		'Recipient' => 'Prejemnik',
+		'Recipient' => 'Prejemnik'
 );
 ?>

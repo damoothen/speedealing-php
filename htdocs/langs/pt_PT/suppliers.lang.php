@@ -15,7 +15,6 @@
  */
 
 $suppliers = array(
-		'﻿# Dolibarr language file - pt_PT - suppliers' => '',
 		'CHARSET' => 'UTF-8',
 		'Suppliers' => 'Fornecedores',
 		'Supplier' => 'Fornecedor',
@@ -29,17 +28,22 @@ $suppliers = array(
 		'ShowSupplier' => 'Mostrar Fornecedor',
 		'OrderDate' => 'Data Pedido',
 		'BuyingPrice' => 'Preço de Compra',
+		'BuyingPriceMin' => 'Preço de compra mínimo',
+		'BuyingPriceMinShort' => 'Preço de compra Min',
 		'AddSupplierPrice' => 'Adicionar Preço de Fornecedor',
 		'ChangeSupplierPrice' => 'Modificar Preço de Fornecedor',
 		'ErrorQtyTooLowForThisSupplier' => 'Quantidade insuficiente para este fornecedor',
 		'ErrorSupplierCountryIsNotDefined' => 'O país deste fornecedor não está definido, corrija na sua ficha',
 		'ProductHasAlreadyReferenceInThisSupplier' => 'Este producto já tem uma referencia neste fornecedor',
+		'ReferenceSupplierIsAlreadyAssociatedWithAProduct' => 'Este fornecedor de referência já está associado com uma referência: %s',
 		'NoRecordedSuppliers' => 'Sem Fornecedores Registados',
 		'SupplierPayment' => 'Pagamento a Fornecedor',
 		'SuppliersArea' => 'Área Fornecedores',
 		'RefSupplierShort' => 'Ref. Fornecedor',
+		'Availability' => 'Disponibilidade',
 		'ExportDataset_fournisseur_1' => 'Facturas de Fornecedores e Linhas de Factura',
 		'ExportDataset_fournisseur_2' => 'Facturas Fornecedores e Pagamentos',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'Aprovar este Pedido',
 		'ConfirmApproveThisOrder' => 'Está seguro de querer aprovar este pedido?',
 		'DenyingThisOrder' => 'Negar este Pedido',
@@ -50,10 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Criar Pedido a Fornecedor',
 		'AddSupplierInvoice' => 'Criar Factura do Fornecedor',
 		'ListOfSupplierProductForSupplier' => 'Lista de produtos e preços do fornecedor <b>%s</b>',
-		'NoneOrBatchFileNeverRan' => 'Nenhum lote <b>ou %s</b> não executou recentemente',
-		'ReferenceSupplierIsAlreadyAssociatedWithAProduct' => 'Este fornecedor de referência já está associado com uma referência: %s',
-		'BuyingPriceMin' => 'Preço de compra mínimo',
-		'BuyingPriceMinShort' => 'Preço de compra Min',
-		'Availability' => 'Disponibilidade',
+		'NoneOrBatchFileNeverRan' => 'Nenhum lote <b>ou %s</b> não executou recentemente'
 );
 ?>

@@ -136,7 +136,6 @@ $members = array(
 		'LastSubscriptionsModified' => 'Last %s muutmine tellimine',
 		'AttributeName' => 'Atribuudi nimi',
 		'FieldEdition' => 'Väljaanne valdkonnas %s',
-		'AlphaNumOnlyCharsAndNoSpace' => 'ainult alphanumericals tähemärki tühikuteta',
 		'String' => 'String',
 		'Text' => 'Tekst',
 		'Int' => 'Int',
@@ -148,6 +147,8 @@ $members = array(
 		'ShowSubscription' => 'Näita liitumisleping',
 		'MemberModifiedInDolibarr' => 'Liikmesriigid muuta Dolibarr',
 		'SendAnEMailToMember' => 'Saada informatsiooni e-posti liige',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL_SUBJECT' => 'Subject of the e-mail received in case of auto-inscription of a guest',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL' => 'E-mail received in case of auto-inscription of a guest',
 		'DescADHERENT_AUTOREGISTER_MAIL_SUBJECT' => 'E-post teema liikme autosubscription',
 		'DescADHERENT_AUTOREGISTER_MAIL' => 'E-post jaoks liikme autosubscription',
 		'DescADHERENT_MAIL_VALID_SUBJECT' => 'E-post teema liikme kinnitamine',
@@ -158,12 +159,12 @@ $members = array(
 		'DescADHERENT_MAIL_RESIL' => 'E-post jaoks liikme resiliation',
 		'DescADHERENT_MAIL_FROM' => 'Saatja e-post automaatse e-mailid',
 		'DescADHERENT_ETIQUETTE_TYPE' => 'Formaat siltide lehele',
+		'DescADHERENT_ETIQUETTE_TEXT' => 'Text printed on member address sheets',
 		'DescADHERENT_CARD_TYPE' => 'Formaat kaarte lehele',
 		'DescADHERENT_CARD_HEADER_TEXT' => 'Tekst trükitud peal liikmeks kaardid',
 		'DescADHERENT_CARD_TEXT' => 'Tekst trükitakse liige kaardid (viia vasakul)',
 		'DescADHERENT_CARD_TEXT_RIGHT' => 'Tekst trükitakse liige kaardid (viia paremal)',
 		'DescADHERENT_CARD_FOOTER_TEXT' => 'Tekst trükitud põhja liikmeks kaardid',
-		'DescADHERENT_MAILMAN_LISTS' => 'Loetelu (d) automaatse insription uute liikmete (komaga eraldatud)',
 		'GlobalConfigUsedIfNotDefined' => 'Tekst määratletud Foundation moodul setup kasutatakse, kui ei ole määratletud siin',
 		'MayBeOverwrited' => 'Seda teksti saab overwrited väärtuse määratletud liikme liik',
 		'ShowTypeCard' => 'Näita tüüp &quot;%s&quot;',
@@ -210,6 +211,6 @@ $members = array(
 		'Collectivités' => 'Organisatsioonid',
 		'Particuliers' => 'Isiklik',
 		'Entreprises' => 'Ettevõtted',
-		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Et teie liitumisleping makse kasutades pangaülekandega, vt lk <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a> . <br> Tasuda krediitkaardiga või Paypal, klõpsake nuppu selle lehe allosas. <br>',
+		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Et teie liitumisleping makse kasutades pangaülekandega, vt lk <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a> . <br> Tasuda krediitkaardiga või Paypal, klõpsake nuppu selle lehe allosas. <br>'
 );
 ?>

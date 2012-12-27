@@ -136,7 +136,6 @@ $members = array(
 		'LastSubscriptionsModified' => '最後%sは、サブスクリプションを変更',
 		'AttributeName' => '属性名',
 		'FieldEdition' => 'フィールド%sのエディション',
-		'AlphaNumOnlyCharsAndNoSpace' => 'スペースなしalphanumericals文字のみ',
 		'String' => '文字列',
 		'Text' => 'テキスト',
 		'Int' => 'int型',
@@ -148,6 +147,8 @@ $members = array(
 		'ShowSubscription' => 'サブスクリプションを表示する',
 		'MemberModifiedInDolibarr' => 'メンバーはDolibarrで変更',
 		'SendAnEMailToMember' => 'メンバーへの情報メールを送る',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL_SUBJECT' => 'Subject of the e-mail received in case of auto-inscription of a guest',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL' => 'E-mail received in case of auto-inscription of a guest',
 		'DescADHERENT_AUTOREGISTER_MAIL_SUBJECT' => 'メンバーautosubscriptionための電子メールの件名',
 		'DescADHERENT_AUTOREGISTER_MAIL' => 'メンバーautosubscriptionの電子メール',
 		'DescADHERENT_MAIL_VALID_SUBJECT' => 'メンバーの検証のための電子メールの件名',
@@ -158,12 +159,12 @@ $members = array(
 		'DescADHERENT_MAIL_RESIL' => 'メンバーresiliationの電子メール',
 		'DescADHERENT_MAIL_FROM' => '自動電子メールの送信者の電子メール',
 		'DescADHERENT_ETIQUETTE_TYPE' => 'ラベルページのフォーマット',
+		'DescADHERENT_ETIQUETTE_TEXT' => 'Text printed on member address sheets',
 		'DescADHERENT_CARD_TYPE' => 'カードのページのフォーマット',
 		'DescADHERENT_CARD_HEADER_TEXT' => 'メンバーカードの上に印刷されたテキスト',
 		'DescADHERENT_CARD_TEXT' => 'テキストは、（左揃え）メンバーカードに印刷',
 		'DescADHERENT_CARD_TEXT_RIGHT' => 'テキストは（右揃え）のメンバーカードに印刷',
 		'DescADHERENT_CARD_FOOTER_TEXT' => 'メンバーカードの下部に印刷されたテキスト',
-		'DescADHERENT_MAILMAN_LISTS' => '新しいメンバーの自動insriptionのリスト（S）（コンマで区切る）',
 		'GlobalConfigUsedIfNotDefined' => 'ここで定義されていない場合財団モジュールのセットアップで定義されたテキストが使用されます',
 		'MayBeOverwrited' => 'このテキストは、メンバの型に対して定義された値によって上書きすることができます',
 		'ShowTypeCard' => 'タイプ &quot;%s&quot;を表示',
@@ -210,6 +211,6 @@ $members = array(
 		'Collectivités' => '組織',
 		'Particuliers' => '個人的な',
 		'Entreprises' => '企業',
-		'DOLIBARRFOUNDATION_PAYMENT_FORM' => '銀行振込を使用してサブスクリプション費用の支払いを行うには、ページ参照<a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribeを</a> 。 <br>クレジットカードまたはPayPalでお支払いには、このページの下部にあるボタンをクリックします。 <br>',
+		'DOLIBARRFOUNDATION_PAYMENT_FORM' => '銀行振込を使用してサブスクリプション費用の支払いを行うには、ページ参照<a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribeを</a> 。 <br>クレジットカードまたはPayPalでお支払いには、このページの下部にあるボタンをクリックします。 <br>'
 );
 ?>

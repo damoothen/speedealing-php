@@ -44,6 +44,7 @@ $projects = array(
 		'NbOpenTasks' => 'Aantal geopende taken',
 		'NbOfProjects' => 'Aantal projecten',
 		'TimeSpent' => 'Bestede tijd',
+		'TimesSpent' => 'Bestede tijd',
 		'RefTask' => 'Ref. taak',
 		'LabelTask' => 'Label taak',
 		'NewTimeSpent' => 'Nieuwe bestede tijd',
@@ -98,7 +99,17 @@ $projects = array(
 		'LinkedToAnotherCompany' => 'Gekoppeld aan een andere derde partij',
 		'TaskIsNotAffectedToYou' => 'Taken niet toegewezen aan u',
 		'ErrorTimeSpentIsEmpty' => 'Gespendeerde tijd is leeg',
-		////////// Types de contacts ////////// = 
+		'ThisWillAlsoRemoveTasks' => 'Deze actie zal ook alle taken van het project <b>(%s</b> taken op het moment) en alle ingangen van de tijd doorgebracht.',
+		'IfNeedToUseOhterObjectKeepEmpty' => 'Als sommige objecten (factuur, order, ...), die behoren tot een andere derde, moet worden gekoppeld aan het project te maken, houden deze leeg naar het project dat met meerdere derden.',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Projectmanager',
 		'TypeContact_project_external_PROJECTLEADER' => 'Projectleider',
 		'TypeContact_project_internal_CONTRIBUTOR' => 'Bijdrager',
@@ -107,10 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => 'Verantwoordelijke',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Bijdrager',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Bijdrager',
-		// Documents models = 
-		'DocumentModelBaleine' => 'Een compleet projectrapportagemodel (logo, etc)',
-		'TimesSpent' => 'Bestede tijd',
-		'ThisWillAlsoRemoveTasks' => 'Deze actie zal ook alle taken van het project <b>(%s</b> taken op het moment) en alle ingangen van de tijd doorgebracht.',
-		'IfNeedToUseOhterObjectKeepEmpty' => 'Als sommige objecten (factuur, order, ...), die behoren tot een andere derde, moet worden gekoppeld aan het project te maken, houden deze leeg naar het project dat met meerdere derden.',
+		// Documents models
+		'DocumentModelBaleine' => 'Een compleet projectrapportagemodel (logo, etc)'
 );
 ?>

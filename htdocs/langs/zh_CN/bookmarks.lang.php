@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => '使用外部的HTTP URL或相对Dolibarr网址',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => '如果选择打开一个网页的链接必须对现有的或新出现的窗口',
 		'BookmarksManagement' => '书签管理',
-		'ListOfBookmarks' => '书签列表',
+		'ListOfBookmarks' => '书签列表'
 );
 ?>

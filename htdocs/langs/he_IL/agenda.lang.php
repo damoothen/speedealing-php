@@ -81,12 +81,13 @@ $agenda = array(
 		'AgendaUrlOptions5' => '<b>logind = %s</b> להגביל את הפלט של הפעולות שנעשו על ידי <b>%s</b> המשתמש.',
 		'AgendaShowBirthdayEvents' => 'הצג אנשי קשר של יום הולדת',
 		'AgendaHideBirthdayEvents' => 'הסתרת אנשי קשר של יום הולדת',
+		// External Sites ical
 		'ExportCal' => 'ייצוא לוח שנה',
 		'ExtSites' => 'ייבוא ​​לוחות שנה חיצוניים',
 		'ExtSitesEnableThisTool' => 'הצג לוחות שנה חיצוניים לתוך סדר היום',
 		'ExtSitesNbOfAgenda' => 'מספר לוחות שנה',
 		'AgendaExtNb' => 'לוח שנה nb %s',
 		'ExtSiteUrlAgenda' => 'כתובת האתר כדי לגשת. ICal הקובץ',
-		'ExtSiteNoLabel' => 'אין תיאור',
+		'ExtSiteNoLabel' => 'אין תיאור'
 );
 ?>

@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => '你可以调用由Dolibarr预选您的语言（％s的按一下他的小工具（状态和最高价格自动更新））的教练之一：',
 		'PossibleLanguages' => '支持的语言',
 		'MakeADonation' => '帮助Dolibarr项目，使捐赠',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

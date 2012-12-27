@@ -16,8 +16,8 @@
 
 $mailmanspip = array(
 		'CHARSET' => 'UTF-8',
-		'MailmanTitle' => 'Système de listes de diffusion Mailman',
 		'MailmanSpipSetup' => 'Configuration du module Mailman et SPIP',
+		'MailmanTitle' => 'Système de listes de diffusion Mailman',
 		'TestSubscribe' => 'Pour tester l\'inscription aux listes mailman',
 		'TestUnSubscribe' => 'Pour tester la désincritpion aux listes mailman',
 		'MailmanCreationSuccess' => 'Appel de l\'url de création dans mailman avec succès',
@@ -27,6 +27,7 @@ $mailmanspip = array(
 		'DescADHERENT_MAILMAN_ADMINPW' => 'Mot de passe administrateur Mailman',
 		'DescADHERENT_MAILMAN_URL' => 'URL d\'inscription aux listes Mailman',
 		'DescADHERENT_MAILMAN_UNSUB_URL' => 'URL de désinscription aux listes Mailman',
+		'DescADHERENT_MAILMAN_LISTS' => 'List(s) for automatic inscription of new members (separated by a comma)',
 		'SPIPTitle' => 'Gestion de contenu SPIP',
 		'DescADHERENT_SPIP_SERVEUR' => 'Serveur SPIP',
 		'DescADHERENT_SPIP_DB' => 'Nom base SPIP',
@@ -38,6 +39,6 @@ $mailmanspip = array(
 		'DeleteIntoSpip' => 'Supprimer de spip',
 		'DeleteIntoSpipConfirmation' => 'Êtes-vous sur de vouloir effacer cet adhérent de SPIP?',
 		'DeleteIntoSpipError' => 'Échec de la suppression de l\'utilisateur de SPIP',
-		'SPIPConnectionFailed' => 'Échec de connexion à SPIP',
+		'SPIPConnectionFailed' => 'Échec de connexion à SPIP'
 );
 ?>

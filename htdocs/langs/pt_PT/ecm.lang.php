@@ -15,7 +15,6 @@
  */
 
 $ecm = array(
-		'﻿# Dolibarr language file - pt_PT - ecm' => '',
 		'CHARSET' => 'UTF-8',
 		'MenuECM' => 'Documentos',
 		'DocsMine' => 'Os Meus Documentos',
@@ -37,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => 'Raíz',
 		'ECMNewSection' => 'Nova Pasta Manual',
 		'ECMAddSection' => 'Adicionar Pasta Manual',
-		'ECMNewSection' => 'Nova Directoria Nova',
 		'ECMNewDocument' => 'Novo Documento',
 		'ECMCreationDate' => 'Data Criação',
 		'ECMNbOfFilesInDir' => 'Número de Ficheiros na Pasta',
@@ -54,13 +52,14 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Pastas de Documentos',
 		'ECMTypeManual' => 'Manual',
 		'ECMTypeAuto' => 'Automático',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Documentos Associados a Terceiros',
 		'ECMDocsByProposals' => 'Documentos Associcados a Orçamentos',
 		'ECMDocsByOrders' => 'Documentos Associados a Pedidos',
 		'ECMDocsByContracts' => 'Documentos Associados a Contratos',
 		'ECMDocsByInvoices' => 'Documentos Associados a Facturas',
 		'ECMDocsByProducts' => 'Documentos ligados a produtos',
-		'ECMNoDirecotyYet' => 'Não foi Criada a Pasta',
+		'ECMNoDirectoryYet' => 'No directory created',
 		'ShowECMSection' => 'Mostrar Pasta',
 		'DeleteSection' => 'Apagar Pasta',
 		'ConfirmDeleteSection' => 'Confirma o eliminar da pasta <b>%s</b>?',
@@ -68,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Não se pode eliminar porque contem ficheiros',
 		'ECMFileManager' => 'Explorador de Ficheiros',
 		'ECMSelectASection' => 'Seleccione uma pasta na árvore da esquerda',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

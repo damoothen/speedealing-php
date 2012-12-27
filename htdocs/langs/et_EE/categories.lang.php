@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => 'See liige ei ole üheski kategoorias',
 		'ClassifyInCategory' => 'Liigitada kategooriasse',
 		'NoneCategory' => 'Mitte ükski',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => 'See kategooria on juba olemas see ref',
 		'ReturnInProduct' => 'Tagasi toote / teenuse kaart',
 		'ReturnInSupplier' => 'Tagasi üles tarnija kaart',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'Loetelu pakkuja kategooriad',
 		'CatCusList' => 'Loetelu kliendi / väljavaade kategooriad',
 		'CatProdList' => 'Toodete nimekirja kategooriate',
-		'CatMemberList' => 'Liikmete nimekiri kategooriad',
+		'CatMemberList' => 'Liikmete nimekiri kategooriad'
 );
 ?>

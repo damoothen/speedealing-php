@@ -54,7 +54,6 @@ $users = array(
 		'CreateUser' => 'Kreiraj uporabnika',
 		'SearchAGroup' => 'Išči skupino',
 		'SearchAUser' => 'Išči uporabnika',
-		'ErrorFailedToSendPassword' => 'Napaka pri pošiljanju gesla',
 		'LoginNotDefined' => 'Uporabniško ime ni določeno.',
 		'NameNotDefined' => 'Ime ni določeno.',
 		'ListOfUsers' => 'Seznam uporabnikov',
@@ -120,6 +119,7 @@ $users = array(
 		'UserEnabled' => 'Uporabnik %s je aktiviran',
 		'UserDeleted' => 'Uporabnik %s je odstranjen',
 		'NewGroupCreated' => 'Skupina %s je kreirana',
+		'GroupModified' => 'Skupina %s je spremenjena',
 		'GroupDeleted' => 'Skupina %s je odstranjena',
 		'ConfirmCreateContact' => 'Ali zares želite kreirati Dolibarr dostop za ta kontakt ?',
 		'ConfirmCreateLogin' => 'Ali zares želite kreirati Dolibarr dostop za tega člana ?',
@@ -129,6 +129,6 @@ $users = array(
 		'YourRole' => 'Vaše vloge',
 		'YourQuotaOfUsersIsReached' => 'Dosežena je vaša kvota aktivnih uporabnikov !',
 		'NbOfUsers' => 'Število uporabnikov',
-		'DontDowngradeSuperAdmin' => 'Samo superadmin lahko degradira samo superadmin',
+		'DontDowngradeSuperAdmin' => 'Samo superadmin lahko degradira samo superadmin'
 );
 ?>

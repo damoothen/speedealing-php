@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'استخدام خارجي عنوان النص المتشعب أو قريب Dolibarr عنوان',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'إذا كان الاختيار قد فتحت صفحة ويجب أن تظهر على وصلة الحالية أو نافذة جديدة',
 		'BookmarksManagement' => 'إدارة العناوين',
-		'ListOfBookmarks' => 'قائمة العناوين',
+		'ListOfBookmarks' => 'قائمة العناوين'
 );
 ?>

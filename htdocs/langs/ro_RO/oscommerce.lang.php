@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => 'Sistem de operare server gazdă Comert / IP',
 		'OSCommerceDatabaseName' => 'OS Commerce denumirea de baze de date',
 		'OSCommercePrefix' => 'OS Commerce tabele prefix',
-		'OSCommerceUser' => 'OS Commerce baza de date de login',
+		'OSCommerceUser' => 'OS Commerce baza de date de login'
 );
 ?>

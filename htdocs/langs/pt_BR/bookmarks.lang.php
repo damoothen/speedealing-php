@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Indicar um URL externo para o URL Dolibarr relativo',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'escolher sim deve abrise a página em uma Nova janela o na atual',
 		'BookmarksManagement' => 'Administração de Paineis',
-		'ListOfBookmarks' => 'Lista de Paineis',
+		'ListOfBookmarks' => 'Lista de Paineis'
 );
 ?>

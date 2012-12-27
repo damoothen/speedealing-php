@@ -52,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Mape dokumentov',
 		'ECMTypeManual' => 'Ročno',
 		'ECMTypeAuto' => 'Avtomatsko',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Dokumenti, povezani s partnerjem',
 		'ECMDocsByProposals' => 'Dokumenti, povezani s ponudbami',
 		'ECMDocsByOrders' => 'Dokumenti, povezani z naročili kupcev',
@@ -66,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Odstranitev ni možna, ker mapa vsebuje datoteke',
 		'ECMFileManager' => 'Upravljanje z datotekami',
 		'ECMSelectASection' => 'Izberite mapo na levi drevesni strukturi...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Folosiţi un extern http URL-ul sau o rudă Dolibarr URL',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Alegeţi dacă pagină deschisă de legătură trebuie să apară pe curent sau de-o fereastră nouă',
 		'BookmarksManagement' => 'Marcaje de management',
-		'ListOfBookmarks' => 'Lista de semne de carte',
+		'ListOfBookmarks' => 'Lista de semne de carte'
 );
 ?>

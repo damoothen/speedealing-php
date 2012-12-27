@@ -84,6 +84,7 @@ $companies = array(
 		'PhonePro' => 'İş Telefonu',
 		'PhonePerso' => 'Kişi.telefonu',
 		'PhoneMobile' => 'Mobil Tel.',
+		'No_Email' => 'Don\'t send mass e-mailings',
 		'Fax' => 'Faks',
 		'Zip' => 'Posta Kodu',
 		'Town' => 'Şehir',
@@ -92,7 +93,8 @@ $companies = array(
 		'DefaultLang' => 'Varsayılan dili',
 		'VATIsUsed' => 'KDV kullanılır',
 		'VATIsNotUsed' => 'KDV kullanılmaz',
-		////////// Yerel Vergiler //////////
+		'CopyAddressFromSoc' => 'Fill address with thirdparty address',
+		////////// Local Taxes //////////
 		'LocalTax1IsUsedES' => 'RE kullanılır',
 		'LocalTax1IsNotUsedES' => 'RE kullanılmaz',
 		'LocalTax2IsUsedES' => 'IRPF kullanılır',
@@ -348,9 +350,9 @@ $companies = array(
 		'TE_WHOLE' => 'Toptancı',
 		'TE_PRIVATE' => 'Özel şahıs',
 		'TE_OTHER' => 'Diğer',
-		'StatusProspect1' => 'Görüşülmeyecek',
-		'StatusProspect0' => 'Hiç görüşülmedi',
 		'StatusProspect-1' => 'Görüşülecek',
+		'StatusProspect0' => 'Hiç görüşülmedi',
+		'StatusProspect1' => 'Görüşülmeyecek',
 		'StatusProspect2' => 'Görüşme sürecinde',
 		'StatusProspect3' => 'Görüşme yapıldı',
 		'ChangeDoNotContact' => 'Durumu \'Görüşülmeyecek\' olarak değiştir',
@@ -407,6 +409,6 @@ $companies = array(
 		// Monkey
 		'MonkeyNumRefModelDesc' => 'Sayı biçimini müşteri için %syymm-nnn, tedarikçi için %syymm-nnn gösterir, yy yıl, mm ay ve nnnn ise 0 olmayan bir dizidir',
 		// Leopard
-		'LeopardNumRefModelDesc' => 'Müşteri/tedarikçi kodu serbesttir. Bu kod herhangi bir zamanda değiştirilebilir.',
+		'LeopardNumRefModelDesc' => 'Müşteri/tedarikçi kodu serbesttir. Bu kod herhangi bir zamanda değiştirilebilir.'
 );
 ?>

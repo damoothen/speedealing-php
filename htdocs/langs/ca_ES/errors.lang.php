@@ -17,7 +17,7 @@
 $errors = array(
 		'CHARSET' => 'UTF-8',
 		'MenuManager' => 'Gestor de menú',
-		// Errors=
+		// Errors
 		'Error' => 'Error',
 		'Errors' => 'Errors',
 		'ErrorBadEMail' => 'e-mail %s incorrecte',
@@ -25,11 +25,10 @@ $errors = array(
 		'ErrorLoginAlreadyExists' => 'El login %s ja existeix.',
 		'ErrorGroupAlreadyExists' => 'El grup %s ja existeix.',
 		'ErrorRecordNotFound' => 'Registre no trobat',
-		'ErrorDuplicateTrigger' => 'Un arxiu trigger de nom \'<b>%s</b>\' està carregat. Treure el doble de la carpeta \'<b>%s</b>\'.',
 		'ErrorFailToCopyFile' => 'Error al copiar l\'arxiu \'<b>%s</b>\' a \'<b>%s</b>\'.',
 		'ErrorFailToRenameFile' => 'Error al renomenar l\'arxiu \'<b>%s</b>\' a \'<b>%s</b>\'.',
-		'ErrorFailToCreateFile' => 'Error al crear l\'arxiu  \'<b>%s</b>\'',
 		'ErrorFailToDeleteFile' => 'Error al suprimir el fitxer \'<b>%s</b>\'.',
+		'ErrorFailToCreateFile' => 'Error al crear l\'arxiu  \'<b>%s</b>\'',
 		'ErrorFailToRenameDir' => 'Error al renomenar la carpeta \'<b>%s</b>\' a \'<b>%s</b>\'.',
 		'ErrorFailToCreateDir' => 'Error al crear la carpeta \'<b>%s</b>\'',
 		'ErrorFailToDeleteDir' => 'Error en eliminar la carpeta \'<b>%s</b>\'.',
@@ -118,8 +117,8 @@ $errors = array(
 		'ErrorLoginHasNoEmail' => 'Aquest usuari no té e-mail. Impossible continuar.',
 		'ErrorBadValueForCode' => 'Valor no vàlid per al codi. Torneu a intentar-ho amb un nou valor ...',
 		'ErrorBothFieldCantBeNegative' => 'Els camps %s i %s no poden ser negatius',
-		'ErrorNoActivatedBarcode' => 'No hi ha activat cap tipus de codi de barres',
 		'ErrorWebServerUserHasNotPermission' => 'El compte d\'execució del servidor web <b>%s</b> no disposa dels permisos per això',
+		'ErrorNoActivatedBarcode' => 'No hi ha activat cap tipus de codi de barres',
 		'ErrUnzipFails' => 'No s\'ha pogut descomprimir el fitxer %s amb ZipArchive',
 		'ErrNoZipEngine' => 'En aquest PHP no hi ha motor per descomprimir l\'arxiu %s',
 		'ErrorFileMustBeADolibarrPackage' => 'El fitxer %s ha de ser un paquet Dolibarr en format zip',
@@ -128,6 +127,7 @@ $errors = array(
 		'ErrorFailedToAddToMailmanList' => 'S\'ha produït un error en intentar afegir un registre a la llista Mailman o base de dades SPIP',
 		'ErrorNewVaueCantMatchOldValue' => 'El Nou valor no pot ser igual al antic',
 		// Warnings
+		'WarningMandatorySetupNotComplete' => 'Mandatory setup parameters are not yet defined',
 		'WarningSafeModeOnCheckExecDir' => 'Atenció, està activada l\'opció PHP <b>safe_mode</b>, la comanda ha d\'estar dins d\'un directori declarat dins del paràmetre php <b>safe_mode_exec_dir</b>.',
 		'WarningAllowUrlFopenMustBeOn' => 'El paràmetre <b>allow_url_fopen</b> ha de ser especificat a <b>on</b> a l\'arxiu <b>php.ini</b> per disposar d\'aquest mòdul completament actiu. Ha de modificar aquest arxiu manualment',
 		'WarningBuildScriptNotRunned' => 'L\'script <b>%s</b> encara no ha executat la construcció de gràfics.',
@@ -138,6 +138,6 @@ $errors = array(
 		'WarningNoDocumentModelActivated' => 'No hi ha cap model per a la generació del document activat. Es prendrà un model per defecte fins que es configuri el mòdul.',
 		'WarningLockFileDoesNotExists' => 'Atenció: Un cop acabada l\'instal·lació, han de desactivar les eines d\'instal·lació/actualització afegint l\'arxiu <b>install.lock</b> al directori <b>%s</b>. L\'absència d\'aquest imatge mostra una fallada de seguretat.',
 		'WarningUntilDirRemoved' => 'Aquesta alerta seguirà activa mentre la carpeta existeixi (alerta visible per als usuaris admin solament).',
-		'WarningCloseAlways' => 'Avís, el tancament és realitzat encara que la quantitat total difereixi entre els elements d\'origen i destí. Activi aquesta funcionalitat amb precaució.',
+		'WarningCloseAlways' => 'Avís, el tancament és realitzat encara que la quantitat total difereixi entre els elements d\'origen i destí. Activi aquesta funcionalitat amb precaució.'
 );
 ?>

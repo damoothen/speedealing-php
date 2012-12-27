@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Verwenden Sie eine externe http-URL oder eine URL relativ zum Systempfad',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Bitte wählen Sie, ob sich ein geklickter Link in einem neuen oder demselben Fenster öffnet',
 		'BookmarksManagement' => 'Lesezeichen verwalten',
-		'ListOfBookmarks' => 'Liste der Lesezeichen',
+		'ListOfBookmarks' => 'Liste der Lesezeichen'
 );
 ?>

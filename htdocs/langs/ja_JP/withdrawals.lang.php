@@ -64,7 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => '拒否理由',
 		'RefusedInvoicing' => '拒絶反応を請求',
 		'NoInvoiceRefused' => '拒絶反応を充電しないでください',
-		'InvoiceRefused' => '顧客への拒絶反応を充電',
+		'InvoiceRefused' => '請求書が拒否されました',
 		'Status' => 'ステータス',
 		'StatusUnknown' => '未知の',
 		'StatusWaiting' => '待っている',
@@ -97,6 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => '引き出しを表示',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => '請求書は、まだ少なくとも一つの引き出しの支払いを処理していない場合、前に撤退を管理できるようにするために支払ったとして、しかし、それが設定されません。',
 		'DoStandingOrdersBeforePayments' => 'このタブでは、立っている順序のために要求することができます。それが終了されますしたら、請求書を閉じるには、支払を入力することができます。',
+		////// Notifications
 		'InfoCreditSubject' => '銀行によって立っている順序%sの支払い',
 		'InfoCreditMessage' => '立っている順序%sは、銀行によって支払われた<br>支払いのデータ：%s',
 		'InfoTransSubject' => '銀行に立っている注文%sの送信',
@@ -105,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'これはDolibarrによって送信される自動化されたメッセージです。',
 		'InfoRejectSubject' => '拒否したため、立ち',
 		'InfoRejectMessage' => 'こんにちは、 <br><br> %sの量と、会社%sに関連した請求書%sのstandig順序は、銀行が拒否されました。 <br><br> - <br> ％$',
-		'ModeWarning' => 'リアルモードのオプションが設定されていない、我々は、このシミュレーションの後に停止',
+		'ModeWarning' => 'リアルモードのオプションが設定されていない、我々は、このシミュレーションの後に停止'
 );
 ?>

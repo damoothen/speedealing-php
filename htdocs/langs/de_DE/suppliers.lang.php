@@ -43,6 +43,7 @@ $suppliers = array(
 		'Availability' => 'Verfügbarkeit',
 		'ExportDataset_fournisseur_1' => 'Lieferantenrechnungen und Positionen',
 		'ExportDataset_fournisseur_2' => 'Lieferantenrechnungen und Zahlungen',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'Bestellung bestätigen',
 		'ConfirmApproveThisOrder' => 'Möchten Sie diese Bestellung wirklich bestätigen <b>%s</b> ?',
 		'DenyingThisOrder' => 'Bestellung ablehnen',
@@ -53,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Erzeuge Lieferantenbestellung',
 		'AddSupplierInvoice' => 'Lieferantenrechnung erstellen',
 		'ListOfSupplierProductForSupplier' => 'Produkt- und Preisliste für Anbieter <b>%s</b>',
-		'NoneOrBatchFileNeverRan' => 'Keiner oder Batch-Job <b>%s</b> wurde nie ausgeführt',
+		'NoneOrBatchFileNeverRan' => 'Keiner oder Batch-Job <b>%s</b> wurde nie ausgeführt'
 );
 ?>

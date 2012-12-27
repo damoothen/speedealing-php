@@ -47,9 +47,11 @@ $sendings = array(
 		'StatusSendingCanceled' => 'Preklicano',
 		'StatusSendingDraft' => 'Osnutek',
 		'StatusSendingValidated' => 'Potrjeno (proizvodi za pošiljanje ali že poslani)',
+		'StatusSendingProcessed' => 'Processed',
 		'StatusSendingCanceledShort' => 'Preklicano',
 		'StatusSendingDraftShort' => 'Osnutek',
 		'StatusSendingValidatedShort' => 'Potrjena',
+		'StatusSendingProcessedShort' => 'Processed',
 		'SendingSheet' => 'Transportni list',
 		'Carriers' => 'Prevozniki',
 		'Carrier' => 'Prevoznik',
@@ -70,14 +72,15 @@ $sendings = array(
 		'SendShippingRef' => 'Pošlji odpremnico %s',
 		'ActionsOnShipping' => 'Aktivnosti v zvezi z odpremnico',
 		'LinkToTrackYourPackage' => 'Povezave za sledenje vaše pošiljke',
-		// Sending methods = undefined
+		'ShipmentCreationIsDoneFromOrder' => 'Za trenutek je oblikovanje nove pošiljke opravi od naročila kartice.',
+		'RelatedShippings' => 'Related shippings',
+		// Sending methods
 		'SendingMethodCATCH' => 'Lasten prevzem kupca',
 		'SendingMethodTRANS' => 'Direkten prevoz',
 		'SendingMethodCOLSUI' => 'Zbirnik',
-		// ModelDocument = undefined
+		// ModelDocument
 		'DocumentModelSirocco' => 'Enostaven vzorec dobavnice',
 		'DocumentModelTyphon' => 'Popolnejši vzorec dobavnice (logo...)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => '',
-		'ShipmentCreationIsDoneFromOrder' => 'Za trenutek je oblikovanje nove pošiljke opravi od naročila kartice.',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constant EXPEDITION_ADDON_NUMBER not defined'
 );
 ?>

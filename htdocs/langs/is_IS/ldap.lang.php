@@ -16,6 +16,14 @@
 
 $ldap = array(
 		'CHARSET' => 'UTF-8',
+		'DomainPassword' => 'Lykilorð fyrir lén',
+		'YouMustChangePassNextLogon' => 'Lykilorð fyrir <b>notandann %s  í%</b> léni <b>s</b> verður að vera breytt.',
+		'UserMustChangePassNextLogon' => 'Notandi verður að breyta lykilorðinu á vefnum %s',
+		'LdapUacf_NORMAL_ACCOUNT' => 'Aðgangi',
+		'LdapUacf_DONT_EXPIRE_PASSWORD' => 'Lykilorð rennur aldrei',
+		'LdapUacf_ACCOUNTDISABLE' => 'Reikningurinn er fatlaður í the ríki %s',
+		'LDAPInformationsForThisContact' => 'Upplýsingar í LDAP gagnagrunninn fyrir þennan tengilið',
+		'LDAPInformationsForThisUser' => 'Upplýsingar í LDAP gagnagrunninn fyrir þennan notanda',
 		'LDAPInformationsForThisGroup' => 'Upplýsingar í LDAP gagnagrunninn fyrir þennan hóp',
 		'LDAPInformationsForThisMember' => 'Upplýsingar í LDAP gagnagrunninn fyrir þennan notanda',
 		'LDAPAttribute' => 'LDAP eigindi',
@@ -35,14 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => 'Aðildarríkin samstilla',
 		'ContactSynchronized' => 'Hafðu samstilla',
 		'ForceSynchronize' => 'Force synchronizing Dolibarr -> LDAP',
-		'ErrorFailedToReadLDAP' => 'Ekki tókst að lesa LDAP gagnagrunninn. Athugaðu LDAP mát skipulag og gagnasafn aðgengi.',
-		'DomainPassword' => 'Lykilorð fyrir lén',
-		'YouMustChangePassNextLogon' => 'Lykilorð fyrir <b>notandann %s  í%</b> léni <b>s</b> verður að vera breytt.',
-		'UserMustChangePassNextLogon' => 'Notandi verður að breyta lykilorðinu á vefnum %s',
-		'LdapUacf_NORMAL_ACCOUNT' => 'Aðgangi',
-		'LdapUacf_DONT_EXPIRE_PASSWORD' => 'Lykilorð rennur aldrei',
-		'LdapUacf_ACCOUNTDISABLE' => 'Reikningurinn er fatlaður í the ríki %s',
-		'LDAPInformationsForThisContact' => 'Upplýsingar í LDAP gagnagrunninn fyrir þennan tengilið',
-		'LDAPInformationsForThisUser' => 'Upplýsingar í LDAP gagnagrunninn fyrir þennan notanda',
+		'ErrorFailedToReadLDAP' => 'Ekki tókst að lesa LDAP gagnagrunninn. Athugaðu LDAP mát skipulag og gagnasafn aðgengi.'
 );
 ?>

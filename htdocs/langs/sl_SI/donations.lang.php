@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Donacija',
 		'Donations' => 'Donacije',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Donator',
 		'Donors' => 'Donatorji',
 		'AddDonation' => 'Dodaj donacijo',
@@ -37,9 +38,13 @@ $donations = array(
 		'DonationStatusPromiseValidatedShort' => 'Potrjena',
 		'DonationStatusPaidShort' => 'Prejeta',
 		'ValidPromess' => 'Potrjena obljuba',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Izdelava potrdila',
 		'DonationsModels' => 'Modeli dokumentov za potrdila o donacijah',
 		'LastModifiedDonations' => 'Zadnjih %s spremenjenih donacij',
 		'SearchADonation' => 'Iskanje donacij',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

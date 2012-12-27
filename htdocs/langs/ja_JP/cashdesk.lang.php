@@ -52,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => '掛売口座',
 		'ShowCompany' => '会社を表示',
 		'ShowStock' => '倉庫を表示',
-		'DeleteArticle' => 'この記事を削除するときにクリックします',
+		'DeleteArticle' => 'この記事を削除するときにクリックします'
 );
 ?>

@@ -162,6 +162,6 @@ $banks = array(
 		'InputReceiptNumber' => 'Indique el extracto bancario relacionado con la conciliación. Utilice un valor numérico ordenable (por ejemplo, AAAAMM)',
 		'EventualyAddCategory' => 'Eventualmente, indique una categoría en la que clasificar los registros',
 		'ToConciliate' => '¿A conciliar?',
-		'ThenCheckLinesAndConciliate' => 'A continuación, compruebe las líneas presentes en el extracto bancario y haga clic',
+		'ThenCheckLinesAndConciliate' => 'A continuación, compruebe las líneas presentes en el extracto bancario y haga clic'
 );
 ?>

@@ -44,13 +44,15 @@ $interventions = array(
 		'StatusInterInvoiced' => 'Arve',
 		'RelatedInterventions' => 'Seotud sekkumiste',
 		'ShowIntervention' => 'Näita sekkumine',
+		////////// Types de contacts //////////
 		'TypeContact_fichinter_internal_INTERREPFOLL' => 'Esindaja järelmeetmeid sekkumine',
 		'TypeContact_fichinter_internal_INTERVENING' => 'Astunud',
 		'TypeContact_fichinter_external_BILLING' => 'Arved kliendi kontaktandmed',
 		'TypeContact_fichinter_external_CUSTOMER' => 'Järelmeetmeid kliendikontakti',
+		// Modele numérotation
 		'ArcticNumRefModelDesc1' => 'Generic number mudel',
 		'ArcticNumRefModelError' => 'Suutnud aktiveerida',
 		'PacificNumRefModelDesc1' => 'Tagasi numero koos formaadis %syymm-nnnn kus YY aastat, KK kuud ja nnnn on jada, millel ei ole katki ja ei ole tagasi 0',
-		'PacificNumRefModelError' => 'Sekkumine kaart alustades $ syymm juba olemas ja ei sobi see mudel jada. Eemaldada või ümber nimetada aktiveerimiseks mooduli.',
+		'PacificNumRefModelError' => 'Sekkumine kaart alustades $ syymm juba olemas ja ei sobi see mudel jada. Eemaldada või ümber nimetada aktiveerimiseks mooduli.'
 );
 ?>

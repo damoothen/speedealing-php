@@ -42,6 +42,7 @@ $install = array(
 		'ErrorWrongValueForParameter' => 'Sie haben einen falschen Wert für den Parameter \'%s\' eingegeben.',
 		'ErrorFailedToCreateDatabase' => 'Fehler beim Erstellen der Datenbank \'%s\'.',
 		'ErrorFailedToConnectToDatabase' => 'Es konnte keine Verbindung zur Datenbank \' %s\'.',
+		'ErrorDatabaseVersionTooLow' => 'Database version (%s) too old. Version %s or higher is required.',
 		'ErrorPHPVersionTooLow' => 'Ihre PHP-Version ist veraltet. Sie benötigen mindestens Version %s .',
 		'WarningPHPVersionTooLow' => 'Die PHP-Version ist zu alt. Es wird Version %s oder höher erwartet. Sie können unter dieser PHP-Version installieren, aber sie wird nicht unterstützt.',
 		'ErrorConnectedButDatabaseNotFound' => 'Die Verbindung zum Server wurde erfolgreich hergestellt, die Datenbank \'%s\' jedoch nicht gefunden.',
@@ -170,6 +171,7 @@ $install = array(
 		'MigrationFinished' => 'Migration abgeschlossen',
 		'LastStepDesc' => '<strong>Letzter Schritt</strong>: Legen Sie Ihr Logo und das Passwort fest, welches Sie für dolibarr verwenden möchten. Verlieren Sie diese Administrator-Passwort nicht, da es der "Generalschlüssel" ist.',
 		'ActivateModule' => 'Aktivieren von Modul %s',
+		'ShowEditTechnicalParameters' => 'Click here to show/edit advanced parameters (expert mode)',
 		//////////////////
 		// upgrade
 		//////////////////
@@ -182,59 +184,44 @@ $install = array(
 		'MigrationSuccessfullUpdate' => 'Aktualisierung erfolgreich',
 		'MigrationUpdateFailed' => 'Aktualisierungsvorgang fehlgeschlagen.',
 		'MigrationRelationshipTables' => 'Datenmigration für Relationentabellen (%s)',
-		// Payments Update
 		'MigrationPaymentsUpdate' => 'Zahlungsdatenkorrektur',
 		'MigrationPaymentsNumberToUpdate' => '%s Zahlung(en) zu aktualisieren',
 		'MigrationProcessPaymentUpdate' => 'Aktualisiere Zahlunge(en) %s',
 		'MigrationPaymentsNothingToUpdate' => 'Keine weiteren Schritte.',
 		'MigrationPaymentsNothingUpdatable' => 'Keine weiteren, korrekturfähigen Zahlungen',
-		// Contracts Update
 		'MigrationContractsUpdate' => 'Vertragsdatenkorrektur',
 		'MigrationContractsNumberToUpdate' => '%s Vertrag/Verträge zu aktualisieren',
 		'MigrationContractsLineCreation' => 'Erstelle Vertragszeile für Vertrag Nr. %s',
 		'MigrationContractsNothingToUpdate' => 'Keine weiteren Schritte.',
 		'MigrationContractsFieldDontExist' => 'Feld fk_facture existiert nicht mehr. Keine weiteren Schritte.',
-		// Contracts Empty Dates Update
 		'MigrationContractsEmptyDatesUpdate' => 'Korrektur nicht gesetzter Vertragsdaten',
 		'MigrationContractsEmptyDatesUpdateSuccess' => 'Korrektur nicht gesetzter Vertragsdaten',
 		'MigrationContractsEmptyDatesNothingToUpdate' => 'Kein nicht gesetztes Vertragsdatum zur Korrektur',
 		'MigrationContractsEmptyCreationDatesNothingToUpdate' => 'Kein Vertragserstellungsdatum zur Korrektur',
-		// Contracts Invalid Dates Update
 		'MigrationContractsInvalidDatesUpdate' => 'Korrektur ungültiger Vertragsdaten',
 		'MigrationContractsInvalidDateFix' => 'Korrigierte Vertrag %s (Vertragsdatum=%s, frühestes Leistungserbringungsdatum=%s)',
 		'MigrationContractsInvalidDatesNumber' => '%s Verträge geändert',
 		'MigrationContractsInvalidDatesNothingToUpdate' => 'Kein ungültiges Vertragsdatum zur Korrektur',
-		// Contracts Incoherent Dates Update
 		'MigrationContractsIncoherentCreationDateUpdate' => 'Korrektur ungültiger Vertragserstellungsdaten',
 		'MigrationContractsIncoherentCreationDateUpdateSuccess' => 'Korrektur ungültiger Vertragserstellungsdaten erfolgreich',
 		'MigrationContractsIncoherentCreationDateNothingToUpdate' => 'Kein ungültiges Vertragserstellungsdatum zur Korrektur',
-		// Reopening Contracts
 		'MigrationReopeningContracts' => 'Durch Fehler geschlossenen Vertrag wiedereröffnen',
 		'MigrationReopenThisContract' => 'Vertrag %s wiedereröffnen',
 		'MigrationReopenedContractsNumber' => '%s Verträge geändert',
 		'MigrationReopeningContractsNothingToUpdate' => 'Keine geschlossenen Verträge zur Wiedereröffnung',
-		// Migration transfer
 		'MigrationBankTransfertsUpdate' => 'Verknüpfung zwischen Banktransaktion und einer Überweisung aktualisieren',
 		'MigrationBankTransfertsNothingToUpdate' => 'Alle Banktransaktionen sind auf neuestem Stand.',
-		// Migration delivery
 		'MigrationShipmentOrderMatching' => 'Aktualisiere Sendungsscheine',
 		'MigrationDeliveryOrderMatching' => 'Aktualisiere Lieferscheine',
 		'MigrationDeliveryDetail' => 'Aktualisiere Lieferungen',
-		// Migration stock
 		'MigrationStockDetail' => 'Produklagerwerte aktualisieren',
-		// Migration menus
 		'MigrationMenusDetail' => 'Tabellen der dynamischen Menüs aktualisieren',
-		// Migration delivery address
 		'MigrationDeliveryAddress' => 'Lieferadresse in Sendungen aktualisieren',
-		// Migration project task actors
 		'MigrationProjectTaskActors' => 'Datenmigration für llx_projet_task_actors Tabelle',
-		// Migration project user resp
 		'MigrationProjectUserResp' => 'Datenmigration des Feldes fk_user_resp von llx_projet nach llx_element_contact',
-		// Migration project task time
 		'MigrationProjectTaskTime' => 'Aktualisiere aufgewandte Zeit (in Sekunden)',
-		// Migration Acctioncom
 		'MigrationActioncommElement' => 'Aktualisiere die Maßnahmen',
-		// Migration payment mode
 		'MigrationPaymentMode' => 'Migration der Daten für die Zahlungsart',
+		'MigrationCategorieAssociation' => 'Migration of categories'
 );
 ?>

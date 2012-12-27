@@ -22,6 +22,6 @@ $oscommerce = array(
 		'OSCommerceServer' => 'OS Commerce Server host / ip',
 		'OSCommerceDatabaseName' => 'OS Commerce adatbázis neve',
 		'OSCommercePrefix' => 'OS Commerce táblázatok előtag',
-		'OSCommerceUser' => 'OS Commerce adatbázis bejelentkezés',
+		'OSCommerceUser' => 'OS Commerce adatbázis bejelentkezés'
 );
 ?>

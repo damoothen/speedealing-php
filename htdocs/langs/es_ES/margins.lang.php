@@ -54,5 +54,7 @@ $margins = array(
 		'MARGIN_TYPE_DETAILS' => 'Margen bruto : Precio de venta sin IVA - Precio de compra sin IVA<br/>Margen neto : Precio de venta sin IVA - Costos',
 		'BuyingCost' => 'Costos',
 		'UnitCharges' => 'Carga unitaria',
+		'AgentContactType' => 'Contact type used for commissioning',
+		'AgentContactTypeDetails' => 'Défine what contact type (linked on invoices) will be associated with commercial agents'
 );
 ?>

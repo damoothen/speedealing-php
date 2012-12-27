@@ -25,6 +25,7 @@ $propal = array(
 		'Prop' => 'Kommersiella förslag',
 		'CommercialProposal' => 'Kommersiella förslag',
 		'CommercialProposals' => 'Kommersiella förslag',
+		'ProposalCard' => 'Förslaget kortet',
 		'NewProp' => 'Nya kommersiella förslag',
 		'NewProposal' => 'Nya kommersiella förslag',
 		'NewPropal' => 'Nytt förslag',
@@ -92,22 +93,24 @@ $propal = array(
 		'UseCustomerContactAsPropalRecipientIfExist' => 'Använd kundkontakt adress om definieras i stället för tredje parts adress som förslag mottagaradressen',
 		'ClonePropal' => 'Klon kommersiella förslag',
 		'ConfirmClonePropal' => 'Är du säker på att du vill klona detta kommersiella förslag <b>%s?</b>',
+		'ConfirmReOpenProp' => 'Är du säker på att du vill öppna upp de kommersiella förslaget <b>%s?</b>',
 		'ProposalsAndProposalsLines' => 'Kommersiella förslag och linjer',
 		'ProposalLine' => 'Förslag linje',
-		'TypeContact_propal_internal_SALESREPFOLL' => 'Representanten följa upp förslag',
-		'TypeContact_propal_external_BILLING' => 'Kundfaktura kontakt',
-		'TypeContact_propal_external_CUSTOMER' => 'Kundkontakt följa upp förslag',
-		'DocModelAzurDescription' => 'Ett fullständigt förslag modell (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune förslag modell',
-		'ProposalCard' => 'Förslaget kortet',
-		'ConfirmReOpenProp' => 'Är du säker på att du vill öppna upp de kommersiella förslaget <b>%s?</b>',
 		'AvailabilityPeriod' => 'Tillgänglighet fördröjning',
 		'SetAvailability' => 'Ställa tillgänglighet fördröjning',
 		'AfterOrder' => 'Efter att',
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => 'Omedelbar',
 		'AvailabilityTypeAV_1W' => '1 vecka',
 		'AvailabilityTypeAV_2W' => '2 veckor',
 		'AvailabilityTypeAV_3W' => '3 veckor',
 		'AvailabilityTypeAV_1M' => '1 månad',
+		////////// Types de contacts //////////
+		'TypeContact_propal_internal_SALESREPFOLL' => 'Representanten följa upp förslag',
+		'TypeContact_propal_external_BILLING' => 'Kundfaktura kontakt',
+		'TypeContact_propal_external_CUSTOMER' => 'Kundkontakt följa upp förslag',
+		// Document models
+		'DocModelAzurDescription' => 'Ett fullständigt förslag modell (logo. ..)',
+		'DocModelJauneDescription' => 'Jaune förslag modell'
 );
 ?>

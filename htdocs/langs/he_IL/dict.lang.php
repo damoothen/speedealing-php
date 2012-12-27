@@ -262,10 +262,13 @@ $dict = array(
 		'CountryME' => 'מונטנגרו',
 		'CountryBL' => 'סן ברתלמי',
 		'CountryMF' => 'סן מרטין',
+		////////// Civilities //////////
 		'CivilityMME' => 'גב \'',
 		'CivilityMR' => 'מר',
 		'CivilityMLE' => 'גברת',
 		'CivilityMTRE' => 'אב',
+		'CivilityDR' => 'Doctor',
+		////////// Currencies //////////
 		'Currencyeuros' => 'יורו',
 		'CurrencyAUD' => 'יו דולר',
 		'CurrencySingAUD' => 'AU דולר',
@@ -301,6 +304,9 @@ $dict = array(
 		'CurrencySingXOF' => 'פרנק CFA BCEAO',
 		'CurrencyXPF' => 'CFP פרנק',
 		'CurrencySingXPF' => 'CFP פרנק',
+		'CurrencyCentSingEUR' => 'cent',
+		'CurrencyThousandthSingTND' => 'thousandth',
+		//////// Input reasons //////////
 		'DemandReasonTypeSRC_INTE' => 'לאינטרנט',
 		'DemandReasonTypeSRC_CAMP_MAIL' => 'קמפיין דיוור',
 		'DemandReasonTypeSRC_CAMP_EMAIL' => 'שליחת הדוא&quot;ל קמפיין',
@@ -308,5 +314,9 @@ $dict = array(
 		'DemandReasonTypeSRC_CAMP_FAX' => 'פקס מסע',
 		'DemandReasonTypeSRC_COMM' => 'קשר מסחרי',
 		'DemandReasonTypeSRC_SHOP' => 'חנות קשר',
+		'DemandReasonTypeSRC_WOM' => 'Word of mouth',
+		'DemandReasonTypeSRC_PARTNER' => 'Partner',
+		'DemandReasonTypeSRC_EMPLOYEE' => 'Employee',
+		'DemandReasonTypeSRC_SPONSORING' => 'Sponsorship'
 );
 ?>

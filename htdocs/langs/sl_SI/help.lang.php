@@ -41,5 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'Lahko pokličete enega of inštruktorjev, ki jih je Dolibarr izbral vnaprej za vaš jezik (%s) s kliko na ustrezno ikono (status in maksimalna cena se posodobita avtomatsko):',
 		'PossibleLanguages' => 'Podprti jeziki',
 		'MakeADonation' => 'Pomagajte projektu Dolibarr z vašo donacijo',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

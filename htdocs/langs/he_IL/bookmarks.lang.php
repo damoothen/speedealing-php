@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'שימוש חיצוני http כתובת האתר או כתובת האתר Dolibarr יחסית',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'לבחור אם לפתוח קישור לדף חייב להופיע על החלון הנוכחי או החדש',
 		'BookmarksManagement' => 'סימניות וניהול',
-		'ListOfBookmarks' => 'רשימת הסימניות',
+		'ListOfBookmarks' => 'רשימת הסימניות'
 );
 ?>

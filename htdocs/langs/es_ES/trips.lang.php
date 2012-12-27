@@ -20,7 +20,6 @@ $trips = array(
 		'Trips' => 'Desplazamientos',
 		'TripsAndExpenses' => 'Honorarios',
 		'TripsAndExpensesStatistics' => 'Estadísticas de honorarios',
-		'TripId' => 'Id honorario',
 		'TripCard' => 'Ficha honorario',
 		'AddTrip' => 'Crear honorario',
 		'ListOfTrips' => 'Listado de honorarios',
@@ -36,6 +35,6 @@ $trips = array(
 		'TF_TRIP' => 'Viaje',
 		'ListTripsAndExpenses' => 'Listado notas de honorarios',
 		'ExpensesArea' => 'Área de Notas de honorarios',
-		'SearchATripAndExpense' => 'Buscar un honorario',
+		'SearchATripAndExpense' => 'Buscar un honorario'
 );
 ?>

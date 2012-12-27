@@ -43,6 +43,7 @@ $suppliers = array(
 		'Availability' => 'זמינות',
 		'ExportDataset_fournisseur_1' => 'חשבוניות הספק רשימת קווי של חשבוניות',
 		'ExportDataset_fournisseur_2' => 'הספק חשבוניות ותשלומים',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'לאשר את הסדר',
 		'ConfirmApproveThisOrder' => 'האם אתה בטוח שברצונך לאשר <b>%s</b> סדר?',
 		'DenyingThisOrder' => 'להכחיש זה בסדר',
@@ -53,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'כדי ליצור הספק',
 		'AddSupplierInvoice' => 'יצירת חשבונית הספק',
 		'ListOfSupplierProductForSupplier' => 'רשימה של מוצרים ומחירים עבור <b>%s</b> הספק',
-		'NoneOrBatchFileNeverRan' => '<b>%s</b> ללא או אצווה לא רץ לאחרונה',
+		'NoneOrBatchFileNeverRan' => '<b>%s</b> ללא או אצווה לא רץ לאחרונה'
 );
 ?>

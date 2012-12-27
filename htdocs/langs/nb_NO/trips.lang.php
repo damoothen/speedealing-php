@@ -19,6 +19,7 @@ $trips = array(
 		'Trip' => 'Reise',
 		'Trips' => 'Reiser',
 		'TripsAndExpenses' => 'Reiser og utgifter',
+		'TripsAndExpensesStatistics' => 'Turer og utgifter statistikk',
 		'TripCard' => 'Reisekort',
 		'AddTrip' => 'Legg til reise',
 		'ListOfTrips' => 'Oversikt over reiser',
@@ -32,9 +33,8 @@ $trips = array(
 		'TF_OTHER' => 'Annet',
 		'TF_LUNCH' => 'Lunsj',
 		'TF_TRIP' => 'Reise',
-		'TripsAndExpensesStatistics' => 'Turer og utgifter statistikk',
 		'ListTripsAndExpenses' => 'Liste over turer og utgifter',
 		'ExpensesArea' => 'Turer og utgifter området',
-		'SearchATripAndExpense' => 'Søk etter tur og regning',
+		'SearchATripAndExpense' => 'Søk etter tur og regning'
 );
 ?>

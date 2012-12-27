@@ -55,6 +55,7 @@ $contracts = array(
 		'ValidateAContract' => 'Potrdite pogodbo',
 		'ActivateService' => 'Aktivirajte storitev',
 		'ConfirmActivateService' => 'Ali zares želite aktivirati to storitev na dan <b>%s</b> ?',
+		'RefContract' => 'Contract reference',
 		'DateContract' => 'Datum pogodbe',
 		'DateServiceActivate' => 'Datum aktiviranja storitve',
 		'DateServiceUnactivate' => 'Datum deaktiviranja storitve',
@@ -69,6 +70,7 @@ $contracts = array(
 		'ListOfRunningServices' => 'Seznam aktivnih storitev',
 		'NotActivatedServices' => 'Neaktivne storitve (med potrjenimi pogodbami)',
 		'BoardNotActivatedServices' => 'Storitve, ki jih je potrebno aktivirati (med potrjenimi pogodbami)',
+		'LastContracts' => 'Zadnjih % pogodb',
 		'LastActivatedServices' => 'Zadnjih %s aktiviranih storitev',
 		'LastModifiedServices' => 'Zadnjih %s spremenjenih storitev',
 		'EditServiceLine' => 'Ureditev storitvene vrstice',
@@ -99,13 +101,13 @@ $contracts = array(
 		'PaymentRenewContractId' => 'Obnovi pogodbeno vrstico (številka %s)',
 		'ExpiredSince' => 'Datum poteka',
 		'RelatedContracts' => 'Pogodbe, ki se nanašajo na to',
-		////////// Types de contacts ////////// = 
+		'NoExpiredServices' => 'Ni potekla aktivne službe',
+		////////// Types de contacts //////////
 		'TypeContact_contrat_internal_SALESREPSIGN' => 'Podpisnik pogodbe',
 		'TypeContact_contrat_internal_SALESREPFOLL' => 'Referent za sledenje pogodbe',
 		'TypeContact_contrat_external_BILLING' => 'Kontakt v računovodstvu kupca',
 		'TypeContact_contrat_external_CUSTOMER' => 'Kontakt pri kupcu za sledenje pogodbe',
 		'TypeContact_contrat_external_SALESREPSIGN' => 'Kontakt pri kupcu za podpis pogodbe',
-		'Error_CONTRACT_ADDON_NotDefined' => 'Konstanta CONTRACT_ADDON ni definirana',
-		'NoExpiredServices' => 'Ni potekla aktivne službe',
+		'Error_CONTRACT_ADDON_NotDefined' => 'Konstanta CONTRACT_ADDON ni definirana'
 );
 ?>

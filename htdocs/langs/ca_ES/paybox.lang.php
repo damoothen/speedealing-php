@@ -18,8 +18,8 @@ $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'Configuració mòdul PayBox',
 		'PayBoxDesc' => 'Aquest mòdul ofereix una pàgina de pagament a través del proveïdor <a href="http://www.paybox.com" target="_blank">Paybox</a> per realitzar qualsevol pagament o un pagament en relació amb un objecte Dolibarr (factures, comandes ...)',
-		'PaymentForm' => 'Formulari de pagament',
 		'FollowingUrlAreAvailableToMakePayments' => 'Les següents URL estan disponibles per a permetre a un client fer un pagament',
+		'PaymentForm' => 'Formulari de pagament',
 		'WelcomeOnPaymentPage' => 'Benvingut als nostres serveis de pagament en línia',
 		'ThisScreenAllowsYouToPay' => 'Aquesta pantalla li permet fer el seu pagament en línia destinat a %s.',
 		'ThisIsInformationOnPayment' => 'Aquí està la informació sobre el pagament a realitzar',
@@ -48,6 +48,6 @@ $paybox = array(
 		'VendorName' => 'Nom del venedor',
 		'CSSUrlForPaymentForm' => 'Url del full d\'estil CSS per al formulari de pagament',
 		'MessageOK' => 'Missatge a la pàgina de retorn de pagament confirmat',
-		'MessageKO' => 'Missatge a la pàgina de retorn de pagament cancel·lat',
+		'MessageKO' => 'Missatge a la pàgina de retorn de pagament cancel·lat'
 );
 ?>

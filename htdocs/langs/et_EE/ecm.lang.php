@@ -52,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => 'Kataloogid dokumentide',
 		'ECMTypeManual' => 'Käsiraamat',
 		'ECMTypeAuto' => 'Automaatne',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => 'Dokumendid, mis on seotud kolmandate isikute',
 		'ECMDocsByProposals' => 'Dokumendid seotud ettepanekute',
 		'ECMDocsByOrders' => 'Dokumendid, mis on seotud klientide tellimusi',
@@ -66,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Eemaldada ei ole võimalik, sest see sisaldab mõningaid faile',
 		'ECMFileManager' => 'Failihaldur',
 		'ECMSelectASection' => 'Vali kataloog vasakul puu ...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

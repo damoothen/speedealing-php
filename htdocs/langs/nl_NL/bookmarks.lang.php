@@ -33,6 +33,6 @@ $bookmarks = array(
 		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Gebruik een externe HTTP URL of een relatieve Dolibarr URL',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Kies of de pagina geopend door een link in het huidige of een nieuw venster moet verschijnen',
 		'BookmarksManagement' => 'Internetfavorietenbeheer',
-		'ListOfBookmarks' => 'Internetfavourietenlijst',
+		'ListOfBookmarks' => 'Internetfavourietenlijst'
 );
 ?>

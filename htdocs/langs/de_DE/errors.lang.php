@@ -119,7 +119,15 @@ $errors = array(
 		'ErrorBothFieldCantBeNegative' => 'Die Felder %s und %s können nicht gleichzeitig negativ sein',
 		'ErrorWebServerUserHasNotPermission' => 'Der Benutzerkonto <b>%s</b> wurde verwendet um auf dem Webserver etwas auszuführen, hat aber keine Rechte dafür.',
 		'ErrorNoActivatedBarcode' => 'Kein Barcode aktiviert',
+		'ErrUnzipFails' => 'Failed to unzip %s with ZipArchive',
+		'ErrNoZipEngine' => 'No engine to unzip %s file in this PHP',
+		'ErrorFileMustBeADolibarrPackage' => 'The file %s must be a Dolibarr zip package',
+		'ErrorFileRequired' => 'It takes a package Dolibarr file',
+		'ErrorPhpCurlNotInstalled' => 'The PHP CURL is not installed, this is essential to talk with Paypal',
+		'ErrorFailedToAddToMailmanList' => 'Failed to add record to Mailman list or SPIP base',
+		'ErrorNewVaueCantMatchOldValue' => 'New value can\'t be equal to old one',
 		// Warnings
+		'WarningMandatorySetupNotComplete' => 'Mandatory setup parameters are not yet defined',
 		'WarningSafeModeOnCheckExecDir' => 'Achtung: Der PHP-Option <b>safe_mode</b> ist aktiviert, entsprechend müssen Befehle in einem mit <b>safe_mode_exec_dir</b> gekennzeichneten Verzeichnis ausgeführt werden.',
 		'WarningAllowUrlFopenMustBeOn' => 'Der Parameter <b>allow_url_fopen</b> muss in der php.ini-Datei auf <b>ON</b> stehen, damit dieses Modul funktioniert. Bitte passen Sie die Datei manuell an.',
 		'WarningBuildScriptNotRunned' => 'Das Skript <b>%s</b> wurde noch nicht zur Grafikerstellung ausgeführt oder es existieren keine anzuzeigenden Daten.',
@@ -130,5 +138,6 @@ $errors = array(
 		'WarningNoDocumentModelActivated' => 'Für das Erstellen von Dokumenten ist keine Vorlage gewählt. Eine Vorlage wird standardmäßig ausgewählt, bis Sie die Moduleinstellungen angepasst haben.',
 		'WarningLockFileDoesNotExists' => 'Warnung, wenn Setup abgeschlossen ist, müssen Sie die Installations- und Migration-Tools deaktivieren. Dazu fügen Sie die Datei <b>install.lock</b> dem Verzeichnis <b> %s</b> hinzu. Das fehlend dieser Datei stelle eine Sicherheitslücke dar.',
 		'WarningUntilDirRemoved' => 'Diese Warnung bleibt so lange bestehen, bis die Sicherheitslücke geschlossen wurde (nur für Administratoren sichtbar).',
+		'WarningCloseAlways' => 'Warning, closing is done even if amount differs between source and target elements. Enable this feature with caution.'
 );
 ?>

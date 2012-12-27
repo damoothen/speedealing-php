@@ -61,5 +61,6 @@ $languages = array(
 		'Language_sv_SV' => 'Sueco',
 		'Language_sv_SE' => 'Sueco',
 		'Language_zh_CN' => 'Chino',
+		'Language_is_IS' => 'Islandés'
 );
 ?>

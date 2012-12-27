@@ -32,6 +32,7 @@ $suppliers = array(
 		'BuyingPriceMinShort' => 'Prix achat min',
 		'AddSupplierPrice' => 'Ajouter prix fournisseur',
 		'ChangeSupplierPrice' => 'Modifier prix fournisseur',
+		'ErrorQtyTooLowForThisSupplier' => 'Quantity too low for this supplier or no price defined on this product for this supplier',
 		'ErrorSupplierCountryIsNotDefined' => 'Le pays de ce fournisseur n\'est pas défini. Corriger sur sa fiche.',
 		'ProductHasAlreadyReferenceInThisSupplier' => 'Ce produit a déjà une référence chez ce fournisseur',
 		'ReferenceSupplierIsAlreadyAssociatedWithAProduct' => 'Cette référence fournisseur est déjà associée à la référence : %s',
@@ -42,6 +43,7 @@ $suppliers = array(
 		'Availability' => 'Disponibilité',
 		'ExportDataset_fournisseur_1' => 'Factures fournisseurs et lignes de facture',
 		'ExportDataset_fournisseur_2' => 'Factures fournisseurs et règlements',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'Approuver la commande',
 		'ConfirmApproveThisOrder' => 'Êtes-vous sûr de vouloir approuver la commande fournisseur <b>%s</b> ?',
 		'DenyingThisOrder' => 'Refuser la commande',
@@ -52,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Créer commande fournisseur',
 		'AddSupplierInvoice' => 'Créer facture fournisseur',
 		'ListOfSupplierProductForSupplier' => 'Liste des produits et prix du fournisseurs <b>%s</b>',
-		'NoneOrBatchFileNeverRan' => 'Aucun ou batch <b>%s</b> non exécuté récemment',
+		'NoneOrBatchFileNeverRan' => 'Aucun ou batch <b>%s</b> non exécuté récemment'
 );
 ?>

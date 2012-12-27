@@ -17,7 +17,8 @@
 $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Lahjoitus',
-		'Donationss' => 'Lahjoitukset',
+		'Donations' => 'Lahjoitukset',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Rahoittajien',
 		'Donors' => 'Luovuttajat',
 		'AddDonation' => 'Lisää lahjoitus',
@@ -36,12 +37,14 @@ $donations = array(
 		'DonationStatusPromiseNotValidatedShort' => 'Vedos',
 		'DonationStatusPromiseValidatedShort' => 'Validoidut',
 		'DonationStatusPaidShort' => 'Vastatut',
-		'ValidPromise' => 'Validate lupaus',
+		'ValidPromess' => 'Vahvista lupaus',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Rakenna vastaanottamisesta',
 		'DonationsModels' => 'Asiakirjat malleja lahjoitus kuitit',
-		'Donations' => 'Lahjoitukset',
-		'ValidPromess' => 'Vahvista lupaus',
 		'LastModifiedDonations' => 'Viimeksi %s muutettu lahjoitukset',
 		'SearchADonation' => 'Etsi lahjoitus',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

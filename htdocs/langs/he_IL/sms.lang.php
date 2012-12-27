@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'נ.ב. התווים שנותרו',
 		'SmsInfoNumero' => '(הפורמט הבינלאומי כלומר: 33899701761)',
 		'DelayBeforeSending' => 'עיכוב לפני שליחת (דקות)',
-		'SmsNoPossibleRecipientFound' => 'היעד לא זמין. בדוק את תוכנית ההתקנה של ספק ה-SMS.',
+		'SmsNoPossibleRecipientFound' => 'היעד לא זמין. בדוק את תוכנית ההתקנה של ספק ה-SMS.'
 );
 ?>

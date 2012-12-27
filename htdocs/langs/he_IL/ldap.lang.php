@@ -43,6 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => 'חבר מסונכרן',
 		'ContactSynchronized' => 'צור מסונכרן',
 		'ForceSynchronize' => 'Dolibarr חיל סנכרון -> LDAP',
-		'ErrorFailedToReadLDAP' => 'נכשל בקריאת הנתונים LDAP. בדוק את הגדרות מודול LDAP ונגישות הנתונים.',
+		'ErrorFailedToReadLDAP' => 'נכשל בקריאת הנתונים LDAP. בדוק את הגדרות מודול LDAP ונגישות הנתונים.'
 );
 ?>

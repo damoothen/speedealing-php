@@ -93,24 +93,24 @@ $propal = array(
 		'UseCustomerContactAsPropalRecipientIfExist' => 'Kot naslov prejemnika ponudbe uporabi naslov kontakta pri kupcu, če je na voljo, namesto naslova partnerja',
 		'ClonePropal' => 'Kloniraj komercialno ponudbo',
 		'ConfirmClonePropal' => 'Ali zares želite klonirati to komercialno ponudbo <b>%s</b> ?',
+		'ConfirmReOpenProp' => 'Ali ste prepričani, da želite odpreti nazaj poslovne <b>%s</b> predlog?',
 		'ProposalsAndProposalsLines' => 'Komercialna ponudba in vrstice',
 		'ProposalLine' => 'Vrstica ponudbe',
 		'AvailabilityPeriod' => 'Dobavni rok',
 		'SetAvailability' => 'Nastavi dobavni rok',
 		'AfterOrder' => 'od naročila',
-		////////// Availability ////////// = 
+		////////// Availability //////////
 		'AvailabilityTypeAV_NOW' => 'Takoj',
 		'AvailabilityTypeAV_1W' => '1 teden',
 		'AvailabilityTypeAV_2W' => '2 tedna',
 		'AvailabilityTypeAV_3W' => '3 tedne',
 		'AvailabilityTypeAV_1M' => '1 mesec',
-		////////// Types de contacts ////////// = undefined
+		////////// Types de contacts //////////
 		'TypeContact_propal_internal_SALESREPFOLL' => 'Predstavnik za sledenje ponudbe',
 		'TypeContact_propal_external_BILLING' => 'Kontakt za račun pri kupcu',
 		'TypeContact_propal_external_CUSTOMER' => 'Kontakt pri kupcu za sledenje ponudbe',
-		// Document models = undefined
+		// Document models
 		'DocModelAzurDescription' => 'Vzorec kompletne ponudbe (logo...)',
-		'DocModelJauneDescription' => 'Vzorec ponudbe Jaune',
-		'ConfirmReOpenProp' => 'Ali ste prepričani, da želite odpreti nazaj poslovne <b>%s</b> predlog?',
+		'DocModelJauneDescription' => 'Vzorec ponudbe Jaune'
 );
 ?>

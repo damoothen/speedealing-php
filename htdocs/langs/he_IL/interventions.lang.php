@@ -44,13 +44,15 @@ $interventions = array(
 		'StatusInterInvoiced' => 'מחויב',
 		'RelatedInterventions' => 'בנושא התערבויות',
 		'ShowIntervention' => 'הצג התערבות',
+		////////// Types de contacts //////////
 		'TypeContact_fichinter_internal_INTERREPFOLL' => 'התערבות נציג הבאה למעלה',
 		'TypeContact_fichinter_internal_INTERVENING' => 'להתערב',
 		'TypeContact_fichinter_external_BILLING' => 'חיוב הלקוח קשר',
 		'TypeContact_fichinter_external_CUSTOMER' => 'בעקבות מעקב לקוחות קשר',
+		// Modele numérotation
 		'ArcticNumRefModelDesc1' => 'מספר מודל גנרי',
 		'ArcticNumRefModelError' => 'נכשל נסיון להפעיל',
 		'PacificNumRefModelDesc1' => 'חזור נומרו עם פורמט %syymm-nnnn שם yy הוא שנה, מ&quot;מ הוא חודש nnnn הוא רצף ללא הפסקה וללא חזרה 0',
-		'PacificNumRefModelError' => 'כרטיס התערבות החל $ syymm כבר קיים, והוא אינו תואם מודל זה של הרצף. להסיר אותה או לשנות אותה כדי להפעיל את מודול זה.',
+		'PacificNumRefModelError' => 'כרטיס התערבות החל $ syymm כבר קיים, והוא אינו תואם מודל זה של הרצף. להסיר אותה או לשנות אותה כדי להפעיל את מודול זה.'
 );
 ?>

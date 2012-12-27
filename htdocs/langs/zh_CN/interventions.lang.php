@@ -23,6 +23,7 @@ $interventions = array(
 		'AddIntervention' => '添加干预',
 		'ListOfInterventions' => '名单干预',
 		'EditIntervention' => '编辑干预',
+		'ActionsOnFicheInter' => '干预的行动',
 		'LastInterventions' => '上次％s的干预措施',
 		'AllInterventions' => '所有发言',
 		'CreateDraftIntervention' => '创建草案',
@@ -39,18 +40,19 @@ $interventions = array(
 		'NameAndSignatureOfInternalContact' => '名称及干预签名：',
 		'NameAndSignatureOfExternalContact' => '客户的姓名和签字：',
 		'DocumentModelStandard' => '标准文档模型的干预',
-		'TypeContact_fichinter_internal_INTERREPFOLL' => '代表随访干预',
-		'TypeContact_fichinter_internal_INTERVENING' => '干预',
-		'TypeContact_fichinter_external_BILLING' => '结算客户联系',
-		'TypeContact_fichinter_external_CUSTOMER' => '随访客户联系',
-		'ArcticNumRefModelDesc1' => '通用数模型',
-		'ArcticNumRefModelError' => '无法启动',
-		'PacificNumRefModelDesc1' => '返回格式％syymm，其中yy是二○○一年numero，MM是月，nnnn是一个没有休息，没有返回0序列',
-		'PacificNumRefModelError' => '干预卡$ syymm起已经存在，而不是与此序列模型兼容。删除或重新命名它激活该模块。',
-		'ActionsOnFicheInter' => '干预的行动',
 		'ClassifyBilled' => '分类“帐单”',
 		'StatusInterInvoiced' => '帐单',
 		'RelatedInterventions' => '相关的干预措施',
 		'ShowIntervention' => '展干预',
+		////////// Types de contacts //////////
+		'TypeContact_fichinter_internal_INTERREPFOLL' => '代表随访干预',
+		'TypeContact_fichinter_internal_INTERVENING' => '干预',
+		'TypeContact_fichinter_external_BILLING' => '结算客户联系',
+		'TypeContact_fichinter_external_CUSTOMER' => '随访客户联系',
+		// Modele numérotation
+		'ArcticNumRefModelDesc1' => '通用数模型',
+		'ArcticNumRefModelError' => '无法启动',
+		'PacificNumRefModelDesc1' => '返回格式％syymm，其中yy是二○○一年numero，MM是月，nnnn是一个没有休息，没有返回0序列',
+		'PacificNumRefModelError' => '干预卡$ syymm起已经存在，而不是与此序列模型兼容。删除或重新命名它激活该模块。'
 );
 ?>

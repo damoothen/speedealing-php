@@ -18,6 +18,7 @@ $donations = array(
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Bağış',
 		'Donations' => 'Bağışlar',
+		'DonationRef' => 'Donation ref.',
 		'Donor' => 'Bağışçı',
 		'Donors' => 'Bağışçılar',
 		'AddDonation' => 'Bir bağış ekle',
@@ -37,9 +38,13 @@ $donations = array(
 		'DonationStatusPromiseValidatedShort' => 'Doğrulanmış',
 		'DonationStatusPaidShort' => 'Alınan',
 		'ValidPromess' => 'Söz doğrula',
+		'DonationReceipt' => 'Donation receipt',
 		'BuildDonationReceipt' => 'Makbuz oluştur',
 		'DonationsModels' => 'Bağış makbuzları belge modelleri',
 		'LastModifiedDonations' => 'Düzenlenen son %s bağış',
 		'SearchADonation' => 'Bağış ara',
+		'DonationRecipient' => 'Donation recipient',
+		'ThankYou' => 'Thank You',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

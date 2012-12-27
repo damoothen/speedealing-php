@@ -36,7 +36,6 @@ $ecm = array(
 		'ECMRoot' => '根',
 		'ECMNewSection' => '新目录',
 		'ECMAddSection' => '添加手册目录',
-		'ECMNewSection' => '新手册目录',
 		'ECMNewDocument' => '新文件',
 		'ECMCreationDate' => '创建日期',
 		'ECMNbOfFilesInDir' => '在目录中的文件数',
@@ -53,6 +52,7 @@ $ecm = array(
 		'ECMSectionOfDocuments' => '目录中的文件',
 		'ECMTypeManual' => '手册',
 		'ECMTypeAuto' => '自动',
+		'ECMDocsBySocialContributions' => 'Documents linked to social contributions',
 		'ECMDocsByThirdParties' => '文件链接到第三方',
 		'ECMDocsByProposals' => '文件与建议',
 		'ECMDocsByOrders' => '文件链接到客户的订单',
@@ -67,5 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => '删除不可能的，因为它包含了一些文件',
 		'ECMFileManager' => '档案管理员',
 		'ECMSelectASection' => '左树中选择一个目录...',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

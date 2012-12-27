@@ -19,11 +19,13 @@ $trips = array(
 		'Trip' => 'Matka',
 		'Trips' => 'Retket',
 		'TripsAndExpenses' => 'Matkat ja kulut',
+		'TripsAndExpensesStatistics' => 'Retket ja kulut tilastot',
 		'TripCard' => 'Trip-kortti',
 		'AddTrip' => 'Lisää matka',
 		'ListOfTrips' => 'Luettelo matkat',
 		'ListOfFees' => 'Luettelo palkkiot',
 		'NewTrip' => 'Uusi matka',
+		'CompanyVisited' => 'Yritys / säätiö vieraili',
 		'Kilometers' => 'Kilometers',
 		'FeesKilometersOrAmout' => 'Määrä tai kilometreinä',
 		'DeleteTrip' => 'Poista matka',
@@ -32,9 +34,7 @@ $trips = array(
 		'TF_LUNCH' => 'Lounas',
 		'TF_TRIP' => 'Matka',
 		'ListTripsAndExpenses' => 'Luettelo matkat ja kulut',
-		'CompanyVisited' => 'Yritys / säätiö vieraili',
-		'TripsAndExpensesStatistics' => 'Retket ja kulut tilastot',
 		'ExpensesArea' => 'Retket ja kulut alue',
-		'SearchATripAndExpense' => 'Etsi matka-ja kulut',
+		'SearchATripAndExpense' => 'Etsi matka-ja kulut'
 );
 ?>

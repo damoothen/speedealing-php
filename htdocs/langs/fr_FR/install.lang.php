@@ -15,7 +15,6 @@
  */
 
 $install = array(
-		// Speedealing language file - fr_FR - install
 		'CHARSET' => 'UTF-8',
 		'InstallEasy' => 'Veuillez suivre les étapes une à une.',
 		'MiscellanousChecks' => 'Vérification de prérequis',
@@ -68,20 +67,9 @@ $install = array(
 		'Server' => 'Serveur',
 		'ServerAddressDescription' => 'Nom ou adresse ip du serveur de base de données, généralement \'localhost\' quand le serveur est installé sur la même machine que le serveur web',
 		'ServerPortDescription' => 'Port du serveur. Ne rien mettre si inconnu.',
-		'ServerPortCouchdbDescription' => 'Port du serveur. Défaut 5984.',
-		'ServerAddressCouchdbDescription' => 'Nom FQDN du serveur de base de données, \'localhost.localdomain\' quand le serveur est installé sur la même machine que le serveur web',
-		'DatabaseCouchdbUserDescription' => 'Login du super administrateur ayant tous les droits sur le serveur CouchDB ou l\'administrateur propriétaire de la base si la base et son compte d\'accès existent déjà (comme lorsque vous êtes chez un hébergeur).<br><br><div class="alert-box info">Cet utilisateur/mot de passe sera l\'administrateur pour se connecter à Speedealing.</div>',
-		'CheckToCreateCouchdbDatabase' => 'Cochez cette option si la base de données n\'existe pas et doit être créée.',
-		'CreateAdminUser' => 'Créer le super administrateur (Première installation de couchDB)',
-		'MemcachedDescription' => 'Activer Memcached necessite l\'installation d\'un serveur Memcached et des lib php-memcached ou php-memcache. Il peut être activer après l\'installation.',
-		'ServerAddressMemcachedDesc' => 'Nom ou adresse ip du serveur memcached, généralement \'localhost\' quand le serveur est installé sur la même machine que le serveur web',
-		'ServerPortMemcachedDesc' => 'Port du serveur memcached. Défaut : 11211',
-		'EnabledMemcached' => 'Activer Memcached',
 		'DatabaseServer' => 'Serveur de la base de données',
 		'DatabaseName' => 'Nom de la base de données',
 		'DatabasePrefix' => 'Préfixe des tables',
-		'DatabaseNoSQL' => 'Base de données CouchDB',
-		'DatabaseSQL' => 'Base de données SQL',
 		'Login' => 'Login',
 		'AdminLogin' => 'Login du propriétaire de la base de données Speedealing.',
 		'Password' => 'Mot de passe',
@@ -126,15 +114,14 @@ $install = array(
 		'DirectoryRecommendation' => 'Il est recommandé de mettre ce répertoire en dehors du répertoire des pages web.',
 		'LoginAlreadyExists' => 'Existe déjà',
 		'DolibarrAdminLogin' => 'Login de l\'utilisateur administrateur de Speedealing',
-		'FailedToCreateAdminLogin' => 'Echec de la création du compte administrateur Speedealing.',
 		'AdminLoginAlreadyExists' => 'Compte administrateur Speedealing \'<b>%s</b>\' déjà existant. Revenez en arrière si vous voulez en créer un autre.',
 		'WarningRemoveInstallDir' => 'Attention, pour des raisons de sécurité, afin de bloquer une nouvelle utilisation des outils d\'installation/migration, une fois l\'installation terminée, il est conseillé de placer dans le répertoire document de Speedealing un fichier nommé <b>install.lock</b> en lecture seule.',
 		'ThisPHPDoesNotSupportTypeBase' => 'Le système PHP ne supporte pas les interfaces d\'accès pour les bases %s',
 		'FunctionNotAvailableInThisPHP' => 'Non disponible sur ce PHP',
 		'MigrateScript' => 'Script de migration',
 		'ChoosedMigrateScript' => 'Choix du script de migration',
-		'DatabaseMigration' => 'Migration du format de la base de données',
 		'DataMigration' => 'Migration des données',
+		'DatabaseMigration' => 'Migration du format de la base de données',
 		'ProcessMigrateScript' => 'Exécution du script',
 		'ChooseYourSetupMode' => 'Choisissez votre mode d\'installation et cliquez sur "Démarrer"...',
 		'FreshInstall' => 'Première installation',
@@ -184,10 +171,6 @@ $install = array(
 		'MigrationFinished' => 'Migration terminée',
 		'LastStepDesc' => '<strong>Dernière étape</strong>: Définissez ici le compte et mot de passe du premier utilisateur que vous allez utiliser pour vous connecter à l\'application. Ne perdez pas ces identifiants, il s\'agit du compte permettant d\'administrer les autres.',
 		'ActivateModule' => 'Activation du module %s',
-		'LinkedElementsInvalidDeleted' => '<b>%s</b> liaisons invalides ont été supprimées',
-		'NothingToDelete' => 'Aucune liaison invalide trouvée',
-		'SourceType' => 'Source',
-		'TargetType' => 'Cible',
 		'ShowEditTechnicalParameters' => 'Cliquer ici pour afficher/éditer les paramètres techniques (mode expert)',
 		//////////////////
 		// upgrade
@@ -214,7 +197,6 @@ $install = array(
 		'MigrationContractsEmptyDatesUpdate' => 'Mise à jour des dates de contrats non renseignées',
 		'MigrationContractsEmptyDatesUpdateSuccess' => 'Ok pour date de contrat',
 		'MigrationContractsEmptyDatesNothingToUpdate' => 'Pas ou plus de date de contrats à renseigner.',
-		'MigrationContractsEmptyCreationDatesUpdateSuccess' => 'Ok pour date création',
 		'MigrationContractsEmptyCreationDatesNothingToUpdate' => 'Pas ou plus de date de création à renseigner.',
 		'MigrationContractsInvalidDatesUpdate' => 'Mise à jour dates contrat incorrectes (pour contrats avec détail en service)',
 		'MigrationContractsInvalidDateFix' => 'Correction contrat %s (Date contrat=%s, Date mise service min=%s)',
@@ -240,6 +222,6 @@ $install = array(
 		'MigrationProjectTaskTime' => 'Mise à jour du temps consommé en secondes',
 		'MigrationActioncommElement' => 'Mise à jour des données des actions des éléments',
 		'MigrationPaymentMode' => 'Migration des modes de paiement',
-		'MigrationCategorieAssociation' => 'Migration des categories',
+		'MigrationCategorieAssociation' => 'Migration des categories'
 );
 ?>

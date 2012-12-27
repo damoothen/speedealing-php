@@ -18,6 +18,7 @@ $languages = array(
 		'CHARSET' => 'UTF-8',
 		'Language_ar_AR' => 'Arabisch',
 		'Language_ar_SA' => 'Arabisch',
+		'Language_bg_BG' => 'Bulgarian',
 		'Language_ca_ES' => 'Katalanisch',
 		'Language_da_DA' => 'Dänisch',
 		'Language_da_DK' => 'Dänisch',
@@ -60,6 +61,6 @@ $languages = array(
 		'Language_sv_SV' => 'Schwedisch',
 		'Language_sv_SE' => 'Schwedisch',
 		'Language_zh_CN' => 'Chinesisch',
-		'Language_is_IS' => 'Isländisch',
+		'Language_is_IS' => 'Isländisch'
 );
 ?>

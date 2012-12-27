@@ -64,7 +64,7 @@ $withdrawals = array(
 		'RefusedReason' => 'Ret nedeni',
 		'RefusedInvoicing' => 'Rettin faturalandırılması',
 		'NoInvoiceRefused' => 'Reddi borç yazmayın',
-		'InvoiceRefused' => 'Reddedileni müşteriye borç yazın',
+		'InvoiceRefused' => 'Fatura reddedildi',
 		'Status' => 'Durum',
 		'StatusUnknown' => 'Bilinmeyen',
 		'StatusWaiting' => 'Bekliyor',
@@ -97,7 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'Para çekme göster',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'Faturaya henüz enaz bir ödeme tahsilatı işlenmemişse, ödendi olarak ayarlanamaz.',
 		'DoStandingOrdersBeforePayments' => 'Bu sekmeler ödeme talimatı istemenizi sağlar. Bitirildiğinde faturayı kapatmak için ödemeyi yazabilirsiniz.',
-		////// Bildirimler
+		////// Notifications
 		'InfoCreditSubject' => 'Banka tarafından ödenen %s ödeme talimatı',
 		'InfoCreditMessage' => '%s Ödeme talimatı banka tarafından ödenmiştir<br>Ödeme tarihi: %s',
 		'InfoTransSubject' => '%s Ödeme talimatının bankaya iletilmesi',
@@ -106,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'Bu Dolibarr tarafından otomatik gönderilen bir mesajtır',
 		'InfoRejectSubject' => 'Ödeme talimatı reddedildi',
 		'InfoRejectMessage' => 'Merhaba, <br><br> %s firmasına ait %s faturasının %s tutarındaki ödeme talimatı banka tarafından reddedilmiştir.<br><br>--<br>%$',
-		'ModeWarning' => 'Gerçek mod için seçenek ayarlanmamış, bu simülasyondan sonra durdururuz',
+		'ModeWarning' => 'Gerçek mod için seçenek ayarlanmamış, bu simülasyondan sonra durdururuz'
 );
 ?>

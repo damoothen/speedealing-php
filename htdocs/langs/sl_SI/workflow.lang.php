@@ -15,7 +15,7 @@
  */
 
 $workflow = array(
-		'CHARSET' => '',
+		'CHARSET' => 'UTF-8',
 		'WorkflowSetup' => 'Nastavitev modula poteka dela',
 		'WorkflowDesc' => 'Ta modul je namenjen spreminjanju načina delovanja avtomatskih aktivnosti v aplikaciji. Privzeto je potek dela odprt (postavke lahko izvajate v poljubnem vrstnem redu). Za aktivnosti, ki vas zanimajo, lahko vklopite avtomatske aktivnosti.',
 		'ThereIsNoWorkflowToModify' => 'Za aktiviran modul ni na voljo poteka dela, ki bi ga lahko spreminjali',
@@ -23,5 +23,7 @@ $workflow = array(
 		'descWORKFLOW_PROPAL_AUTOCREATE_INVOICE' => 'Po podpisu komercialne ponudbe avtomatsko ustvari račun za kupca',
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Po potrditvi pogodbe avtomatsko ustvari račun za kupca',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Po zaključku naročila kupca avtomatsko ustvari račun za kupca',
+		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Classify linked source proposal to billed when customer order is set to paid',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid'
 );
 ?>

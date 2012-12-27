@@ -152,11 +152,16 @@ $banks = array(
 		'PaymentNumberUpdateFailed' => 'Številke plačila ni mogoče posodobiti',
 		'PaymentDateUpdateSucceeded' => 'Datum plačila uspešno posodobljen',
 		'PaymentDateUpdateFailed' => 'Datuma plačila ni mogoče posodobiti',
+		'Transactions' => 'Transactions',
 		'BankTransactionLine' => 'Bančna transakcija',
 		'AllAccounts' => 'Vsi bančno/gotovinski računi',
 		'BackToAccount' => 'Nazaj na račun',
 		'ShowAllAccounts' => 'Prikaži vse račune',
 		'FutureTransaction' => 'Bodoča transakcija. Ni možna uskladitev.',
 		'SelectChequeTransactionAndGenerate' => 'Izberi/filtriraj čeke za vključitev v prevzemnico čekovnih nakazil in klikni na "Ustvari"',
+		'InputReceiptNumber' => 'Choose the bank statement related with the conciliation. Use a sortable numeric value (such as, YYYYMM)',
+		'EventualyAddCategory' => 'Eventually, specify a category in which to classify the records',
+		'ToConciliate' => 'To conciliate?',
+		'ThenCheckLinesAndConciliate' => 'Then, check the lines present in the bank statement and click'
 );
 ?>

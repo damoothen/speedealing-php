@@ -136,7 +136,6 @@ $members = array(
 		'LastSubscriptionsModified' => 'Utolsó módosítás előfizetések %s',
 		'AttributeName' => 'Attribútum neve',
 		'FieldEdition' => 'Kiadása terén %s',
-		'AlphaNumOnlyCharsAndNoSpace' => 'Csak alphanumericals characters szóköz nélkül',
 		'String' => 'Húr',
 		'Text' => 'Szöveg',
 		'Int' => 'Int',
@@ -148,6 +147,8 @@ $members = array(
 		'ShowSubscription' => 'Mutasd előfizetés',
 		'MemberModifiedInDolibarr' => 'Tagja módosított Dolibarr',
 		'SendAnEMailToMember' => 'Küldés e-mailben tájékoztatást tagja',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL_SUBJECT' => 'Subject of the e-mail received in case of auto-inscription of a guest',
+		'DescADHERENT_AUTOREGISTER_NOTIF_MAIL' => 'E-mail received in case of auto-inscription of a guest',
 		'DescADHERENT_AUTOREGISTER_MAIL_SUBJECT' => 'E-mail tárgya a tagállamok autosubscription',
 		'DescADHERENT_AUTOREGISTER_MAIL' => 'E-mail szolgáltatás tagja autosubscription',
 		'DescADHERENT_MAIL_VALID_SUBJECT' => 'E-mail tárgya a tagállamok hitelesítési',
@@ -158,12 +159,12 @@ $members = array(
 		'DescADHERENT_MAIL_RESIL' => 'E-mail szolgáltatás tagja resiliation',
 		'DescADHERENT_MAIL_FROM' => 'Feladó e-mail címet automatikus e-maileket',
 		'DescADHERENT_ETIQUETTE_TYPE' => 'Oldal formátuma címkék',
+		'DescADHERENT_ETIQUETTE_TEXT' => 'Text printed on member address sheets',
 		'DescADHERENT_CARD_TYPE' => 'Formátuma kártyák oldal',
 		'DescADHERENT_CARD_HEADER_TEXT' => 'Nyomtatott szöveg tetején tag kártyák',
 		'DescADHERENT_CARD_TEXT' => 'Nyomtatott szöveg tagja kártyák (igazítsa a bal)',
 		'DescADHERENT_CARD_TEXT_RIGHT' => 'Nyomtatott szöveg tagja kártyák (igazítása jobb oldalon)',
 		'DescADHERENT_CARD_FOOTER_TEXT' => 'Nyomtatott szöveg alján tag kártyák',
-		'DescADHERENT_MAILMAN_LISTS' => 'Lista (ek) automatikus insription új tagok (vesszővel elválasztva)',
 		'GlobalConfigUsedIfNotDefined' => 'Szöveg meghatározott Alapítvány modul beállítás lesz használva, ha nincs itt meghatározott',
 		'MayBeOverwrited' => 'Ez a szöveg lehet az érték felülíródik meghatározott tagsági típus',
 		'ShowTypeCard' => 'Mutasd típusú &quot;%s&quot;',
@@ -210,6 +211,6 @@ $members = array(
 		'Collectivités' => 'Szervezetek',
 		'Particuliers' => 'Személyes',
 		'Entreprises' => 'Cégek',
-		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Ahhoz, hogy az előfizetés befizetését a banki átutalást, lásd <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a> . <br> Fizetni hitelkártyával vagy PayPal, kattintson gombra a lap alján. <br>',
+		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Ahhoz, hogy az előfizetés befizetését a banki átutalást, lásd <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a> . <br> Fizetni hitelkártyával vagy PayPal, kattintson gombra a lap alján. <br>'
 );
 ?>

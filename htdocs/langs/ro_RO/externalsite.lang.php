@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => 'Link-ul de instalare pentru site-ul extern',
-		'ExternalSiteURL' => 'URL-ul site-ului extern',
+		'ExternalSiteURL' => 'URL-ul site-ului extern'
 );
 ?>

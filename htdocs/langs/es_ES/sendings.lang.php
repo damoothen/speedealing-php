@@ -81,6 +81,6 @@ $sendings = array(
 		// ModelDocument
 		'DocumentModelSirocco' => 'Modelo simple de nota de entrega / recepción',
 		'DocumentModelTyphon' => 'Modelo completo de nota de entrega / recepción (logo...)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constante EXPEDITION_ADDON_NUMBER no definida',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Constante EXPEDITION_ADDON_NUMBER no definida'
 );
 ?>

@@ -17,6 +17,6 @@
 $externalsite = array(
 		'CHARSET' => 'UTF-8',
 		'ExternalSiteSetup' => 'Setup link to väline veebilehel',
-		'ExternalSiteURL' => 'Väline Site URL',
+		'ExternalSiteURL' => 'Väline Site URL'
 );
 ?>

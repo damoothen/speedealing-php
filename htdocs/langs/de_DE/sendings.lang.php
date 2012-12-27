@@ -44,10 +44,14 @@ $sendings = array(
 		'SendingsForSameOrder' => 'Sendungen zu dieser Bestellung',
 		'SendingsAndReceivingForSameOrder' => 'Sendungen und Warenerhalt zu dieser Bestellung',
 		'SendingsToValidate' => 'Freizugebende Sendungen',
+		'StatusSendingCanceled' => 'Storniert',
 		'StatusSendingDraft' => 'Entwurf',
 		'StatusSendingValidated' => 'Freigegeben (Artikel versandfertig oder bereits versandt)',
+		'StatusSendingProcessed' => 'Verarbeitete',
+		'StatusSendingCanceledShort' => 'Storno',
 		'StatusSendingDraftShort' => 'Entwurf',
 		'StatusSendingValidatedShort' => 'Freigegeben',
+		'StatusSendingProcessedShort' => 'Fertig',
 		'SendingSheet' => 'Versandbeleg',
 		'Carriers' => 'Spediteure',
 		'Carrier' => 'Spediteur',
@@ -59,11 +63,9 @@ $sendings = array(
 		'GenericTransport' => 'Generischer Transport',
 		'Enlevement' => 'Vom Kunden erhalten',
 		'DocumentModelSimple' => 'Einfache Dokumentvorlage',
+		'DocumentModelMerou' => 'Merou A5-Modell',
 		'WarningNoQtyLeftToSend' => 'Achtung, keine Produkte für den Versand',
 		'StatsOnShipmentsOnlyValidated' => 'Versandstatistik (nur Freigegebene)',
-		'StatusSendingCanceled' => 'Storniert',
-		'StatusSendingCanceledShort' => 'Storno',
-		'DocumentModelMerou' => 'Merou A5-Modell',
 		'DateDeliveryPlanned' => 'Geplantes Zustellungsdatum',
 		'DateReceived' => 'Datum der Zustellung',
 		'SendShippingByEMail' => 'Verand per E-Mail',
@@ -71,8 +73,7 @@ $sendings = array(
 		'ActionsOnShipping' => 'Anmerkungen zur Sendung',
 		'LinkToTrackYourPackage' => 'Link zur Sendungsnachverfolgung',
 		'ShipmentCreationIsDoneFromOrder' => 'Aktuell ist die Erstellung der neuen Sendung über die Bestellkarte erfolgt.',
-		'StatusSendingProcessed' => 'Verarbeitete',
-		'StatusSendingProcessedShort' => 'Fertig',
+		'RelatedShippings' => 'Related shippings',
 		// Sending methods
 		'SendingMethodCATCH' => 'Abholung durch Kunden',
 		'SendingMethodTRANS' => 'Spedition',
@@ -80,6 +81,6 @@ $sendings = array(
 		// ModelDocument
 		'DocumentModelSirocco' => 'Einfache Dokumentvorlage für die Lieferungscheine',
 		'DocumentModelTyphon' => 'Vollständig Dokumentvorlage für die Lieferungscheine (Logo, ...)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Konstante EXPEDITION_ADDON_NUMBER nicht definiert',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'Konstante EXPEDITION_ADDON_NUMBER nicht definiert'
 );
 ?>

@@ -72,6 +72,7 @@ $categories = array(
 		'MemberHasNoCategory' => '该成员没有任何类别',
 		'ClassifyInCategory' => '分类类别',
 		'NoneCategory' => '无',
+		'NotCategorized' => 'Without category',
 		'CategoryExistsAtSameLevel' => '此类别已存在此号',
 		'ReturnInProduct' => '返回产品/服务卡',
 		'ReturnInSupplier' => '返回供应商卡',
@@ -106,6 +107,6 @@ $categories = array(
 		'CatSupList' => '供应商分类列表',
 		'CatCusList' => '客户名单/前景类别',
 		'CatProdList' => '产品类别列表',
-		'CatMemberList' => '类别的成员名单',
+		'CatMemberList' => '类别的成员名单'
 );
 ?>

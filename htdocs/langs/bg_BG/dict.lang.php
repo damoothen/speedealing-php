@@ -262,11 +262,13 @@ $dict = array(
 		'CountryME' => 'Черна гора',
 		'CountryBL' => 'Сен Бартелеми',
 		'CountryMF' => 'Saint Martin',
+		////////// Civilities //////////
 		'CivilityMME' => 'Госпожа',
 		'CivilityMR' => 'Господин',
 		'CivilityMLE' => 'Госпожица',
 		'CivilityMTRE' => 'Майстор',
 		'CivilityDR' => 'Лекар',
+		////////// Currencies //////////
 		'Currencyeuros' => 'Евро',
 		'CurrencyAUD' => 'АС долара',
 		'CurrencySingAUD' => 'АС Dollar',
@@ -304,6 +306,7 @@ $dict = array(
 		'CurrencySingXPF' => 'CFP франк',
 		'CurrencyCentSingEUR' => 'цент',
 		'CurrencyThousandthSingTND' => 'хиляден',
+		//////// Input reasons //////////
 		'DemandReasonTypeSRC_INTE' => 'Интернет',
 		'DemandReasonTypeSRC_CAMP_MAIL' => 'Mailing кампания',
 		'DemandReasonTypeSRC_CAMP_EMAIL' => 'Електронната поща кампания',
@@ -314,6 +317,6 @@ $dict = array(
 		'DemandReasonTypeSRC_WOM' => 'Дума на устата',
 		'DemandReasonTypeSRC_PARTNER' => 'Партньор',
 		'DemandReasonTypeSRC_EMPLOYEE' => 'Служителите',
-		'DemandReasonTypeSRC_SPONSORING' => 'Спонсорство',
+		'DemandReasonTypeSRC_SPONSORING' => 'Спонсорство'
 );
 ?>

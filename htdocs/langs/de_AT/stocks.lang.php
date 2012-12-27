@@ -102,6 +102,6 @@ $stocks = array(
 		'ThisWarehouseIsPersonalStock' => 'Dieses Lager bezeichnet den persönlichen Bestand von %s %s',
 		'SelectWarehouseForStockDecrease' => 'Choose warehouse to use for stock decrease',
 		'SelectWarehouseForStockIncrease' => 'Choose warehouse to use for stock increase',
-		'LastWaitingSupplierOrders' => 'Orders waiting for receptions',
+		'LastWaitingSupplierOrders' => 'Orders waiting for receptions'
 );
 ?>

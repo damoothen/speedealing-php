@@ -47,9 +47,11 @@ $sendings = array(
 		'StatusSendingCanceled' => 'בוטלה',
 		'StatusSendingDraft' => 'טיוטה',
 		'StatusSendingValidated' => 'תוקף (מוצרים הספינה או נשלח כבר)',
+		'StatusSendingProcessed' => 'Processed',
 		'StatusSendingCanceledShort' => 'בוטלה',
 		'StatusSendingDraftShort' => 'טיוטה',
 		'StatusSendingValidatedShort' => 'תוקף',
+		'StatusSendingProcessedShort' => 'Processed',
 		'SendingSheet' => 'שליחת גיליון',
 		'Carriers' => 'ספקים',
 		'Carrier' => 'נושא',
@@ -71,11 +73,14 @@ $sendings = array(
 		'ActionsOnShipping' => 'אירועים על המשלוח',
 		'LinkToTrackYourPackage' => 'קישור לאתר החבילה',
 		'ShipmentCreationIsDoneFromOrder' => 'לעת עתה, יצירת משלוח חדש נעשית מתוך כרטיס הזמנה.',
+		'RelatedShippings' => 'Related shippings',
+		// Sending methods
 		'SendingMethodCATCH' => 'תפוס על ידי הלקוח',
 		'SendingMethodTRANS' => 'Transporter',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		// ModelDocument
 		'DocumentModelSirocco' => 'מסמך מודל פשוט עבור אישורי מסירה',
 		'DocumentModelTyphon' => 'מסמך מודל שלם יותר על אישורי מסירה (logo. ..)',
-		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'EXPEDITION_ADDON_NUMBER קבוע לא מוגדר',
+		'Error_EXPEDITION_ADDON_NUMBER_NotDefined' => 'EXPEDITION_ADDON_NUMBER קבוע לא מוגדר'
 );
 ?>

@@ -32,6 +32,7 @@ $suppliers = array(
 		'BuyingPriceMinShort' => 'Покупка мин. Цена',
 		'AddSupplierPrice' => 'Добави награда доставчик',
 		'ChangeSupplierPrice' => 'Промяна доставчик цена',
+		'ErrorQtyTooLowForThisSupplier' => 'Количество твърде ниска за този доставчик или няма цена, определена за този продукт на този доставчик',
 		'ErrorSupplierCountryIsNotDefined' => 'Не е определено на страната на доставчика. Корекция на щепсела.',
 		'ProductHasAlreadyReferenceInThisSupplier' => 'Този продукт има позоваване на този доставчик',
 		'ReferenceSupplierIsAlreadyAssociatedWithAProduct' => 'Този референтен доставчик вече е свързана с референтното: %s',
@@ -42,6 +43,7 @@ $suppliers = array(
 		'Availability' => 'Наличност',
 		'ExportDataset_fournisseur_1' => 'Фактури и фактура линии',
 		'ExportDataset_fournisseur_2' => 'Фактури и наредби',
+		'ExportDataset_fournisseur_3' => 'Supplier orders and order lines',
 		'ApproveThisOrder' => 'Одобряване на поръчката',
 		'ConfirmApproveThisOrder' => 'Сигурен ли сте, че искате да одобри <b>%s Поръчката?</b>',
 		'DenyingThisOrder' => 'Да откаже поръчката',
@@ -52,7 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Създаване на поръчка за покупка',
 		'AddSupplierInvoice' => 'Създаване на фактура',
 		'ListOfSupplierProductForSupplier' => 'Списък на доставчици на стоки и цени <b>%s</b>',
-		'NoneOrBatchFileNeverRan' => 'Няма или не се изпълнява партида <b>%s</b> наскоро',
-		'ErrorQtyTooLowForThisSupplier' => 'Количество твърде ниска за този доставчик или няма цена, определена за този продукт на този доставчик',
+		'NoneOrBatchFileNeverRan' => 'Няма или не се изпълнява партида <b>%s</b> наскоро'
 );
 ?>

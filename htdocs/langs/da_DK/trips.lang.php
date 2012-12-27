@@ -19,11 +19,13 @@ $trips = array(
 		'Trip' => 'Tur',
 		'Trips' => 'Trips',
 		'TripsAndExpenses' => 'Udflugter og udgifter',
+		'TripsAndExpensesStatistics' => 'Udflugter og udgifter statistik',
 		'TripCard' => 'Trip kortet',
 		'AddTrip' => 'Tilføj tur',
 		'ListOfTrips' => 'Liste over ture',
 		'ListOfFees' => 'Liste over gebyrer',
 		'NewTrip' => 'Ny tur',
+		'CompanyVisited' => 'Company / fundament besøgte',
 		'Kilometers' => 'Kilometer',
 		'FeesKilometersOrAmout' => 'Beløb eller kilometer',
 		'DeleteTrip' => 'Slet tur',
@@ -32,9 +34,7 @@ $trips = array(
 		'TF_LUNCH' => 'Frokost',
 		'TF_TRIP' => 'Tur',
 		'ListTripsAndExpenses' => 'Liste over ture og omkostninger',
-		'CompanyVisited' => 'Company / fundament besøgte',
-		'TripsAndExpensesStatistics' => 'Udflugter og udgifter statistik',
 		'ExpensesArea' => 'Udflugter og udgifter området',
-		'SearchATripAndExpense' => 'Søg en tur og regning',
+		'SearchATripAndExpense' => 'Søg en tur og regning'
 );
 ?>

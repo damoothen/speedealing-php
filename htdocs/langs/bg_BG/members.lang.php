@@ -211,6 +211,6 @@ $members = array(
 		'Collectivités' => 'Организации',
 		'Particuliers' => 'Личен',
 		'Entreprises' => 'Фирми',
-		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'За да направите абонамент на плащане чрез банков превод, вижте стр. <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a> . <br> За да платите чрез кредитна карта или Paypal, кликнете върху бутона в долната част на тази страница. <br>',
+		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'За да направите абонамент на плащане чрез банков превод, вижте стр. <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a> . <br> За да платите чрез кредитна карта или Paypal, кликнете върху бутона в долната част на тази страница. <br>'
 );
 ?>

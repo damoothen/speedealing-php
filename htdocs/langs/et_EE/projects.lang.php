@@ -101,6 +101,15 @@ $projects = array(
 		'ErrorTimeSpentIsEmpty' => 'Aega on tühi',
 		'ThisWillAlsoRemoveTasks' => 'Toetatakse ka kustutada kõik ülesanded projekti <b>(%s</b> ülesandeid hetkel) ja kõik sisendid aega.',
 		'IfNeedToUseOhterObjectKeepEmpty' => 'Kui mõned objektid (arve, et, ...), mis kuuluvad teisele kolmandale osapoolele, peab olema seotud projekti luua, hoida seda tühjaks lasta projekt on multi kolmandatele isikutele.',
+		'CloneProject' => 'Clone project',
+		'CloneTasks' => 'Clone tasks',
+		'CloneContacts' => 'Clone contacts',
+		'CloneNotes' => 'Clone notes',
+		'CloneFiles' => 'Clone joined files',
+		'ConfirmCloneProject' => 'Are you sure to clone this project ?',
+		'ProjectReportDate' => 'Change task date according project start date',
+		'ErrorShiftTaskDate' => 'Impossible to shift task date according to new project start date',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Projektijuht',
 		'TypeContact_project_external_PROJECTLEADER' => 'Projektijuht',
 		'TypeContact_project_internal_CONTRIBUTOR' => 'Toetaja',
@@ -109,6 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => 'Task kommenteeritud',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Toetaja',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Toetaja',
-		'DocumentModelBaleine' => 'Kogu projekti aruande mudel (logo. ..)',
+		// Documents models
+		'DocumentModelBaleine' => 'Kogu projekti aruande mudel (logo. ..)'
 );
 ?>

@@ -152,11 +152,16 @@ $banks = array(
 		'PaymentNumberUpdateFailed' => 'Zahlungsnummer konnte nicht aktualisiert werden',
 		'PaymentDateUpdateSucceeded' => 'Zahlungsdatum erfolgreich aktualisiert',
 		'PaymentDateUpdateFailed' => 'Zahlungsdatum konnte nicht aktualisiert werden',
+		'Transactions' => 'Transactions',
 		'BankTransactionLine' => 'Banküberweisung',
 		'AllAccounts' => 'Alle Finanzkonten',
 		'BackToAccount' => 'Zurück zum Konto',
 		'ShowAllAccounts' => 'Alle Finanzkonten',
 		'FutureTransaction' => 'Zukünftige Transaktionen.',
 		'SelectChequeTransactionAndGenerate' => 'Schecks auswählen/filtern um Sie in den Einzahlungsbeleg zu integrieren und auf "Erstellen" klicken.',
+		'InputReceiptNumber' => 'Choose the bank statement related with the conciliation. Use a sortable numeric value (such as, YYYYMM)',
+		'EventualyAddCategory' => 'Eventually, specify a category in which to classify the records',
+		'ToConciliate' => 'To conciliate?',
+		'ThenCheckLinesAndConciliate' => 'Then, check the lines present in the bank statement and click'
 );
 ?>

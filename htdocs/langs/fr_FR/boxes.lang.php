@@ -55,6 +55,7 @@ $boxes = array(
 		'BoxTitleLastProspects' => 'Les %s derniers prospects enregistrés',
 		'BoxTitleLastModifiedProspects' => 'Les %s derniers prospects modifiés',
 		'BoxTitleLastProductsInContract' => 'Les %s derniers produits/services contractés',
+		'BoxTitleLastModifiedMembers' => 'Les %s derniers adhérents modifiés',
 		'BoxTitleOldestUnpaidCustomerBills' => 'Les %s plus anciennes factures clients impayées',
 		'BoxTitleOldestUnpaidSupplierBills' => 'Les %s plus anciennes factures fournisseurs impayées',
 		'BoxTitleCurrentAccounts' => 'Les soldes de comptes courants',
@@ -62,7 +63,6 @@ $boxes = array(
 		'BoxTitleTotalUnpaidCustomerBills' => 'Impayés clients',
 		'BoxTitleTotalUnpaidSuppliersBills' => 'Impayés fournisseurs',
 		'BoxTitleLastModifiedContacts' => 'Les %s derniers contacts/adresses modifiés',
-		'BoxTitleLastModifiedMembers' => 'Les %s derniers adhérents modifiés',
 		'BoxMyLastBookmarks' => 'Mes %s derniers marque-pages',
 		'BoxOldestExpiredServices' => 'Plus anciens services expirés',
 		'BoxLastExpiredServices' => 'Les %s plus anciens contrats avec services actifs expirés',
@@ -89,9 +89,9 @@ $boxes = array(
 		'NoRecordedProspects' => 'Pas de prospect enregistré',
 		'NoContractedProducts' => 'Pas de produit/service contracté',
 		'NoRecordedContracts' => 'Pas de contrat enregistré',
-		// Dernières commandes fournisseur
+		// Latest supplier orders
 		'BoxLatestSupplierOrders' => 'Dernières commandes fournisseur',
 		'BoxTitleLatestSupplierOrders' => 'Les %s dernières commandes fournisseur enregistrées',
-		'NoSupplierOrder' => 'Pas de commandes fournisseur enregistrées',
+		'NoSupplierOrder' => 'Pas de commandes fournisseur enregistrées'
 );
 ?>

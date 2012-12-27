@@ -20,8 +20,8 @@ $mails = array(
 		'EMailing' => 'EMailing',
 		'Mailings' => 'EMailings',
 		'EMailings' => 'EMailings',
-		'MailCard' => 'Fiche emailing',
 		'AllEMailings' => 'Tous les EMailings',
+		'MailCard' => 'Fiche emailing',
 		'MailTargets' => 'Destinataires',
 		'MailRecipients' => 'Destinataires',
 		'MailRecipient' => 'Destinataire',
@@ -140,6 +140,6 @@ $mails = array(
 		'SomeNotificationsWillBeSent' => '%s notifications vont être envoyées par email',
 		'AddNewNotification' => 'Activer une nouvelle demande de notification email',
 		'ListOfActiveNotifications' => 'Liste des demandes de notifications emails actives',
-		'ListOfNotificationsDone' => 'Liste des notifications emails envoyées',
+		'ListOfNotificationsDone' => 'Liste des notifications emails envoyées'
 );
 ?>

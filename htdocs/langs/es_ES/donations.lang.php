@@ -38,14 +38,13 @@ $donations = array(
 		'DonationStatusPromiseValidatedShort' => 'Validada',
 		'DonationStatusPaidShort' => 'Pagada',
 		'ValidPromess' => 'Validar promesa',
+		'DonationReceipt' => 'Recibo de donación',
 		'BuildDonationReceipt' => 'Crear recibo',
 		'DonationsModels' => 'Modelo de documento de recepción de donación',
 		'LastModifiedDonations' => 'Las %s últimas donaciones modificadas',
 		'SearchADonation' => 'Buscar una donación',
-		'DonationReceipt' => 'Recibo de donación',
 		'DonationRecipient' => 'Beneficiario',
-		'DonationRef' => 'Referencia',
-		'IConfirmDonationReception' => 'El beneficiario confirma la recepción, como donación, de la siguiente cantidad',
 		'ThankYou' => 'Muchas gracias',
+		'IConfirmDonationReception' => 'El beneficiario confirma la recepción, como donación, de la siguiente cantidad'
 );
 ?>

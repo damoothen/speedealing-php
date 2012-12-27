@@ -109,6 +109,7 @@ $projects = array(
 		'ConfirmCloneProject' => 'Сигурен ли сте, че за клониране на този проект?',
 		'ProjectReportDate' => 'Промяна задача дата според началната дата на проекта',
 		'ErrorShiftTaskDate' => 'Невъзможно е да се смени датата на задача в съответствие с нова дата за началото на проекта',
+		////////// Types de contacts //////////
 		'TypeContact_project_internal_PROJECTLEADER' => 'Ръководител на проекта',
 		'TypeContact_project_external_PROJECTLEADER' => 'Ръководител на проекта',
 		'TypeContact_project_internal_CONTRIBUTOR' => 'Сътрудник',
@@ -117,6 +118,7 @@ $projects = array(
 		'TypeContact_project_task_external_TASKEXECUTIVE' => 'Задача изпълнителен',
 		'TypeContact_project_task_internal_CONTRIBUTOR' => 'Сътрудник',
 		'TypeContact_project_task_external_CONTRIBUTOR' => 'Сътрудник',
-		'DocumentModelBaleine' => 'Доклад за цялостния проект модел (logo. ..)',
+		// Documents models
+		'DocumentModelBaleine' => 'Доклад за цялостния проект модел (logo. ..)'
 );
 ?>

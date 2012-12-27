@@ -118,6 +118,7 @@ $holiday = array(
 		'nbHolidayDeductedCP' => 'Número de días retribuidos a deducir por día de vacaciones',
 		'nbHolidayEveryMonthCP' => 'Número de vacaciones añadidas por mes',
 		'Module27130Name' => 'Gestion de las vacaciones',
+		'Module27130Desc' => 'Management of holidays',
 		'TitleOptionMainCP' => 'Ajustes principales de vacaciones',
 		'TitleOptionEventCP' => 'Ajustes de vacaciones enlazados a eventos',
 		'ValidEventCP' => 'Validar',
@@ -141,6 +142,6 @@ $holiday = array(
 		'Jours' => 'días',
 		'nbJours' => 'Número de días',
 		'TitleAdminCP' => 'Configuración de las vacaciones',
-		'Permission20001' => 'Leer / Crear / Modificar sus vacaciones',
+		'Permission20001' => 'Leer / Crear / Modificar sus vacaciones'
 );
 ?>

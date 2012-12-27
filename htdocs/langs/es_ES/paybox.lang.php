@@ -18,8 +18,8 @@ $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'Configuración módulo PayBox',
 		'PayBoxDesc' => 'Este módulo ofrece una página  de pago a través del proveedor <a href="http://www.paybox.com" target="_blank">Paybox</a> para realizar cualquier pago o un pago en relación con un objeto Dolibarr (facturas, pedidos ...)',
-		'PaymentForm' => 'Formulario de pago',
 		'FollowingUrlAreAvailableToMakePayments' => 'Las siguientes URL están disponibles para permitir a un cliente efectuar un pago',
+		'PaymentForm' => 'Formulario de pago',
 		'WelcomeOnPaymentPage' => 'Bienvenido a nuestros servicios de pago en línea',
 		'ThisScreenAllowsYouToPay' => 'Esta pantalla le permite hacer su pago en línea destinado a %s.',
 		'ThisIsInformationOnPayment' => 'Aquí está la información sobre el pago a realizar',
@@ -48,6 +48,6 @@ $paybox = array(
 		'VendorName' => 'Nombre del vendedor',
 		'CSSUrlForPaymentForm' => 'Url de la hoja de estilo CSS para el formulario de pago',
 		'MessageOK' => 'Mensaje en la página de retorno de pago confirmado',
-		'MessageKO' => 'Mensaje en la página de retorno de pago cancelado',
+		'MessageKO' => 'Mensaje en la página de retorno de pago cancelado'
 );
 ?>

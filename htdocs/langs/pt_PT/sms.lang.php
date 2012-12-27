@@ -66,6 +66,6 @@ $sms = array(
 		'SmsInfoCharRemain' => 'N º de caracteres restantes',
 		'SmsInfoNumero' => '(Formato internacional exemplo: +33899701761)',
 		'DelayBeforeSending' => 'Atraso antes de enviar (minutos)',
-		'SmsNoPossibleRecipientFound' => 'Nenhum alvo disponível. Verifique a configuração do seu provedor de SMS.',
+		'SmsNoPossibleRecipientFound' => 'Nenhum alvo disponível. Verifique a configuração do seu provedor de SMS.'
 );
 ?>
