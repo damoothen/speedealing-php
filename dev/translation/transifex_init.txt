@@ -1,0 +1,12 @@
+#!/bin/sh
+
+#git clone http://git.example.com/git/myproject.git
+#cd myproject
+
+tx init
+
+for resource in admin agenda banks bills bookmarks boxes cashdesk categories commercial commissions companies compta contracts deliveries dict donations ecm errors exports externalsite ftp help holiday install interventions languages ldap mailmanspip mails main margins members orders oscommerce other paybox paypal products projects propal sendings shop sms stocks suppliers trips users withdrawals workflow; do
+	tx set --auto-local -r speedealing.$resource "htdocs/langs/<lang>/$resource.lang.php" --source-lang en_US --execute
+done
+
+tx push -s -t

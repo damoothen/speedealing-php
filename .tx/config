@@ -1,0 +1,248 @@
+[main]
+host = https://www.transifex.com
+
+[speedealing.admin]
+file_filter = htdocs/langs/<lang>/admin.lang.php
+source_file = htdocs/langs/en_US/admin.lang.php
+source_lang = en_US
+
+[speedealing.agenda]
+file_filter = htdocs/langs/<lang>/agenda.lang.php
+source_file = htdocs/langs/en_US/agenda.lang.php
+source_lang = en_US
+
+[speedealing.banks]
+file_filter = htdocs/langs/<lang>/banks.lang.php
+source_file = htdocs/langs/en_US/banks.lang.php
+source_lang = en_US
+
+[speedealing.bills]
+file_filter = htdocs/langs/<lang>/bills.lang.php
+source_file = htdocs/langs/en_US/bills.lang.php
+source_lang = en_US
+
+[speedealing.bookmarks]
+file_filter = htdocs/langs/<lang>/bookmarks.lang.php
+source_file = htdocs/langs/en_US/bookmarks.lang.php
+source_lang = en_US
+
+[speedealing.boxes]
+file_filter = htdocs/langs/<lang>/boxes.lang.php
+source_file = htdocs/langs/en_US/boxes.lang.php
+source_lang = en_US
+
+[speedealing.cashdesk]
+file_filter = htdocs/langs/<lang>/cashdesk.lang.php
+source_file = htdocs/langs/en_US/cashdesk.lang.php
+source_lang = en_US
+
+[speedealing.categories]
+file_filter = htdocs/langs/<lang>/categories.lang.php
+source_file = htdocs/langs/en_US/categories.lang.php
+source_lang = en_US
+
+[speedealing.commercial]
+file_filter = htdocs/langs/<lang>/commercial.lang.php
+source_file = htdocs/langs/en_US/commercial.lang.php
+source_lang = en_US
+
+[speedealing.commissions]
+file_filter = htdocs/langs/<lang>/commissions.lang.php
+source_file = htdocs/langs/en_US/commissions.lang.php
+source_lang = en_US
+
+[speedealing.companies]
+file_filter = htdocs/langs/<lang>/companies.lang.php
+source_file = htdocs/langs/en_US/companies.lang.php
+source_lang = en_US
+
+[speedealing.compta]
+file_filter = htdocs/langs/<lang>/compta.lang.php
+source_file = htdocs/langs/en_US/compta.lang.php
+source_lang = en_US
+
+[speedealing.contracts]
+file_filter = htdocs/langs/<lang>/contracts.lang.php
+source_file = htdocs/langs/en_US/contracts.lang.php
+source_lang = en_US
+
+[speedealing.deliveries]
+file_filter = htdocs/langs/<lang>/deliveries.lang.php
+source_file = htdocs/langs/en_US/deliveries.lang.php
+source_lang = en_US
+
+[speedealing.dict]
+file_filter = htdocs/langs/<lang>/dict.lang.php
+source_file = htdocs/langs/en_US/dict.lang.php
+source_lang = en_US
+
+[speedealing.donations]
+file_filter = htdocs/langs/<lang>/donations.lang.php
+source_file = htdocs/langs/en_US/donations.lang.php
+source_lang = en_US
+
+[speedealing.ecm]
+file_filter = htdocs/langs/<lang>/ecm.lang.php
+source_file = htdocs/langs/en_US/ecm.lang.php
+source_lang = en_US
+
+[speedealing.errors]
+file_filter = htdocs/langs/<lang>/errors.lang.php
+source_file = htdocs/langs/en_US/errors.lang.php
+source_lang = en_US
+
+[speedealing.exports]
+file_filter = htdocs/langs/<lang>/exports.lang.php
+source_file = htdocs/langs/en_US/exports.lang.php
+source_lang = en_US
+
+[speedealing.externalsite]
+file_filter = htdocs/langs/<lang>/externalsite.lang.php
+source_file = htdocs/langs/en_US/externalsite.lang.php
+source_lang = en_US
+
+[speedealing.ftp]
+file_filter = htdocs/langs/<lang>/ftp.lang.php
+source_file = htdocs/langs/en_US/ftp.lang.php
+source_lang = en_US
+
+[speedealing.help]
+file_filter = htdocs/langs/<lang>/help.lang.php
+source_file = htdocs/langs/en_US/help.lang.php
+source_lang = en_US
+
+[speedealing.holiday]
+file_filter = htdocs/langs/<lang>/holiday.lang.php
+source_file = htdocs/langs/en_US/holiday.lang.php
+source_lang = en_US
+
+[speedealing.install]
+file_filter = htdocs/langs/<lang>/install.lang.php
+source_file = htdocs/langs/en_US/install.lang.php
+source_lang = en_US
+
+[speedealing.interventions]
+file_filter = htdocs/langs/<lang>/interventions.lang.php
+source_file = htdocs/langs/en_US/interventions.lang.php
+source_lang = en_US
+
+[speedealing.languages]
+file_filter = htdocs/langs/<lang>/languages.lang.php
+source_file = htdocs/langs/en_US/languages.lang.php
+source_lang = en_US
+
+[speedealing.ldap]
+file_filter = htdocs/langs/<lang>/ldap.lang.php
+source_file = htdocs/langs/en_US/ldap.lang.php
+source_lang = en_US
+
+[speedealing.mailmanspip]
+file_filter = htdocs/langs/<lang>/mailmanspip.lang.php
+source_file = htdocs/langs/en_US/mailmanspip.lang.php
+source_lang = en_US
+
+[speedealing.mails]
+file_filter = htdocs/langs/<lang>/mails.lang.php
+source_file = htdocs/langs/en_US/mails.lang.php
+source_lang = en_US
+
+[speedealing.main]
+file_filter = htdocs/langs/<lang>/main.lang.php
+source_file = htdocs/langs/en_US/main.lang.php
+source_lang = en_US
+
+[speedealing.margins]
+file_filter = htdocs/langs/<lang>/margins.lang.php
+source_file = htdocs/langs/en_US/margins.lang.php
+source_lang = en_US
+
+[speedealing.members]
+file_filter = htdocs/langs/<lang>/members.lang.php
+source_file = htdocs/langs/en_US/members.lang.php
+source_lang = en_US
+
+[speedealing.orders]
+file_filter = htdocs/langs/<lang>/orders.lang.php
+source_file = htdocs/langs/en_US/orders.lang.php
+source_lang = en_US
+
+[speedealing.oscommerce]
+file_filter = htdocs/langs/<lang>/oscommerce.lang.php
+source_file = htdocs/langs/en_US/oscommerce.lang.php
+source_lang = en_US
+
+[speedealing.other]
+file_filter = htdocs/langs/<lang>/other.lang.php
+source_file = htdocs/langs/en_US/other.lang.php
+source_lang = en_US
+
+[speedealing.paybox]
+file_filter = htdocs/langs/<lang>/paybox.lang.php
+source_file = htdocs/langs/en_US/paybox.lang.php
+source_lang = en_US
+
+[speedealing.paypal]
+file_filter = htdocs/langs/<lang>/paypal.lang.php
+source_file = htdocs/langs/en_US/paypal.lang.php
+source_lang = en_US
+
+[speedealing.products]
+file_filter = htdocs/langs/<lang>/products.lang.php
+source_file = htdocs/langs/en_US/products.lang.php
+source_lang = en_US
+
+[speedealing.projects]
+file_filter = htdocs/langs/<lang>/projects.lang.php
+source_file = htdocs/langs/en_US/projects.lang.php
+source_lang = en_US
+
+[speedealing.propal]
+file_filter = htdocs/langs/<lang>/propal.lang.php
+source_file = htdocs/langs/en_US/propal.lang.php
+source_lang = en_US
+
+[speedealing.sendings]
+file_filter = htdocs/langs/<lang>/sendings.lang.php
+source_file = htdocs/langs/en_US/sendings.lang.php
+source_lang = en_US
+
+[speedealing.shop]
+file_filter = htdocs/langs/<lang>/shop.lang.php
+source_file = htdocs/langs/en_US/shop.lang.php
+source_lang = en_US
+
+[speedealing.sms]
+file_filter = htdocs/langs/<lang>/sms.lang.php
+source_file = htdocs/langs/en_US/sms.lang.php
+source_lang = en_US
+
+[speedealing.stocks]
+file_filter = htdocs/langs/<lang>/stocks.lang.php
+source_file = htdocs/langs/en_US/stocks.lang.php
+source_lang = en_US
+
+[speedealing.suppliers]
+file_filter = htdocs/langs/<lang>/suppliers.lang.php
+source_file = htdocs/langs/en_US/suppliers.lang.php
+source_lang = en_US
+
+[speedealing.trips]
+file_filter = htdocs/langs/<lang>/trips.lang.php
+source_file = htdocs/langs/en_US/trips.lang.php
+source_lang = en_US
+
+[speedealing.users]
+file_filter = htdocs/langs/<lang>/users.lang.php
+source_file = htdocs/langs/en_US/users.lang.php
+source_lang = en_US
+
+[speedealing.withdrawals]
+file_filter = htdocs/langs/<lang>/withdrawals.lang.php
+source_file = htdocs/langs/en_US/withdrawals.lang.php
+source_lang = en_US
+
+[speedealing.workflow]
+file_filter = htdocs/langs/<lang>/workflow.lang.php
+source_file = htdocs/langs/en_US/workflow.lang.php
+source_lang = en_US
+
