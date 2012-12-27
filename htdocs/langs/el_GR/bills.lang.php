@@ -63,6 +63,7 @@ $bills = array(
 		'Invoice' => 'Τιμολόγιο',
 		'Invoices' => 'Τιμολόγια',
 		'InvoiceLine' => 'Γραμμή Τιμολογίου',
+		'BillLines' => 'Invoice lines',
 		'InvoiceCustomer' => 'Τιμολόγιο Πελάτη',
 		'CustomerInvoice' => 'Τιμολόγιο Πελάτη',
 		'CustomersInvoices' => 'Τιμολόγια Πελάτη',

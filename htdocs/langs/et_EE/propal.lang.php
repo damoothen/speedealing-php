@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Klientide kontaktandmeid järelmeetmeid ettepanek',
 		// Document models
 		'DocModelAzurDescription' => 'Täielikku ettepanekut mudel (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune ettepaneku mudel'
+		'DocModelJauneDescription' => 'Jaune ettepaneku mudel',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

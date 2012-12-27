@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => '顧客の連絡先フォローアップ提案',
 		// Document models
 		'DocModelAzurDescription' => '完全な提案モデル（logo. ..）',
-		'DocModelJauneDescription' => 'Jauneの提案モデル'
+		'DocModelJauneDescription' => 'Jauneの提案モデル',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

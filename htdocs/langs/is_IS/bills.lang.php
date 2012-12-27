@@ -63,6 +63,7 @@ $bills = array(
 		'Invoice' => 'Invoice',
 		'Invoices' => 'Kvittanir',
 		'InvoiceLine' => 'Invoice línu',
+		'BillLines' => 'Invoice lines',
 		'InvoiceCustomer' => 'Viðskiptavinur Reikningar',
 		'CustomerInvoice' => 'Viðskiptavinur Reikningar',
 		'CustomersInvoices' => 'reikninga viðskiptavinar',

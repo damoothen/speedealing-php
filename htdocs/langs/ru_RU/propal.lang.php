@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Абонентский отдел следующие меры предложение',
 		// Document models
 		'DocModelAzurDescription' => 'Полный текст предложения модели (logo. ..)',
-		'DocModelJauneDescription' => 'Желтый предложение модель'
+		'DocModelJauneDescription' => 'Желтый предложение модель',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Contacto cliente seguimiento presupuesto',
 		// Document models
 		'DocModelAzurDescription' => 'Modelo de presupuesto completo (logo...)',
-		'DocModelJauneDescription' => 'Modelo de presupuesto Jaune'
+		'DocModelJauneDescription' => 'Modelo de presupuesto Jaune',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

@@ -63,6 +63,7 @@ $bills = array(
 		'Invoice' => '請求書',
 		'Invoices' => '請求書',
 		'InvoiceLine' => '請求書の行',
+		'BillLines' => 'Invoice lines',
 		'InvoiceCustomer' => '得意先請求書',
 		'CustomerInvoice' => '得意先請求書',
 		'CustomersInvoices' => '顧客の請求書',

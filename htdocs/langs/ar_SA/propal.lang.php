@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'اتصل العملاء اقتراح متابعة',
 		// Document models
 		'DocModelAzurDescription' => 'اقتراح نموذج كامل (logo...)',
-		'DocModelJauneDescription' => 'اقتراح نموذج اليد الصفراء'
+		'DocModelJauneDescription' => 'اقتراح نموذج اليد الصفراء',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

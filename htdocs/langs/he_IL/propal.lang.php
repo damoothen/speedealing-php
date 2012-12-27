@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'הקשר של הלקוח הבא למעלה ההצעה',
 		// Document models
 		'DocModelAzurDescription' => 'מודל הצעה מלאה (logo. ..)',
-		'DocModelJauneDescription' => 'ההצעה Jaune מודל'
+		'DocModelJauneDescription' => 'ההצעה Jaune מודל',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

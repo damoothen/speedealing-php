@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Kundekontakt opfølgning forslag',
 		// Document models
 		'DocModelAzurDescription' => 'En komplet forslag model (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune forslag model'
+		'DocModelJauneDescription' => 'Jaune forslag model',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

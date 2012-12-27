@@ -23,6 +23,7 @@ $orders = array(
 		'Order' => 'Megrendelés',
 		'Orders' => 'Megrendelés',
 		'OrderLine' => 'Rendelés vonal',
+		'OrderLines' => 'Order lines',
 		'OrderFollow' => 'Nyomon követés',
 		'OrderDate' => 'Rendezés dátum',
 		'OrderToProcess' => 'Feldolgozása érdekében',
@@ -169,6 +170,8 @@ $orders = array(
 		'CreateInvoiceForThisCustomer' => 'Bill orders',
 		'NoOrdersToInvoice' => 'No orders billable',
 		'CloseProcessedOrdersAutomatically' => 'Classify "Processed" all selected orders.',
-		'MenuOrdersToBill2' => 'Orders to bill'
+		'MenuOrdersToBill2' => 'Orders to bill',
+		'LinkedInvoices' => 'Linked invoices',
+		'LinkedProposals' => 'Linked proposals'
 );
 ?>

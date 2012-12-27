@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Viðskiptavinur samband eftirfarandi upp tillögu',
 		// Document models
 		'DocModelAzurDescription' => 'A heill tillögu líkan (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune tillögu líkan'
+		'DocModelJauneDescription' => 'Jaune tillögu líkan',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

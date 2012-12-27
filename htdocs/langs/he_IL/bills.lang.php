@@ -63,6 +63,7 @@ $bills = array(
 		'Invoice' => 'חשבונית',
 		'Invoices' => 'חשבוניות',
 		'InvoiceLine' => 'חשבונית קו',
+		'BillLines' => 'Invoice lines',
 		'InvoiceCustomer' => 'לקוחות החשבונית',
 		'CustomerInvoice' => 'לקוחות החשבונית',
 		'CustomersInvoices' => 'לקוחות של חשבוניות',

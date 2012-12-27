@@ -23,6 +23,7 @@ $orders = array(
 		'Order' => 'オーダー',
 		'Orders' => '受注',
 		'OrderLine' => '注文明細行',
+		'OrderLines' => 'Order lines',
 		'OrderFollow' => 'フォローアップ',
 		'OrderDate' => '注文日',
 		'OrderToProcess' => 'プロセスの順序',
@@ -169,6 +170,8 @@ $orders = array(
 		'CreateInvoiceForThisCustomer' => 'Bill orders',
 		'NoOrdersToInvoice' => 'No orders billable',
 		'CloseProcessedOrdersAutomatically' => 'Classify "Processed" all selected orders.',
-		'MenuOrdersToBill2' => 'Orders to bill'
+		'MenuOrdersToBill2' => 'Orders to bill',
+		'LinkedInvoices' => 'Linked invoices',
+		'LinkedProposals' => 'Linked proposals'
 );
 ?>

@@ -63,6 +63,7 @@ $bills = array(
 		'Invoice' => '发票',
 		'Invoices' => '发票',
 		'InvoiceLine' => '发票线',
+		'BillLines' => 'Invoice lines',
 		'InvoiceCustomer' => '客户发票',
 		'CustomerInvoice' => '客户发票',
 		'CustomersInvoices' => '客户的发票',

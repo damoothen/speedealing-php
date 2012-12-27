@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Asiakas ottaa yhteyttä seurantaan ehdotus',
 		// Document models
 		'DocModelAzurDescription' => 'Täydellinen ehdotus malli (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune ehdotus malli'
+		'DocModelJauneDescription' => 'Jaune ehdotus malli',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

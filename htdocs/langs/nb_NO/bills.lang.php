@@ -63,6 +63,7 @@ $bills = array(
 		'Invoice' => 'Faktura',
 		'Invoices' => 'Fakturaer',
 		'InvoiceLine' => 'Fakturalinje',
+		'BillLines' => 'Invoice lines',
 		'InvoiceCustomer' => 'Kundefaktura',
 		'CustomerInvoice' => 'Kundefaktura',
 		'CustomersInvoices' => 'Kundens fakturaer',

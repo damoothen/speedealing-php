@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Angebots-Nachverfolgung durch Partnerkontakt',
 		// Document models
 		'DocModelAzurDescription' => 'Eine vollständige Angebotsvorlage (Logo, ...)',
-		'DocModelJauneDescription' => 'Angebotsvorlage Jaune'
+		'DocModelJauneDescription' => 'Angebotsvorlage Jaune',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

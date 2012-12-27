@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => '客户联系随访的建议',
 		// Document models
 		'DocModelAzurDescription' => '一个完整的方案模型（logo. ..）',
-		'DocModelJauneDescription' => '特贾恩方案模型'
+		'DocModelJauneDescription' => '特贾恩方案模型',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

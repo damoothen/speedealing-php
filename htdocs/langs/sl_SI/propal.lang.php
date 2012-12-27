@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Kontakt pri kupcu za sledenje ponudbe',
 		// Document models
 		'DocModelAzurDescription' => 'Vzorec kompletne ponudbe (logo...)',
-		'DocModelJauneDescription' => 'Vzorec ponudbe Jaune'
+		'DocModelJauneDescription' => 'Vzorec ponudbe Jaune',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

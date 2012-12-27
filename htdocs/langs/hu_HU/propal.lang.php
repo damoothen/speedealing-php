@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Ügyfélkapcsolati nyomon követése javaslat',
 		// Document models
 		'DocModelAzurDescription' => 'A javaslat teljes modell (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune javaslat modell'
+		'DocModelJauneDescription' => 'Jaune javaslat modell',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

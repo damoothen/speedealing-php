@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Müşteri teklif izleme ilgilisi',
 		// Document models
 		'DocModelAzurDescription' => 'Tam bir teklif modeli (logo. ..)',
-		'DocModelJauneDescription' => 'Jaune modeli teklif'
+		'DocModelJauneDescription' => 'Jaune modeli teklif',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

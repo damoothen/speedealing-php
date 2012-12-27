@@ -63,6 +63,7 @@ $bills = array(
 		'Invoice' => 'Számla',
 		'Invoices' => 'Számlák',
 		'InvoiceLine' => 'Számla vonal',
+		'BillLines' => 'Invoice lines',
 		'InvoiceCustomer' => 'Az ügyfél számla',
 		'CustomerInvoice' => 'Az ügyfél számla',
 		'CustomersInvoices' => 'Ügyfél számlák',

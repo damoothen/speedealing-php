@@ -63,6 +63,7 @@ $bills = array(
 		'Invoice' => 'Račun',
 		'Invoices' => 'Računi',
 		'InvoiceLine' => 'Vrstica računa',
+		'BillLines' => 'Invoice lines',
 		'InvoiceCustomer' => 'Račun za kupca',
 		'CustomerInvoice' => 'Račun za kupca',
 		'CustomersInvoices' => 'Računi za kupce',

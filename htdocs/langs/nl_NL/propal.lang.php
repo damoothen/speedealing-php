@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Afnemerscontactpersoon follow-up voorstel',
 		// Document models
 		'DocModelAzurDescription' => 'Een compleet offertemodel (logo, etc)',
-		'DocModelJauneDescription' => 'Jaune offertemodel'
+		'DocModelJauneDescription' => 'Jaune offertemodel',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Linked orders'
 );
 ?>

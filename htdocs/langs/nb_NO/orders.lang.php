@@ -23,6 +23,7 @@ $orders = array(
 		'Order' => 'Ordre',
 		'Orders' => 'Ordre',
 		'OrderLine' => 'Bestill linje',
+		'OrderLines' => 'Order lines',
 		'OrderFollow' => 'Oppfølging',
 		'OrderDate' => 'Ordredato',
 		'OrderToProcess' => 'For å kunne behandle',
@@ -169,6 +170,8 @@ $orders = array(
 		'CreateInvoiceForThisCustomer' => 'Bill orders',
 		'NoOrdersToInvoice' => 'No orders billable',
 		'CloseProcessedOrdersAutomatically' => 'Classify "Processed" all selected orders.',
-		'MenuOrdersToBill2' => 'Orders to bill'
+		'MenuOrdersToBill2' => 'Orders to bill',
+		'LinkedInvoices' => 'Linked invoices',
+		'LinkedProposals' => 'Linked proposals'
 );
 ?>
