@@ -15,7 +15,6 @@
  */
 
 $trips = array(
-		'﻿* Manually generated' => '',
 		'CHARSET' => 'UTF-8',
 		'Trip' => 'Gezi',
 		'Trips' => 'Geziler',

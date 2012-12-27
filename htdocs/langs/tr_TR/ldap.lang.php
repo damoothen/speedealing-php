@@ -15,7 +15,6 @@
  */
 
 $ldap = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'DomainPassword' => 'Etki alanı parolası',
 		'YouMustChangePassNextLogon' => '<b>%s</b> Etki alanındaki <b>%s</b> kullanıcısının parolası değiştirilmelidir.',

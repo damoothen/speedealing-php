@@ -15,7 +15,6 @@
  */
 
 $boxes = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'BoxCurrentAccounts' => 'Cari hesap bakiyesi',
 		'BoxLastActions' => 'Son eylemler',

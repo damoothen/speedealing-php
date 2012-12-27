@@ -15,7 +15,6 @@
  */
 
 $banks = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Bank' => 'Banka',
 		'Banks' => 'Bankalar',

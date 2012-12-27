@@ -15,7 +15,6 @@
  */
 
 $help = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'CommunitySupport' => 'Forum/Wiki destek',
 		'EMailSupport' => 'E-posta desteği',

@@ -15,7 +15,6 @@
  */
 
 $companies = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'ErrorCompanyNameAlreadyExists' => 'Firma adı zaten %s var. Başka bir tane seçin.',
 		'ErrorPrefixAlreadyExists' => 'Önek %s zaten var. Başka bir tane seçin.',

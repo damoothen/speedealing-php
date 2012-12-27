@@ -15,7 +15,6 @@
  */
 
 $suppliers = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Suppliers' => 'Tedarikçiler',
 		'Supplier' => 'Tedarikçi',

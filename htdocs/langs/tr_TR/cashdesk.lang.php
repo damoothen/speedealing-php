@@ -15,7 +15,6 @@
  */
 
 $cashdesk = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'CashDeskMenu' => 'Satış Noktası',
 		'CashDesk' => 'Satış Noktası',

@@ -15,7 +15,6 @@
  */
 
 $languages = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Language_ar_AR' => 'Arapça',
 		'Language_ar_SA' => 'Arapça',

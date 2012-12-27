@@ -15,7 +15,6 @@
  */
 
 $sendings = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'RefSending' => 'Sevkiyat ilgi.',
 		'Sending' => 'Sevkiyat',

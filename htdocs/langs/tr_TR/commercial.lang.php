@@ -15,7 +15,6 @@
  */
 
 $commercial = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Commercial' => 'Ticari',
 		'CommercialArea' => 'Ticari alan',

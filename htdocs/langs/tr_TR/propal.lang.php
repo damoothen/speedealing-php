@@ -15,7 +15,6 @@
  */
 
 $propal = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Proposals' => 'Ticari teklifler',
 		'Proposal' => 'Ticari teklif',

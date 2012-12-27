@@ -15,7 +15,6 @@
  */
 
 $withdrawals = array(
-		'﻿* Manually generated' => '',
 		'CHARSET' => 'UTF-8',
 		'StandingOrdersArea' => 'Ödeme talimatları alanı',
 		'CustomersStandingOrdersArea' => 'Müşteri ödeme talimatları alanı',

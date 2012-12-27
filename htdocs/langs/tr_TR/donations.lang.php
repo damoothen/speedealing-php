@@ -15,7 +15,6 @@
  */
 
 $donations = array(
-		'﻿* Manually generated' => '',
 		'CHARSET' => 'UTF-8',
 		'Donation' => 'Bağış',
 		'Donations' => 'Bağışlar',

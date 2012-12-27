@@ -15,7 +15,6 @@
  */
 
 $oscommerce = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'OSCommerce' => 'OS Commerce',
 		'OSCommerceSetup' => 'OS Ticaret modülü kurulumu',

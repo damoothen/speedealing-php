@@ -15,7 +15,6 @@
  */
 
 $categories = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Category' => 'Kategori',
 		'Categories' => 'Kategoriler',

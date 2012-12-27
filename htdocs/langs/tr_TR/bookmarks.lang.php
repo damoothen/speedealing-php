@@ -15,7 +15,6 @@
  */
 
 $bookmarks = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Bookm' => 'Yerimleri',
 		'NewBookmark' => 'Yeni yerimi',

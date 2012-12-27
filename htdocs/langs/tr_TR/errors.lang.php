@@ -15,7 +15,6 @@
  */
 
 $errors = array(
-		'﻿* Manually generated' => '',
 		'CHARSET' => 'UTF-8',
 		'MenuManager' => 'Menü yöneticisi',
 		// Hatalar

@@ -15,7 +15,6 @@
  */
 
 $orders = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'OrdersArea' => 'Müşteri siparişleri alan',
 		'SuppliersOrdersArea' => 'Tedarikçi siparişleri alan',

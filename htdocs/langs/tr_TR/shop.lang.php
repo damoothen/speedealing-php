@@ -15,7 +15,6 @@
  */
 
 $shop = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Shop' => 'Mağaza',
 		'ShopWeb' => 'Web Mağazası',

@@ -15,7 +15,6 @@
  */
 
 $dict = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'CountryFR' => 'Fransa',
 		'CountryBE' => 'Belçika',

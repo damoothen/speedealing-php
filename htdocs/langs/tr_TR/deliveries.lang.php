@@ -15,7 +15,6 @@
  */
 
 $deliveries = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Delivery' => 'Teslimat',
 		'Deliveries' => 'Teslimatlar',

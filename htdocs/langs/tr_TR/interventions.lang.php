@@ -15,7 +15,6 @@
  */
 
 $interventions = array(
-		'﻿* Manually generated' => '',
 		'CHARSET' => 'UTF-8',
 		'Intervention' => 'Müdahale',
 		'Interventions' => 'Müdahaleler',

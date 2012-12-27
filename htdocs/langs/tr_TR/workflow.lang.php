@@ -15,7 +15,6 @@
  */
 
 $workflow = array(
-		'﻿* Manually generated' => '',
 		'CHARSET' => 'UTF-8',
 		'WorkflowSetup' => 'İş Akışı modülü kurulumu',
 		'WorkflowDesc' => 'Bu modül, uygulama içindeki otomatik eylemlerim davranışını değiştirmek için tasarlanmıştır. Varsayılan olarak, iş akışı açıktır (siz istediğiniz şeyi sırayla yaparsınız). İlginç bulduğunuz otomatik eylemleri etkinleştirebilirsiniz.',

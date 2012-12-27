@@ -15,7 +15,6 @@
  */
 
 $members = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'MembersArea' => 'Üye alanı',
 		'PublicMembersArea' => 'Genel üye alanı',

@@ -15,7 +15,6 @@
  */
 
 $exports = array(
-		'﻿* Manually generated' => '',
 		'CHARSET' => 'UTF-8',
 		'ExportsArea' => 'Dışaaktarma alanı',
 		'ImportArea' => 'İçeaktarma alanı',

@@ -15,7 +15,6 @@
  */
 
 $agenda = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Actions' => 'Eylemler',
 		'ActionsArea' => 'Eylem alanı (Olaylar ve görevler)',

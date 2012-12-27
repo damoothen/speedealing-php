@@ -15,7 +15,6 @@
  */
 
 $sms = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Sms' => 'Sms',
 		'SmsSetup' => 'Sms kurulums',

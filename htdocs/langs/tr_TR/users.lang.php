@@ -15,7 +15,6 @@
  */
 
 $users = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'UserCard' => 'Kullanıcı kartı',
 		'ContactCard' => 'Kişi kartı',

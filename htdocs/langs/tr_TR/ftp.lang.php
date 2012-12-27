@@ -15,7 +15,6 @@
  */
 
 $ftp = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'FTPClientSetup' => 'FTP İstemcisi modülü kurulumu',
 		'NewFTPClient' => 'Yeni bir FTP bağlantısı kurulumu',

@@ -15,7 +15,6 @@
  */
 
 $mails = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Mailing' => 'Eposta',
 		'EMailing' => 'Eposta',

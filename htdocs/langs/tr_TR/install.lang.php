@@ -15,7 +15,6 @@
  */
 
 $install = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'InstallEasy' => 'Sadece adım adım talimatları izleyin.',
 		'MiscellanousChecks' => 'Önkoşulların onayı',

@@ -15,7 +15,6 @@
  */
 
 $bills = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Bill' => 'Fatura',
 		'Bills' => 'Faturalar',

@@ -15,7 +15,6 @@
  */
 
 $contracts = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'ContractsArea' => 'Sözleşmeler alanı',
 		'ListOfContracts' => 'Sözleşme Listesi',

@@ -15,7 +15,6 @@
  */
 
 $paybox = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'PayBox modülü kurulumu',
 		'PayBoxDesc' => 'Bu modül <a href="http://www.paybox.com" target="_blank">Paybox</a> üzerinden müşteriler tarafından ödeme yapılmasını sağlar. Bu bir ücretsiz ödeme veya belirli bir Dolibarr nesnesine (fatura, siparş,…) bir ödeme yapmak için kullanılabilir',

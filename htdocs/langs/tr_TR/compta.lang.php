@@ -15,7 +15,6 @@
  */
 
 $compta = array(
-		'﻿/*' => '',
 		'CHARSET' => 'UTF-8',
 		'Accountancy' => 'Muhasebe',
 		'AccountancyCard' => 'Muhasebe kartı',
