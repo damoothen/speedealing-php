@@ -32,15 +32,21 @@ if (empty($_GET['keysearch']) && ! defined('NOREQUIREHTML'))  define('NOREQUIREH
 require '../../main.inc.php';
 
 $htmlname=GETPOST('htmlname','alpha');
-$socid=GETPOST('socid','int');
-$type=GETPOST('type','int');
+$socid=GETPOST('socid','alpha');
+$type=GETPOST('type','alpha');
 $mode=GETPOST('mode','int');
-$status=((GETPOST('status','int') >= 0) ? GETPOST('status','int') : -1);
+$status=((GETPOST('status','alpha') >= 0) ? GETPOST('status','alpha') : -1);
 $outjson=(GETPOST('outjson','int') ? GETPOST('outjson','int') : 0);
 $pricelevel=GETPOST('price_level','int');
 $action=GETPOST('action', 'alpha');
-$id=GETPOST('id', 'int');
+$id=GETPOST('id', 'alpha');
 
+//require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+//$form = new Form($db);
+//$arrayresult=$form->select_products("",$htmlname,$type,"",$pricelevel,$searchkey,$status,2,$outjson);
+////echo '<pre>' . print_r($arrayresult, true) . '</pre>';
+//echo json_encode($arrayresult);
+//exit;
 /*
  * View
  */
@@ -115,29 +121,29 @@ else
 
 	top_httphead();
 
-	if (empty($htmlname)) return;
+        if (empty($htmlname)) return;
 
 	$match = preg_grep('/('.$htmlname.'[0-9]+)/',array_keys($_GET));
 	sort($match);
 	$idprod = (! empty($match[0]) ? $match[0] : '');
 
-	if (! GETPOST($htmlname) && ! GETPOST($idprod)) return;
+        if (! GETPOST($htmlname) && ! GETPOST($idprod)) return;
 
-	// When used from jQuery, the search term is added as GET param "term".
+        // When used from jQuery, the search term is added as GET param "term".
 	$searchkey=(GETPOST($idprod)?GETPOST($idprod):(GETPOST($htmlname)?GETPOST($htmlname):''));
 
 	$form = new Form($db);
 	if (empty($mode) || $mode == 1)
 	{
-		$arrayresult=$form->select_produits_do("",$htmlname,$type,"",$pricelevel,$searchkey,$status,2,$outjson);
+		$arrayresult=$form->select_products("",$htmlname,$type,"",$pricelevel,$searchkey,$status,2,$outjson);
 	}
 	elseif ($mode == 2)
 	{
 		$arrayresult=$form->select_produits_fournisseurs_do($socid,"",$htmlname,$type,"",$searchkey,$status,$outjson);
 	}
 
-	$db->close();
-
+//	$db->close();
+    
 	if ($outjson) print json_encode($arrayresult);
 }
 

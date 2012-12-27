@@ -874,7 +874,7 @@ function pdf_getlinedesc($object,$i,$outputlangs,$hideref=0,$hidedesc=0,$issuppl
 	if ($idprod)
 	{
 		// On ajoute la ref
-		if ($prodser->ref)
+		if ($prodser->name)
 		{
 			$prefix_prodserv = "";
 			$ref_prodserv = "";
@@ -892,8 +892,8 @@ function pdf_getlinedesc($object,$i,$outputlangs,$hideref=0,$hidedesc=0,$issuppl
 
 			if (empty($hideref))
 			{
-				if ($issupplierline) $ref_prodserv = $prodser->ref.' ('.$outputlangs->transnoentitiesnoconv("SupplierRef").' '.$ref_supplier.')';   // Show local ref and supplier ref
-				else $ref_prodserv = $prodser->ref; // Show local ref only
+				if ($issupplierline) $ref_prodserv = $prodser->name.' ('.$outputlangs->transnoentitiesnoconv("SupplierRef").' '.$ref_supplier.')';   // Show local ref and supplier ref
+				else $ref_prodserv = $prodser->name; // Show local ref only
 
 				$ref_prodserv .= " - ";
 			}
