@@ -23,6 +23,7 @@ $orders = array(
 		'Order' => 'Commande',
 		'Orders' => 'Commandes',
 		'OrderLine' => 'Ligne de commande',
+		'OrderLines' => 'Lignes de commande',
 		'OrderFollow' => 'Suivi',
 		'OrderDate' => 'Date commande',
 		'OrderToProcess' => 'Commande à traiter',
@@ -169,6 +170,8 @@ $orders = array(
 		'CreateInvoiceForThisCustomer' => 'Facturer commandes',
 		'NoOrdersToInvoice' => 'Pas de commandes facturables',
 		'CloseProcessedOrdersAutomatically' => 'Classer automatiquement à "Traitées" les commandes sélectionnées.',
-		'MenuOrdersToBill2' => 'Commandes à facturer'
+		'MenuOrdersToBill2' => 'Commandes à facturer',
+		'LinkedInvoices' => 'Factures jointes',
+		'LinkedProposals' => 'Propositions commerciales jointes'
 );
 ?>

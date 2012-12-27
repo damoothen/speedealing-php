@@ -111,6 +111,8 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Contact client suivi propale',
 		// Document models
 		'DocModelAzurDescription' => 'Modèle de propositions commerciales complet (logo...)',
-		'DocModelJauneDescription' => 'Modèle de proposition Jaune'
+		'DocModelJauneDescription' => 'Modèle de proposition Jaune',
+		'Numbershort' => 'N°',
+		'LinkdedOrders' => 'Commandes jointes'
 );
 ?>
