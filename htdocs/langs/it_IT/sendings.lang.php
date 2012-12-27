@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Ritiro da parte del Cliente',
 		'SendingMethodTRANS' => 'A cura del mittente',
 		'SendingMethodCOLSUI' => 'Corriere espresso',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Semplice modello di documento per le ricevute di consegna',
 		'DocumentModelTyphon' => 'Modello più completo di documento per le ricevute di consegna (logo. ..)',

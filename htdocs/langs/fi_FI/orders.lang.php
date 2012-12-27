@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Klooni jotta',
 		'ConfirmCloneOrder' => 'Oletko varma, että haluat klooni tässä <b>järjestyksessä %s?</b>',
 		'DispatchSupplierOrder' => 'Vastaanottaminen toimittaja järjestys %s',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Edustaja seurantaan asiakkaan tilauksen',
 		'TypeContact_commande_internal_SHIPPING' => 'Edustaja seurantaan merenkulku',

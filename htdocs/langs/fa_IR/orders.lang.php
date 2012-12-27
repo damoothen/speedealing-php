@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'استنساخ النظام',
 		'ConfirmCloneOrder' => 'هل أنت متأكد من أن هذا الأمر استنساخ <b>٪ ق؟</b>',
 		'DispatchSupplierOrder' => '%s استقبال النظام مورد',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'ممثل العميل متابعة النظام',
 		'TypeContact_commande_internal_SHIPPING' => 'ممثل الشحن متابعة',

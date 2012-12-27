@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Clone за',
 		'ConfirmCloneOrder' => 'Сигурен ли сте, че искате да клонирате за този <b>%s?</b>',
 		'DispatchSupplierOrder' => 'Получаване %s доставчика ред',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Представител проследяване поръчка на клиента',
 		'TypeContact_commande_internal_SHIPPING' => 'Представител проследяване доставка',

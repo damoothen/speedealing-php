@@ -107,6 +107,12 @@ $categories = array(
 		'CatSupList' => 'Beszállítói kategóriák listázása',
 		'CatCusList' => 'Ügyfél/kilátás kategóriák listázása',
 		'CatProdList' => 'Termék kategóriák listázása',
-		'CatMemberList' => 'Tag kategóriák listázása'
+		'CatMemberList' => 'Tag kategóriák listázása',
+		'ContactIsInCategories' => 'Ce contact est dans les catégories suivantes',
+		'ContactHasNoCategory' => 'Ce contact n\'est dans aucune catégorie en particulier',
+		'ContactsCategoryShort' => 'Catégorie contact',
+		'ContactsCategoriesShort' => 'Catégories contacts',
+		'ThisCategoryHasNoContact' => 'Cette catégorie ne contient aucun contact.',
+		'CatConList' => 'Liste des catégories contacts (infos contacts incluses)'
 );
 ?>

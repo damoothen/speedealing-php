@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Sind Sie sicher, das Sie das Angebot <b>%s</b> wiedereröffnen möchten?',
 		'ProposalsAndProposalsLines' => 'Angebote und Positionen',
 		'ProposalLine' => 'Angebotsposition',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Verfügbarkeitszeitraum',
 		'SetAvailability' => 'Verfügbarkeitszeitraum definieren',
 		'AfterOrder' => 'nach Bestellung',

@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Bu ticari teklifi <b>%s</b> yeniden açmak istediğinizden emin misiniz?',
 		'ProposalsAndProposalsLines' => 'Ticari teklif ve satırları',
 		'ProposalLine' => 'Teklif satırı',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Kabul edilebilir gecikme',
 		'SetAvailability' => 'Kabul edilebilir gecikmeyi ayarla',
 		'AfterOrder' => 'Siparişten sonra',

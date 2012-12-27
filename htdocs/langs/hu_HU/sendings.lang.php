@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Ügyfél fogád',
 		'SendingMethodTRANS' => 'Szállító',
 		'SendingMethodCOLSUI' => 'Futár szolgálat',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Egyszerű dokumentum modell bizonylatokhoz',
 		'DocumentModelTyphon' => 'Teljesebb dokumentum modell bizonylatokhoz (logo...)',

@@ -126,6 +126,8 @@ $errors = array(
 		'ErrorPhpCurlNotInstalled' => 'PHP навийте не е инсталиран, това е от съществено значение, за да разговаря с Paypal',
 		'ErrorFailedToAddToMailmanList' => 'Неуспешно добавяне на запис на пощальона списък или база СПИП',
 		'ErrorNewVaueCantMatchOldValue' => 'Новата стойност не може да бъде равна на стария',
+		'ErrorDuplicateTrigger' => 'Un fichier trigger de classe \'<b>%s</b>\' est présent plusieurs fois. Supprimer le doublon du répertoire \'<b>%s</b>\'.',
+		'SESSIONEXPIRE' => 'La session est expirée',
 		// Warnings
 		'WarningMandatorySetupNotComplete' => 'Задължителни параметри на настройката все още не са определени',
 		'WarningSafeModeOnCheckExecDir' => 'Внимание, PHP опция <b>защитният режим</b> е включен, така че командата трябва да бъдат съхранени в директория, декларирани с параметър PHP <b>safe_mode_exec_dir.</b>',

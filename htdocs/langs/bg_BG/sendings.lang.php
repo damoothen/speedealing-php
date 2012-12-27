@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Улов от клиента',
 		'SendingMethodTRANS' => 'Транспортьор',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Simple образеца на документа за доставка постъпления',
 		'DocumentModelTyphon' => 'Повече целия документ модел за доставка постъпления (logo. ..)',

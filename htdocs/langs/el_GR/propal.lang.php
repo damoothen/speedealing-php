@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Είστε βέβαιοι ότι θέλετε να ανοίξετε ξανά τις εμπορικές <b>%s</b> πρόταση;',
 		'ProposalsAndProposalsLines' => 'Εμπορικές προτάσεις και γραμμές',
 		'ProposalLine' => 'Πρόταση γραμμή',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Καθυστέρηση Διαθεσιμότητα',
 		'SetAvailability' => 'Ορισμός καθυστέρηση διαθεσιμότητα',
 		'AfterOrder' => 'μετά την παραγγελία',

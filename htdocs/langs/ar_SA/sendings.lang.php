@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'القبض على العملاء',
 		'SendingMethodTRANS' => 'نقل',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'نموذج بسيط لتسليم وثيقة من وثائق وإيصالات',
 		'DocumentModelTyphon' => 'أكمل نموذج لتسليم وثيقة من وثائق الإيصالات (logo...)',

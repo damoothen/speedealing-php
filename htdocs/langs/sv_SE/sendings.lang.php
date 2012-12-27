@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Fångst av kunden',
 		'SendingMethodTRANS' => 'Transporter',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Enkel handling modell för leverans kvitton',
 		'DocumentModelTyphon' => 'Mer komplett dokument modell för leverans intäkter (logo. ..)',

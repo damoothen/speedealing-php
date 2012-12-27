@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Biztosan meg szeretne nyitni vissza a kereskedelmi <b>%s</b> javaslat?',
 		'ProposalsAndProposalsLines' => 'Üzleti ajánlat és vonalak',
 		'ProposalLine' => 'Javaslat vonal',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Elérhetőség késleltetés',
 		'SetAvailability' => 'Állítsa be a rendelkezésre álló késedelem',
 		'AfterOrder' => 'rendezés után',

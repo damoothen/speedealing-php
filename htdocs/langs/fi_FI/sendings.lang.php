@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Saalis asiakas',
 		'SendingMethodTRANS' => 'Transporter',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Yksinkertaisen mallin toimitusten kuitit',
 		'DocumentModelTyphon' => 'Täydellisempi mallin toimitusten kuitit (logo. ..)',

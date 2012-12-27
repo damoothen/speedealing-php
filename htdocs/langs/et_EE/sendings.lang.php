@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Saak kliendi',
 		'SendingMethodTRANS' => 'Transportija',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Simple dokumendi mudel kohaletoimetamisteatised',
 		'DocumentModelTyphon' => 'Täiuslikum dokument mudel kohaletoimetamisteatised (logo. ..)',

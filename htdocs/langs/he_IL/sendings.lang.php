@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'תפוס על ידי הלקוח',
 		'SendingMethodTRANS' => 'Transporter',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'מסמך מודל פשוט עבור אישורי מסירה',
 		'DocumentModelTyphon' => 'מסמך מודל שלם יותר על אישורי מסירה (logo. ..)',

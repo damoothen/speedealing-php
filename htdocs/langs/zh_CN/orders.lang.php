@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => '为了克隆',
 		'ConfirmCloneOrder' => '你确定要克隆这项命令<b>％s吗</b> ？',
 		'DispatchSupplierOrder' => '接收供应商的订单%s',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => '代表随访客户订单',
 		'TypeContact_commande_internal_SHIPPING' => '代表随访航运',

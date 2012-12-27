@@ -129,6 +129,17 @@ $users = array(
 		'YourRole' => 'Your roles',
 		'YourQuotaOfUsersIsReached' => 'Your quota of active users is reached !',
 		'NbOfUsers' => 'Nb των χρηστών',
-		'DontDowngradeSuperAdmin' => 'Μόνο μια superadmin μπορεί να προβεί στην ανακατάταξη ενός superadmin'
+		'DontDowngradeSuperAdmin' => 'Μόνο μια superadmin μπορεί να προβεί στην ανακατάταξη ενός superadmin',
+		'NewDatabase' => 'Nouvelle base de données',
+		'CreateDatabase' => 'Créer la base de données',
+		'ListOfDatabases' => 'Liste des bases de données',
+		'ListOfUsersInDatabase' => 'Liste des utilisateurs liés à la base de données',
+		'ListOfRolesInDatabase' => 'Liste des groupes liés à la base de données',
+		'DeleteADatabase' => 'Suppression d\'une database',
+		'ConfirmDatabase' => 'Êtes-vous sûr de vouloir supprimer la base de données <b>%s</b> ?',
+		'NonAffectedGroupsDatabase' => 'Groupes non affectés à la base de données',
+		'NonAffectedUsersDatabase' => 'Utilisateurs non affectés à la base de données',
+		'Collaborators' => 'Collaborateurs',
+		'Profiles' => 'Profils collaborateurs'
 );
 ?>

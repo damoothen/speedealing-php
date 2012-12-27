@@ -306,6 +306,10 @@ $dict = array(
 		'CurrencySingXPF' => 'Franc CFP',
 		'CurrencyCentSingEUR' => 'cèntim',
 		'CurrencyThousandthSingTND' => 'mil·lèsim',
+		'CurrencySUR' => 'Roubles',
+		'CurrencySingSUR' => 'Rouble',
+		'CurrencyTRL' => 'Livres turques',
+		'CurrencySingTRL' => 'Livre turque',
 		//////// Input reasons //////////
 		'DemandReasonTypeSRC_INTE' => 'Internet',
 		'DemandReasonTypeSRC_CAMP_MAIL' => 'Campanya correu',
@@ -317,6 +321,26 @@ $dict = array(
 		'DemandReasonTypeSRC_WOM' => 'Boca a boca',
 		'DemandReasonTypeSRC_PARTNER' => 'Soci',
 		'DemandReasonTypeSRC_EMPLOYEE' => 'Empleat',
-		'DemandReasonTypeSRC_SPONSORING' => 'Patrocinador'
+		'DemandReasonTypeSRC_SPONSORING' => 'Patrocinador',
+		//////// Paper Format //////////
+		'PaperFormatEU4A0' => 'Format 4A0',
+		'PaperFormatEU2A0' => 'Format 2A0',
+		'PaperFormatEUA0' => 'Format A0',
+		'PaperFormatEUA1' => 'Format A1',
+		'PaperFormatEUA2' => 'Format A2',
+		'PaperFormatEUA3' => 'Format A3',
+		'PaperFormatEUA4' => 'Format A4',
+		'PaperFormatEUA5' => 'Format A5',
+		'PaperFormatEUA6' => 'Format A6',
+		'PaperFormatUSLETTER' => 'Format Lettre US',
+		'PaperFormatUSLEGAL' => 'Formato Legal US',
+		'PaperFormatUSEXECUTIVE' => 'Formato Exécutif US',
+		'PaperFormatUSLEDGER' => 'Format Ledger/Tabloid',
+		'PaperFormatCAP1' => 'Format P1 Canadien',
+		'PaperFormatCAP2' => 'Format P2 Canadien',
+		'PaperFormatCAP3' => 'Format P3 Canadien',
+		'PaperFormatCAP4' => 'Format P4 Canadien',
+		'PaperFormatCAP5' => 'Format P5 Canadien',
+		'PaperFormatCAP6' => 'Format P6 Canadien'
 );
 ?>

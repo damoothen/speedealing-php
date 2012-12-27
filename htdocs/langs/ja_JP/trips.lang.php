@@ -18,6 +18,7 @@ $trips = array(
 		'CHARSET' => 'UTF-8',
 		'Trip' => '旅行',
 		'Trips' => 'ツアー',
+		'TripId' => 'Trip id',
 		'TripsAndExpenses' => '旅行や経費',
 		'TripsAndExpensesStatistics' => '旅行や経費の統計情報',
 		'TripCard' => '旅行カード',

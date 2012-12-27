@@ -642,6 +642,12 @@ $main = array(
 		'LinkedToSpecificUsers' => 'Linked to a particular user contact',
 		'DeleteAFile' => 'Delete a file',
 		'ConfirmDeleteAFile' => 'Are you sure you want to delete file',
+		'Create' => 'Créer',
+		'Block' => 'Bloquer',
+		'Unblock' => 'Débloquer',
+		'Weeks' => 'Semaines',
+		'To' => 'à',
+		'View' => 'Voir',
 		// Week day
 		'Monday' => 'Monday',
 		'Tuesday' => 'Tuesday',

@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Clone pentru',
 		'ConfirmCloneOrder' => 'Sunteţi sigur că doriţi să clona pentru <b>acest %s?</b>',
 		'DispatchSupplierOrder' => 'Primirea comenzii furnizorul %s',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Reprezentant client următoarele-up pentru',
 		'TypeContact_commande_internal_SHIPPING' => 'Reprezentant urmărire de transport maritim',

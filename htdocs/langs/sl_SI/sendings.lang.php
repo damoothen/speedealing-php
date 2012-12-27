@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Lasten prevzem kupca',
 		'SendingMethodTRANS' => 'Direkten prevoz',
 		'SendingMethodCOLSUI' => 'Zbirnik',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Enostaven vzorec dobavnice',
 		'DocumentModelTyphon' => 'Popolnejši vzorec dobavnice (logo...)',

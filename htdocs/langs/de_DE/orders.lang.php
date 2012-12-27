@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Bestellung duplizieren',
 		'ConfirmCloneOrder' => 'Möchten Sie die Bestellung <b>%s</b> wirklich duplizieren?',
 		'DispatchSupplierOrder' => 'Lieferantenbestellung %s erhalten',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Kundenauftrag-Nachverfolgung durch Vertreter',
 		'TypeContact_commande_internal_SHIPPING' => 'Versand-Nachverfolgung durch Vertreter',

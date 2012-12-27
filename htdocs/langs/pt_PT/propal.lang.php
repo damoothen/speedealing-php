@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Tem certeza que deseja abrir para trás as <b>%s</b> proposta comercial?',
 		'ProposalsAndProposalsLines' => 'Proposta comercial e linhas',
 		'ProposalLine' => 'Proposta linha',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Disponibilidade atraso',
 		'SetAvailability' => 'Definir atraso disponibilidade',
 		'AfterOrder' => 'após a ordem',

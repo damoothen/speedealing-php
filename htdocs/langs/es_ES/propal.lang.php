@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => '¿Está seguro de querer reabrir el presupuesto <b>%s</b> ?',
 		'ProposalsAndProposalsLines' => 'Presupuestos a clientes y líneas de presupuestos',
 		'ProposalLine' => 'Línea de presupuesto',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Tiempo de entrega',
 		'SetAvailability' => 'Definir el tiempo de entrega',
 		'AfterOrder' => 'despues del pedido',

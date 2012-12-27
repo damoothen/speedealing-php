@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'שיבוט כדי',
 		'ConfirmCloneOrder' => 'האם אתה בטוח שאתה רוצה לשכפל את <b>%s</b> סדר?',
 		'DispatchSupplierOrder' => 'קבלת ההזמנה %s הספק',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'לקוחות נציג הבאה, עד כדי',
 		'TypeContact_commande_internal_SHIPPING' => 'משלוח נציג הבאה למעלה',

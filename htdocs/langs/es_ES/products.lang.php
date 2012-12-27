@@ -196,6 +196,21 @@ $products = array(
 		'HelpAddThisServiceCard' => 'Esta opción permite crear o clonar una ficha de servicio en caso de que no exista',
 		'CurrentProductPrice' => 'Precio actual',
 		'AlwaysUseNewPrice' => 'Usar siempre el precio actual',
-		'AlwaysUseFixedPrice' => 'Usar el precio fijado'
+		'AlwaysUseFixedPrice' => 'Usar el precio fijado',
+		'ProductList' => 'Liste produits',
+		'CardProductPRODUCT' => 'Fiche produit',
+		'CardProductSERVICE' => 'Fiche service',
+		'OnBuySell' => 'En achat/vente',
+		'UseEcotax' => 'Utilisation de l\'ecotaxe',
+		'Ecotax' => 'Ecotaxe',
+		'EcotaxHT' => 'Ecotaxe HT',
+		'EcotaxTTC' => 'Ecotaxe TTC',
+		'AmountEcotaxHT' => 'Total écotaxe HT',
+		'EcotaxIncluded' => 'Ecotaxe incluse',
+		'AmountEcotax' => 'Montant Ecotaxe',
+		'DatePriceUTD' => 'Date MAJ Prix',
+		'ListProducts' => 'Liste des produits',
+		'ListServices' => 'Liste des services',
+		'ListAll' => 'Liste complète'
 );
 ?>

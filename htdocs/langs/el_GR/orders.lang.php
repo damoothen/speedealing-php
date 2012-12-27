@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Κλωνοποίηση παραγγελίας',
 		'ConfirmCloneOrder' => 'Are you sure you want to clone this order <b>%s</b> ?',
 		'DispatchSupplierOrder' => 'Receiving supplier order %s',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Representative following-up customer order',
 		'TypeContact_commande_internal_SHIPPING' => 'Representative following-up shipping',

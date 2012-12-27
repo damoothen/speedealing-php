@@ -364,6 +364,7 @@ $admin = array(
 		'Int' => 'Numérico entero',
 		'Float' => 'Decimal',
 		'DateAndTime' => 'Fecha y hora',
+		'Structure' => 'Structure',
 		// Modules
 		'Module0Name' => 'Usuarios y grupos',
 		'Module0Desc' => 'Gestión de usuarios y grupos',

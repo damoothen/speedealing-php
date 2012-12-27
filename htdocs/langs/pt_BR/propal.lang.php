@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Are you sure you want to open back the commercial proposal <b>%s</b> ?',
 		'ProposalsAndProposalsLines' => 'Propostas para clientes e diretrizes para apresentação de propostas',
 		'ProposalLine' => 'Linha da Proposta',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Availability delay',
 		'SetAvailability' => 'Set availability delay',
 		'AfterOrder' => 'after order',

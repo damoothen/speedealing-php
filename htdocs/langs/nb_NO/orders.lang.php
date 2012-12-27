@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Clone bestilling',
 		'ConfirmCloneOrder' => 'Er du sikker på at du vil klone denne bestillingen <b>%s?</b>',
 		'DispatchSupplierOrder' => 'Motta leverandør bestill %s',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Representant oppfølging kundeordre',
 		'TypeContact_commande_internal_SHIPPING' => 'Representant oppfølging shipping',

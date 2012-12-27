@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => '按客户捕捉',
 		'SendingMethodTRANS' => '运输车',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => '简单的送货单文档模型',
 		'DocumentModelTyphon' => '更多的送货单（logo. ..完整的文档模型）',

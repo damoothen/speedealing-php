@@ -642,6 +642,12 @@ $main = array(
 		'LinkedToSpecificUsers' => 'Свързано с даден контакт на потребителя',
 		'DeleteAFile' => 'Изтриване на файл',
 		'ConfirmDeleteAFile' => 'Сигурен ли сте, че искате да изтриете файл',
+		'Create' => 'Créer',
+		'Block' => 'Bloquer',
+		'Unblock' => 'Débloquer',
+		'Weeks' => 'Semaines',
+		'To' => 'à',
+		'View' => 'Voir',
 		// Week day
 		'Monday' => 'Понеделник',
 		'Tuesday' => 'Вторник',

@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => '你确定你要打开商业建议<b>%s</b>吗？',
 		'ProposalsAndProposalsLines' => '商业建议和行',
 		'ProposalLine' => '建议行',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => '可用性延迟',
 		'SetAvailability' => '设置可用性延迟',
 		'AfterOrder' => '订单后',

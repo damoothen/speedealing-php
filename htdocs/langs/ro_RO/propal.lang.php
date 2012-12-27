@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Sunteţi sigur că doriţi să deschideţi înapoi <b>%s</b> comerciale propunere?',
 		'ProposalsAndProposalsLines' => 'Comerciale propunerea si a liniilor',
 		'ProposalLine' => 'Propunere linie',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Disponibilitate întârziere',
 		'SetAvailability' => 'Setaţi întârziere disponibilitatea',
 		'AfterOrder' => 'după comandă',

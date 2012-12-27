@@ -107,6 +107,12 @@ $categories = array(
 		'CatSupList' => '供应商分类列表',
 		'CatCusList' => '客户名单/前景类别',
 		'CatProdList' => '产品类别列表',
-		'CatMemberList' => '类别的成员名单'
+		'CatMemberList' => '类别的成员名单',
+		'ContactIsInCategories' => 'Ce contact est dans les catégories suivantes',
+		'ContactHasNoCategory' => 'Ce contact n\'est dans aucune catégorie en particulier',
+		'ContactsCategoryShort' => 'Catégorie contact',
+		'ContactsCategoriesShort' => 'Catégories contacts',
+		'ThisCategoryHasNoContact' => 'Cette catégorie ne contient aucun contact.',
+		'CatConList' => 'Liste des catégories contacts (infos contacts incluses)'
 );
 ?>

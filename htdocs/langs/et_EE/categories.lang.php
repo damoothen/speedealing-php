@@ -107,6 +107,12 @@ $categories = array(
 		'CatSupList' => 'Loetelu pakkuja kategooriad',
 		'CatCusList' => 'Loetelu kliendi / väljavaade kategooriad',
 		'CatProdList' => 'Toodete nimekirja kategooriate',
-		'CatMemberList' => 'Liikmete nimekiri kategooriad'
+		'CatMemberList' => 'Liikmete nimekiri kategooriad',
+		'ContactIsInCategories' => 'Ce contact est dans les catégories suivantes',
+		'ContactHasNoCategory' => 'Ce contact n\'est dans aucune catégorie en particulier',
+		'ContactsCategoryShort' => 'Catégorie contact',
+		'ContactsCategoriesShort' => 'Catégories contacts',
+		'ThisCategoryHasNoContact' => 'Cette catégorie ne contient aucun contact.',
+		'CatConList' => 'Liste des catégories contacts (infos contacts incluses)'
 );
 ?>

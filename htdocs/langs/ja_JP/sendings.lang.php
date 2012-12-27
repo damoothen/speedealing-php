@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => '顧客がキャッチ',
 		'SendingMethodTRANS' => 'トランスポーター',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => '配信確認のためのシンプルなドキュメントモデル',
 		'DocumentModelTyphon' => '配信確認のために、より完全なドキュメントモデル（logo. ..）',

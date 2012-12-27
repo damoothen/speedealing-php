@@ -164,6 +164,21 @@ $compta = array(
 		'DatePaymentTermCantBeLowerThanObjectDate' => 'Payment term date can\'t be lower than object date.',
 		'Pcg_version' => 'PCG версия',
 		'Pcg_type' => 'PCG тип',
-		'Pcg_subtype' => 'PCG подтип'
+		'Pcg_subtype' => 'PCG подтип',
+		'Withdrawl' => 'Prélèvement',
+		'Withdrawls' => 'Prélèvements',
+		'ToGetBack' => 'A récupérer',
+		'Journaux' => 'Journaux',
+		'Piece' => 'Piece compta',
+		'JournalNum' => 'Journal',
+		'COMPTA_JOURNAL_SELL' => 'Numéro comptable du Journal des Achats',
+		'COMPTA_JOURNAL_BUY' => 'Numéro comptable du Journal des Ventes',
+		'COMPTA_PRODUCT_BUY_ACCOUNT' => 'Compte comptable par défaut pour produits achetés (si non défini sur fiche produit)',
+		'COMPTA_PRODUCT_SOLD_ACCOUNT' => 'Compte comptable par défaut pour produits vendus (si non défini sur fiche produit)',
+		'COMPTA_SERVICE_BUY_ACCOUNT' => 'Compte comptable par défaut pour services achetés (si non défini sur fiche service)',
+		'COMPTA_SERVICE_SOLD_ACCOUNT' => 'Compte comptable par défaut pour services vendus (si non défini sur fiche service)',
+		'COMPTA_VAT_ACCOUNT' => 'Compte comptable par défaut pour TVA (si non défini dans dictionnaire "Taux de TVA")',
+		'COMPTA_ACCOUNT_CUSTOMER' => 'Compte comptable client par défaut (si non défini sur fiche tiers)',
+		'COMPTA_ACCOUNT_SUPPLIER' => 'Compte comptable fournisseur par défaut (si non défini sur fiche tiers)',
 );
 ?>

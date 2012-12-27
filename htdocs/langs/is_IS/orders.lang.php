@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Klóna röð',
 		'ConfirmCloneOrder' => 'Ertu viss um að þú viljir klón þessari <b>röð %s ?</b>',
 		'DispatchSupplierOrder' => 'Móttaka birgir röð %s',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Fulltrúi eftirfarandi upp viðskiptavina röð',
 		'TypeContact_commande_internal_SHIPPING' => 'Fulltrúi eftirfarandi upp siglinga',

@@ -196,6 +196,21 @@ $products = array(
 		'HelpAddThisServiceCard' => 'This option allows you to create or clone a service if it does not exist.',
 		'CurrentProductPrice' => 'Current price',
 		'AlwaysUseNewPrice' => 'Always use current price of product/service',
-		'AlwaysUseFixedPrice' => 'Use the fixed price'
+		'AlwaysUseFixedPrice' => 'Use the fixed price',
+		'ProductList' => 'Liste produits',
+		'CardProductPRODUCT' => 'Fiche produit',
+		'CardProductSERVICE' => 'Fiche service',
+		'OnBuySell' => 'En achat/vente',
+		'UseEcotax' => 'Utilisation de l\'ecotaxe',
+		'Ecotax' => 'Ecotaxe',
+		'EcotaxHT' => 'Ecotaxe HT',
+		'EcotaxTTC' => 'Ecotaxe TTC',
+		'AmountEcotaxHT' => 'Total écotaxe HT',
+		'EcotaxIncluded' => 'Ecotaxe incluse',
+		'AmountEcotax' => 'Montant Ecotaxe',
+		'DatePriceUTD' => 'Date MAJ Prix',
+		'ListProducts' => 'Liste des produits',
+		'ListServices' => 'Liste des services',
+		'ListAll' => 'Liste complète'
 );
 ?>

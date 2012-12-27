@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Recollit pel client',
 		'SendingMethodTRANS' => 'Transportista',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Model simple nota de lliurament',
 		'DocumentModelTyphon' => 'Model complet de nota de lliurament (logo...)',

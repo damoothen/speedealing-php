@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Oled kindel, et soovite avada tagasi äriregistrisse ettepaneku <b>%s?</b>',
 		'ProposalsAndProposalsLines' => 'Commercial ettepaneku ja liinid',
 		'ProposalLine' => 'Ettepanek rida',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Saadavus viivitusega',
 		'SetAvailability' => 'Määra kättesaadavus viivitusega',
 		'AfterOrder' => 'pärast, et',

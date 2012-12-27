@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Clone érdekében',
 		'ConfirmCloneOrder' => 'Biztos vagy benne, hogy ezt a sorrendet <b>%s</b> klónozni?',
 		'DispatchSupplierOrder' => 'Fogadása érdekében szállító %s',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Reprezentatív nyomon követése az ügyfelek érdekében',
 		'TypeContact_commande_internal_SHIPPING' => 'Képviselő-up a következő hajózási',

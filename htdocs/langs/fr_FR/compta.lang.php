@@ -179,6 +179,6 @@ $compta = array(
 		'COMPTA_SERVICE_SOLD_ACCOUNT' => 'Compte comptable par défaut pour services vendus (si non défini sur fiche service)',
 		'COMPTA_VAT_ACCOUNT' => 'Compte comptable par défaut pour TVA (si non défini dans dictionnaire "Taux de TVA")',
 		'COMPTA_ACCOUNT_CUSTOMER' => 'Compte comptable client par défaut (si non défini sur fiche tiers)',
-		'COMPTA_ACCOUNT_SUPPLIER' => 'Compte comptable fournisseur par défaut (si non défini sur fiche tiers)'
+		'COMPTA_ACCOUNT_SUPPLIER' => 'Compte comptable fournisseur par défaut (si non défini sur fiche tiers)',
 );
 ?>

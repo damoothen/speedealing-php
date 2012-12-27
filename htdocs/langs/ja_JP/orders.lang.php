@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'クローンの順序',
 		'ConfirmCloneOrder' => 'あなたは、この順序<b>%sの</b>クローン<b>を作成</b>してもよろしいですか？',
 		'DispatchSupplierOrder' => 'サプライヤの注文%sを受信',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => '代表的なフォローアップ、顧客の注文',
 		'TypeContact_commande_internal_SHIPPING' => '代表的なフォローアップ出荷',

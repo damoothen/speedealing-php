@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Weet je zeker dat je wilt openen weer de commerciële voorstel <b>%s?</b>',
 		'ProposalsAndProposalsLines' => 'Offertes en offerteregels',
 		'ProposalLine' => 'Offerteregels',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Beschikbaarheid van vertraging',
 		'SetAvailability' => 'Set beschikbaarheid vertraging',
 		'AfterOrder' => 'na bestelling',

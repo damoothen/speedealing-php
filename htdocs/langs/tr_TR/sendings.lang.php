@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Müşteri tarafından alındı',
 		'SendingMethodTRANS' => 'Nakliyeci',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Teslimat makbuzları için basit belge modeli',
 		'DocumentModelTyphon' => 'Teslimat makbuzları için daha fazla eksiksiz doküman modeli (logo. ..)',

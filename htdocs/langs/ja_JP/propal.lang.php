@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'あなたは、市販の提案<b>%sバック</b>開いてもよろしいですか？',
 		'ProposalsAndProposalsLines' => '商業的提案や行',
 		'ProposalLine' => '提案ライン',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => '可用性の遅延',
 		'SetAvailability' => '可用性の遅延を設定',
 		'AfterOrder' => 'ご注文後',

@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Afhalen door de afnemer',
 		'SendingMethodTRANS' => 'Vervoerder',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Eenvoudig leveringsbewijs documentmodel',
 		'DocumentModelTyphon' => 'Completer leveringsbewijs documentmodel (logo, etc)',

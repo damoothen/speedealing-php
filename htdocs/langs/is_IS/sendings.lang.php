@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Afli eftir viðskiptavina',
 		'SendingMethodTRANS' => 'Transporter',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Einföld skjal líkan fyrir kvittunum sending',
 		'DocumentModelTyphon' => 'Meira heill skjal líkan fyrir kvittunum sending (logo. ..)',

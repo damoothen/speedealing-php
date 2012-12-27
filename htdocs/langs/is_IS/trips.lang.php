@@ -18,6 +18,7 @@ $trips = array(
 		'CHARSET' => 'UTF-8',
 		'Trip' => 'Ferðalag',
 		'Trips' => 'Ferðir',
+		'TripId' => 'Trip id',
 		'TripsAndExpenses' => 'Ferðir og kostnaður',
 		'TripsAndExpensesStatistics' => 'Ferðir og kostnaður tölfræði',
 		'TripCard' => 'Trip kort',

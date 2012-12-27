@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Abholung durch Kunden',
 		'SendingMethodTRANS' => 'Spedition',
 		'SendingMethodCOLSUI' => 'Expressversand',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Einfache Dokumentvorlage für die Lieferungscheine',
 		'DocumentModelTyphon' => 'Vollständig Dokumentvorlage für die Lieferungscheine (Logo, ...)',

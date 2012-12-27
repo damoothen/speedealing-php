@@ -107,6 +107,12 @@ $categories = array(
 		'CatSupList' => 'Listi yfir flokka birgir',
 		'CatCusList' => 'Listi yfir viðskiptavini / horfur flokkar',
 		'CatProdList' => 'Listi yfir vörur flokkar',
-		'CatMemberList' => 'Listi yfir meðlimi flokkar'
+		'CatMemberList' => 'Listi yfir meðlimi flokkar',
+		'ContactIsInCategories' => 'Ce contact est dans les catégories suivantes',
+		'ContactHasNoCategory' => 'Ce contact n\'est dans aucune catégorie en particulier',
+		'ContactsCategoryShort' => 'Catégorie contact',
+		'ContactsCategoriesShort' => 'Catégories contacts',
+		'ThisCategoryHasNoContact' => 'Cette catégorie ne contient aucun contact.',
+		'CatConList' => 'Liste des catégories contacts (infos contacts incluses)'
 );
 ?>

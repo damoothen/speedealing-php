@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Clone et',
 		'ConfirmCloneOrder' => 'Oled sa kindel, et soovid kloonida selles järjekorras <b>%s?</b>',
 		'DispatchSupplierOrder' => 'Saamist tarnija et %s',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Esindaja järelmeetmeid kliendi tellimuse',
 		'TypeContact_commande_internal_SHIPPING' => 'Esindaja järelmeetmeid laevandus',

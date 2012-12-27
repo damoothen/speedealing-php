@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Er du sikker på at du vil åpne igjen de kommersielle forslag <b>%s?</b>',
 		'ProposalsAndProposalsLines' => 'Kommersielle forslaget og linjer',
 		'ProposalLine' => 'Forslag linje',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Tilgjengelighet forsinkelse',
 		'SetAvailability' => 'Sett tilgjengelighet forsinkelse',
 		'AfterOrder' => 'etter bestilling',

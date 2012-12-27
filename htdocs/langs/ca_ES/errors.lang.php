@@ -126,6 +126,8 @@ $errors = array(
 		'ErrorPhpCurlNotInstalled' => 'L\'extensió PHP CURL no es troba instal·lada, és indispensable per dialogar amb Paypal.',
 		'ErrorFailedToAddToMailmanList' => 'S\'ha produït un error en intentar afegir un registre a la llista Mailman o base de dades SPIP',
 		'ErrorNewVaueCantMatchOldValue' => 'El Nou valor no pot ser igual al antic',
+		'ErrorDuplicateTrigger' => 'Un fichier trigger de classe \'<b>%s</b>\' est présent plusieurs fois. Supprimer le doublon du répertoire \'<b>%s</b>\'.',
+		'SESSIONEXPIRE' => 'La session est expirée',
 		// Warnings
 		'WarningMandatorySetupNotComplete' => 'Mandatory setup parameters are not yet defined',
 		'WarningSafeModeOnCheckExecDir' => 'Atenció, està activada l\'opció PHP <b>safe_mode</b>, la comanda ha d\'estar dins d\'un directori declarat dins del paràmetre php <b>safe_mode_exec_dir</b>.',

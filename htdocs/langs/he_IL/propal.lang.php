@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'האם אתה בטוח שברצונך לפתוח בחזרה את ההצעה <b>%s</b> מסחריים?',
 		'ProposalsAndProposalsLines' => 'הצעה מסחרית קווי',
 		'ProposalLine' => 'ההצעה קו',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'זמינות עיכוב',
 		'SetAvailability' => 'הגדרת עיכוב זמינות',
 		'AfterOrder' => 'אחרי הסדר',

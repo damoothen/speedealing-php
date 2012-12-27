@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Kloon opdracht',
 		'ConfirmCloneOrder' => 'Weet u zeker dat u deze opdracht <b>%s</b> wilt klonen?',
 		'DispatchSupplierOrder' => 'Ontvangst van leveranciersopdracht %s',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Vertegenwoordiger die follow-up van afnemersopdracht doet',
 		'TypeContact_commande_internal_SHIPPING' => 'Vertegenwoordiger die follow-up van verzending doet',

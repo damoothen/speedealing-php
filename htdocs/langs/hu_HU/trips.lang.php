@@ -18,6 +18,7 @@ $trips = array(
 		'CHARSET' => 'UTF-8',
 		'Trip' => 'utazás',
 		'Trips' => 'Utak',
+		'TripId' => 'Trip id',
 		'TripsAndExpenses' => 'Utazások és kiadások',
 		'TripsAndExpensesStatistics' => 'Utazások és kiadások statisztikák',
 		'TripCard' => 'Utazás kártya',

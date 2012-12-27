@@ -18,6 +18,7 @@ $trips = array(
 		'CHARSET' => 'UTF-8',
 		'Trip' => 'رحلة',
 		'Trips' => 'رحلات',
+		'TripId' => 'Trip id',
 		'TripsAndExpenses' => 'ونفقات الرحلات',
 		'TripsAndExpensesStatistics' => 'رحلات ونفقات إحصاءات',
 		'TripCard' => 'بطاقة زيارة',

@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Ertu viss um að þú viljir opna aftur auglýsing <b>%s</b> tillögur?',
 		'ProposalsAndProposalsLines' => 'Auglýsing tillögunnar og línur',
 		'ProposalLine' => 'Tillaga línu',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Framboð töf',
 		'SetAvailability' => 'Setja framboð töf',
 		'AfterOrder' => 'eftir því skyni',

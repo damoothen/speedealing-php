@@ -107,6 +107,12 @@ $categories = array(
 		'CatSupList' => 'Lista kategorii dostawcy',
 		'CatCusList' => 'Lista klientów / perspektywa kategorii',
 		'CatProdList' => 'Lista produktów kategorii',
-		'CatMemberList' => 'Lista członków kategorii'
+		'CatMemberList' => 'Lista członków kategorii',
+		'ContactIsInCategories' => 'Ce contact est dans les catégories suivantes',
+		'ContactHasNoCategory' => 'Ce contact n\'est dans aucune catégorie en particulier',
+		'ContactsCategoryShort' => 'Catégorie contact',
+		'ContactsCategoriesShort' => 'Catégories contacts',
+		'ThisCategoryHasNoContact' => 'Cette catégorie ne contient aucun contact.',
+		'CatConList' => 'Liste des catégories contacts (infos contacts incluses)'
 );
 ?>

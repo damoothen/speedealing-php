@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Ali ste prepričani, da želite odpreti nazaj poslovne <b>%s</b> predlog?',
 		'ProposalsAndProposalsLines' => 'Komercialna ponudba in vrstice',
 		'ProposalLine' => 'Vrstica ponudbe',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Dobavni rok',
 		'SetAvailability' => 'Nastavi dobavni rok',
 		'AfterOrder' => 'od naročila',

@@ -18,6 +18,7 @@ $trips = array(
 		'CHARSET' => 'UTF-8',
 		'Trip' => 'Ταξίδι',
 		'Trips' => 'Ταξίδια',
+		'TripId' => 'Trip id',
 		'TripsAndExpenses' => 'Ταξίδια και έξοδα',
 		'TripsAndExpensesStatistics' => 'Στατιστικά ταξιδιών και εξόδων',
 		'TripCard' => 'Καρτέλα ταξιδιού',

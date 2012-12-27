@@ -172,6 +172,23 @@ $install = array(
 		'LastStepDesc' => '<strong>Ultimo passo:</strong> Indicare qui login e password che si prevede di utilizzare per la connessione al software. Non dimenticare questi dati perché è l\'unico account in grado di amminsitrare tutti gli altri.',
 		'ActivateModule' => 'Attiva modulo %s',
 		'ShowEditTechnicalParameters' => 'Click here to show/edit advanced parameters (expert mode)',
+		'ServerPortCouchdbDescription' => 'Port du serveur. Défaut 5984.',
+		'ServerAddressCouchdbDescription' => 'Nom FQDN du serveur de base de données, \'localhost.localdomain\' quand le serveur est installé sur la même machine que le serveur web',
+		'DatabaseCouchdbUserDescription' => 'Login du super administrateur ayant tous les droits sur le serveur CouchDB ou l\'administrateur propriétaire de la base si la base et son compte d\'accès existent déjà (comme lorsque vous êtes chez un hébergeur).<br><br><div class="alert-box info">Cet utilisateur/mot de passe sera l\'administrateur pour se connecter à Speedealing.</div>',
+		'CheckToCreateCouchdbDatabase' => 'Cochez cette option si la base de données n\'existe pas et doit être créée.',
+		'CreateAdminUser' => 'Créer le super administrateur (Première installation de couchDB)',
+		'MemcachedDescription' => 'Activer Memcached necessite l\'installation d\'un serveur Memcached et des lib php-memcached ou php-memcache. Il peut être activer après l\'installation.',
+		'ServerAddressMemcachedDesc' => 'Nom ou adresse ip du serveur memcached, généralement \'localhost\' quand le serveur est installé sur la même machine que le serveur web',
+		'ServerPortMemcachedDesc' => 'Port du serveur memcached. Défaut : 11211',
+		'EnabledMemcached' => 'Activer Memcached',
+		'DatabaseNoSQL' => 'Base de données CouchDB',
+		'DatabaseSQL' => 'Base de données SQL',
+		'FailedToCreateAdminLogin' => 'Echec de la création du compte administrateur Speedealing.',
+		'LinkedElementsInvalidDeleted' => '<b>%s</b> liaisons invalides ont été supprimées',
+		'NothingToDelete' => 'Aucune liaison invalide trouvée',
+		'SourceType' => 'Source',
+		'TargetType' => 'Cible',
+		'MigrationContractsEmptyCreationDatesUpdateSuccess' => 'Ok pour date création',
 		//////////////////
 		// upgrade
 		//////////////////

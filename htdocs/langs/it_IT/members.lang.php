@@ -211,6 +211,13 @@ $members = array(
 		'Collectivités' => 'Organizzazioni',
 		'Particuliers' => 'Personale',
 		'Entreprises' => 'Imprese',
-		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Per effettuare il pagamento dell\'adesione tramite bonifico bancario, vedi <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a>.<br/>Per pagare con carta di credito o Paypal, clicca sul pulsante in fondo a questa pagina.<br/>'
+		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Per effettuare il pagamento dell\'adesione tramite bonifico bancario, vedi <a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribe</a>.<br/>Per pagare con carta di credito o Paypal, clicca sul pulsante in fondo a questa pagina.<br/>',
+		'ErrorBadValueForDate' => 'Erreur : La date de fin d\'adhésion ne doit être ni égale ni inférieure à la date de début.',
+		'NewAttribute' => 'Nouvel attribut',
+		'AttributeCode' => 'Code de l\'attribut',
+		'OptionalFieldsSetup' => 'Configuration des champs optionnels',
+		'DescADHERENT_MAILMAN_LISTS' => 'Liste(s) à la quelle (auxquelles) inscrire les nouveaux adhérents (séparés par une virgule)',
+		'MembersStatisticsByTown' => 'Statistiques des membres par ville',
+		'CardMember' => 'Carte d\'adhérent'
 );
 ?>

@@ -364,6 +364,7 @@ $admin = array(
 		'Int' => 'Integer',
 		'Float' => 'Float',
 		'DateAndTime' => 'Date and hour',
+		'Structure' => 'Structure',
 		// Modules
 		'Module0Name' => '& مجموعات المستخدمين',
 		'Module0Desc' => 'إدارة المستخدمين والمجموعات',

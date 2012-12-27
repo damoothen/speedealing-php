@@ -91,7 +91,6 @@ $agenda = array(
 		'StatusActionTooLate' => 'Action en retard',
 		'MyTasks' => 'Mes tâches',
 		'MyDelegatedTasks' => 'Mes tâches déléguées',
-		'TryToAddATranslation' => 'essai d\'ajout de ligne pour synchro transifex',
 		'ProdPlanning' => 'Planning de production',
 		// External Sites ical
 		'ExportCal' => 'Export calendrier',

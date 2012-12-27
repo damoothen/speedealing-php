@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Клон порядка',
 		'ConfirmCloneOrder' => 'Вы уверены, что хотите клон этого <b>приказа %s?</b>',
 		'DispatchSupplierOrder' => 'Прием %s поставщиком для',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Представитель следующие меры для клиентов',
 		'TypeContact_commande_internal_SHIPPING' => 'Представитель следующие меры судоходства',

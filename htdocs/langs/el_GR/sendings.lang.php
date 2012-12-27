@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Πιάσε από τον πελάτη',
 		'SendingMethodTRANS' => 'Μεταφορέας',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Απλό μοντέλο έγγραφο για αποδεικτικά παράδοσης',
 		'DocumentModelTyphon' => 'Πληρέστερη πρότυπο έγγραφο για αποδεικτικά παράδοσης (logo. ..)',

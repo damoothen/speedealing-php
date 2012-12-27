@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Remoção pelo cliente',
 		'SendingMethodTRANS' => 'Transportadora',
 		'SendingMethodCOLSUI' => 'Acompanhamento',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Modelo de Documento Sirocco',
 		'DocumentModelTyphon' => 'Modelo de Documento Typhon',

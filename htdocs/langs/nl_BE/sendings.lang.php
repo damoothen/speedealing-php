@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Catch by customer',
 		'SendingMethodTRANS' => 'Transporter',
 		'SendingMethodCOLSUI' => 'Colissimo',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Simple document model for delivery receipts',
 		'DocumentModelTyphon' => 'More complete document model for delivery receipts (logo...)',

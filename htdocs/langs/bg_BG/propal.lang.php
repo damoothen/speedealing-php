@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Сигурен ли сте, че искате да отворите търговските <b>%s</b> предложение?',
 		'ProposalsAndProposalsLines' => 'Търговско предложение и линии',
 		'ProposalLine' => 'Предложение линия',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Наличност закъснение',
 		'SetAvailability' => 'Незабавно наличността',
 		'AfterOrder' => 'по поръчка',

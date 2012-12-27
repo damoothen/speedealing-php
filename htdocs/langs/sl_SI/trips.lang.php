@@ -18,6 +18,7 @@ $trips = array(
 		'CHARSET' => 'UTF-8',
 		'Trip' => 'Pot',
 		'Trips' => 'Poti',
+		'TripId' => 'Trip id',
 		'TripsAndExpenses' => 'Poti in stroški',
 		'TripsAndExpensesStatistics' => 'Statistika poti in stroškov',
 		'TripCard' => 'Kartica poti',

@@ -129,6 +129,17 @@ $users = array(
 		'YourRole' => 'Din roller',
 		'YourQuotaOfUsersIsReached' => 'Din kvote af aktive brugere er nået!',
 		'NbOfUsers' => 'Nb af brugere',
-		'DontDowngradeSuperAdmin' => 'Kun en superadmin kan nedgradere en superadmin'
+		'DontDowngradeSuperAdmin' => 'Kun en superadmin kan nedgradere en superadmin',
+		'NewDatabase' => 'Nouvelle base de données',
+		'CreateDatabase' => 'Créer la base de données',
+		'ListOfDatabases' => 'Liste des bases de données',
+		'ListOfUsersInDatabase' => 'Liste des utilisateurs liés à la base de données',
+		'ListOfRolesInDatabase' => 'Liste des groupes liés à la base de données',
+		'DeleteADatabase' => 'Suppression d\'une database',
+		'ConfirmDatabase' => 'Êtes-vous sûr de vouloir supprimer la base de données <b>%s</b> ?',
+		'NonAffectedGroupsDatabase' => 'Groupes non affectés à la base de données',
+		'NonAffectedUsersDatabase' => 'Utilisateurs non affectés à la base de données',
+		'Collaborators' => 'Collaborateurs',
+		'Profiles' => 'Profils collaborateurs'
 );
 ?>

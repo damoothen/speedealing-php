@@ -211,6 +211,13 @@ $members = array(
 		'Collectivités' => '組織',
 		'Particuliers' => '個人的な',
 		'Entreprises' => '企業',
-		'DOLIBARRFOUNDATION_PAYMENT_FORM' => '銀行振込を使用してサブスクリプション費用の支払いを行うには、ページ参照<a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribeを</a> 。 <br>クレジットカードまたはPayPalでお支払いには、このページの下部にあるボタンをクリックします。 <br>'
+		'DOLIBARRFOUNDATION_PAYMENT_FORM' => '銀行振込を使用してサブスクリプション費用の支払いを行うには、ページ参照<a target="_blank" href="http://wiki.dolibarr.org/index.php/Subscribe#To_subscribe_making_a_bank_transfer">http://wiki.dolibarr.org/index.php/Subscribeを</a> 。 <br>クレジットカードまたはPayPalでお支払いには、このページの下部にあるボタンをクリックします。 <br>',
+		'ErrorBadValueForDate' => 'Erreur : La date de fin d\'adhésion ne doit être ni égale ni inférieure à la date de début.',
+		'NewAttribute' => 'Nouvel attribut',
+		'AttributeCode' => 'Code de l\'attribut',
+		'OptionalFieldsSetup' => 'Configuration des champs optionnels',
+		'DescADHERENT_MAILMAN_LISTS' => 'Liste(s) à la quelle (auxquelles) inscrire les nouveaux adhérents (séparés par une virgule)',
+		'MembersStatisticsByTown' => 'Statistiques des membres par ville',
+		'CardMember' => 'Carte d\'adhérent'
 );
 ?>

@@ -96,6 +96,7 @@ $propal = array(
 		'ConfirmReOpenProp' => 'Oletko varma että haluat avata takaisin kaupallisen ehdotuksen <b>%s?</b>',
 		'ProposalsAndProposalsLines' => 'Kaupalliset ehdotusta ja linjat',
 		'ProposalLine' => 'Ehdotus linja',
+		'ProposalLines' => 'Proposal lines',
 		'AvailabilityPeriod' => 'Saatavuus viive',
 		'SetAvailability' => 'Aseta saatavuus viive',
 		'AfterOrder' => 'tilauksesta',

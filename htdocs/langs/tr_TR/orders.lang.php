@@ -132,6 +132,8 @@ $orders = array(
 		'CloneOrder' => 'Siparişi klonla',
 		'ConfirmCloneOrder' => 'Bu <b>%s</b> siparişi klonlamak istediğinizden emin misiniz?',
 		'DispatchSupplierOrder' => '%s tedarikçi siparişini al',
+		'DateDeliveryPlanned' => 'Date de livraison prévue',
+		'SetDemandReason' => 'Définir l\'origine de la commande',
 		////////// Types de contacts //////////
 		'TypeContact_commande_internal_SALESREPFOLL' => 'Müşteri siparişi izleme temsilcisi',
 		'TypeContact_commande_internal_SHIPPING' => 'Sevkiyat izleme temsilcisi',
