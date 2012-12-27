@@ -211,6 +211,13 @@ $members = array(
 		'Collectivités' => 'Collectivités',
 		'Particuliers' => 'Particuliers',
 		'Entreprises' => 'Entreprises',
-		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Pour réaliser le paiement de votre cotisation par virement bancaire ou par chèque, consultez la page <a target="_blank" href="http://wiki.dolibarr.org/index.php/Adh%C3%A9rer#Pour_une_adh.C3.A9sion_par_ch.C3.A8que">http://wiki.dolibarr.org/index.php/Adhérer</a>.<br>Pour payer dès maintenant par Carte Bancaire ou Paypal, cliquez sur le bouton au bas de cette page.<br>'
+		'DOLIBARRFOUNDATION_PAYMENT_FORM' => 'Pour réaliser le paiement de votre cotisation par virement bancaire ou par chèque, consultez la page <a target="_blank" href="http://wiki.dolibarr.org/index.php/Adh%C3%A9rer#Pour_une_adh.C3.A9sion_par_ch.C3.A8que">http://wiki.dolibarr.org/index.php/Adhérer</a>.<br>Pour payer dès maintenant par Carte Bancaire ou Paypal, cliquez sur le bouton au bas de cette page.<br>',
+		'ErrorBadValueForDate' => 'Erreur : La date de fin d\'adhésion ne doit être ni égale ni inférieure à la date de début.',
+		'NewAttribute' => 'Nouvel attribut',
+		'AttributeCode' => 'Code de l\'attribut',
+		'OptionalFieldsSetup' => 'Configuration des champs optionnels',
+		'DescADHERENT_MAILMAN_LISTS' => 'Liste(s) à la quelle (auxquelles) inscrire les nouveaux adhérents (séparés par une virgule)',
+		'MembersStatisticsByTown' => 'Statistiques des membres par ville',
+		'CardMember' => 'Carte d\'adhérent'
 );
 ?>

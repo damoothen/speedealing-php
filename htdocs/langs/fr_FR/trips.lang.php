@@ -18,6 +18,7 @@ $trips = array(
 		'CHARSET' => 'UTF-8',
 		'Trip' => 'Déplacement',
 		'Trips' => 'Déplacements',
+		'TripId' => 'Id note frais',
 		'TripsAndExpenses' => 'Note de frais',
 		'TripsAndExpensesStatistics' => 'Statistiques notes de frais',
 		'TripCard' => 'Fiche frais',

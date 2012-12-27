@@ -78,6 +78,7 @@ $sendings = array(
 		'SendingMethodCATCH' => 'Enlèvement par le client',
 		'SendingMethodTRANS' => 'Transporteur',
 		'SendingMethodCOLSUI' => 'Colissimo Suivi',
+		'SendingMethodLETTREMAX' => 'Lettre Max',
 		// ModelDocument
 		'DocumentModelSirocco' => 'Modèle de bon de réception/livraison simple',
 		'DocumentModelTyphon' => 'Modèle de bon de réception/livraison complet (logo...)',

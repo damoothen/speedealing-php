@@ -126,6 +126,8 @@ $errors = array(
 		'ErrorPhpCurlNotInstalled' => 'The PHP CURL is not installed, this is essential to talk with Paypal',
 		'ErrorFailedToAddToMailmanList' => 'Failed to add record to Mailman list or SPIP base',
 		'ErrorNewVaueCantMatchOldValue' => 'New value can\'t be equal to old one',
+		'ErrorDuplicateTrigger' => 'Un fichier trigger de classe \'<b>%s</b>\' est présent plusieurs fois. Supprimer le doublon du répertoire \'<b>%s</b>\'.',
+		'SESSIONEXPIRE' => 'La session est expirée',
 		// Warnings
 		'WarningMandatorySetupNotComplete' => 'Les informations de configuration obligatoire doivent être renseignées',
 		'WarningSafeModeOnCheckExecDir' => 'Attention, l\'option PHP <b>safe_mode</b> est active, la commande doit dont être dans un répertoire déclaré dans le paramètre php <b>safe_mode_exec_dir</b>.',

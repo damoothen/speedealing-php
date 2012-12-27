@@ -18,6 +18,7 @@ $trips = array(
 		'CHARSET' => 'UTF-8',
 		'Trip' => 'Trip',
 		'Trips' => 'Trips',
+		'TripId' => 'Trip id',
 		'TripsAndExpenses' => 'Trips and expenses',
 		'TripsAndExpensesStatistics' => 'Trips and expenses statistics',
 		'TripCard' => 'Trip card',
