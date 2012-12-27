@@ -142,6 +142,6 @@ $holiday = array(
 		'Jours' => 'days',
 		'nbJours' => 'Number days',
 		'TitleAdminCP' => 'Configuration of Holidays',
-		'Permission20001' => 'Read / Modify all requests of holidays',
+		'Permission20001' => 'Read / Modify all requests of holidays'
 );
 ?>

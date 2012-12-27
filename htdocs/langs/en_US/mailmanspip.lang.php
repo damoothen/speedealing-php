@@ -39,6 +39,6 @@ $mailmanspip = array(
 		'DeleteIntoSpip' => 'Remove from SPIP',
 		'DeleteIntoSpipConfirmation' => 'Are you sure you want to remove this member from SPIP?',
 		'DeleteIntoSpipError' => 'Failed to suppress the user from SPIP',
-		'SPIPConnectionFailed' => 'Failed to connect to SPIP',
+		'SPIPConnectionFailed' => 'Failed to connect to SPIP'
 );
 ?>

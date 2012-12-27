@@ -24,6 +24,6 @@ $workflow = array(
 		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Create a customer invoice automatically after a contract is validated',
 		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Create a customer invoice automatically after a customer order is closed',
 		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Classify linked source proposal to billed when customer order is set to paid',
-		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid'
 );
 ?>

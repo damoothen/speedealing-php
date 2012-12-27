@@ -41,6 +41,6 @@ $help = array(
 		'LinkToGoldMember' => 'You can call one of the coach preselected by Dolibarr for your language (%s) by clicking his Widget (status and maximum price are automatically updated):',
 		'PossibleLanguages' => 'Supported languages',
 		'MakeADonation' => 'Help Dolibarr project, make a donation',
-		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation',
+		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
 );
 ?>

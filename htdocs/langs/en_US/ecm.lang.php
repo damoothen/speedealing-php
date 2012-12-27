@@ -67,6 +67,6 @@ $ecm = array(
 		'CannotRemoveDirectoryContainsFiles' => 'Removed not possible because it contains some files',
 		'ECMFileManager' => 'File manager',
 		'ECMSelectASection' => 'Select a directory on left tree...',
-		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.',
+		'DirNotSynchronizedSyncFirst' => 'This directory seems to be created or modified outside ECM module. You must click on "Refresh" button first to synchronize disk and database to get content of this directory.'
 );
 ?>

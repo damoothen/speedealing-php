@@ -107,6 +107,6 @@ $categories = array(
 		'CatSupList' => 'List of supplier categories',
 		'CatCusList' => 'List of customer/prospect categories',
 		'CatProdList' => 'List of products categories',
-		'CatMemberList' => 'List of members categories',
+		'CatMemberList' => 'List of members categories'
 );
 ?>

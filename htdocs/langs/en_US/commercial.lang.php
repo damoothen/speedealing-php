@@ -111,6 +111,6 @@ $commercial = array(
 		'NoData' => 'There is no data',
 		'StatusProsp' => 'Prospect status',
 		'DraftPropals' => 'Draft commercial proposals',
-		'SearchPropal' => 'Search a commercial proposal',
+		'SearchPropal' => 'Search a commercial proposal'
 );
 ?>

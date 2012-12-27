@@ -164,6 +164,6 @@ $compta = array(
 		'DatePaymentTermCantBeLowerThanObjectDate' => 'Payment term date can\'t be lower than object date.',
 		'Pcg_version' => 'Pcg version',
 		'Pcg_type' => 'Pcg type',
-		'Pcg_subtype' => 'Pcg subtype',
+		'Pcg_subtype' => 'Pcg subtype'
 );
 ?>

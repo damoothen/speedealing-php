@@ -218,6 +218,6 @@ $other = array(
 		'ToExport' => 'Export',
 		'NewExport' => 'New export',
 		////////// External sites //////////
-		'ExternalSites' => 'External sites',
+		'ExternalSites' => 'External sites'
 );
 ?>

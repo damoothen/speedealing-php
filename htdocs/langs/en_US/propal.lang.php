@@ -111,6 +111,6 @@ $propal = array(
 		'TypeContact_propal_external_CUSTOMER' => 'Customer contact following-up proposal',
 		// Document models
 		'DocModelAzurDescription' => 'A complete proposal model (logo...)',
-		'DocModelJauneDescription' => 'Jaune proposal model',
+		'DocModelJauneDescription' => 'Jaune proposal model'
 );
 ?>

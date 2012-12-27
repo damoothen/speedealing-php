@@ -169,6 +169,6 @@ $orders = array(
 		'CreateInvoiceForThisCustomer' => 'Bill orders',
 		'NoOrdersToInvoice' => 'No orders billable',
 		'CloseProcessedOrdersAutomatically' => 'Classify "Processed" all selected orders.',
-		'MenuOrdersToBill2' => 'Billables orders',
+		'MenuOrdersToBill2' => 'Billables orders'
 );
 ?>

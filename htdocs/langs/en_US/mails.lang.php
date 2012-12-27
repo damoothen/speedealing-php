@@ -140,6 +140,6 @@ $mails = array(
 		'SomeNotificationsWillBeSent' => '%s notifications will be sent by email',
 		'AddNewNotification' => 'Activate a new email notification request',
 		'ListOfActiveNotifications' => 'List all active email notification requests',
-		'ListOfNotificationsDone' => 'List all email notifications sent',
+		'ListOfNotificationsDone' => 'List all email notifications sent'
 );
 ?>

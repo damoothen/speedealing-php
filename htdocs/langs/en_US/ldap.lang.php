@@ -43,6 +43,6 @@ $ldap = array(
 		'MemberSynchronized' => 'Member synchronized',
 		'ContactSynchronized' => 'Contact synchronized',
 		'ForceSynchronize' => 'Force synchronizing Dolibarr -> LDAP',
-		'ErrorFailedToReadLDAP' => 'Failed to read LDAP database. Check LDAP module setup and database accessibility.',
+		'ErrorFailedToReadLDAP' => 'Failed to read LDAP database. Check LDAP module setup and database accessibility.'
 );
 ?>

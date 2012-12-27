@@ -45,6 +45,6 @@ $donations = array(
 		'SearchADonation' => 'Search a donation',
 		'DonationRecipient' => 'Donation recipient',
 		'ThankYou' => 'Thank You',
-		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount',
+		'IConfirmDonationReception' => 'The recipient declare reception, as a donation, of the following amount'
 );
 ?>

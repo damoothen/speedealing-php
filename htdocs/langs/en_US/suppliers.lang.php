@@ -54,6 +54,6 @@ $suppliers = array(
 		'AddSupplierOrder' => 'Create supplier order',
 		'AddSupplierInvoice' => 'Create supplier invoice',
 		'ListOfSupplierProductForSupplier' => 'List of products and prices for supplier <b>%s</b>',
-		'NoneOrBatchFileNeverRan' => 'None or batch <b>%s</b> not ran recently',
+		'NoneOrBatchFileNeverRan' => 'None or batch <b>%s</b> not ran recently'
 );
 ?>

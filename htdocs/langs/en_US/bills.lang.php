@@ -411,6 +411,6 @@ $bills = array(
 		'PDFOursinDescription' => 'Invoice PDF template Oursin. A complete invoice template (Template alternative)',
 		// NumRef Modules
 		'TerreNumRefModelDesc1' => 'Return numero with format %syymm-nnnn for standard invoices and %syymm-nnnn for credit notes where yy is year, mm is month and nnnn is a sequence with no break and no return to 0',
-		'TerreNumRefModelError' => 'A bill starting with $syymm already exists and is not compatible with this model of sequence. Remove it or rename it to activate this module.',
+		'TerreNumRefModelError' => 'A bill starting with $syymm already exists and is not compatible with this model of sequence. Remove it or rename it to activate this module.'
 );
 ?>

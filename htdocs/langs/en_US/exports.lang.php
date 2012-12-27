@@ -135,6 +135,6 @@ $exports = array(
 		'CsvOptions' => 'Csv Options',
 		'Separator' => 'Separator',
 		'Enclosure' => 'Enclosure',
-		'SuppliersProducts' => 'Suppliers Products',
+		'SuppliersProducts' => 'Suppliers Products'
 );
 ?>

@@ -88,6 +88,6 @@ $agenda = array(
 		'ExtSitesNbOfAgenda' => 'Number of calendars',
 		'AgendaExtNb' => 'Calendar nb %s',
 		'ExtSiteUrlAgenda' => 'URL to access .ical file',
-		'ExtSiteNoLabel' => 'No Description',
+		'ExtSiteNoLabel' => 'No Description'
 );
 ?>

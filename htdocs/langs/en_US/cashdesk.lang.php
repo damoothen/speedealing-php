@@ -15,7 +15,6 @@
  */
 
 $cashdesk = array(
-		// Language file - en_US - cashdesk
 		'CHARSET' => 'UTF-8',
 		'CashDeskMenu' => 'Point of sale',
 		'CashDesk' => 'Point of sale',
@@ -53,6 +52,6 @@ $cashdesk = array(
 		'BankToPay' => 'Charge Account',
 		'ShowCompany' => 'Show company',
 		'ShowStock' => 'Show warehouse',
-		'DeleteArticle' => 'Click to remove this article',
+		'DeleteArticle' => 'Click to remove this article'
 );
 ?>

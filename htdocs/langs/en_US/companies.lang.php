@@ -409,6 +409,6 @@ $companies = array(
 		// Monkey
 		'MonkeyNumRefModelDesc' => 'Return numero with format %syymm-nnnn for customer code and %syymm-nnnn for supplier code where yy is year, mm is month and nnnn is a sequence with no break and no return to 0.',
 		// Leopard
-		'LeopardNumRefModelDesc' => 'The code is free. This code can be modified at any time.',
+		'LeopardNumRefModelDesc' => 'The code is free. This code can be modified at any time.'
 );
 ?>

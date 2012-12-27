@@ -670,6 +670,6 @@ $main = array(
 		'ShortThursday' => 'T',
 		'ShortFriday' => 'F',
 		'ShortSaturday' => 'S',
-		'ShortSunday' => 'S',
+		'ShortSunday' => 'S'
 );
 ?>

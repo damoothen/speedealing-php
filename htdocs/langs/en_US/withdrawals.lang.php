@@ -97,7 +97,7 @@ $withdrawals = array(
 		'ShowWithdraw' => 'Show Withdraw',
 		'IfInvoiceNeedOnWithdrawPaymentWontBeClosed' => 'However, if invoice has at least one withdrawal payment not yet processed, it won\'t be set as payed to allow to manage withdrawal before.',
 		'DoStandingOrdersBeforePayments' => 'This tabs allows you to request for a standing order. Once it will be finished, you can type the payment to close the invoice.',
-		////// Notifications 
+		////// Notifications
 		'InfoCreditSubject' => 'Payment of standing order %s by the bank',
 		'InfoCreditMessage' => 'The standing order %s has been paid by the bank<br>Data of payment: %s',
 		'InfoTransSubject' => 'Transmission of standing order %s to bank',
@@ -106,6 +106,6 @@ $withdrawals = array(
 		'InfoFoot' => 'This is an automated message sent by Dolibarr',
 		'InfoRejectSubject' => 'Standing order refused',
 		'InfoRejectMessage' => 'Hello,<br><br>the standig order of invoice %s related to the company %s, with an amount of %s has been refused by the bank.<br><br>--<br>%$',
-		'ModeWarning' => 'Option for real mode was not set, we stop after this simulation',
+		'ModeWarning' => 'Option for real mode was not set, we stop after this simulation'
 );
 ?>

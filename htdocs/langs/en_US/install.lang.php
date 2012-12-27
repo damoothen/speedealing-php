@@ -222,6 +222,6 @@ $install = array(
 		'MigrationProjectTaskTime' => 'Update time spent in seconds',
 		'MigrationActioncommElement' => 'Update data on actions',
 		'MigrationPaymentMode' => 'Data migration for payment mode',
-		'MigrationCategorieAssociation' => 'Migration of categories',
+		'MigrationCategorieAssociation' => 'Migration of categories'
 );
 ?>

@@ -162,6 +162,6 @@ $banks = array(
 		'InputReceiptNumber' => 'Choose the bank statement related with the conciliation. Use a sortable numeric value (such as, YYYYMM)',
 		'EventualyAddCategory' => 'Eventually, specify a category in which to classify the records',
 		'ToConciliate' => 'To conciliate?',
-		'ThenCheckLinesAndConciliate' => 'Then, check the lines present in the bank statement and click',
+		'ThenCheckLinesAndConciliate' => 'Then, check the lines present in the bank statement and click'
 );
 ?>

@@ -61,6 +61,6 @@ $languages = array(
 		'Language_sv_SV' => 'Swedish',
 		'Language_sv_SE' => 'Swedish',
 		'Language_zh_CN' => 'Chinese',
-		'Language_is_IS' => 'Icelandic',
+		'Language_is_IS' => 'Icelandic'
 );
 ?>

@@ -55,6 +55,6 @@ $margins = array(
 		'BuyingCost' => 'Cost price',
 		'UnitCharges' => 'Unit charges',
 		'AgentContactType' => 'Contact type used for commissioning',
-		'AgentContactTypeDetails' => 'Défine what contact type (linked on invoices) will be associated with commercial agents',
+		'AgentContactTypeDetails' => 'Défine what contact type (linked on invoices) will be associated with commercial agents'
 );
 ?>
