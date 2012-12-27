@@ -1119,7 +1119,14 @@ print $object->ref;
 print '</td></tr>';
 
 // Ref client
-print '<tr><td>';
+print '<tr><td>' . $form->editfieldkey("RefCustomer", 'ref_client', $object->ref_client, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "text") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("RefCustomer", 'ref_client', $object->ref_client, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "text");
+print '</td>';
+print '</tr>';
+
+// Ref client
+/*print '<tr><td>';
 print '<table class="nobordernopadding" width="100%"><tr><td nowrap="nowrap">';
 print $langs->trans('RefCustomer') . '</td><td align="left">';
 print '</td>';
@@ -1138,7 +1145,7 @@ if ($user->rights->propal->creer && $action == 'refclient') {
     print $object->ref_client;
 }
 print '</td>';
-print '</tr>';
+print '</tr>';*/
 
 // Company
 print '<tr><td>' . $langs->trans('Company') . '</td><td colspan="5">' . $soc->getNomUrl(1) . '</td>';

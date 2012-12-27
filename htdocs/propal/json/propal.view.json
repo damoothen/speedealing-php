@@ -33,5 +33,8 @@
        "listByDate": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Propal\"){\nemit(doc.date, doc);\n}\n}"
        }
+   },
+   "updates": {
+       "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
    }
 }
