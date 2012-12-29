@@ -201,7 +201,8 @@ class Translate {
                 // Enable caching of lang file in memory (not by default)
                 $usecachekey = '';
                 // Using a memcached server
-                if (!empty($conf->Memcached->enabled)) {
+                //if (!empty($conf->Memcached->enabled)) {
+                if (!empty($conf->memcached->host) && class_exists('Memcached')) {
                     $usecachekey = $newdomain . '_' . $langofdir . '_' . md5($file_lang);    // Should not contains special chars
                 }
                 // Using cache with shmop. Speed gain: 40ms - Memory overusage: 200ko (Size of session cache file)
@@ -209,15 +210,15 @@ class Translate {
                     $usecachekey = $newdomain;
                 }
 
-                if ($usecachekey) {
+                if (!empty($usecachekey)) {
                     //dol_syslog('Translate::Load we will cache result into usecachekey '.$usecachekey);
 
                     require_once DOL_DOCUMENT_ROOT . '/core/lib/memory.lib.php';
                     $tmparray = dol_getcache($usecachekey);
                     if (is_array($tmparray) && count($tmparray)) {
                         $this->tab_translate = array_merge($tmparray, $this->tab_translate); // Already found values tab_translate overwrites duplicates
-                        //print $newdomain."\n";
-                        //var_dump($this->tab_translate);
+                        print $newdomain."\n";
+                        var_dump($this->tab_translate);
                         if ($alt == 2)
                             $fileread = 1;
                         $found = true;      // Found in dolibarr PHP cache
@@ -228,7 +229,7 @@ class Translate {
 
                 	include $file_lang;
 
-                	if ($usecachekey)
+                	if (!empty($usecachekey))
                 		$tabtranslatedomain = array(); // To save lang content in cache
 
                 	foreach($$newdomain as $key => $value) {
@@ -240,13 +241,13 @@ class Translate {
                 					$this->tab_translate[$key] = $value;
                 					if ($stopafterdirection)
                 						break; // We do not save tab if we stop after DIRECTION
-                					else if ($usecachekey)
+                					else if (!empty($usecachekey))
                 						$tabtranslatedomain[$key] = $value;
                 				}
                 			}
                 			else {
                 				$this->tab_translate[$key] = $value;
-                				if ($usecachekey)
+                				if (!empty($usecachekey))
                 					$tabtranslatedomain[$key] = $value; // To save lang content in cache
                 			}
                 		}
@@ -255,7 +256,7 @@ class Translate {
 
                 	// TODO Move cache write out of loop on dirs
                 	// To save lang content for usecachekey into cache
-                	if ($usecachekey && count($tabtranslatedomain)) {
+                	if (!empty($usecachekey) && count($tabtranslatedomain)) {
                 		$ressetcache = dol_setcache($usecachekey, $tabtranslatedomain);
                 		if ($ressetcache < 0) {
                 			$error = 'Failed to set cache for usecachekey=' . $usecachekey . ' result=' . $ressetcache;
