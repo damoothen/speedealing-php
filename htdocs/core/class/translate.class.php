@@ -217,8 +217,8 @@ class Translate {
                     $tmparray = dol_getcache($usecachekey);
                     if (is_array($tmparray) && count($tmparray)) {
                         $this->tab_translate = array_merge($tmparray, $this->tab_translate); // Already found values tab_translate overwrites duplicates
-                        print $newdomain."\n";
-                        var_dump($this->tab_translate);
+                        //print $newdomain."\n";
+                        //var_dump($this->tab_translate);
                         if ($alt == 2)
                             $fileread = 1;
                         $found = true;      // Found in dolibarr PHP cache
