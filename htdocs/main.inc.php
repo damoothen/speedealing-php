@@ -1512,10 +1512,10 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
         left_menu(); // print the right menu
 
-        if (!empty($conf->memcached->host) && class_exists('Memcache') && !class_exists('Memcached'))
+        if ($conf->memcached->enabled && class_exists('Memcache'))
             $memcache->close();
 
-// Core error message
+		// Core error message
         if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
             $title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');
             print ajax_dialog($title, $langs->trans('CoreErrorMessage'));

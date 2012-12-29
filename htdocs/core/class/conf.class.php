@@ -107,6 +107,8 @@ class Conf extends nosqlDocument {
 
         //! Charset for HTML output and for storing data in memory
         $this->file->character_set_client = 'UTF-8';   // UTF-8, ISO-8859-1
+        //! Memcached disabled by default
+        $this->memcached->enabled = false;
     }
 
     /**
@@ -143,7 +145,7 @@ class Conf extends nosqlDocument {
             try {
                 $result = $this->load('const');
                 //print_r($result);
-                
+
                 dol_setcache("const", $result);
             } catch (Exception $e) {
                 dol_print_error("", $e->getMessage());
@@ -243,7 +245,7 @@ class Conf extends nosqlDocument {
 
 
 
-            
+
         // Variable globales LDAP
         if (empty($this->global->LDAP_FIELD_FULLNAME))
             $this->global->LDAP_FIELD_FULLNAME = '';
@@ -344,7 +346,7 @@ class Conf extends nosqlDocument {
 
 
 
-            
+
 // conf->use_javascript_ajax
         $this->use_javascript_ajax = 1;
 
@@ -360,7 +362,7 @@ class Conf extends nosqlDocument {
 
 
 
-            
+
 // conf->liste_limit = constante de taille maximale des listes
         if (empty($this->global->MAIN_SIZE_LISTE_LIMIT))
             $this->global->MAIN_SIZE_LISTE_LIMIT = 25;

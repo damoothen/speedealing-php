@@ -1,38 +1,27 @@
 <?php
-
-/* Copyright (C) 2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2010	Laurent Destailleur	<eldy@users.sourceforge.net>
+ * Copyright (C) 2012	Regis Houssin		<regis@dolibarr.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
  *     \file       htdocs/memcached/admin/memcached.php
  *     \brief      Page administration de memcached
- *     \version    $Id: memcached.php,v 1.17 2011/03/29 23:17:21 eldy Exp $
  */
-$res = 0;
-if (!$res && file_exists("../main.inc.php"))
-	$res = @include("../main.inc.php");
-if (!$res && file_exists("../../main.inc.php"))
-	$res = @include("../../main.inc.php");
-if (!$res && file_exists("../../../main.inc.php"))
-	$res = @include("../../../main.inc.php");
-if (!$res)
-	die("Include of main fails");
-$res = dol_include_once("/memcached/lib/memcached.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php");
+include '../../../main.inc.php';
+require DOL_DOCUMENT_ROOT . '/memcached/lib/memcached.lib.php';
+require DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 
 // Security check
 if (!$user->admin)
@@ -181,5 +170,5 @@ if (!$error) {
 }
 dol_fiche_end();
 
-llxfooter('$Date: 2011/03/29 23:17:21 $ - $Revision: 1.17 $');
+llxfooter();
 ?>
