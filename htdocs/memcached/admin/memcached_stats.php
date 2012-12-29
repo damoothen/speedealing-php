@@ -15,24 +15,19 @@
   +----------------------------------------------------------------------+
   | Author:  Harun Yayli <harunyayli at gmail.com>                       |
   | Modified by:  Laurent Destailleur for Dolibarr ERP/CRM               |
+  | Modified by:  Regis Houssin for Speedealing ERP/CRM                  |
   +----------------------------------------------------------------------+
 */
 
-$VERSION='$Id: memcached_stats.php,v 1.4 2011/03/29 23:17:21 eldy Exp $';
-
-$res=0;
-if (! $res && file_exists("../main.inc.php")) $res=@include("../main.inc.php");
-if (! $res && file_exists("../../main.inc.php")) $res=@include("../../main.inc.php");
-if (! $res && file_exists("../../../main.inc.php")) $res=@include("../../../main.inc.php");
-if (! $res) die("Include of main fails");
-$res=dol_include_once("/memcached/lib/memcached.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+include '../../main.inc.php';
+require DOL_DOCUMENT_ROOT . '/memcached/lib/memcached.lib.php';
+require DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 
 // Security check
 if (!$user->admin)
-accessforbidden();
+	accessforbidden();
 if (! empty($dolibarr_memcached_view_disable))	// Hidden variable to add to conf file to disable browsing
-accessforbidden();
+	accessforbidden();
 
 $langs->load("admin");
 $langs->load("errors");

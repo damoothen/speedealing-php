@@ -19,7 +19,7 @@
  *     \file       htdocs/memcached/admin/memcached.php
  *     \brief      Page administration de memcached
  */
-include '../../../main.inc.php';
+include '../../main.inc.php';
 require DOL_DOCUMENT_ROOT . '/memcached/lib/memcached.lib.php';
 require DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 
