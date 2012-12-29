@@ -1512,8 +1512,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
         left_menu(); // print the right menu
 
-        if ($conf->memcached->enabled && class_exists('Memcache'))
-            $memcache->close();
+        if ($conf->memcached->enabled && get_class($memcache) == 'Memcache')
+        	$memcache->close();
 
 		// Core error message
         if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {

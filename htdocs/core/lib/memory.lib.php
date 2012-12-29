@@ -39,16 +39,12 @@ $shmoffset = 100;
 function dol_setcache($memoryid, $data) {
     global $conf, $memcache;
     $result = -1;
-    
+
     $memoryid = $conf->Couchdb->name . '.' . $memoryid; // For multi-entity
 
     // Using a memcached server
-    if (!empty($conf->memcached->host) && class_exists('Memcached')) {
+    if ($conf->memcached->enabled && get_class($memcache) == 'Memcached') {
         $memoryid = session_name() . '_' . $memoryid;
-        //$m = new Memcached();
-        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-        //$m->setOption(Memcached::OPT_COMPRESSION, false);
-        //print "Add memoryid=".$memoryid;
         $memcache->set($memoryid, $data, 3600); // This fails if key already exists
         $rescode = $memcache->getResultCode();
         if ($rescode == 0) {
@@ -56,11 +52,8 @@ function dol_setcache($memoryid, $data) {
         } else {
             return -$rescode;
         }
-    } else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
+    } else if ($conf->memcached->enabled && get_class($memcache) == 'Memcache') {
         $memoryid = session_name() . '_' . $memoryid;
-        //$m = new Memcache();
-        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-        //$m->setOption(Memcached::OPT_COMPRESSION, false);
         $result = $memcache->set($memoryid, $data); // This fails if key already exists
         if ($result) {
             return count($data);
@@ -93,29 +86,18 @@ function dol_getcache($memoryid) {
 
     $memoryid = $conf->Couchdb->name . '.' . $memoryid; // For multi-entity
     // Using a memcached server
-    if (!empty($conf->memcached->host) && class_exists('Memcached')) {
+    if ($conf->memcached->enabled && get_class($memcache) == 'Memcached') {
         $memoryid = session_name() . '_' . $memoryid;
-        //$memcache = new Memcached();
-        //$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
-        //$m->setOption(Memcached::OPT_COMPRESSION, false);
-        //print "Get memoryid=".$memoryid;
         $data = $memcache->get($memoryid);
         $rescode = $memcache->getResultCode();
-        //print "memoryid=".$memoryid." - rescode=".$rescode." - data=".count($data)."\n<br>";
-        //var_dump($data);
         if ($rescode == 0) {
             return $data;
         } else {
             return -$rescode;
         }
-    } else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
+    } else if ($conf->memcached->enabled && get_class($memcache) == 'Memcache') {
         $memoryid = session_name() . '_' . $memoryid;
-        //$memcache = new Memcache();
-        //$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
-        //$m->setOption(Memcached::OPT_COMPRESSION, false);
         $data = $memcache->get($memoryid);
-        //print "memoryid=".$memoryid." - rescode=".$rescode." - data=".count($data)."\n<br>";
-        //var_dump($data);
         if ($data) {
             return $data;
         } else {
@@ -144,16 +126,12 @@ function dol_getcache($memoryid) {
 function dol_delcache($memoryid) {
     global $conf, $memcache;
     $result = -1;
-    
+
     $memoryid = $conf->Couchdb->name . '.' . $memoryid; // For multi-entity
 
     // Using a memcached server
-    if (!empty($conf->memcached->host) && class_exists('Memcached')) {
+    if ($conf->memcached->enabled && get_class($memcache) == 'Memcached') {
         $memoryid = session_name() . '_' . $memoryid;
-        //$m = new Memcached();
-        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-        //$m->setOption(Memcached::OPT_COMPRESSION, false);
-        //print "Add memoryid=".$memoryid;
         $memcache->delete($memoryid); // This fails if key already exists
         $rescode = $memcache->getResultCode();
         if ($rescode == 0) {
@@ -161,11 +139,8 @@ function dol_delcache($memoryid) {
         } else {
             return -$rescode;
         }
-    } else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
+    } else if ($conf->memcached->enabled && get_class($memcache) == 'Memcache') {
         $memoryid = session_name() . '_' . $memoryid;
-        //$m = new Memcache();
-        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-        //$m->setOption(Memcached::OPT_COMPRESSION, false);
         $result = $memcache->delete($memoryid); // This fails if key already exists
         if ($result) {
             return 1;
@@ -197,12 +172,8 @@ function dol_flushcache() {
     $result = -1;
 
     // Using a memcached server
-    if (!empty($conf->memcached->host) && class_exists('Memcached')) {
+    if ($conf->memcached->enabled && get_class($memcache) == 'Memcached') {
         $memoryid = session_name() . '_' . $memoryid;
-        //$m = new Memcached();
-        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-        //$m->setOption(Memcached::OPT_COMPRESSION, false);
-        //print "Add memoryid=".$memoryid;
         $memcache->flush(); // This fails if key already exists
         $rescode = $memcache->getResultCode();
         if ($rescode == 0) {
@@ -210,11 +181,8 @@ function dol_flushcache() {
         } else {
             return -$rescode;
         }
-    } else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
+    } else if ($conf->memcached->enabled && get_class($memcache) == 'Memcache') {
         $memoryid = session_name() . '_' . $memoryid;
-        //$m = new Memcache();
-        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-        //$m->setOption(Memcached::OPT_COMPRESSION, false);
         $result = $memcache->flush(); // This fails if key already exists
         if ($result) {
             return 1;
