@@ -2,7 +2,7 @@
 
 /* Copyright (C) 2006-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2009-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2009-2010 Regis Houssin        <regis.houssin@capnetworks.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

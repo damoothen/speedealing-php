@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2010 Regis Houssin  <regis@dolibarr.fr>
+/* Copyright (C) 2010 Regis Houssin  <regis.houssin@capnetworks.com>
  * Copyright (C) 2012 Philippe Grand <philippe.grand@atoo-net.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

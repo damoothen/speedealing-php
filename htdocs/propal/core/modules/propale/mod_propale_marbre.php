@@ -1,7 +1,7 @@
 <?php
 
 /* Copyright (C) 2005-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@capnetworks.com>
  * Copyright (C) 2012 David Moothen        <dmoothen@websitti.fr>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
