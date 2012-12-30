@@ -2,7 +2,7 @@
 
 /* Copyright (C) 2002-2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,9 @@
  * limitations under the License.
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
+require '../../main.inc.php';
+if (!class_exists('UserGroup'))
+	require DOL_DOCUMENT_ROOT . '/user/class/usergroup.class.php';
 
 $langs->load("users");
 
@@ -49,16 +50,22 @@ if ($_GET['json'] == "list") {
     $output["iTotalDisplayRecords"] = $iTotal;
 
     $result = array();
-    foreach ($result1->rows as $aRow) {
-        $result[$aRow->value->name] = $aRow->value;
+    if (!empty($result1->rows)) {
+    	foreach ($result1->rows as $aRow) {
+    		$result[$aRow->value->name] = $aRow->value;
+    	}
     }
 
-    foreach ($result2->rows as $aRow) {
-        $result[$aRow->key]->nb = $aRow->value;
+    if (!empty($result2->rows)) {
+    	foreach ($result2->rows as $aRow) {
+    		$result[$aRow->key]->nb = $aRow->value;
+    	}
     }
 
-    foreach ($result as $aRow) {
-        $output["aaData"][] = $aRow;
+    if (!empty($result)) {
+    	foreach ($result as $aRow) {
+    		$output["aaData"][] = $aRow;
+    	}
     }
 
     header('Content-type: application/json');
