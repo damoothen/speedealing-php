@@ -30,6 +30,8 @@ $object = new UserGroup($db);
  * View
  */
 
+// FIXME use an ajax response file for avoid reload all classes and increase performance
+
 if ($_GET['json'] == "list") {
     $output = array(
         "sEcho" => intval($_GET['sEcho']),
