@@ -201,18 +201,11 @@ if (!empty($conf->file->main_force_https)) {
 
 // Chargement des includes complementaires de presentation
 if (!defined('NOREQUIREMENU'))
-    require_once(DOL_DOCUMENT_ROOT . "/core/class/menu.class.php");   // Need 10ko memory (11ko in 2.2)
+    require DOL_DOCUMENT_ROOT . '/core/class/menu.class.php';   // Need 10ko memory (11ko in 2.2)
 if (!defined('NOREQUIREHTML'))
-    require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");  // Need 660ko memory (800ko in 2.2)
+    require DOL_DOCUMENT_ROOT . '/core/class/html.form.class.php';  // Need 660ko memory (800ko in 2.2)
 if (!defined('NOREQUIREAJAX'))
-    require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
-
-
-
-
-
-
-
+    require DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'; // Need 22ko memory
 
 
 // If install or upgrade process not done or not completely finished, we call the install page.
@@ -304,7 +297,6 @@ if (!defined('NOLOGIN')) {
             exit;
         }
 
-
         // It is not already authenticated and it requests the login / password
         include_once(DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php');
 
@@ -317,7 +309,7 @@ if (!defined('NOLOGIN')) {
         exit;
     } else {
         // We are already into an authenticated session
-        $resultFetchUser = $user->fetch();
+        $resultFetchUser = $user->fetch(); // FIXME this fetch increment _rev of _users
 
         if ($resultFetchUser <= 0) {
             // Account has been removed after login

@@ -136,7 +136,7 @@ class User extends nosqlDocument {
             $user_config->fetch("org.couchdb.user:" . $login); // Load for default entity
             $user_config->LastConnection = $user_config->NewConnection;
             $user_config->NewConnection = dol_now();
-            $user_config->record();
+            $user_config->record(); // FIXME no record method in fetch method
             //print_r($login);
             //exit;
             $couch->useDatabase($user_config->entity);
@@ -148,7 +148,7 @@ class User extends nosqlDocument {
             if (!$conf->urlrewrite) {
                 $this->LastConnection = $this->NewConnection;
                 $this->NewConnection = dol_now();
-                $this->record(true);
+                $this->record(true); // FIXME no record method in fetch method
             }
         }
 
