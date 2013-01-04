@@ -477,7 +477,7 @@ abstract class nosqlDocument extends CommonObject {
 
         $class = strtolower(get_class($this));
 
-        if (!$user->rights->$class->edit)
+        if (!$user->rights->$class->edit && !$user->rights->$class->creer)
             return null;
 
         if (count($this->fk_extrafields->createList)) {
@@ -496,7 +496,7 @@ abstract class nosqlDocument extends CommonObject {
             }
             print '</form>';
 
-            if ($user->rights->$class->edit)
+            if ($user->rights->$class->edit || $user->rights->$class->creer)
                 print '<button id="' . $ref_css . '_btnAddNewRow">' . $langs->trans("Add") . '</button> ';
         }
 
@@ -641,7 +641,7 @@ abstract class nosqlDocument extends CommonObject {
                                     }
             <?php endif; ?>
         <?php endif; ?>
-        <?php if ($user->rights->$class->edit) : ?>
+        <?php if ($user->rights->$class->edit || $user->rights->$class->creer) : ?>
                         }).makeEditable({
                             sUpdateURL: urlSaveInPlace,
                             sAddURL: urlAddInPlace,

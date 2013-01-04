@@ -113,6 +113,10 @@ class Propal extends nosqlDocument {
 
         $this->fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields->fetch(get_class($this));
+        
+        $this->no_save[] = 'thirdparty';
+        $this->no_save[] = 'line';
+        $this->no_save[] = 'lines';
 
         $this->socid = $socid;
         $this->id = $propalid;
@@ -2540,6 +2544,24 @@ class Propal extends nosqlDocument {
         print '</table>';
         print end_box();
 
+    }
+    
+    public function addInPlace($obj){
+        
+        global $user;
+        
+        // Generating next ref
+        $this->ref = $obj->ref = $this->getNextNumRef();
+        
+        // Converting date to timestamp
+        $date = explode('/', $this->date);
+        $this->date = $obj->date = dol_mktime(0, 0, 0, $date[1], $date[0], $date[2]);
+        
+        // Setting author of propal
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
+        
     }
     
 
