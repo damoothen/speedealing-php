@@ -36,9 +36,6 @@ require_once DOL_DOCUMENT_ROOT . '/margin/lib/margins.lib.php';
 class Commande extends nosqlDocument {
 
     public $element = 'commande';
-    public $table_element = 'commande';
-    public $table_element_line = 'commandedet';
-    public $class_element_line = 'OrderLine';
     public $fk_element = 'fk_commande';
     protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
     var $id;
@@ -97,6 +94,8 @@ class Commande extends nosqlDocument {
         parent::__construct($db);
         
         $this->no_save[] = 'thirdparty';
+        $this->no_save[] = 'line';
+        $this->no_save[] = 'lines';
 
         $this->fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields->fetch(get_class($this));
@@ -3251,6 +3250,23 @@ class Commande extends nosqlDocument {
 
     }
     
+    public function addInPlace($obj){
+        
+        global $user;
+        
+        // Converting date to timestamp
+        $date = explode('/', $this->date);
+        $this->date = $obj->date = dol_mktime(0, 0, 0, $date[1], $date[0], $date[2]);
+        
+        // Generating next ref
+        $this->ref = $obj->ref = $this->getNextNumRef();
+        
+        // Setting author of propal
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
+        
+    }
 
 }
 

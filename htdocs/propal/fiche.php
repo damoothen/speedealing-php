@@ -1479,7 +1479,7 @@ print '<td>' . $langs->trans("Currency" . $conf->currency) . '</td></tr>';
 
 // Statut
 //print '<tr><td height="10">' . $langs->trans('Status') . '</td><td align="left" colspan="2">' . $langs->trans($object->getExtraFieldLabel('Status')) . '</td></tr>';
-print '<tr><td>' . $form->editfieldkey("Status", 'Status', $object->Status, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "select") . '</td>';
+print '<tr><td>' . $form->editfieldkey("Status", 'Status', $object->Status, $object, $user->rights->propal->creer, "select") . '</td>';
 print '<td td colspan="5">';
 print $form->editfieldval("Status", 'Status', $object->Status, $object, $user->rights->propal->creer, "select");
 print '</td>';
