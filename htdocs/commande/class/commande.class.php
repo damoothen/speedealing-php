@@ -669,7 +669,7 @@ class Commande extends nosqlDocument {
      * 	@return 	int					<0 if KO, >0 if OK
      */
     function create($user, $notrigger = 0) {
-        global $conf, $langs, $mysoc;
+        global $conf, $langs, $mysoc, $user;
         $error = 0;
 
         // Clean parameters
@@ -681,6 +681,7 @@ class Commande extends nosqlDocument {
 
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
+        unset($this->socid);
         if ($result < 0) {
             $this->error = "Failed to fetch company";
             dol_syslog("Commande::create " . $this->error, LOG_ERR);
@@ -697,6 +698,11 @@ class Commande extends nosqlDocument {
         $this->client->country_code = $soc->country_code;
         $this->client->email = $soc->email;
         $this->fetch_thirdparty();
+        
+        // author
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
 
         // $date_commande is deprecated
         $date = ($this->date_commande ? $this->date_commande : $this->date);

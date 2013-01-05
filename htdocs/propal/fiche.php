@@ -1040,21 +1040,6 @@ if ($action != 'presend') {
     print '<div class="tabsAction">';
 
     if ($action != 'statut' && $action <> 'editline') {
-        // Validate
-        if ($object->Status == "DRAFT" && $user->rights->propal->valider && count($object->lines) > 0) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
-        }
-
-        // Edit
-        if ($object->Status == "OPENED" && $user->rights->propal->creer) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
-        }
-
-        // ReOpen
-        if ((in_array($object->Status, array('SIGNED', 'NOT_SIGNED'))) && $user->rights->propal->cloturer) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=reopen' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#reopen') . '"';
-            print '>' . $langs->trans('ReOpen') . '</a>';
-        }
 
         // Send
         if ($object->Status == "OPENED" || $object->statut == 2) {
@@ -1068,7 +1053,7 @@ if ($action != 'presend') {
         // Create an order
         if (!empty($conf->commande->enabled) && $object->Status == "SIGNED" && $user->societe_id == 0) {
             if ($user->rights->commande->creer) {
-                print '<a class="button" href="' . DOL_URL_ROOT . '/commande/commande.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddOrder") . '</a>';
+                print '<a class="button" href="' . DOL_URL_ROOT . '/commande/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->client->id . '">' . $langs->trans("AddOrder") . '</a>';
             }
         }
 
@@ -1082,16 +1067,6 @@ if ($action != 'presend') {
 //            if (is_array($arraypropal) && count($arraypropal) > 0) {
 //                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled&amp;socid=' . $object->socid . '">' . $langs->trans("ClassifyBilled") . '</a>';
 //            }
-//        }
-        // Close
-        if ($object->Status == "OPENED" && $user->rights->propal->cloturer) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=statut' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#close') . '"';
-            print '>' . $langs->trans('Close') . '</a>';
-        }
-
-//        // Clone
-//        if ($user->rights->propal->creer) {
-//            print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=' . $object->element . '">' . $langs->trans("ToClone") . '</a>';
 //        }
         // Delete
         if ($user->rights->propal->supprimer) {

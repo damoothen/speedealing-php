@@ -973,7 +973,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
             $note_private = (!empty($objectsrc->note) ? $objectsrc->note : (!empty($objectsrc->note_private) ? $objectsrc->note_private : ''));
             $note_public = (!empty($objectsrc->note_public) ? $objectsrc->note_public : '');
 
-            $socid = (!empty($objectsrc->socid) ? $objectsrc->socid : $object->socid);
+            $socid = (!empty($objectsrc->client->id) ? $objectsrc->client->id : $object->client->id);
 
             // Object source contacts list
             //$srccontactslist = $objectsrc->liste_contact(-1,'external',1);
@@ -1179,13 +1179,6 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
                 }
             }
 
-            // Cancel order
-            if ($object->Status == "VALIDATED" && $user->rights->commande->annuler) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-lightning" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=cancel">' . $langs->trans('Cancel') . '</a>';
-                print "</p>";
-            }
-
             // Clone
 //            if ($user->rights->commande->creer) {
 //                print '<p class="button-height right">';
@@ -1198,25 +1191,12 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 //                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans('ClassifyBilled') . '</a>';
 //                print "</p>";                
 //            }
-            // Set to shipped (Close)
-            if (($object->Status == "VALIDATED" || $object->Status == "IN_PROCESS") && $user->rights->commande->cloturer) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=shipped">' . $langs->trans('ClassifyShipped') . '</a>';
-                print "</p>";
-            }
-
-            // Valid
-            if ($object->Status == "DRAFT" && $object->total_ttc >= 0 && count($object->lines) > 0 && $user->rights->commande->valider) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
-                print "</p>";
-            }
 
             // Create bill and Classify billed
             if (!empty($conf->facture->enabled) && !in_array($object->Status, array("DRAFT", "CANCELED", "PROCESSED"))) {
                 if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
                     print '<p class="button-height right">';
-                    print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("CreateBill") . '</a>';
+                    print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->client->id . '">' . $langs->trans("CreateBill") . '</a>';
                     print "</p>";
                 }
                 if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
@@ -1237,20 +1217,6 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
                     print '<a class="button icon-mail" href="#">' . $langs->trans('SendByMail') . '</a>';
                     print "</p>";
                 }
-            }
-
-            // Reopen a closed order
-            if (($object->Status == "TO_BILL" || $object->Status == "PROCESSED") && $user->rights->commande->creer) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-reply" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=reopen">' . $langs->trans('ReOpen') . '</a>';
-                print "</p>";
-            }
-
-            // Edit
-            if ($object->Status == "VALIDATED" && $user->rights->commande->creer) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $id . '&action=modify">' . $langs->trans("Modify") . '</a>';
-                print "</p>";
             }
 
             print '</div>';

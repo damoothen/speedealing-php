@@ -132,7 +132,7 @@ class Facture extends nosqlDocument {
      * 	@return	int						<0 if KO, >0 if OK
      */
     function create($user, $notrigger = 0, $forceduedate = 0) {
-        global $langs, $conf, $mysoc;
+        global $langs, $conf, $mysoc, $user;
         $error = 0;
 
         // Clean parameters
@@ -154,6 +154,7 @@ class Facture extends nosqlDocument {
         }
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
+        unset($this->socid);
         if ($result < 0) {
             $this->error = "Failed to fetch company";
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
@@ -162,6 +163,11 @@ class Facture extends nosqlDocument {
         $this->client = new stdClass();
         $this->client->id = $soc->id;
         $this->client->name = $soc->name;
+
+        // author
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
 
         $this->ref = $this->getNextNumRef($soc);
         $now = dol_now();
@@ -2957,7 +2963,7 @@ class Facture extends nosqlDocument {
      * 	@return	int						<0 if KO, >0 if OK
      */
     function createStandardInvoice($user, $notrigger = 0, $forceduedate = 0) {
-        global $langs, $conf, $mysoc;
+        global $langs, $conf, $mysoc, $user;
         $error = 0;
 
         // Clean parameters
@@ -2982,6 +2988,7 @@ class Facture extends nosqlDocument {
         
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
+        unset($this->socid);
         if ($result < 0) {
             $this->error = "Failed to fetch company";
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
@@ -2990,6 +2997,11 @@ class Facture extends nosqlDocument {
         $this->client = new stdClass();
         $this->client->id = $soc->id;
         $this->client->name = $soc->name;
+        
+        // Author
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->name;
 
         $this->ref = $this->getNextNumRef($soc);
         $now = dol_now();

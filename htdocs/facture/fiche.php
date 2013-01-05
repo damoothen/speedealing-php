@@ -656,7 +656,7 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
 
     $res = $object->delete();
     if ($res > 0) {
-        header('Location: liste.php');
+        header('Location: list.php');
         exit;
     }
 }
@@ -1373,6 +1373,11 @@ if ($action == 'create' && $user->rights->facture->creer) {
     print $form->select_company($socid, "socid");
     print '</td>';
     print '</tr>' . "\n";
+    
+    // Reference client
+    print '<tr><td>' . $langs->trans('RefCustomer') . '</td><td colspan="2">';
+    print '<input type="text" name="ref_client" value="' . $ref_client . '"></td>';
+    print '</tr>';
 
     // Type de facture
     print '<tr><td valign="top" class="fieldrequired">' . $langs->trans('Type') . '</td><td colspan="2">';
@@ -1387,46 +1392,46 @@ if ($action == 'create' && $user->rights->facture->creer) {
     print '</td></tr>' . "\n";
 
     // Deposit
-    print '<tr height="18"><td width="16px" valign="middle">';
-    print '<input type="radio" name="type" value="INVOICE_DEPOSIT"' . (GETPOST('type') == "INVOICE_DEPOSIT" ? ' checked="checked"' : '') . '>';
-    print '</td><td valign="middle">';
-    $desc = $form->textwithpicto($langs->trans("InvoiceDeposit"), $langs->transnoentities("InvoiceDepositDesc"), 1);
-    print $desc;
-    print '</td></tr>' . "\n";
-
-    // Proforma
-    if (!empty($conf->global->FACTURE_USE_PROFORMAT)) {
-        print '<tr height="18"><td width="16px" valign="middle">';
-        print '<input type="radio" name="type" value="4"' . (GETPOST('type') == 4 ? ' checked="checked"' : '') . '>';
-        print '</td><td valign="middle">';
-        $desc = $form->textwithpicto($langs->trans("InvoiceProForma"), $langs->transnoentities("InvoiceProFormaDesc"), 1);
-        print $desc;
-        print '</td></tr>' . "\n";
-    }
-
-    // Replacement
-    $options = $object->selectReplaceableInvoiceOptions($socid);
-    print '<tr height="18"><td valign="middle">';
-    print '<input type="radio" id="fac_replacement_radio" name="type" value="INVOICE_REPLACEMENT"' . (GETPOST('type') == "INVOICE_REPLACEMENT" ? ' checked="checked"' : '');
-    if (!$options)
-        print ' disabled="disabled"';
-    print '>';
-    print '</td><td valign="middle">';
-    $text = $langs->trans("InvoiceReplacementAsk") . ' ';
-    $text.='<select class="flat" name="fac_replacement" id="fac_replacement"';
-    if (!$options)
-        $text.=' disabled="disabled"';
-    $text.='>';
-    if ($options) {
-        $text.='<option value="-1"></option>';
-        $text.=$options;
-    } else {
-        $text.='<option value="-1">' . $langs->trans("NoReplacableInvoice") . '</option>';
-    }
-    $text.='</select>';
-    $desc = $form->textwithpicto($text, $langs->transnoentities("InvoiceReplacementDesc"), 1);
-    print $desc;
-    print '</td></tr>' . "\n";
+//    print '<tr height="18"><td width="16px" valign="middle">';
+//    print '<input type="radio" name="type" value="INVOICE_DEPOSIT"' . (GETPOST('type') == "INVOICE_DEPOSIT" ? ' checked="checked"' : '') . '>';
+//    print '</td><td valign="middle">';
+//    $desc = $form->textwithpicto($langs->trans("InvoiceDeposit"), $langs->transnoentities("InvoiceDepositDesc"), 1);
+//    print $desc;
+//    print '</td></tr>' . "\n";
+//
+//    // Proforma
+//    if (!empty($conf->global->FACTURE_USE_PROFORMAT)) {
+//        print '<tr height="18"><td width="16px" valign="middle">';
+//        print '<input type="radio" name="type" value="4"' . (GETPOST('type') == 4 ? ' checked="checked"' : '') . '>';
+//        print '</td><td valign="middle">';
+//        $desc = $form->textwithpicto($langs->trans("InvoiceProForma"), $langs->transnoentities("InvoiceProFormaDesc"), 1);
+//        print $desc;
+//        print '</td></tr>' . "\n";
+//    }
+//
+//    // Replacement
+//    $options = $object->selectReplaceableInvoiceOptions($socid);
+//    print '<tr height="18"><td valign="middle">';
+//    print '<input type="radio" id="fac_replacement_radio" name="type" value="INVOICE_REPLACEMENT"' . (GETPOST('type') == "INVOICE_REPLACEMENT" ? ' checked="checked"' : '');
+//    if (!$options)
+//        print ' disabled="disabled"';
+//    print '>';
+//    print '</td><td valign="middle">';
+//    $text = $langs->trans("InvoiceReplacementAsk") . ' ';
+//    $text.='<select class="flat" name="fac_replacement" id="fac_replacement"';
+//    if (!$options)
+//        $text.=' disabled="disabled"';
+//    $text.='>';
+//    if ($options) {
+//        $text.='<option value="-1"></option>';
+//        $text.=$options;
+//    } else {
+//        $text.='<option value="-1">' . $langs->trans("NoReplacableInvoice") . '</option>';
+//    }
+//    $text.='</select>';
+//    $desc = $form->textwithpicto($text, $langs->transnoentities("InvoiceReplacementDesc"), 1);
+//    print $desc;
+//    print '</td></tr>' . "\n";
 
     // Credit note
     $optionsav = $object->selectAvoirableInvoiceOptions($socid);
