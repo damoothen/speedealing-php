@@ -3268,6 +3268,18 @@ class Commande extends nosqlDocument {
         
     }
 
+    public function deleteInPlace($obj){
+        
+        global $user;
+        
+        // Delete lines of Commande
+        $lines = $this->getView('linesPerCommande', array('key' => $this->id));
+        foreach ($lines->rows as $l) {
+            $this->deleteline($l->value->_id);
+        }      
+        
+    }
+    
 }
 
 /**

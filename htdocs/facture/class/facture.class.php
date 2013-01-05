@@ -118,6 +118,8 @@ class Facture extends nosqlDocument {
         $this->fk_extrafields->fetch(get_class($this));
         
         $this->no_save[] = 'thirdparty';
+        $this->no_save[] = 'line';
+        $this->no_save[] = 'lines';
     }
 
     /**
@@ -3427,6 +3429,18 @@ class Facture extends nosqlDocument {
         $this->author = new stdClass();
         $this->author->id = $user->id;
         $this->author->name = $user->login;
+        
+    }
+    
+    public function deleteInPlace($obj){
+        
+        global $user;
+        
+        // Delete lines of Facture
+        $lines = $this->getView('linesPerFacture', array('key' => $this->id));
+        foreach ($lines->rows as $l) {
+            $this->deleteline($l->value->_id);
+        }      
         
     }
 

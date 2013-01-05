@@ -2564,6 +2564,18 @@ class Propal extends nosqlDocument {
         
     }
     
+    public function deleteInPlace($obj){
+        
+        global $user;
+        
+        // Delete lines of Propal
+        $lines = $this->getView('linesPerPropal', array('key' => $this->id));
+        foreach ($lines->rows as $l) {
+            $this->deleteline($l->value->_id);
+        }      
+        
+    }
+    
 
 }
 
