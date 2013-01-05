@@ -1741,7 +1741,7 @@ else {
 
     // Type
     print '<tr><td width="20%">' . $langs->trans('Type') . '</td>';
-    print '<td>' . $object->getExtraFieldLabel('type');
+    print '<td>' . $object->print_fk_extrafields('type');
     if ($object->type == "INVOICE_REPLACEMENT") {
         $facreplaced = new Facture($db);
         $facreplaced->fetch($object->fk_facture_source);
@@ -1751,125 +1751,154 @@ else {
         print ' (' . $langs->transnoentities("ReplacedByInvoice", $replacingInvoice->getNomUrl(1)) . ')';
     }
     print '</td></tr>';
+    
 
     // Relative and absolute discounts
-    $addrelativediscount = '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditRelativeDiscounts") . '</a>';
-    $addabsolutediscount = '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditGlobalDiscounts") . '</a>';
-    $addcreditnote = '<a href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&socid=' . $soc->id . '&type=2&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("AddCreditNote") . '</a>';
+//    $addrelativediscount = '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditRelativeDiscounts") . '</a>';
+//    $addabsolutediscount = '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditGlobalDiscounts") . '</a>';
+//    $addcreditnote = '<a href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&socid=' . $soc->id . '&type=2&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("AddCreditNote") . '</a>';
+//
+//    print '<tr><td>' . $langs->trans('Discounts');
+//    print '</td><td colspan="5">';
+//    if ($soc->remise_client)
+//        print $langs->trans("CompanyHasRelativeDiscount", $soc->remise_client);
+//    else
+//        print $langs->trans("CompanyHasNoRelativeDiscount");
+//    //print ' ('.$addrelativediscount.')';
+//
+//    $object->fetch_thirdparty();
+//    $absolute_discount = $object->thirdparty->getAvailableDiscounts();
+//    if ($absolute_discount > 0) {
+//        print '. ';
+//        if ($object->Status != "DRAFT" || $object->type == "INVOICE_DEPOSIT" || $object->type == 3) {
+//            if ($object->Status == "DRAFT") {
+//                print $langs->trans("CompanyHasAbsoluteDiscount", price($absolute_discount), $langs->transnoentities("Currency" . $conf->currency));
+//                print '. ';
+//            } else {
+//                if ($object->Status == "DRAFT" || $object->type == "INVOICE_DEPOSIT" || $object->type == 3) {
+//                    $text = $langs->trans("CompanyHasAbsoluteDiscount", price($absolute_discount), $langs->transnoentities("Currency" . $conf->currency));
+//                    print '<br>' . $text . '.<br>';
+//                } else {
+//                    $text = $langs->trans("CompanyHasAbsoluteDiscount", price($absolute_discount), $langs->transnoentities("Currency" . $conf->currency));
+//                    $text2 = $langs->trans("AbsoluteDiscountUse");
+//                    print $form->textwithpicto($text, $text2);
+//                }
+//            }
+//        } else {
+//            // Remise dispo de type remise fixe (not credit note)
+//            print '<br>';
+//            $form->form_remise_dispo($_SERVER["PHP_SELF"] . '?id=' . $object->id, GETPOST('discountid'), 'remise_id', $object->socid, $absolute_discount, $filterabsolutediscount, $resteapayer, ' (' . $addabsolutediscount . ')');
+//        }
+//    } else {
+//        if ($absolute_creditnote > 0) {    // If not, link will be added later
+//            if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
+//                print ' (' . $addabsolutediscount . ')<br>';
+//            else
+//                print '. ';
+//        }
+//        else
+//            print '. ';
+//    }
+//    if ($absolute_creditnote > 0) {
+//        // If validated, we show link "add credit note to payment"
+//        if ($object->statut != 1 || $object->type == 2 || $object->type == 3) {
+//            if ($object->statut == 0 && $object->type != 3) {
+//                $text = $langs->trans("CompanyHasCreditNote", price($absolute_creditnote), $langs->transnoentities("Currency" . $conf->currency));
+//                print $form->textwithpicto($text, $langs->trans("CreditNoteDepositUse"));
+//            } else {
+//                print $langs->trans("CompanyHasCreditNote", price($absolute_creditnote), $langs->transnoentities("Currency" . $conf->currency)) . '.';
+//            }
+//        } else {
+//            // Remise dispo de type avoir
+//            if (!$absolute_discount)
+//                print '<br>';
+//            //$form->form_remise_dispo($_SERVER["PHP_SELF"].'?facid='.$object->id, 0, 'remise_id_for_payment', $soc->id, $absolute_creditnote, $filtercreditnote, $resteapayer);
+//            $form->form_remise_dispo($_SERVER["PHP_SELF"] . '?facid=' . $object->id, 0, 'remise_id_for_payment', $soc->id, $absolute_creditnote, $filtercreditnote, 0);    // We must allow credit not even if amount is higher
+//        }
+//    }
+//    if (!$absolute_discount && !$absolute_creditnote) {
+//        print $langs->trans("CompanyHasNoAbsoluteDiscount");
+//        if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
+//            print ' (' . $addabsolutediscount . ')<br>';
+//        else
+//            print '. ';
+//    }
+//    /* if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
+//      {
+//      if (! $absolute_discount && ! $absolute_creditnote) print '<br>';
+//      //print ' &nbsp; - &nbsp; ';
+//      print $addabsolutediscount;
+//      //print ' &nbsp; - &nbsp; '.$addcreditnote;      // We disbale link to credit note
+//      } */
+//    print '</td></tr>';
 
-    print '<tr><td>' . $langs->trans('Discounts');
-    print '</td><td colspan="5">';
-    if ($soc->remise_client)
-        print $langs->trans("CompanyHasRelativeDiscount", $soc->remise_client);
-    else
-        print $langs->trans("CompanyHasNoRelativeDiscount");
-    //print ' ('.$addrelativediscount.')';
 
-    $object->fetch_thirdparty();
-    $absolute_discount = $object->thirdparty->getAvailableDiscounts();
-    if ($absolute_discount > 0) {
-        print '. ';
-        if ($object->Status != "DRAFT" || $object->type == "INVOICE_DEPOSIT" || $object->type == 3) {
-            if ($object->Status == "DRAFT") {
-                print $langs->trans("CompanyHasAbsoluteDiscount", price($absolute_discount), $langs->transnoentities("Currency" . $conf->currency));
-                print '. ';
-            } else {
-                if ($object->Status == "DRAFT" || $object->type == "INVOICE_DEPOSIT" || $object->type == 3) {
-                    $text = $langs->trans("CompanyHasAbsoluteDiscount", price($absolute_discount), $langs->transnoentities("Currency" . $conf->currency));
-                    print '<br>' . $text . '.<br>';
-                } else {
-                    $text = $langs->trans("CompanyHasAbsoluteDiscount", price($absolute_discount), $langs->transnoentities("Currency" . $conf->currency));
-                    $text2 = $langs->trans("AbsoluteDiscountUse");
-                    print $form->textwithpicto($text, $text2);
-                }
-            }
-        } else {
-            // Remise dispo de type remise fixe (not credit note)
-            print '<br>';
-            $form->form_remise_dispo($_SERVER["PHP_SELF"] . '?id=' . $object->id, GETPOST('discountid'), 'remise_id', $object->socid, $absolute_discount, $filterabsolutediscount, $resteapayer, ' (' . $addabsolutediscount . ')');
-        }
-    } else {
-        if ($absolute_creditnote > 0) {    // If not, link will be added later
-            if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
-                print ' (' . $addabsolutediscount . ')<br>';
-            else
-                print '. ';
-        }
-        else
-            print '. ';
-    }
-    if ($absolute_creditnote > 0) {
-        // If validated, we show link "add credit note to payment"
-        if ($object->statut != 1 || $object->type == 2 || $object->type == 3) {
-            if ($object->statut == 0 && $object->type != 3) {
-                $text = $langs->trans("CompanyHasCreditNote", price($absolute_creditnote), $langs->transnoentities("Currency" . $conf->currency));
-                print $form->textwithpicto($text, $langs->trans("CreditNoteDepositUse"));
-            } else {
-                print $langs->trans("CompanyHasCreditNote", price($absolute_creditnote), $langs->transnoentities("Currency" . $conf->currency)) . '.';
-            }
-        } else {
-            // Remise dispo de type avoir
-            if (!$absolute_discount)
-                print '<br>';
-            //$form->form_remise_dispo($_SERVER["PHP_SELF"].'?facid='.$object->id, 0, 'remise_id_for_payment', $soc->id, $absolute_creditnote, $filtercreditnote, $resteapayer);
-            $form->form_remise_dispo($_SERVER["PHP_SELF"] . '?facid=' . $object->id, 0, 'remise_id_for_payment', $soc->id, $absolute_creditnote, $filtercreditnote, 0);    // We must allow credit not even if amount is higher
-        }
-    }
-    if (!$absolute_discount && !$absolute_creditnote) {
-        print $langs->trans("CompanyHasNoAbsoluteDiscount");
-        if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
-            print ' (' . $addabsolutediscount . ')<br>';
-        else
-            print '. ';
-    }
-    /* if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
-      {
-      if (! $absolute_discount && ! $absolute_creditnote) print '<br>';
-      //print ' &nbsp; - &nbsp; ';
-      print $addabsolutediscount;
-      //print ' &nbsp; - &nbsp; '.$addcreditnote;      // We disbale link to credit note
-      } */
-    print '</td></tr>';
-
-
+    // Ref Customer
+    print '<tr><td>' . $form->editfieldkey("RefCustomer", 'ref_client', $object->ref_client, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "text") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("RefCustomer", 'ref_client', $object->ref_client, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "text");
+    print '</td>';
+    print '</tr>';
+    
     // Date invoice
-    print '<tr><td width="20%">' . $langs->trans('Date') . '</td>';
-    print '<td>';
-    if ($action == 'edit')
-        $form->select_date($object->date, 're', '', '', '', "edit_commande", 1, 1);
-    else
-        print dol_print_date($object->date, 'daytext');
-    print '</td></tr>';
+//    print '<tr><td width="20%">' . $langs->trans('Date') . '</td>';
+//    print '<td>';
+//    if ($action == 'edit')
+//        $form->select_date($object->date, 're', '', '', '', "edit_commande", 1, 1);
+//    else
+//        print dol_print_date($object->date, 'daytext');
+//    print '</td></tr>';
+    print '<tr><td>' . $form->editfieldkey("Date", 'date', $object->date, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "datepicker") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("Date", 'date', $object->date, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "datepicker");
+    print '</td>';
+    print '</tr>';
+    
 
     // Date payment term
-    print '<tr><td width="20%">' . $langs->trans('DateMaxPayment') . '</td>';
-    print '<td>';
-    if ($action == 'edit')
-        $form->select_date($object->date_lim_reglement, 'li', '', '', '', "edit_commande", 1, 1);
-    else {
-        print dol_print_date($object->date_lim_reglement, 'daytext');
-        if ($object->date_lim_reglement < ($now - $conf->facture->client->warning_delay) && !$object->paye && $object->statut == 1 && !isset($object->am))
-            print img_warning($langs->trans('Late'));
-    }
-    print '</td></tr>';
-
+//    print '<tr><td width="20%">' . $langs->trans('DateMaxPayment') . '</td>';
+//    print '<td>';
+//    if ($action == 'edit')
+//        $form->select_date($object->date_lim_reglement, 'li', '', '', '', "edit_commande", 1, 1);
+//    else {
+//        print dol_print_date($object->date_lim_reglement, 'daytext');
+//        if ($object->date_lim_reglement < ($now - $conf->facture->client->warning_delay) && !$object->paye && $object->statut == 1 && !isset($object->am))
+//            print img_warning($langs->trans('Late'));
+//    }
+//    print '</td></tr>';
+    print '<tr><td>' . $form->editfieldkey("DateMaxPayment", 'date_lim_reglement', $object->date_lim_reglement, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "datepicker") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("DateMaxPayment", 'date_lim_reglement', $object->date_lim_reglement, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "datepicker");
+    print '</td>';
+    print '</tr>';
+    
     // Payment terms
-    print '<tr><td width="20%">' . $langs->trans('PaymentConditions') . '</td>';
-    print '<td>';
-    if ($action == 'edit') {
-        print $object->select_fk_extrafields('cond_reglement_code', 'cond_reglement_code', $object->cond_reglement_code);
-    }
-    else
-        print $object->getExtraFieldLabel('cond_reglement_code');
-    print '</td></tr>';
+//    print '<tr><td width="20%">' . $langs->trans('PaymentConditions') . '</td>';
+//    print '<td>';
+//    if ($action == 'edit') {
+//        print $object->select_fk_extrafields('cond_reglement_code', 'cond_reglement_code', $object->cond_reglement_code);
+//    }
+//    else
+//        print $object->getExtraFieldLabel('cond_reglement_code');
+//    print '</td></tr>';
+    print '<tr><td>' . $form->editfieldkey("PaymentConditions", 'cond_reglement_code', $object->cond_reglement_code, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "select") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("PaymentConditions", 'cond_reglement_code', $object->cond_reglement_code, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "select");
+    print '</td>';
+    print '</tr>';
 
     // Payment mode
-    print '<tr><td width="20%">' . $langs->trans('PaymentMode') . '</td>';
-    print '<td>';
-    if ($action == 'edit')
-        print $object->select_fk_extrafields('mode_reglement_code', 'mode_reglement_code', $object->mode_reglement_code);
-    else
-        print $object->getExtraFieldLabel('mode_reglement_code') . '</td></tr>';
+//    print '<tr><td width="20%">' . $langs->trans('PaymentMode') . '</td>';
+//    print '<td>';
+//    if ($action == 'edit')
+//        print $object->select_fk_extrafields('mode_reglement_code', 'mode_reglement_code', $object->mode_reglement_code);
+//    else
+//        print $object->getExtraFieldLabel('mode_reglement_code') . '</td></tr>';
+    print '<tr><td>' . $form->editfieldkey("PaymentMode", 'mode_reglement_code', $object->mode_reglement_code, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "select") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("PaymentMode", 'mode_reglement_code', $object->mode_reglement_code, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "select");
+    print '</td>';
+    print '</tr>';
 
     // Amount
     print '<tr><td>' . $langs->trans('AmountHT') . '</td>';
@@ -1897,9 +1926,13 @@ else {
     print '<td>' . $langs->trans('Currency' . $conf->currency) . '</td></tr>';
 
     // Status
-    print '<tr><td width="20%">' . $langs->trans('Status') . '</td>';
-    print '<td>' . $object->getExtraFieldLabel('Status') . '</td></tr>';
-
+//    print '<tr><td width="20%">' . $langs->trans('Status') . '</td>';
+//    print '<td>' . $object->getExtraFieldLabel('Status') . '</td></tr>';
+    print '<tr><td>' . $form->editfieldkey("Status", 'Status', $object->Status, $object, $user->rights->facture->creer, "select") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("Status", 'Status', $object->Status, $object, $user->rights->facture->creer, "select");
+    print '</td>';
+    print '</tr>';
 
     print '</table>';
     dol_fiche_end();

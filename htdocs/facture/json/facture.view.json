@@ -68,5 +68,8 @@
        "listAvoirableInvoicesPerSociete": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && (doc.Status == \"NOT_PAID\" || doc.Status == \"STARTED\" || doc.Status == \"PAID\" || doc.Status == \"PAID_PARTIALLY\") && (doc.type != \"INVOICE_REPLACEMENT\" && doc.type != \"INVOICE_AVOIR\")) \n  emit(doc.socid, doc);\n}"
        }
+   },
+   "updates": {
+       "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
    }
 }

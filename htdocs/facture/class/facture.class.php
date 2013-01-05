@@ -3411,6 +3411,24 @@ class Facture extends nosqlDocument {
             print end_box();
 
     }
+    
+    public function addInPlace($obj){
+        
+        global $user;
+        
+        // Converting date to timestamp
+        $date = explode('/', $this->date);
+        $this->date = $obj->date = dol_mktime(0, 0, 0, $date[1], $date[0], $date[2]);
+        
+        // Generating next ref
+        $this->ref = $obj->ref = $this->getNextNumRef();
+        
+        // Setting author of propal
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
+        
+    }
 
 
 }
