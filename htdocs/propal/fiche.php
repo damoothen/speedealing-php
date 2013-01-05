@@ -1574,7 +1574,8 @@ if ($action != 'presend') {
     /*
      * Linked object block
      */
-    $object->printLinkedObjects();
+//    $object->printLinkedObjects();
+    $object->showLinkedObjects();
 //    $somethingshown = $object->showLinkedObjectBlock();
 //    print '</td><td valign="top" width="50%">';
 //

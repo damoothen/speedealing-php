@@ -1437,7 +1437,8 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
          * Linked object block
          */
         //$somethingshown = $object->showLinkedObjectBlock();
-        $object->printLinkedObjects();
+//        $object->printLinkedObjects();
+        $object->showLinkedObjects();
 
 //        print '</td><td valign="top" width="50%">';
         // List of actions on element

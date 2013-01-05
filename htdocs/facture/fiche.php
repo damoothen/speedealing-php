@@ -1590,41 +1590,41 @@ else {
             $resteapayer = $object->total_ttc - $totalpaye;
 
             // Editer une facture deja validee, sans paiement effectue et pas exporte en compta
-            if ($object->Status == "NOT_PAID") {
-                // On verifie si les lignes de factures ont ete exportees en compta et/ou ventilees
-                $ventilExportCompta = $object->getVentilExportCompta();
-
-                if ($resteapayer == $object->total_ttc && $ventilExportCompta == 0) {
-                    if (!$objectidnext) {
-                        if ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && $user->rights->facture->valider) || $user->rights->facture->invoice_advance->unvalidate) {
-                            print '<p class="button-height right">';
-                            print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
-                            print "</p>";
-                        } else {
-                            print '<span class="butActionRefused" title="' . $langs->trans("NotEnoughPermissions") . '">' . $langs->trans('Modify') . '</span>';
-                        }
-                    } else {
-                        print '<span class="butActionRefused" title="' . $langs->trans("DisabledBecauseReplacedInvoice") . '">' . $langs->trans('Modify') . '</span>';
-                    }
-                }
-            }
+//            if ($object->Status == "NOT_PAID") {
+//                // On verifie si les lignes de factures ont ete exportees en compta et/ou ventilees
+//                $ventilExportCompta = $object->getVentilExportCompta();
+//
+//                if ($resteapayer == $object->total_ttc && $ventilExportCompta == 0) {
+//                    if (!$objectidnext) {
+//                        if ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && $user->rights->facture->valider) || $user->rights->facture->invoice_advance->unvalidate) {
+//                            print '<p class="button-height right">';
+//                            print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
+//                            print "</p>";
+//                        } else {
+//                            print '<span class="butActionRefused" title="' . $langs->trans("NotEnoughPermissions") . '">' . $langs->trans('Modify') . '</span>';
+//                        }
+//                    } else {
+//                        print '<span class="butActionRefused" title="' . $langs->trans("DisabledBecauseReplacedInvoice") . '">' . $langs->trans('Modify') . '</span>';
+//                    }
+//                }
+//            }
 
             // Reverse back money or convert to reduction
             if ($object->type == "INVOICE_DEPOSIT" || $object->type == "INVOICE_AVOIR") {
                 // For credit note only
-                if ($object->type == "INVOICE_AVOIR" && $object->Status == "NOT_PAID" && $object->getSommePaiement() == 0 && $user->rights->facture->paiement) {
+                if ($object->type == "INVOICE_AVOIR" /* && $object->Status == "NOT_PAID" */ && $object->getSommePaiement() == 0 && $user->rights->facture->paiement) {
                     print '<p class="button-height right">';
                     print '<a class="button" href="/compta/paiement.php?id=' . $object->id . '&amp;action=create">' . $langs->trans('DoPaymentBack') . '</a>';
                     print '</p>';
                 }
                 // For credit note
-                if ($object->type == "INVOICE_AVOIR" && $object->Status == "NOT_PAID" && $object->getSommePaiement() == 0 && $user->rights->facture->creer) {
+                if ($object->type == "INVOICE_AVOIR" /* && $object->Status == "NOT_PAID" */ && $object->getSommePaiement() == 0 && $user->rights->facture->creer) {
                     print '<p class="button-height right">';
                     print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=converttoreduc">' . $langs->trans('ConvertToReduc') . '</a>';
                     print '</p>';
                 }
                 // For deposit invoice
-                if ($object->type == "INVOICE_DEPOSIT" && $object->Status == "STARTED" && $resteapayer == 0 && $user->rights->facture->creer) {
+                if ($object->type == "INVOICE_DEPOSIT" /* && $object->Status == "STARTED" */ && $resteapayer == 0 && $user->rights->facture->creer) {
                     print '<p class="button-height right">';
                     print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=converttoreduc">' . $langs->trans('ConvertToReduc') . '</a>';
                     print '</p>';
@@ -1632,31 +1632,31 @@ else {
             }
 
             // Classify paid (if not deposit and not credit note. Such invoice are "converted")
-            if ($object->Status == "STARTED" && $user->rights->facture->paiement &&
-                    (($object->type != "INVOICE_DEPOSIT" && $object->type != 3 && $resteapayer <= 0) || ($object->type == 2 && $resteapayer >= 0))) {
-                print '<p class="button-height right">';
-                print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=paid">' . $langs->trans('ClassifyPaid') . '</a>';
-                print "</p>";
-            }
+//            if ($object->Status == "STARTED" && $user->rights->facture->paiement &&
+//                    (($object->type != "INVOICE_DEPOSIT" && $object->type != 3 && $resteapayer <= 0) || ($object->type == 2 && $resteapayer >= 0))) {
+//                print '<p class="button-height right">';
+//                print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=paid">' . $langs->trans('ClassifyPaid') . '</a>';
+//                print "</p>";
+//            }
 
             // Classify 'closed not completely paid' (possible si validee et pas encore classee payee)
-            if ($object->Status == "STARTED" && $resteapayer > 0
-                    && $user->rights->facture->paiement) {
-                if ($totalpaye > 0 || $totalcreditnotes > 0) {
-                    // If one payment or one credit note was linked to this invoice
-                    print '<p class="button-height right">';
-                    print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=paid">' . $langs->trans('ClassifyPaidPartially') . '</a>';
-                    print "</p>";
-                } else {
-                    if ($objectidnext) {
-                        print '<span class="butActionRefused" title="' . $langs->trans("DisabledBecauseReplacedInvoice") . '">' . $langs->trans('ClassifyCanceled') . '</span>';
-                    } else {
-                        print '<p class="button-height right">';
-                        print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=canceled">' . $langs->trans('ClassifyCanceled') . '</a>';
-                        print "</p>";
-                    }
-                }
-            }
+//            if ($object->Status == "STARTED" && $resteapayer > 0
+//                    && $user->rights->facture->paiement) {
+//                if ($totalpaye > 0 || $totalcreditnotes > 0) {
+//                    // If one payment or one credit note was linked to this invoice
+//                    print '<p class="button-height right">';
+//                    print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=paid">' . $langs->trans('ClassifyPaidPartially') . '</a>';
+//                    print "</p>";
+//                } else {
+//                    if ($objectidnext) {
+//                        print '<span class="butActionRefused" title="' . $langs->trans("DisabledBecauseReplacedInvoice") . '">' . $langs->trans('ClassifyCanceled') . '</span>';
+//                    } else {
+//                        print '<p class="button-height right">';
+//                        print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=canceled">' . $langs->trans('ClassifyCanceled') . '</a>';
+//                        print "</p>";
+//                    }
+//                }
+//            }
 
             // Delete invoice
             if ($user->rights->facture->supprimer) {
@@ -1684,34 +1684,36 @@ else {
 //                }
 //            }
             // Reopen a standard paid invoice
-            if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_REPLACEMENT") && ($object->Status == "CANCELED" || $object->Status == "PAID" || $object->Status == "PAID_PARTIALLY")) {    // A paid invoice (partially or completely)
-                if (!$objectidnext && $object->close_code != 'replaced') { // Not replaced by another invoice
-                    print '<p class="button-height right">';
-                    print '<a class="button icon-reply" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=reopen">' . $langs->trans('ReOpen') . '</a>';
-                    print '</p>';
-                }
-            }
+//            if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_REPLACEMENT") && ($object->Status == "CANCELED" || $object->Status == "PAID" || $object->Status == "PAID_PARTIALLY")) {    // A paid invoice (partially or completely)
+//                if (!$objectidnext && $object->close_code != 'replaced') { // Not replaced by another invoice
+//                    print '<p class="button-height right">';
+//                    print '<a class="button icon-reply" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=reopen">' . $langs->trans('ReOpen') . '</a>';
+//                    print '</p>';
+//                }
+//            }
 
             // Send by mail
-            if (($object->Status != "DRAFT")) {
+//            if (($object->Status != "DRAFT")) {
+                print '<p class="button-height right">';
                 print '<a class="button icon-mail" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
-            }
+                print '</p>';
+//            }
 
             // Validate
-            if ($object->Status == "DRAFT" && count($object->lines) > 0 &&
-                    (
-                    (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == "INVOICE_REPLACEMENT" ) && (!empty($conf->global->FACTURE_ENABLE_NEGATIVE) || $object->total_ttc >= 0))
-                    || ($object->type == "INVOICE_AVOIR" && $object->total_ttc <= 0))
-            ) {
-                if ($user->rights->facture->valider) {
-                    print '<p class="button-height right">';
-                    print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=valid">' . $langs->trans('Validate') . '</a>';
-                    print "</p>";
-                }
-            }
+//            if ($object->Status == "DRAFT" && count($object->lines) > 0 &&
+//                    (
+//                    (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == "INVOICE_REPLACEMENT" ) && (!empty($conf->global->FACTURE_ENABLE_NEGATIVE) || $object->total_ttc >= 0))
+//                    || ($object->type == "INVOICE_AVOIR" && $object->total_ttc <= 0))
+//            ) {
+//                if ($user->rights->facture->valider) {
+//                    print '<p class="button-height right">';
+//                    print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=valid">' . $langs->trans('Validate') . '</a>';
+//                    print "</p>";
+//                }
+//            }
 
             // Create payment
-            if ($object->type != 2 && ($object->Status == "NOT_PAID" || $object->Status == "STARTED") && $user->rights->facture->paiement) {
+            if (/*( $object->Status == "NOT_PAID" || $object->Status == "STARTED") && */ $user->rights->facture->paiement) {
                 if ($resteapayer > 0) {
                     print '<p class="button-height right">';
                     print '<a class="button" href="compta/paiement.php?facid=' . $object->id . '&amp;action=create">' . $langs->trans('DoPayment') . '</a>';
@@ -1950,14 +1952,6 @@ else {
 
     print end_box();
 
-    // Actions
-    if ($object->Status == "DRAFT" && $user->rights->facture->creer) {
-        print '<p class="button-height right">';
-        print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $id . '&action=edit">' . $langs->trans("Edit") . '</a>';
-        print "</p>";
-    }
-
-
     // Lines
 
     print start_box($langs->trans('BillLines'), "twleve", $object->fk_extrafields->ico, false);
@@ -1999,32 +1993,11 @@ else {
 
 
     // Show list of paymenys
-    $payments = $object->getPaymentsList();
-    print start_box($langs->trans('Payment'), "six", $object->fk_extrafields->ico, false);
-    print '<table id="tablelines" class="noborder" width="100%">';
-    print '<tr>';
-    print '<th align="left">' . $langs->trans('Payments') . '</th>';
-    print '<th align="right" colspan="2" nowrap>' . $langs->trans('Amount') . '</th>';
-    print '</tr>';
-    foreach ($payments as $p) {
-        print '<tr>';
-        print '<td>' . dol_print_date($p->datepaye, "day") . '</td>';
-        print '<td align="right" colspan="2" nowrap>' . price($p->amount) . '</td>';
-        print '<td>' . $langs->trans('Currency' . $conf->currency) . '</td>';
-        print '</tr>';
-    }
-    print '</table>';
-    print '<br />';
-
-    $amountPaid = $object->getSommePaiement();
-    print $langs->trans("AlreadyPaid") . ': ' . price($amountPaid) . $langs->trans('Currency' . $conf->currency) . '<br />';
-    print $langs->trans("RemainderToPay") . ': ' . price($object->total_ttc - $amountPaid) . $langs->trans('Currency' . $conf->currency) . '<br />';
-
-    print end_box();
-
+    $object->showPayments();
+    
     // List of linked objects
-    $object->printLinkedObjects();
-
+//    $object->printLinkedObjects();
+    $object->showLinkedObjects();
 
 
     /*
