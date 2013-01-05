@@ -159,7 +159,7 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
 {
 	global $conf,$user,$langs;
 	$langs->load("propale");
-
+    
 	$error=0;
 
 	$srctemplatepath='';

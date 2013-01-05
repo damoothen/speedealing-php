@@ -3280,6 +3280,14 @@ class Commande extends nosqlDocument {
         
     }
     
+    public function fetch_thirdparty(){
+        
+        $thirdparty = new Societe($this->db);
+        $thirdparty->fetch($this->client->id);
+        $this->thirdparty = $thirdparty;
+        
+    }
+    
 }
 
 /**

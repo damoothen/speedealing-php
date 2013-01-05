@@ -800,6 +800,7 @@ else if ($action == 'builddoc' && $user->rights->propal->creer) {
         $outputlangs->setDefaultLang($newlang);
     }
     $ret = $object->fetch($id);    // Reload to get new records
+    $object->fetch_thirdparty();
     $result = propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
 
     if ($result <= 0) {

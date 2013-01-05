@@ -891,7 +891,7 @@ class pdf_azur extends ModelePDFPropales {
         pdf_pagehead($pdf, $outputlangs, $this->page_hauteur);
 
         //  Show Draft Watermark
-        if ($object->statut == 0 && (!empty($conf->global->PROPALE_DRAFT_WATERMARK))) {
+        if ($object->Status == "DRAFT" && (!empty($conf->global->PROPALE_DRAFT_WATERMARK))) {
             pdf_watermark($pdf, $outputlangs, $this->page_hauteur, $this->page_largeur, 'mm', $conf->global->PROPALE_DRAFT_WATERMARK);
         }
 
