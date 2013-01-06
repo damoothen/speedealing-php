@@ -1795,6 +1795,16 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         //$result = show_addresses($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
         // Projects list
         $result = show_projects($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+        
+        if ($conf->propal->enabled)
+            $object->showPropals();
+
+        if ($conf->commande->enabled)
+            $object->showCommandes();
+        
+        if ($conf->facture->enabled)
+            $object->showFactures();
+
 
         print '</div></div>';
     }
