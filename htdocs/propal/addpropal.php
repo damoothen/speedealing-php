@@ -106,7 +106,7 @@ if ($action == 'create') {
 //        }
 //    }
 
-    print '<form name="addprop" action="propal/propal.php" method="POST">';
+    print '<form name="addprop" action="propal/fiche.php" method="POST">';
     print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
     print '<input type="hidden" name="action" value="add">';
 

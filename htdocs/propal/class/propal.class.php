@@ -574,7 +574,7 @@ class Propal extends nosqlDocument {
      *  @return     int     			<0 if KO, >=0 if OK
      */
     function create($user = '', $notrigger = 0) {
-        global $langs, $conf, $mysoc;
+        global $langs, $conf, $mysoc, $user;
         $error = 0;
 
         $now = dol_now();
@@ -597,6 +597,11 @@ class Propal extends nosqlDocument {
         $this->client = new stdClass();
         $this->client->id = $soc->id;
         $this->client->name = $soc->name;
+        
+        // Author
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
 
         if (empty($this->date)) {
             $this->error = "Date of proposal is required";

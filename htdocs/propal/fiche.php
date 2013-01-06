@@ -69,25 +69,29 @@ $result = restrictedArea($user, 'propal', $id);
 $object = new Propal($db);
 
 // Load object
-if (!(empty($id)) || !empty($ref)) {
-    if ($action != 'add') {
-        $ret = $object->fetch($id);
-        $object->fetch_thirdparty();
-        if (empty($id)) {
-            $langs->load("errors");
-            setEventMessage($langs->trans('ErrorRecordNotFound'), 'errors');
-            $error++;
-        }
-//        else if ($ret < 0) {
-//            setEventMessage($object->error, 'errors');
+//if (!(empty($id)) || !empty($ref)) {
+//    if ($action != 'add') {
+//        $ret = $object->fetch($id);
+//        $object->fetch_thirdparty();
+//        if (empty($id)) {
+//            $langs->load("errors");
+//            setEventMessage($langs->trans('ErrorRecordNotFound'), 'errors');
 //            $error++;
 //        }
-//        else
-//            $object->fetch_thirdparty();
-    }
-} else {
-    header('Location: ' . DOL_URL_ROOT . '/propal/list.php');
-    exit;
+////        else if ($ret < 0) {
+////            setEventMessage($object->error, 'errors');
+////            $error++;
+////        }
+////        else
+////            $object->fetch_thirdparty();
+//    }
+//} else {
+//    header('Location: ' . DOL_URL_ROOT . '/propal/list.php');
+//    exit;
+//}
+if (!empty($id)) {
+    $object->fetch($id);
+    $object->fetch_thirdparty();
 }
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
@@ -225,20 +229,19 @@ else if ($action == 'add' && $user->rights->propal->creer) {
 
     if (empty($datep)) {
         setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Date")), 'errors');
-        header("Location: " . DOL_URL_ROOT . '/comm/addpropal.php?socid=' . $socid . '&action=create');
+        header("Location: " . DOL_URL_ROOT . '/propal/addpropal.php?socid=' . $socid . '&action=create');
         exit;
     }
     if (empty($duration)) {
         setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ValidityDuration")), 'errors');
-        header("Location: " . DOL_URL_ROOT . '/comm/addpropal.php?socid=' . $socid . '&action=create');
+        header("Location: " . DOL_URL_ROOT . '/propal/addpropal.php?socid=' . $socid . '&action=create');
         exit;
     }
     $object->datec = $datep;
     $object->date_livraison = $date_delivery;
-
+    
     if (!$error) {
-        $db->begin();
-
+        
         // Si on a selectionne une propal a copier, on realise la copie
         if (GETPOST('createmode') == 'copy' && GETPOST('copie_propal')) {
             if ($object->fetch(GETPOST('copie_propal')) > 0) {
@@ -281,7 +284,6 @@ else if ($action == 'add' && $user->rights->propal->creer) {
             $object->contactid = GETPOST('contactidp');
             $object->fk_project = GETPOST('projectid');
             $object->modelpdf = GETPOST('model');
-            $object->author = $user->id;  // deprecated
             $object->note = GETPOST('note');
 
             $object->origin = GETPOST('origin');
@@ -299,7 +301,7 @@ else if ($action == 'add' && $user->rights->propal->creer) {
             $id = $object->create($user);
         }
 
-        if ($id > 0) {
+        if (!empty($id)) {
             // Insertion contact par defaut si defini
             if (GETPOST('contactidp')) {
                 $result = $object->add_contact(GETPOST('contactidp'), 'CUSTOMER', 'external');
@@ -324,7 +326,7 @@ else if ($action == 'add' && $user->rights->propal->creer) {
                     propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
                 }
 
-                header('Location: propal/propal.php?id=' . $id);
+                header('Location: fiche.php?id=' . $id);
                 exit;
             }
 //    		else
@@ -336,7 +338,7 @@ else if ($action == 'add' && $user->rights->propal->creer) {
 //    		$db->rollback();
             exit;
         }
-    }
+    } 
 }
 
 // Classify billed
