@@ -380,7 +380,7 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
     }
     if ((empty($idprod) || GETPOST('usenewaddlineform')) && (!($price_ht >= 0) || $price_ht == '')) { // Unit price can be 0 but not ''
         setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("UnitPriceHT")), 'errors');
-        $error++;
+        $error = true;
     }
     if (!GETPOST('qty') && GETPOST('qty') == '') {
         setEventMessage($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), 'errors');

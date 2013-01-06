@@ -1042,18 +1042,18 @@ if ($action != 'presend') {
     if ($action != 'statut' && $action <> 'editline') {
 
         // Send
-        if ($object->Status == "OPENED" || $object->statut == 2) {
+//        if ($object->Status == "OPENED" || $object->statut == 2) {
             if (empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->propal->propal_advance->send) {
-                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
-            }
-            else
-                print '<a class="buttonRefused" href="#">' . $langs->trans('SendByMail') . '</a>';
-        }
+                print '<a class="button icon-mail" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
+           }
+//            else
+//                print '<a class="buttonRefused" href="#">' . $langs->trans('SendByMail') . '</a>';
+//        }
 
         // Create an order
-        if (!empty($conf->commande->enabled) && $object->Status == "SIGNED" && $user->societe_id == 0) {
+        if (!empty($conf->commande->enabled) /* && $object->Status == "SIGNED" */ && $user->societe_id == 0) {
             if ($user->rights->commande->creer) {
-                print '<a class="button" href="' . DOL_URL_ROOT . '/commande/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->client->id . '">' . $langs->trans("AddOrder") . '</a>';
+                print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/commande/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->client->id . '">' . $langs->trans("AddOrder") . '</a>';
             }
         }
 
@@ -1070,7 +1070,7 @@ if ($action != 'presend') {
 //        }
         // Delete
         if ($user->rights->propal->supprimer) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete"';
+            print '<a class="button icon-cross" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete"';
             print '>' . $langs->trans('Delete') . '</a>';
         }
     }

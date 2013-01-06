@@ -1882,10 +1882,10 @@ class Facture extends nosqlDocument {
 
             // Rang to use
             $rangtouse = $rang;
-            if ($rangtouse == -1) {
-                $rangmax = $this->line_max($fk_parent_line);
-                $rangtouse = $rangmax + 1;
-            }
+//            if ($rangtouse == -1) {
+//                $rangmax = $this->line_max($fk_parent_line);
+//                $rangtouse = $rangmax + 1;
+//            }
 
             $product_type = $type;
             if ($fk_product) {
@@ -1910,7 +1910,7 @@ class Facture extends nosqlDocument {
             $line->date_start = $date_start;
             $line->date_end = $date_end;
             $line->ventil = $ventil;
-            $line->rang = $rangtouse;
+//            $line->rang = $rangtouse;
             $line->info_bits = $info_bits;
             $line->fk_remise_except = $fk_remise_except;
             $line->total_ht = (($this->type == 2 || $qty < 0) ? -abs($total_ht) : $total_ht);  // For credit note and if qty is negative, total is negative
@@ -2037,10 +2037,10 @@ class Facture extends nosqlDocument {
 //            $line->oldline = $staticline;
 
             // Reorder if fk_parent_line change
-            if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
-                $rangmax = $line_max($fk_parent_line);
-                $line->rang = $rangmax + 1;
-            }
+//            if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
+//                $rangmax = $line_max($fk_parent_line);
+//                $line->rang = $rangmax + 1;
+//            }
 
             $line->label = $label;
             $line->description = $desc;

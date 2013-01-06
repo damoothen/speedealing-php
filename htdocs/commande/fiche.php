@@ -273,7 +273,7 @@ if ($action == 'add' && $user->rights->commande->creer) {
     }
     if ((empty($idprod) || GETPOST('usenewaddlineform')) && (!($price_ht >= 0) || $price_ht == '')) { // Unit price can be 0 but not ''
         setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("UnitPriceHT")), 'errors');
-        $error++;
+        $error = true;
     }
     if (!GETPOST('qty') && GETPOST('qty') == '') {
         setEventMessage($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), 'errors');
@@ -1193,7 +1193,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 //            }
 
             // Create bill and Classify billed
-            if (!empty($conf->facture->enabled) && !in_array($object->Status, array("DRAFT", "CANCELED", "PROCESSED"))) {
+            if (!empty($conf->facture->enabled) /* && !in_array($object->Status, array("DRAFT", "CANCELED", "PROCESSED")) */ ) {
                 if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
                     print '<p class="button-height right">';
                     print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->client->id . '">' . $langs->trans("CreateBill") . '</a>';
@@ -1207,7 +1207,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
             }
 
             // Send
-            if ($object->Status != "DRAFT" && $object->Status != "CANCELED") {
+//            if ($object->Status != "DRAFT" && $object->Status != "CANCELED") {
                 if ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->commande->order_advance->send)) {
                     print '<p class="button-height right">';
                     print '<a class="button icon-mail" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
@@ -1217,7 +1217,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
                     print '<a class="button icon-mail" href="#">' . $langs->trans('SendByMail') . '</a>';
                     print "</p>";
                 }
-            }
+//            }
 
             print '</div>';
         }
