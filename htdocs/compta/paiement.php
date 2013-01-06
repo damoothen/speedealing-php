@@ -155,7 +155,10 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
     $paiement->paiementid   = dol_getIdFromCode($db,$_POST['paiementcode'],'c_paiement');
     $paiement->num_paiement = $_POST['num_paiement'];
     $paiement->note         = $_POST['comment'];
-    $paiment->mode_reglement_code = $_POST['mode_reglement_code'];
+    $paiement->mode_reglement_code = $_POST['mode_reglement_code'];
+    $paiement->amountpayment = $_POST['amountpayment'];
+    $paiement->chqemetteur = $_POST['chqemetteur'];
+    $paiement->chqbank = $_POST['chqbank'];
 
     if (! $error)
     {
@@ -179,8 +182,6 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
 
     if (! $error)
     {
-        $db->commit();
-
         // If payment dispatching on more than one invoice, we keep on summary page, otherwise go on invoice card
         $invoiceid=0;
         foreach ($paiement->amounts as $key => $amount)
@@ -192,7 +193,7 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
                 else $invoiceid=$facid;
             }
         }
-        if ($invoiceid > 0) $loc = DOL_URL_ROOT.'/facture/fiche.php?id='.$invoiceid;
+        if (!(empty($invoiceid))) $loc = DOL_URL_ROOT.'/facture/fiche.php?id='.$invoiceid;
         else $loc = DOL_URL_ROOT.'/compta/paiement/fiche.php?id='.$paiement_id;
         header('Location: '.$loc);
         exit;
@@ -223,16 +224,16 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 		$facture->fetch_thirdparty();
 
 		$title='';
-		if ($facture->type != 2) $title.=$langs->trans("EnterPaymentReceivedFromCustomer");
-		if ($facture->type == 2) $title.=$langs->trans("EnterPaymentDueToCustomer");
+		if ($facture->type != "INVOICE_AVOIR") $title.=$langs->trans("EnterPaymentReceivedFromCustomer");
+		if ($facture->type == "INVOICE_AVOIR") $title.=$langs->trans("EnterPaymentDueToCustomer");
 		print_fiche_titre($title);
 
 		dol_htmloutput_errors($errmsg);
 
 		// Bouchon
-		if ($facture->type == 2)
+		if ($facture->type == "INVOICE_AVOIR")
 		{
-            $langs->load('other');
+                        $langs->load('other');
 			print $langs->trans("FeatureNotYetAvailable");
 			llxFooter();
 			exit;
@@ -446,7 +447,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
         /*
          * List of unpaid invoices
          */
-        $unpaidBills = $facture->getView('listUnpaid', array('key' => $facture->socid));
+        $unpaidBills = $facture->getView('listUnpaid', array('key' => $facture->client->id));
 //        $sql = 'SELECT f.rowid as facid, f.facnumber, f.total_ttc, f.type, ';
 //        $sql.= ' f.datef as df';
 //        $sql.= ' FROM '.MAIN_DB_PREFIX.'facture as f';

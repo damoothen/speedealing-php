@@ -881,7 +881,7 @@ else if ($action == 'confirm_converttoreduc' && $confirm == 'yes' && $user->righ
             return -1;
         }
         $discount->tva_tx = abs($object->total_ttc);
-        $discount->fk_soc = $object->socid;
+        $discount->fk_soc = $object->client->id;
         $discount->fk_facture_source = $object->id;
 
         $error = 0;
@@ -900,17 +900,11 @@ else if ($action == 'confirm_converttoreduc' && $confirm == 'yes' && $user->righ
 
         if (!$error) {
             // Classe facture
-            $result = $object->set_paid($user);
-            if ($result > 0) {
-                //$mesgs[]='OK'.$discount->id;
-                $db->commit();
-            } else {
-                $mesgs[] = '<div class="error">' . $object->error . '</div>';
-                $db->rollback();
-            }
+            //$result = $object->set_paid($user);
+            $object->Status = 'CONVERTED_TO_REDUC';
+            $object->record();
         } else {
             $mesgs[] = '<div class="error">' . $discount->error . '</div>';
-            $db->rollback();
         }
     }
 } else if ($action == "setabsolutediscount" && $user->rights->facture->creer) {
@@ -1612,13 +1606,13 @@ else {
             // Reverse back money or convert to reduction
             if ($object->type == "INVOICE_DEPOSIT" || $object->type == "INVOICE_AVOIR") {
                 // For credit note only
-                if ($object->type == "INVOICE_AVOIR" /* && $object->Status == "NOT_PAID" */ && $object->getSommePaiement() == 0 && $user->rights->facture->paiement) {
+                if ($object->type == "INVOICE_AVOIR"  && $object->Status != "CONVERTED_TO_REDUC"  && $object->getSommePaiement() == 0 && $user->rights->facture->paiement) {
                     print '<p class="button-height right">';
                     print '<a class="button" href="/compta/paiement.php?id=' . $object->id . '&amp;action=create">' . $langs->trans('DoPaymentBack') . '</a>';
                     print '</p>';
                 }
                 // For credit note
-                if ($object->type == "INVOICE_AVOIR" /* && $object->Status == "NOT_PAID" */ && $object->getSommePaiement() == 0 && $user->rights->facture->creer) {
+                if ($object->type == "INVOICE_AVOIR"  && $object->Status != "CONVERTED_TO_REDUC"  && $object->getSommePaiement() == 0 && $user->rights->facture->creer) {
                     print '<p class="button-height right">';
                     print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=converttoreduc">' . $langs->trans('ConvertToReduc') . '</a>';
                     print '</p>';
@@ -1754,6 +1748,11 @@ else {
         $facreplaced->fetch($object->fk_facture_source);
         print ' (' . $langs->transnoentities("ReplaceInvoice", $facreplaced->getNomUrl(1)) . ')';
     }
+    else if ($object->type == 'INVOICE_AVOIR') {
+        $facinvoiced = new Facture($db);
+        $facinvoiced->fetch($object->fk_facture_source);
+        print ' (' . $langs->transnoentities("InvoiceAvoirAsk") . $facinvoiced->getNomUrl(1) .  ')';
+    }
     if (!empty($replacingInvoice)) {
         print ' (' . $langs->transnoentities("ReplacedByInvoice", $replacingInvoice->getNomUrl(1)) . ')';
     }
@@ -1839,13 +1838,12 @@ else {
 //      } */
 //    print '</td></tr>';
 
-
-    // Ref Customer
-    print '<tr><td>' . $form->editfieldkey("RefCustomer", 'ref_client', $object->ref_client, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "text") . '</td>';
-    print '<td td colspan="5">';
-    print $form->editfieldval("RefCustomer", 'ref_client', $object->ref_client, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "text");
-    print '</td>';
-    print '</tr>';
+// Ref Customer
+print '<tr><td>' . $form->editfieldkey("RefCustomer", 'ref_client', $object->ref_client, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "text") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("RefCustomer", 'ref_client', $object->ref_client, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "text");
+print '</td>';
+print '</tr>';
     
     // Date invoice
 //    print '<tr><td width="20%">' . $langs->trans('Date') . '</td>';

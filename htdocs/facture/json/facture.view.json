@@ -19,7 +19,7 @@
            "map": "function(doc) {\nif (doc.class && doc.class == 'FactureLigne')\n  emit(doc.fk_facture, doc);\n}"
        },
        "listUnpaid": {
-           "map": "function(doc) {\nif (doc.class && doc.class==\"Facture\" && (!doc.paye || doc.paye != doc.total_ttc))\n  emit(doc.socid, doc);\n}"
+           "map": "function(doc) {\nif (doc.class && doc.class==\"Facture\" && doc.Status != 'PAID' && doc.Status != 'CANCELED')\n  emit(doc.client.id, doc);\n}"
        },
        "payments": {
            "map": "function(doc) {\nif (doc.class && doc.class==\"Paiement\")\n  emit(doc._id, doc);\n}"
@@ -66,7 +66,7 @@
            "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && (doc.Status == \"NOT_PAID\" || doc.Status == \"STARTED\" || doc.Status == \"PAID\" || doc.Status == \"PAID_PARTIALLY\") && (doc.type != \"INVOICE_REPLACEMENT\" && doc.type != \"INVOICE_AVOIR\")) \n  emit(doc._id, doc);\n}"
        },
        "listAvoirableInvoicesPerSociete": {
-           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && (doc.Status == \"NOT_PAID\" || doc.Status == \"STARTED\" || doc.Status == \"PAID\" || doc.Status == \"PAID_PARTIALLY\") && (doc.type != \"INVOICE_REPLACEMENT\" && doc.type != \"INVOICE_AVOIR\")) \n  emit(doc.socid, doc);\n}"
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && (doc.Status == \"NOT_PAID\" || doc.Status == \"STARTED\" || doc.Status == \"PAID\" || doc.Status == \"PAID_PARTIALLY\") && (doc.type != \"INVOICE_REPLACEMENT\" && doc.type != \"INVOICE_AVOIR\")) \n  emit(doc.client.id, doc);\n}"
        }
    },
    "updates": {

@@ -85,6 +85,16 @@
                    "enable": true,
                    "label": "BillStatusCanceled",
                    "cssClass": "black-gradient"
+               },
+               "CONVERTED_TO_REDUC": {
+                   "enable": true,
+                   "label": "BillStatusConvertedToReduc",
+                   "cssClass": "green-gradient"
+               },
+               "PAID_BACK": {
+                   "enable": true,
+                   "label": "BillStatusPaidBack",
+                   "cssClass": "green-gradient"
                }
            }
        },

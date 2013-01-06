@@ -169,7 +169,7 @@ class Paiement extends nosqlDocument
         if ($result < 0) { $error++; $this->errors=$interface->errors; }
         // Fin appel triggers
         
-        return 1;
+        return $this->id;
 		
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."paiement (entity, datec, datep, amount, fk_paiement, num_paiement, note, fk_user_creat)";
 		$sql.= " VALUES (".$conf->entity.", '".$this->db->idate($now)."', '".$this->db->idate($this->datepaye)."', '".$totalamount."', ".$this->paiementid.", '".$this->num_paiement."', '".$this->db->escape($this->note)."', ".$user->id.")";
