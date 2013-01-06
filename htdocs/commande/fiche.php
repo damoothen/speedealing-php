@@ -76,7 +76,7 @@ $soc = new Societe($db);
 if (!empty($id)) {
     $object->fetch($id);
     $object->fetch_thirdparty();
-    $soc->fetch($object->socid);
+    $soc->fetch($object->client->id);
     $object->getLinesArray();
 }
 
@@ -273,7 +273,7 @@ if ($action == 'add' && $user->rights->commande->creer) {
     }
     if ((empty($idprod) || GETPOST('usenewaddlineform')) && (!($price_ht >= 0) || $price_ht == '')) { // Unit price can be 0 but not ''
         setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("UnitPriceHT")), 'errors');
-        $error++;
+        $error = true;
     }
     if (!GETPOST('qty') && GETPOST('qty') == '') {
         setEventMessage($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), 'errors');
@@ -973,7 +973,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
             $note_private = (!empty($objectsrc->note) ? $objectsrc->note : (!empty($objectsrc->note_private) ? $objectsrc->note_private : ''));
             $note_public = (!empty($objectsrc->note_public) ? $objectsrc->note_public : '');
 
-            $socid = (!empty($objectsrc->socid) ? $objectsrc->socid : $object->socid);
+            $socid = (!empty($objectsrc->client->id) ? $objectsrc->client->id : $object->client->id);
 
             // Object source contacts list
             //$srccontactslist = $objectsrc->liste_contact(-1,'external',1);
@@ -997,6 +997,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     print '<tr><td>' . $langs->trans('RefCustomer') . '</td><td colspan="2">';
     print '<input type="text" name="ref_client" value="' . $ref_client . '"></td>';
     print '</tr>';
+
 
     // Client
     print '<tr><td class="fieldrequired">' . $langs->trans('Customer') . '</td><td colspan="2">' . $form->select_company($socid, "socid") . '</td></tr>';
@@ -1178,13 +1179,6 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
                 }
             }
 
-            // Cancel order
-            if ($object->Status == "VALIDATED" && $user->rights->commande->annuler) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-lightning" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=cancel">' . $langs->trans('Cancel') . '</a>';
-                print "</p>";
-            }
-
             // Clone
 //            if ($user->rights->commande->creer) {
 //                print '<p class="button-height right">';
@@ -1197,25 +1191,12 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 //                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans('ClassifyBilled') . '</a>';
 //                print "</p>";                
 //            }
-            // Set to shipped (Close)
-            if (($object->Status == "VALIDATED" || $object->Status == "IN_PROCESS") && $user->rights->commande->cloturer) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=shipped">' . $langs->trans('ClassifyShipped') . '</a>';
-                print "</p>";
-            }
-
-            // Valid
-            if ($object->Status == "DRAFT" && $object->total_ttc >= 0 && count($object->lines) > 0 && $user->rights->commande->valider) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
-                print "</p>";
-            }
 
             // Create bill and Classify billed
-            if (!empty($conf->facture->enabled) && !in_array($object->Status, array("DRAFT", "CANCELED", "PROCESSED"))) {
+            if (!empty($conf->facture->enabled) /* && !in_array($object->Status, array("DRAFT", "CANCELED", "PROCESSED")) */ ) {
                 if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
                     print '<p class="button-height right">';
-                    print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("CreateBill") . '</a>';
+                    print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->client->id . '">' . $langs->trans("CreateBill") . '</a>';
                     print "</p>";
                 }
                 if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
@@ -1226,7 +1207,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
             }
 
             // Send
-            if ($object->Status != "DRAFT" && $object->Status != "CANCELED") {
+//            if ($object->Status != "DRAFT" && $object->Status != "CANCELED") {
                 if ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->commande->order_advance->send)) {
                     print '<p class="button-height right">';
                     print '<a class="button icon-mail" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
@@ -1236,21 +1217,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
                     print '<a class="button icon-mail" href="#">' . $langs->trans('SendByMail') . '</a>';
                     print "</p>";
                 }
-            }
-
-            // Reopen a closed order
-            if (($object->Status == "TO_BILL" || $object->Status == "PROCESSED") && $user->rights->commande->creer) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-reply" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=reopen">' . $langs->trans('ReOpen') . '</a>';
-                print "</p>";
-            }
-
-            // Edit
-            if ($object->Status == "VALIDATED" && $user->rights->commande->creer) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $id . '&action=modify">' . $langs->trans("Modify") . '</a>';
-                print "</p>";
-            }
+//            }
 
             print '</div>';
         }
@@ -1258,9 +1225,9 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     }
 
     print start_box($title, "twelve", $object->fk_extrafields->ico, false);
-    
+
     dol_fiche_head();
-    
+
     print '<table class="border" width="100%">';
 
     // Ref
@@ -1270,46 +1237,83 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     print '</td>';
     print '</tr>';
 
-    // Ref commande client
-    print '<tr><td>' . $langs->trans('RefCustomer') . '</td>';
-    print '<td colspan="3">' . $object->ref_client . '</td>';
-    print '</tr>';
-
     // Societe
     print '<tr><td>' . $langs->trans('Company') . '</td>';
-    print '<td colspan="3">' . $object->client->name . '</td>';
+    print '<td colspan="3">' . $soc->getNomUrl(1) . '</td>';
     print '</tr>';
+    
+    // Ref commande client
+//    print '<tr><td>' . $langs->trans('RefCustomer') . '</td>';
+//    print '<td colspan="3">' . $object->ref_client . '</td>';
+//    print '</tr>';
+    print '<tr><td>' . $form->editfieldkey("RefCustomer", 'ref_customer', $object->ref_customer, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "text") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("RefCustomer", 'ref_customer', $object->ref_customer, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "text");
+    print '</td>';
+    print '</tr>';
+
+    
 
     // Date
-    print '<tr><td>' . $langs->trans('Date') . '</td>';
-    print '<td colspan="3">' . ($object->date ? dol_print_date($object->date, 'daytext') : '&nbsp;') . '</td>';
+//    print '<tr><td>' . $langs->trans('Date') . '</td>';
+//    print '<td colspan="3">' . ($object->date ? dol_print_date($object->date, 'daytext') : '&nbsp;') . '</td>';
+//    print '</tr>';
+    print '<tr><td>' . $form->editfieldkey("Date", 'date', $object->date, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "datepicker") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("Date", 'date', $object->date, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "datepicker");
+    print '</td>';
     print '</tr>';
-
+    
     // Delivery date planed
-    print '<tr><td>' . $langs->trans('DateDeliveryPlanned') . '</td>';
-    print '<td colspan="3">' . ($object->date_livraison ? dol_print_date($object->date_livraison, 'daytext') : '&nbsp;') . '</td>';
+//    print '<tr><td>' . $langs->trans('DateDeliveryPlanned') . '</td>';
+//    print '<td colspan="3">' . ($object->date_livraison ? dol_print_date($object->date_livraison, 'daytext') : '&nbsp;') . '</td>';
+//    print '</tr>';
+     print '<tr><td>' . $form->editfieldkey("DateDeliveryPlanned", 'date_livraison', $object->date_livraison, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "datepicker") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("DateDeliveryPlanned", 'date_livraison', $object->date_livraison, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "datepicker");
+    print '</td>';
     print '</tr>';
 
     // Terms of payment
-    print '<tr><td>' . $langs->trans('PaymentConditionsShort') . '</td>';
-    print '<td colspan="3">' . $object->getExtraFieldLabel('cond_reglement_code') . '</td>';
+//    print '<tr><td>' . $langs->trans('PaymentConditionsShort') . '</td>';
+//    print '<td colspan="3">' . $object->getExtraFieldLabel('cond_reglement_code') . '</td>';
+//    print '</tr>';
+    print '<tr><td>' . $form->editfieldkey("PaymentConditionsShort", 'cond_reglement_code', $object->cond_reglement_code, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "select") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("PaymentConditionsShort", 'cond_reglement_code', $object->cond_reglement_code, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "select");
+    print '</td>';
     print '</tr>';
 
     // Mode of payment
-    print '<tr><td>' . $langs->trans('PaymentMode') . '</td>';
-    print '<td colspan="3">' . $object->getExtraFieldLabel('mode_reglement_code') . '</td>';
+//    print '<tr><td>' . $langs->trans('PaymentMode') . '</td>';
+//    print '<td colspan="3">' . $object->getExtraFieldLabel('mode_reglement_code') . '</td>';
+//    print '</tr>';
+    print '<tr><td>' . $form->editfieldkey("PaymentMode", 'mode_reglement_code', $object->mode_reglement_code, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "select") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("PaymentMode", 'mode_reglement_code', $object->mode_reglement_code, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "select");
+    print '</td>';
     print '</tr>';
-
+    
     // Availability
-    print '<tr><td>' . $langs->trans('AvailabilityPeriod') . '</td>';
-    print '<td colspan="3">' . $object->getExtraFieldLabel('availability_code') . '</td>';
+//    print '<tr><td>' . $langs->trans('AvailabilityPeriod') . '</td>';
+//    print '<td colspan="3">' . $object->getExtraFieldLabel('availability_code') . '</td>';
+//    print '</tr>';
+    print '<tr><td>' . $form->editfieldkey("AvailabilityPeriod", 'availability_code', $object->availability_code, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "select") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("AvailabilityPeriod", 'availability_code', $object->availability_code, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "select");
+    print '</td>';
     print '</tr>';
-
+    
     // Source
-    print '<tr><td>' . $langs->trans('Source') . '</td>';
-    print '<td colspan="3">' . $object->getExtraFieldLabel('demand_reason_code') . '</td>';
+//    print '<tr><td>' . $langs->trans('Source') . '</td>';
+//    print '<td colspan="3">' . $object->getExtraFieldLabel('demand_reason_code') . '</td>';
+//    print '</tr>';
+    print '<tr><td>' . $form->editfieldkey("Source", 'demand_reason_code', $object->demand_reason_code, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "select") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("Source", 'demand_reason_code', $object->demand_reason_code, $object, $user->rights->commande->creer && $object->Status == "DRAFT", "select");
+    print '</td>';
     print '</tr>';
-
+    
     // Total HT
     print '<tr><td>' . $langs->trans('AmountHT') . '</td>';
     print '<td align="right"><b>' . price($object->total_ht) . '</b></td>';
@@ -1346,14 +1350,18 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     print '<td>' . $langs->trans('Currency' . $conf->currency) . '</td></tr>';
 
     // Statut
-    print '<tr><td>' . $langs->trans('Status') . '</td>';
-    print '<td colspan="2">' . $object->getExtraFieldLabel('Status') . '</td>';
+//    print '<tr><td>' . $langs->trans('Status') . '</td>';
+//    print '<td colspan="2">' . $object->getExtraFieldLabel('Status') . '</td>';
+//    print '</tr>';
+    print '<tr><td>' . $form->editfieldkey("Status", 'Status', $object->Status, $object, $user->rights->commande->creer, "select") . '</td>';
+    print '<td td colspan="5">';
+    print $form->editfieldval("Status", 'Status', $object->Status, $object, $user->rights->commande->creer, "select");
+    print '</td>';
     print '</tr>';
-
 
     print '</table>';
     dol_fiche_end();
-    
+
     print end_box();
 
     if (!empty($conf->global->MAIN_DISABLE_CONTACTS_TAB)) {
@@ -1366,13 +1374,6 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
         $blocname = 'notes';
         $title = $langs->trans('Notes');
         include DOL_DOCUMENT_ROOT . '/core/tpl/bloc_showhide.tpl.php';
-    }
-
-    // Actions
-    if ($object->Status == "DRAFT" && $user->rights->commande->creer) {
-        print '<p class="button-height right">';
-        print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $id . '&action=edit">' . $langs->trans("Edit") . '</a>';
-        print "</p>";
     }
 
     // Lines
@@ -1436,7 +1437,8 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
          * Linked object block
          */
         //$somethingshown = $object->showLinkedObjectBlock();
-        $object->printLinkedObjects();
+//        $object->printLinkedObjects();
+        $object->showLinkedObjects();
 
 //        print '</td><td valign="top" width="50%">';
         // List of actions on element

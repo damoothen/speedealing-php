@@ -36,9 +36,6 @@ require_once DOL_DOCUMENT_ROOT . '/margin/lib/margins.lib.php';
 class Commande extends nosqlDocument {
 
     public $element = 'commande';
-    public $table_element = 'commande';
-    public $table_element_line = 'commandedet';
-    public $class_element_line = 'OrderLine';
     public $fk_element = 'fk_commande';
     protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
     var $id;
@@ -97,6 +94,8 @@ class Commande extends nosqlDocument {
         parent::__construct($db);
         
         $this->no_save[] = 'thirdparty';
+        $this->no_save[] = 'line';
+        $this->no_save[] = 'lines';
 
         $this->fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields->fetch(get_class($this));
@@ -670,7 +669,7 @@ class Commande extends nosqlDocument {
      * 	@return 	int					<0 if KO, >0 if OK
      */
     function create($user, $notrigger = 0) {
-        global $conf, $langs, $mysoc;
+        global $conf, $langs, $mysoc, $user;
         $error = 0;
 
         // Clean parameters
@@ -682,6 +681,7 @@ class Commande extends nosqlDocument {
 
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
+        unset($this->socid);
         if ($result < 0) {
             $this->error = "Failed to fetch company";
             dol_syslog("Commande::create " . $this->error, LOG_ERR);
@@ -698,6 +698,11 @@ class Commande extends nosqlDocument {
         $this->client->country_code = $soc->country_code;
         $this->client->email = $soc->email;
         $this->fetch_thirdparty();
+        
+        // author
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
 
         // $date_commande is deprecated
         $date = ($this->date_commande ? $this->date_commande : $this->date);
@@ -1187,10 +1192,10 @@ class Commande extends nosqlDocument {
 
             // Rang to use
             $rangtouse = $rang;
-            if ($rangtouse == -1) {
-                $rangmax = $this->line_max($fk_parent_line);
-                $rangtouse = $rangmax + 1;
-            }
+//            if ($rangtouse == -1) {
+//                $rangmax = $this->line_max($fk_parent_line);
+//                $rangtouse = $rangmax + 1;
+//            }
 
             // TODO A virer
             // Anciens indicateurs: $price, $remise (a ne plus utiliser)
@@ -1215,7 +1220,7 @@ class Commande extends nosqlDocument {
             $this->line->fk_remise_except = $fk_remise_except;
             $this->line->remise_percent = $remise_percent;
             $this->line->subprice = $pu_ht;
-            $this->line->rang = $rangtouse;
+//            $this->line->rang = $rangtouse;
             $this->line->info_bits = $info_bits;
             $this->line->total_ht = $total_ht;
             $this->line->total_tva = $total_tva;
@@ -1565,82 +1570,90 @@ class Commande extends nosqlDocument {
      */
     function fetch_lines($only_product = 0) {
         $this->lines = array();
-
-        $sql = 'SELECT l.rowid, l.fk_product, l.fk_parent_line, l.product_type, l.fk_commande, l.label as custom_label, l.description, l.price, l.qty, l.tva_tx,';
-        $sql.= ' l.localtax1_tx, l.localtax2_tx, l.fk_remise_except, l.remise_percent, l.subprice, l.fk_product_fournisseur_price as fk_fournprice, l.buy_price_ht as pa_ht, l.rang, l.info_bits, l.special_code,';
-        $sql.= ' l.total_ht, l.total_ttc, l.total_tva, l.total_localtax1, l.total_localtax2, l.date_start, l.date_end,';
-        $sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label';
-        $sql.= ' FROM ' . MAIN_DB_PREFIX . 'commandedet as l';
-        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'product as p ON (p.rowid = l.fk_product)';
-        $sql.= ' WHERE l.fk_commande = ' . $this->id;
-        if ($only_product)
-            $sql .= ' AND p.fk_product_type = 0';
-        $sql .= ' ORDER BY l.rang';
-
-        dol_syslog("Commande::fetch_lines sql=" . $sql, LOG_DEBUG);
-        $result = $this->db->query($sql);
-        if ($result) {
-            $num = $this->db->num_rows($result);
-
-            $i = 0;
-            while ($i < $num) {
-                $objp = $this->db->fetch_object($result);
-
+        $lines = $this->getView('linesPerCommande', array('key' => $this->id));
+        if (!empty($lines->rows)) {
+            foreach ($lines->rows as $l) {
                 $line = new OrderLine($this->db);
-
-                $line->rowid = $objp->rowid;    // \deprecated
-                $line->id = $objp->rowid;
-                $line->fk_commande = $objp->fk_commande;
-                $line->commande_id = $objp->fk_commande;   // \deprecated
-                $line->label = $objp->custom_label;
-                $line->desc = $objp->description;    // Description ligne
-                $line->product_type = $objp->product_type;
-                $line->qty = $objp->qty;
-                $line->tva_tx = $objp->tva_tx;
-                $line->localtax1_tx = $objp->localtax1_tx;
-                $line->localtax2_tx = $objp->localtax2_tx;
-                $line->total_ht = $objp->total_ht;
-                $line->total_ttc = $objp->total_ttc;
-                $line->total_tva = $objp->total_tva;
-                $line->total_localtax1 = $objp->total_localtax1;
-                $line->total_localtax2 = $objp->total_localtax2;
-                $line->subprice = $objp->subprice;
-                $line->fk_remise_except = $objp->fk_remise_except;
-                $line->remise_percent = $objp->remise_percent;
-                $line->price = $objp->price;
-                $line->fk_product = $objp->fk_product;
-                $line->fk_fournprice = $objp->fk_fournprice;
-                $marginInfos = getMarginInfos($objp->subprice, $objp->remise_percent, $objp->tva_tx, $objp->localtax1_tx, $objp->localtax2_tx, $line->fk_fournprice, $objp->pa_ht);
-                $line->pa_ht = $marginInfos[0];
-                $line->marge_tx = $marginInfos[1];
-                $line->marque_tx = $marginInfos[2];
-                $line->rang = $objp->rang;
-                $line->info_bits = $objp->info_bits;
-                $line->special_code = $objp->special_code;
-                $line->fk_parent_line = $objp->fk_parent_line;
-
-                $line->ref = $objp->product_ref;  // TODO deprecated
-                $line->product_ref = $objp->product_ref;
-                $line->libelle = $objp->product_label;  // TODO deprecated
-                $line->product_label = $objp->product_label;
-                $line->product_desc = $objp->product_desc;   // Description produit
-                $line->fk_product_type = $objp->fk_product_type; // Produit ou service
-
-                $line->date_start = $this->db->jdate($objp->date_start);
-                $line->date_end = $this->db->jdate($objp->date_end);
-
-                $this->lines[$i] = $line;
-
-                $i++;
+                $line->fetch($l->value->_id);
+                $this->lines[] = $line;
             }
-            $this->db->free($result);
-
-            return 1;
-        } else {
-            $this->error = $this->db->error();
-            dol_syslog('Commande::fetch_lines: Error ' . $this->error, LOG_ERR);
-            return -3;
         }
+        return $this->lines;
+//        $sql = 'SELECT l.rowid, l.fk_product, l.fk_parent_line, l.product_type, l.fk_commande, l.label as custom_label, l.description, l.price, l.qty, l.tva_tx,';
+//        $sql.= ' l.localtax1_tx, l.localtax2_tx, l.fk_remise_except, l.remise_percent, l.subprice, l.fk_product_fournisseur_price as fk_fournprice, l.buy_price_ht as pa_ht, l.rang, l.info_bits, l.special_code,';
+//        $sql.= ' l.total_ht, l.total_ttc, l.total_tva, l.total_localtax1, l.total_localtax2, l.date_start, l.date_end,';
+//        $sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label';
+//        $sql.= ' FROM ' . MAIN_DB_PREFIX . 'commandedet as l';
+//        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'product as p ON (p.rowid = l.fk_product)';
+//        $sql.= ' WHERE l.fk_commande = ' . $this->id;
+//        if ($only_product)
+//            $sql .= ' AND p.fk_product_type = 0';
+//        $sql .= ' ORDER BY l.rang';
+//
+//        dol_syslog("Commande::fetch_lines sql=" . $sql, LOG_DEBUG);
+//        $result = $this->db->query($sql);
+//        if ($result) {
+//            $num = $this->db->num_rows($result);
+//
+//            $i = 0;
+//            while ($i < $num) {
+//                $objp = $this->db->fetch_object($result);
+//
+//                $line = new OrderLine($this->db);
+//
+//                $line->rowid = $objp->rowid;    // \deprecated
+//                $line->id = $objp->rowid;
+//                $line->fk_commande = $objp->fk_commande;
+//                $line->commande_id = $objp->fk_commande;   // \deprecated
+//                $line->label = $objp->custom_label;
+//                $line->desc = $objp->description;    // Description ligne
+//                $line->product_type = $objp->product_type;
+//                $line->qty = $objp->qty;
+//                $line->tva_tx = $objp->tva_tx;
+//                $line->localtax1_tx = $objp->localtax1_tx;
+//                $line->localtax2_tx = $objp->localtax2_tx;
+//                $line->total_ht = $objp->total_ht;
+//                $line->total_ttc = $objp->total_ttc;
+//                $line->total_tva = $objp->total_tva;
+//                $line->total_localtax1 = $objp->total_localtax1;
+//                $line->total_localtax2 = $objp->total_localtax2;
+//                $line->subprice = $objp->subprice;
+//                $line->fk_remise_except = $objp->fk_remise_except;
+//                $line->remise_percent = $objp->remise_percent;
+//                $line->price = $objp->price;
+//                $line->fk_product = $objp->fk_product;
+//                $line->fk_fournprice = $objp->fk_fournprice;
+//                $marginInfos = getMarginInfos($objp->subprice, $objp->remise_percent, $objp->tva_tx, $objp->localtax1_tx, $objp->localtax2_tx, $line->fk_fournprice, $objp->pa_ht);
+//                $line->pa_ht = $marginInfos[0];
+//                $line->marge_tx = $marginInfos[1];
+//                $line->marque_tx = $marginInfos[2];
+//                $line->rang = $objp->rang;
+//                $line->info_bits = $objp->info_bits;
+//                $line->special_code = $objp->special_code;
+//                $line->fk_parent_line = $objp->fk_parent_line;
+//
+//                $line->ref = $objp->product_ref;  // TODO deprecated
+//                $line->product_ref = $objp->product_ref;
+//                $line->libelle = $objp->product_label;  // TODO deprecated
+//                $line->product_label = $objp->product_label;
+//                $line->product_desc = $objp->product_desc;   // Description produit
+//                $line->fk_product_type = $objp->fk_product_type; // Produit ou service
+//
+//                $line->date_start = $this->db->jdate($objp->date_start);
+//                $line->date_end = $this->db->jdate($objp->date_end);
+//
+//                $this->lines[$i] = $line;
+//
+//                $i++;
+//            }
+//            $this->db->free($result);
+//
+//            return 1;
+//        } else {
+//            $this->error = $this->db->error();
+//            dol_syslog('Commande::fetch_lines: Error ' . $this->error, LOG_ERR);
+//            return -3;
+//        }
     }
 
     /**
@@ -2243,10 +2256,10 @@ class Commande extends nosqlDocument {
             $this->line->oldline = $staticline;
 
             // Reorder if fk_parent_line change
-            if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
-                $rangmax = $this->line_max($fk_parent_line);
-                $this->line->rang = $rangmax + 1;
-            }
+//            if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
+//                $rangmax = $this->line_max($fk_parent_line);
+//                $this->line->rang = $rangmax + 1;
+//            }
 
             $this->line->id = $rowid;
             $this->line->label = $label;
@@ -3237,7 +3250,7 @@ class Commande extends nosqlDocument {
             print '<th align="left">' . $langs->trans('Date') . '</th>';
             print '<th align="left">' . $langs->trans('PriceHT') . '</th>';
             print '<th align="left">' . $langs->trans('Status') . '</th>';
-            print '</tr>';
+        print '</tr>';
             foreach ($data as $p) {
                 print '<tr>';
                 print '<td>' . $p->getNomUrl(1) . '</td>';
@@ -3251,7 +3264,110 @@ class Commande extends nosqlDocument {
 
     }
     
+    public function showLinkedObjects() {
+        global $langs; 
+                
+         print start_box($langs->trans("LinkedObjects"), "six", $this->fk_extrafields->ico, false);
+           print '<table class="display dt_act" id="listlinkedobjects" >';
+        // Ligne des titres
 
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "_id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Ref");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "ref";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+//        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("ref", "url");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Date');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "date";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("date", "date");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('PriceHT');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "total_ht";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("total_ht", "price");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Status');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "Status";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("Status", "status");
+
+        $i++;
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        print'</tbody>';
+        print "</table>";
+
+        $obj->iDisplayLength = $max;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listLinkedObjects&class=" . get_class($this) . "&key=" . $this->id;
+        $this->datatablesCreate($obj, "listlinkedobjects", true);
+        print end_box();
+        
+}
+    
+    public function addInPlace($obj){
+        
+        global $user;
+        
+        // Converting date to timestamp
+        $date = explode('/', $this->date);
+        $this->date = $obj->date = dol_mktime(0, 0, 0, $date[1], $date[0], $date[2]);
+        
+        // Generating next ref
+        $this->ref = $obj->ref = $this->getNextNumRef();
+        
+        // Setting author of propal
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
+        
+    }
+
+    public function deleteInPlace($obj){
+        
+        global $user;
+        
+        // Delete lines of Commande
+        $lines = $this->getView('linesPerCommande', array('key' => $this->id));
+        foreach ($lines->rows as $l) {
+            $this->deleteline($l->value->_id);
+        }      
+        
+    }
+    
+    public function fetch_thirdparty(){
+        
+        $thirdparty = new Societe($this->db);
+        $thirdparty->fetch($this->client->id);
+        $this->thirdparty = $thirdparty;
+        
+    }
+    
 }
 
 /**

@@ -1,6 +1,6 @@
 {
    "_id": "_design/Societe",
-   "_rev": "86-2a9d3e375d0bbd058fbb2dce67611486",
+   "_rev": "83-ce80b56c9b4b3a8ca8099a08a8e44318",
    "language": "javascript",
    "views": {
        "list": {
@@ -33,6 +33,15 @@
        "listZoneGeo": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.zonegeo)\n  emit(doc.zonegeo, doc);\n}",
            "reduce": "_counts"
+       },
+       "listPropals": {
+           "map": "function(doc) {\nif (doc.class && doc.class == 'Propal')\n  emit(doc.client.id, doc);\n}"
+       },
+       "listCommandes": {
+           "map": "function(doc) {\nif (doc.class && doc.class == 'Commande')\n  emit(doc.client.id, doc);\n}"
+       },
+       "listFactures": {
+           "map": "function(doc) {\nif (doc.class && doc.class == 'Facture')\n  emit(doc.client.id, doc);\n}"
        }
    },
    "updates": {

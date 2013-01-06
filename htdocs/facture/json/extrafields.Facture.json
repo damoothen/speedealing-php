@@ -1,9 +1,15 @@
 {
    "_id": "extrafields:Facture",
    "class": "extrafields",
-    "ico": "16-Document.png",
+   "ico": "16-Document.png",
    "langs": [
        "bills"
+   ],
+   "createList": [
+       "client",
+       "date",
+       "ref_client",
+       "Status"
    ],
    "fields": {
        "type": {
@@ -22,17 +28,17 @@
                    "label": "InvoiceStandard",
                    "cssClass": "gray-gradient"
                },
-                "INVOICE_DEPOSIT": {
+               "INVOICE_DEPOSIT": {
                    "enable": true,
                    "label": "InvoiceDeposit",
                    "cssClass": "red-gradient"
                },
-                "INVOICE_REPLACEMENT": {
+               "INVOICE_REPLACEMENT": {
                    "enable": true,
                    "label": "InvoiceReplacement",
                    "cssClass": "orange-gradient"
                },
-                "INVOICE_AVOIR": {
+               "INVOICE_AVOIR": {
                    "enable": true,
                    "label": "InvoiceAvoir",
                    "cssClass": "green-gradient"
@@ -55,30 +61,40 @@
                    "label": "BillStatusDraft",
                    "cssClass": "gray-gradient"
                },
-                "NOT_PAID": {
+               "NOT_PAID": {
                    "enable": true,
                    "label": "BillStatusNotPaid",
                    "cssClass": "red-gradient"
                },
-                "STARTED": {
+               "STARTED": {
                    "enable": true,
                    "label": "BillStatusStarted",
                    "cssClass": "orange-gradient"
                },
-                "PAID": {
+               "PAID": {
                    "enable": true,
                    "label": "BillStatusPaid",
                    "cssClass": "green-gradient"
                },
-                "PAID_PARTIALLY": {
+               "PAID_PARTIALLY": {
                    "enable": true,
                    "label": "BillStatusClosedPaidPartially",
                    "cssClass": "blue-gradient"
                },
-                "CANCELED": {
+               "CANCELED": {
                    "enable": true,
                    "label": "BillStatusCanceled",
                    "cssClass": "black-gradient"
+               },
+               "CONVERTED_TO_REDUC": {
+                   "enable": true,
+                   "label": "BillStatusConvertedToReduc",
+                   "cssClass": "green-gradient"
+               },
+               "PAID_BACK": {
+                   "enable": true,
+                   "label": "BillStatusPaidBack",
+                   "cssClass": "green-gradient"
                }
            }
        },
@@ -103,6 +119,23 @@
                "bVisible": true
            },
            "dict": "dict:fk_paiement"
+       },
+       "client": {
+           "type": "select",
+           "enable": true,
+           "class": "Societe",
+           "view": "list",
+           "label": "Company"
+       },
+       "ref_client": {
+           "type": "text",
+           "enable": true,
+           "label": "RefCustomer"
+       },
+       "date": {
+           "type": "date",
+           "enable": true,
+           "label": "Date"
        }
    }
 }

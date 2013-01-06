@@ -152,13 +152,7 @@ print '<div class="with-padding">';
  *
  */
 
-if ($user->rights->propal->creer) {
-    print '<p class="button-height right">';
-    print '<span class="button-group">';
-    print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/addpropal.php?action=create">' . $langs->trans("NewPropal") . '</a>';
-    print "</span>";
-    print "</p>";
-}
+print $object->datatablesEdit("listpropals", $langs->trans("NewProposal"));
 
 $i = 0;
 $obj = new stdClass();
@@ -194,6 +188,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "ref_client";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->editable = true;
 $i++;
 print'<th class="essential">';
 print $langs->trans('Date');
@@ -202,19 +197,20 @@ $obj->aoColumns[$i]->mDataProp = "date";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->bUseRendered = false;
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date", "datetime");
+$obj->aoColumns[$i]->editable = true;
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date", "date");
 //$obj->aoColumns[$i]->sClass = "edit";
 $i++;
-print'<th class="essential">';
-print $langs->trans('DateEnd');
-print'</th>';
-$obj->aoColumns[$i]->mDataProp = "date_livraison";
-$obj->aoColumns[$i]->sClass = "center";
-$obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->bUseRendered = false;
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date_livraison", "datetime");
-//$obj->aoColumns[$i]->sClass = "edit";
-$i++;
+//print'<th class="essential">';
+//print $langs->trans('DateEnd');
+//print'</th>';
+//$obj->aoColumns[$i]->mDataProp = "date_livraison";
+//$obj->aoColumns[$i]->sClass = "center";
+//$obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->bUseRendered = false;
+//$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date_livraison", "date");
+////$obj->aoColumns[$i]->sClass = "edit";
+//$i++;
 
 //print'<th class="essential">';
 //print $langs->trans('Contact');
@@ -224,11 +220,11 @@ $i++;
 //$obj->aoColumns[$i]->fnRender = $contact->datatablesFnRender("contact.name", "url", array('id' => "contact.id"));
 //$i++;
  print'<th class="essential">';
-  print $langs->trans('ActionUserAsk');
+  print $langs->trans('Author');
   print'</th>';
   $obj->aoColumns[$i]->mDataProp = "author";
   $obj->aoColumns[$i]->sDefaultContent = "";
-  //$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
+  $obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
   $i++; 
 print'<th class="essential">';
 print $langs->trans("Status");
@@ -236,6 +232,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "DRAFT";
+$obj->aoColumns[$i]->editable = true;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
 $i++;
 print'<th class="essential">';
@@ -274,8 +271,8 @@ print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Sea
 $i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Date") . '" /></th>';
 $i++;
-print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search DateEnd") . '" /></th>';
-$i++;
+//print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search DateEnd") . '" /></th>';
+//$i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
 $i++; 
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';

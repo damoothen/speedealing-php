@@ -118,6 +118,8 @@ class Facture extends nosqlDocument {
         $this->fk_extrafields->fetch(get_class($this));
         
         $this->no_save[] = 'thirdparty';
+        $this->no_save[] = 'line';
+        $this->no_save[] = 'lines';
     }
 
     /**
@@ -130,7 +132,7 @@ class Facture extends nosqlDocument {
      * 	@return	int						<0 if KO, >0 if OK
      */
     function create($user, $notrigger = 0, $forceduedate = 0) {
-        global $langs, $conf, $mysoc;
+        global $langs, $conf, $mysoc, $user;
         $error = 0;
 
         // Clean parameters
@@ -152,6 +154,7 @@ class Facture extends nosqlDocument {
         }
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
+        unset($this->socid);
         if ($result < 0) {
             $this->error = "Failed to fetch company";
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
@@ -160,6 +163,11 @@ class Facture extends nosqlDocument {
         $this->client = new stdClass();
         $this->client->id = $soc->id;
         $this->client->name = $soc->name;
+
+        // author
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
 
         $this->ref = $this->getNextNumRef($soc);
         $now = dol_now();
@@ -1874,10 +1882,10 @@ class Facture extends nosqlDocument {
 
             // Rang to use
             $rangtouse = $rang;
-            if ($rangtouse == -1) {
-                $rangmax = $this->line_max($fk_parent_line);
-                $rangtouse = $rangmax + 1;
-            }
+//            if ($rangtouse == -1) {
+//                $rangmax = $this->line_max($fk_parent_line);
+//                $rangtouse = $rangmax + 1;
+//            }
 
             $product_type = $type;
             if ($fk_product) {
@@ -1902,7 +1910,7 @@ class Facture extends nosqlDocument {
             $line->date_start = $date_start;
             $line->date_end = $date_end;
             $line->ventil = $ventil;
-            $line->rang = $rangtouse;
+//            $line->rang = $rangtouse;
             $line->info_bits = $info_bits;
             $line->fk_remise_except = $fk_remise_except;
             $line->total_ht = (($this->type == 2 || $qty < 0) ? -abs($total_ht) : $total_ht);  // For credit note and if qty is negative, total is negative
@@ -2029,10 +2037,10 @@ class Facture extends nosqlDocument {
 //            $line->oldline = $staticline;
 
             // Reorder if fk_parent_line change
-            if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
-                $rangmax = $line_max($fk_parent_line);
-                $line->rang = $rangmax + 1;
-            }
+//            if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
+//                $rangmax = $line_max($fk_parent_line);
+//                $line->rang = $rangmax + 1;
+//            }
 
             $line->label = $label;
             $line->description = $desc;
@@ -2955,7 +2963,7 @@ class Facture extends nosqlDocument {
      * 	@return	int						<0 if KO, >0 if OK
      */
     function createStandardInvoice($user, $notrigger = 0, $forceduedate = 0) {
-        global $langs, $conf, $mysoc;
+        global $langs, $conf, $mysoc, $user;
         $error = 0;
 
         // Clean parameters
@@ -2980,6 +2988,7 @@ class Facture extends nosqlDocument {
         
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
+        unset($this->socid);
         if ($result < 0) {
             $this->error = "Failed to fetch company";
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
@@ -2988,6 +2997,11 @@ class Facture extends nosqlDocument {
         $this->client = new stdClass();
         $this->client->id = $soc->id;
         $this->client->name = $soc->name;
+        
+        // Author
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->name;
 
         $this->ref = $this->getNextNumRef($soc);
         $now = dol_now();
@@ -3410,6 +3424,165 @@ class Facture extends nosqlDocument {
             print '</table>';
             print end_box();
 
+    }
+    
+    public function showLinkedObjects() {
+        global $langs; 
+                
+         print start_box($langs->trans("LinkedObjects"), "six", $this->fk_extrafields->ico, false);
+           print '<table class="display dt_act" id="listlinkedobjects" >';
+        // Ligne des titres
+
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "_id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Ref");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "ref";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+//        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("ref", "url");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Date');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "date";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("date", "date");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('PriceHT');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "total_ht";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("total_ht", "price");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Status');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "Status";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("Status", "status");
+
+        $i++;
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        print'</tbody>';
+        print "</table>";
+
+        $obj->iDisplayLength = $max;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listLinkedObjects&class=" . get_class($this) . "&key=" . $this->id;
+        $this->datatablesCreate($obj, "listlinkedobjects", true);
+        print end_box();
+        
+}
+
+    public function showPayments(){
+        global $conf, $langs;
+        
+        print start_box($langs->trans("Payments"), "six", $this->fk_extrafields->ico, false);
+        print '<table class="display dt_act" id="listpayments" >';
+        // Ligne des titres
+
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Date");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "datepaye";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("datepaye", "date");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Amount');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "amount";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("amount", "price");
+        $i++;
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        print'</tbody>';
+        print "</table>";
+
+        $obj->iDisplayLength = $max;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=paymentsPerFacture&class=" . get_class($this) . "&key=" . $this->id;
+        $this->datatablesCreate($obj, "listpayments", true);
+        
+        print '<br />';
+        $amountPaid = $this->getSommePaiement();
+        print $langs->trans("AlreadyPaid") . ': ' . price($amountPaid) . $langs->trans('Currency' . $conf->currency) . '<br />';
+        print $langs->trans("RemainderToPay") . ': ' . price($this->total_ttc - $amountPaid) . $langs->trans('Currency' . $conf->currency) . '<br />';
+
+        print end_box();
+        
+    }
+    
+    public function addInPlace($obj){
+        
+        global $user;
+        
+        // Converting date to timestamp
+        $date = explode('/', $this->date);
+        $this->date = $obj->date = dol_mktime(0, 0, 0, $date[1], $date[0], $date[2]);
+        
+        // Generating next ref
+        $this->ref = $obj->ref = $this->getNextNumRef();
+        
+        // Setting author of propal
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
+        
+    }
+    
+    public function deleteInPlace($obj){
+        
+        global $user;
+        
+        // Delete lines of Facture
+        $lines = $this->getView('linesPerFacture', array('key' => $this->id));
+        foreach ($lines->rows as $l) {
+            $this->deleteline($l->value->_id);
+        }      
+        
+    }
+    
+    public function fetch_thirdparty(){
+        
+        $thirdparty = new Societe($this->db);
+        $thirdparty->fetch($this->client->id);
+        $this->thirdparty = $thirdparty;
+        
     }
 
 
