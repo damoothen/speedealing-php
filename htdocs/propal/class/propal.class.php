@@ -113,6 +113,10 @@ class Propal extends nosqlDocument {
 
         $this->fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields->fetch(get_class($this));
+        
+        $this->no_save[] = 'thirdparty';
+        $this->no_save[] = 'line';
+        $this->no_save[] = 'lines';
 
         $this->socid = $socid;
         $this->id = $propalid;
@@ -570,7 +574,7 @@ class Propal extends nosqlDocument {
      *  @return     int     			<0 if KO, >=0 if OK
      */
     function create($user = '', $notrigger = 0) {
-        global $langs, $conf, $mysoc;
+        global $langs, $conf, $mysoc, $user;
         $error = 0;
 
         $now = dol_now();
@@ -593,6 +597,11 @@ class Propal extends nosqlDocument {
         $this->client = new stdClass();
         $this->client->id = $soc->id;
         $this->client->name = $soc->name;
+        
+        // Author
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
 
         if (empty($this->date)) {
             $this->error = "Date of proposal is required";
@@ -2542,7 +2551,110 @@ class Propal extends nosqlDocument {
 
     }
     
+    public function showLinkedObjects() {
+        global $langs; 
+                
+         print start_box($langs->trans("LinkedObjects"), "six", $this->fk_extrafields->ico, false);
+           print '<table class="display dt_act" id="listlinkedobjects" >';
+        // Ligne des titres
 
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "_id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Ref");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "ref";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+//        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("ref", "url");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Date');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "date";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("date", "date");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('PriceHT');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "total_ht";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("total_ht", "price");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Status');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "Status";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("Status", "status");
+
+        $i++;
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        print'</tbody>';
+        print "</table>";
+
+        $obj->iDisplayLength = $max;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listLinkedObjects&class=" . get_class($this) . "&key=" . $this->id;
+        $this->datatablesCreate($obj, "listlinkedobjects", true);
+        print end_box();
+        
+}
+    
+    public function addInPlace($obj){
+        
+        global $user;
+        
+        // Generating next ref
+        $this->ref = $obj->ref = $this->getNextNumRef();
+        
+        // Converting date to timestamp
+        $date = explode('/', $this->date);
+        $this->date = $obj->date = dol_mktime(0, 0, 0, $date[1], $date[0], $date[2]);
+        
+        // Setting author of propal
+        $this->author = new stdClass();
+        $this->author->id = $user->id;
+        $this->author->name = $user->login;
+        
+    }
+    
+    public function deleteInPlace($obj){
+        
+        global $user;
+        
+        // Delete lines of Propal
+        $lines = $this->getView('linesPerPropal', array('key' => $this->id));
+        foreach ($lines->rows as $l) {
+            $this->deleteline($l->value->_id);
+        }      
+        
+    }
+    
+    public function fetch_thirdparty(){
+        
+        $thirdparty = new Societe($this->db);
+        $thirdparty->fetch($this->client->id);
+        $this->thirdparty = $thirdparty;
+        
+    }
+    
 }
 
 /**

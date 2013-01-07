@@ -1,13 +1,12 @@
 {
    "_id": "extrafields:Commande",
-   "_rev": "10-ae3f2c67dc8bb3a83b70ba87e1a4d64a",
    "class": "extrafields",
    "ico": "16-Document.png",
    "langs": [
        "orders"
    ],
    "createList": [
-       "societe",
+       "client",
        "date",
        "ref_client",
        "Status"
@@ -95,7 +94,8 @@
            },
            "dict": "dict:fk_input_reason"
        },
-       "societe": {
+       "client": {
+           "type": "select",
            "enable": true,
            "class": "Societe",
            "view": "list",

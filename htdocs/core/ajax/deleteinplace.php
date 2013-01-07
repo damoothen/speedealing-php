@@ -51,6 +51,10 @@ if (!empty($json) && !empty($id) && !empty($class)) {
     if ($json == "delete") {
         try {
             $object->load($id);
+            
+            if (method_exists($object, 'deleteInPlace'))
+                    $object->deleteInPlace();
+            
             $res = $object->deleteDoc();
             exit;
         } catch (Exception $exc) {

@@ -1,9 +1,15 @@
 {
    "_id": "extrafields:Propal",
    "class": "extrafields",
-    "ico": "16-Document.png",
+   "ico": "16-Document.png",
    "langs": [
        "propal"
+   ],
+   "createList": [
+       "client",
+       "date",
+       "ref_client",
+       "Status"
    ],
    "fields": {
        "Status": {
@@ -88,6 +94,28 @@
                "bVisible": true
            },
            "dict": "dict:fk_input_reason"
+       },
+       "client": {
+           "type": "select",
+           "enable": true,
+           "class": "Societe",
+           "view": "list",
+           "label": "Company"
+       },
+       "ref_client": {
+           "type": "text",
+           "enable": true,
+           "label": "RefCustomer"
+       },
+       "date": {
+           "type": "date",
+           "enable": true,
+           "label": "Date"
+       },
+       "date_livraison": {
+           "type": "date",
+           "enable": true,
+           "label": "DateEnd"
        }
    }
 }

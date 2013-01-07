@@ -69,25 +69,29 @@ $result = restrictedArea($user, 'propal', $id);
 $object = new Propal($db);
 
 // Load object
-if (!(empty($id)) || !empty($ref)) {
-    if ($action != 'add') {
-        $ret = $object->fetch($id);
-        $object->fetch_thirdparty();
-        if (empty($id)) {
-            $langs->load("errors");
-            setEventMessage($langs->trans('ErrorRecordNotFound'), 'errors');
-            $error++;
-        }
-//        else if ($ret < 0) {
-//            setEventMessage($object->error, 'errors');
+//if (!(empty($id)) || !empty($ref)) {
+//    if ($action != 'add') {
+//        $ret = $object->fetch($id);
+//        $object->fetch_thirdparty();
+//        if (empty($id)) {
+//            $langs->load("errors");
+//            setEventMessage($langs->trans('ErrorRecordNotFound'), 'errors');
 //            $error++;
 //        }
-//        else
-//            $object->fetch_thirdparty();
-    }
-} else {
-    header('Location: ' . DOL_URL_ROOT . '/propal/list.php');
-    exit;
+////        else if ($ret < 0) {
+////            setEventMessage($object->error, 'errors');
+////            $error++;
+////        }
+////        else
+////            $object->fetch_thirdparty();
+//    }
+//} else {
+//    header('Location: ' . DOL_URL_ROOT . '/propal/list.php');
+//    exit;
+//}
+if (!empty($id)) {
+    $object->fetch($id);
+    $object->fetch_thirdparty();
 }
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
@@ -225,20 +229,19 @@ else if ($action == 'add' && $user->rights->propal->creer) {
 
     if (empty($datep)) {
         setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Date")), 'errors');
-        header("Location: " . DOL_URL_ROOT . '/comm/addpropal.php?socid=' . $socid . '&action=create');
+        header("Location: " . DOL_URL_ROOT . '/propal/addpropal.php?socid=' . $socid . '&action=create');
         exit;
     }
     if (empty($duration)) {
         setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ValidityDuration")), 'errors');
-        header("Location: " . DOL_URL_ROOT . '/comm/addpropal.php?socid=' . $socid . '&action=create');
+        header("Location: " . DOL_URL_ROOT . '/propal/addpropal.php?socid=' . $socid . '&action=create');
         exit;
     }
     $object->datec = $datep;
     $object->date_livraison = $date_delivery;
-
+    
     if (!$error) {
-        $db->begin();
-
+        
         // Si on a selectionne une propal a copier, on realise la copie
         if (GETPOST('createmode') == 'copy' && GETPOST('copie_propal')) {
             if ($object->fetch(GETPOST('copie_propal')) > 0) {
@@ -281,7 +284,6 @@ else if ($action == 'add' && $user->rights->propal->creer) {
             $object->contactid = GETPOST('contactidp');
             $object->fk_project = GETPOST('projectid');
             $object->modelpdf = GETPOST('model');
-            $object->author = $user->id;  // deprecated
             $object->note = GETPOST('note');
 
             $object->origin = GETPOST('origin');
@@ -299,7 +301,7 @@ else if ($action == 'add' && $user->rights->propal->creer) {
             $id = $object->create($user);
         }
 
-        if ($id > 0) {
+        if (!empty($id)) {
             // Insertion contact par defaut si defini
             if (GETPOST('contactidp')) {
                 $result = $object->add_contact(GETPOST('contactidp'), 'CUSTOMER', 'external');
@@ -324,7 +326,7 @@ else if ($action == 'add' && $user->rights->propal->creer) {
                     propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
                 }
 
-                header('Location: propal/propal.php?id=' . $id);
+                header('Location: fiche.php?id=' . $id);
                 exit;
             }
 //    		else
@@ -336,7 +338,7 @@ else if ($action == 'add' && $user->rights->propal->creer) {
 //    		$db->rollback();
             exit;
         }
-    }
+    } 
 }
 
 // Classify billed
@@ -800,6 +802,7 @@ else if ($action == 'builddoc' && $user->rights->propal->creer) {
         $outputlangs->setDefaultLang($newlang);
     }
     $ret = $object->fetch($id);    // Reload to get new records
+    $object->fetch_thirdparty();
     $result = propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
 
     if ($result <= 0) {
@@ -961,7 +964,7 @@ $now = dol_now();
  */
 
 $soc = new Societe($db);
-$soc->fetch($object->socid);
+$soc->fetch($object->client->id);
 
 //$head = propal_prepare_head($object);
 //dol_fiche_head($head, 'comm', $langs->trans('Proposal'), 0, 'propal');
@@ -1039,35 +1042,20 @@ if ($action != 'presend') {
     print '<div class="tabsAction">';
 
     if ($action != 'statut' && $action <> 'editline') {
-        // Validate
-        if ($object->Status == "DRAFT" && $user->rights->propal->valider && count($object->lines) > 0) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
-        }
-
-        // Edit
-        if ($object->Status == "OPENED" && $user->rights->propal->creer) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
-        }
-
-        // ReOpen
-        if ((in_array($object->Status, array('SIGNED', 'NOT_SIGNED'))) && $user->rights->propal->cloturer) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=reopen' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#reopen') . '"';
-            print '>' . $langs->trans('ReOpen') . '</a>';
-        }
 
         // Send
-        if ($object->Status == "OPENED" || $object->statut == 2) {
+//        if ($object->Status == "OPENED" || $object->statut == 2) {
             if (empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->propal->propal_advance->send) {
-                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
-            }
-            else
-                print '<a class="buttonRefused" href="#">' . $langs->trans('SendByMail') . '</a>';
-        }
+                print '<a class="button icon-mail" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
+           }
+//            else
+//                print '<a class="buttonRefused" href="#">' . $langs->trans('SendByMail') . '</a>';
+//        }
 
         // Create an order
-        if (!empty($conf->commande->enabled) && $object->Status == "SIGNED" && $user->societe_id == 0) {
+        if (!empty($conf->commande->enabled) /* && $object->Status == "SIGNED" */ && $user->societe_id == 0) {
             if ($user->rights->commande->creer) {
-                print '<a class="button" href="' . DOL_URL_ROOT . '/commande/commande.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddOrder") . '</a>';
+                print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/commande/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->client->id . '">' . $langs->trans("AddOrder") . '</a>';
             }
         }
 
@@ -1082,19 +1070,9 @@ if ($action != 'presend') {
 //                print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled&amp;socid=' . $object->socid . '">' . $langs->trans("ClassifyBilled") . '</a>';
 //            }
 //        }
-        // Close
-        if ($object->Status == "OPENED" && $user->rights->propal->cloturer) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=statut' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#close') . '"';
-            print '>' . $langs->trans('Close') . '</a>';
-        }
-
-//        // Clone
-//        if ($user->rights->propal->creer) {
-//            print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=' . $object->element . '">' . $langs->trans("ToClone") . '</a>';
-//        }
         // Delete
         if ($user->rights->propal->supprimer) {
-            print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete"';
+            print '<a class="button icon-cross" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete"';
             print '>' . $langs->trans('Delete') . '</a>';
         }
     }
@@ -1179,184 +1157,220 @@ print '</tr>';
 //    print $langs->trans("CompanyHasNoAbsoluteDiscount") . '.';
 //print '</td></tr>';
 // Date of proposal
-print '<tr>';
-print '<td>';
-print '<table class="nobordernopadding" width="100%"><tr><td>';
-print $langs->trans('Date');
+//print '<tr>';
+//print '<td>';
+//print '<table class="nobordernopadding" width="100%"><tr><td>';
+//print $langs->trans('Date');
+//print '</td>';
+//if ($action != 'editdate' && $object->Status == "DRAFT")
+//    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editdate&amp;id=' . $object->id . '">' . img_edit($langs->trans('SetDate'), 1) . '</a></td>';
+//print '</tr></table>';
+//print '</td><td colspan="3">';
+//if ($object->Status == "DRAFT" && $action == 'editdate') {
+//    print '<form name="editdate" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
+//    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+//    print '<input type="hidden" name="action" value="setdate">';
+//    $form->select_date($object->date, 're', '', '', 0, "editdate");
+//    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
+//    print '</form>';
+//} else {
+//    if ($object->date) {
+//        print dol_print_date($object->date, 'daytext');
+//    } else {
+//        print '&nbsp;';
+//    }
+//}
+//print '</td>';
+print '<tr><td>' . $form->editfieldkey("Date", 'date', $object->date, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "datepicker") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("Date", 'date', $object->date, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "datepicker");
 print '</td>';
-if ($action != 'editdate' && $object->Status == "DRAFT")
-    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editdate&amp;id=' . $object->id . '">' . img_edit($langs->trans('SetDate'), 1) . '</a></td>';
-print '</tr></table>';
-print '</td><td colspan="3">';
-if ($object->Status == "DRAFT" && $action == 'editdate') {
-    print '<form name="editdate" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
-    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-    print '<input type="hidden" name="action" value="setdate">';
-    $form->select_date($object->date, 're', '', '', 0, "editdate");
-    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
-    print '</form>';
-} else {
-    if ($object->date) {
-        print dol_print_date($object->date, 'daytext');
-    } else {
-        print '&nbsp;';
-    }
-}
-print '</td>';
+print '</tr>';
 
 // Date end proposal
-print '<tr>';
-print '<td>';
-print '<table class="nobordernopadding" width="100%"><tr><td>';
-print $langs->trans('DateEndPropal');
-print '</td>';
-if ($action != 'editecheance' && $object->Status == "DRAFT")
-    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editecheance&amp;id=' . $object->id . '">' . img_edit($langs->trans('SetConditions'), 1) . '</a></td>';
-print '</tr></table>';
-print '</td><td colspan="3">';
-if ($object->Status == "DRAFT" && $action == 'editecheance') {
-    print '<form name="editecheance" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
-    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-    print '<input type="hidden" name="action" value="setecheance">';
-    $form->select_date($object->fin_validite, 'ech', '', '', '', "editecheance");
-    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
-    print '</form>';
-} else {
-    if (!empty($object->fin_validite)) {
-        print dol_print_date($object->fin_validite, 'daytext');
-        if ($object->statut == 1 && $object->fin_validite < ($now - $conf->propal->cloture->warning_delay))
-            print img_warning($langs->trans("Late"));
-    }
-    else {
-        print '&nbsp;';
-    }
-}
+//print '<tr>';
+//print '<td>';
+//print '<table class="nobordernopadding" width="100%"><tr><td>';
+//print $langs->trans('DateEndPropal');
+//print '</td>';
+//if ($action != 'editecheance' && $object->Status == "DRAFT")
+//    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editecheance&amp;id=' . $object->id . '">' . img_edit($langs->trans('SetConditions'), 1) . '</a></td>';
+//print '</tr></table>';
+//print '</td><td colspan="3">';
+//if ($object->Status == "DRAFT" && $action == 'editecheance') {
+//    print '<form name="editecheance" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
+//    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+//    print '<input type="hidden" name="action" value="setecheance">';
+//    $form->select_date($object->fin_validite, 'ech', '', '', '', "editecheance");
+//    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
+//    print '</form>';
+//} else {
+//    if (!empty($object->fin_validite)) {
+//        print dol_print_date($object->fin_validite, 'daytext');
+//        if ($object->statut == 1 && $object->fin_validite < ($now - $conf->propal->cloture->warning_delay))
+//            print img_warning($langs->trans("Late"));
+//    }
+//    else {
+//        print '&nbsp;';
+//    }
+//}
+//print '</td>';
+//print '</tr>';
+print '<tr><td>' . $form->editfieldkey("DateEndPropal", 'fin_validite', $object->fin_validite, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "datepicker") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("DateEndPropal", 'fin_validite', $object->fin_validite, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "datepicker");
 print '</td>';
 print '</tr>';
 
 // Payment term
-print '<tr><td>';
-print '<table class="nobordernopadding" width="100%"><tr><td>';
-print $langs->trans('PaymentConditionsShort');
-print '</td>';
-if ($action != 'editconditions' && $object->Status == "DRAFT")
-    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editconditions&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetConditions'), 1) . '</a></td>';
-print '</tr></table>';
-print '</td><td colspan="3">';
-if ($action == 'editconditions') {
-//    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'cond_reglement_id');
-    print '<form name="editconditions" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
-    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-    print '<input type="hidden" name="action" value="setconditions">';
-    print $object->select_fk_extrafields("cond_reglement_code", "cond_reglement_code", $object->cond_reglement_code);
-    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
-    print '</form>';
-} else {
-//    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'none');
-    print $object->getExtraFieldLabel('cond_reglement_code');
-}
+//print '<tr><td>';
+//print '<table class="nobordernopadding" width="100%"><tr><td>';
+//print $langs->trans('PaymentConditionsShort');
+//print '</td>';
+//if ($action != 'editconditions' && $object->Status == "DRAFT")
+//    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editconditions&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetConditions'), 1) . '</a></td>';
+//print '</tr></table>';
+//print '</td><td colspan="3">';
+//if ($action == 'editconditions') {
+////    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'cond_reglement_id');
+//    print '<form name="editconditions" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
+//    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+//    print '<input type="hidden" name="action" value="setconditions">';
+//    print $object->select_fk_extrafields("cond_reglement_code", "cond_reglement_code", $object->cond_reglement_code);
+//    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
+//    print '</form>';
+//} else {
+////    $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->cond_reglement_id, 'none');
+//    print $object->getExtraFieldLabel('cond_reglement_code');
+//}
+//print '</td>';
+//print '</tr>';
+print '<tr><td>' . $form->editfieldkey("PaymentConditionsShort", 'cond_reglement_code', $object->cond_reglement_code, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "select") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("PaymentConditionsShort", 'cond_reglement_code', $object->cond_reglement_code, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "select");
 print '</td>';
 print '</tr>';
 
 // Delivery date
-$langs->load('deliveries');
-print '<tr><td>';
-print '<table class="nobordernopadding" width="100%"><tr><td>';
-print $langs->trans('DeliveryDate');
-print '</td>';
-if ($action != 'editdate_livraison' && $object->Status == "DRAFT")
-    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editdate_livraison&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetDeliveryDate'), 1) . '</a></td>';
-print '</tr></table>';
-print '</td><td colspan="3">';
-if ($action == 'editdate_livraison') {
-    print '<form name="editdate_livraison" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
-    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-    print '<input type="hidden" name="action" value="setdate_livraison">';
-    $form->select_date($object->date_livraison, 'liv_', '', '', '', "editdate_livraison");
-    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
-    print '</form>';
-} else {
-    print dol_print_date($object->date_livraison, 'daytext');
-}
+//$langs->load('deliveries');
+//print '<tr><td>';
+//print '<table class="nobordernopadding" width="100%"><tr><td>';
+//print $langs->trans('DeliveryDate');
+//print '</td>';
+//if ($action != 'editdate_livraison' && $object->Status == "DRAFT")
+//    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editdate_livraison&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetDeliveryDate'), 1) . '</a></td>';
+//print '</tr></table>';
+//print '</td><td colspan="3">';
+//if ($action == 'editdate_livraison') {
+//    print '<form name="editdate_livraison" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
+//    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+//    print '<input type="hidden" name="action" value="setdate_livraison">';
+//    $form->select_date($object->date_livraison, 'liv_', '', '', '', "editdate_livraison");
+//    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
+//    print '</form>';
+//} else {
+//    print dol_print_date($object->date_livraison, 'daytext');
+//}
+//print '</td>';
+//print '</tr>';
+print '<tr><td>' . $form->editfieldkey("DeliveryDate", 'date_livraison', $object->date_livraison, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "datepicker") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("DeliveryDate", 'date_livraison', $object->date_livraison, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "datepicker");
 print '</td>';
 print '</tr>';
 
 // Delivery delay
-print '<tr><td>';
-print '<table class="nobordernopadding" width="100%"><tr><td>';
-print $langs->trans('AvailabilityPeriod');
-if (!empty($conf->commande->enabled))
-    print ' (' . $langs->trans('AfterOrder') . ')';
-print '</td>';
-if ($action != 'editavailability' && $object->Status == "DRAFT")
-    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editavailability&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetAvailability'), 1) . '</a></td>';
-print '</tr></table>';
-print '</td><td colspan="3">';
-if ($action == 'editavailability') {
-    print '<form name="editavailability" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
-    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-    print '<input type="hidden" name="action" value="setavailability">';
-    print $object->select_fk_extrafields("availability_code", "availability_code", $object->availability_code);
-    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
-    print '</form>';
-//    $form->form_availability($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->availability_id, 'availability_id', 1);
-} else {
-//    $form->form_availability($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->availability_id, 'none', 1);
-    print $langs->trans($object->getExtraFieldLabel('availability_code'));
-}
-
+//print '<tr><td>';
+//print '<table class="nobordernopadding" width="100%"><tr><td>';
+//print $langs->trans('AvailabilityPeriod');
+//if (!empty($conf->commande->enabled))
+//    print ' (' . $langs->trans('AfterOrder') . ')';
+//print '</td>';
+//if ($action != 'editavailability' && $object->Status == "DRAFT")
+//    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editavailability&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetAvailability'), 1) . '</a></td>';
+//print '</tr></table>';
+//print '</td><td colspan="3">';
+//if ($action == 'editavailability') {
+//    print '<form name="editavailability" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
+//    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+//    print '<input type="hidden" name="action" value="setavailability">';
+//    print $object->select_fk_extrafields("availability_code", "availability_code", $object->availability_code);
+//    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
+//    print '</form>';
+////    $form->form_availability($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->availability_id, 'availability_id', 1);
+//} else {
+////    $form->form_availability($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->availability_id, 'none', 1);
+//    print $langs->trans($object->getExtraFieldLabel('availability_code'));
+//}
+//
+//print '</td>';
+//print '</tr>';
+print '<tr><td>' . $form->editfieldkey("AvailabilityPeriod", 'availability_code', $object->availability_code, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "select") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("AvailabilityPeriod", 'availability_code', $object->availability_code, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "select");
 print '</td>';
 print '</tr>';
 
+
 // Origin of demand
-print '<tr><td>';
-print '<table class="nobordernopadding" width="100%"><tr><td>';
-print $langs->trans('Source');
+//print '<tr><td>';
+//print '<table class="nobordernopadding" width="100%"><tr><td>';
+//print $langs->trans('Source');
+//print '</td>';
+//if ($action != 'editdemandreason' && $object->Status == "DRAFT")
+//    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editdemandreason&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetDemandReason'), 1) . '</a></td>';
+//print '</tr></table>';
+//print '</td><td colspan="3">';
+////print $object->demand_reason_id;
+//if ($action == 'editdemandreason') {
+//    print '<form name="editdemandreason" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
+//    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+//    print '<input type="hidden" name="action" value="setdemandreason">';
+//    print $object->select_fk_extrafields("demand_reason_code", "demand_reason_code", $object->demand_reason_code);
+//    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
+//    print '</form>';
+////    $form->form_demand_reason($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->demand_reason_id, 'demand_reason_id', 1);
+//} else {
+//    //$form->form_demand_reason($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->demand_reason_id, 'none');
+//    print $langs->trans($object->getExtraFieldLabel('demand_reason_code'));
+//}
+print '<tr><td>' . $form->editfieldkey("Source", 'demand_reason_code', $object->demand_reason_code, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "select") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("Source", 'demand_reason_code', $object->demand_reason_code, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "select");
 print '</td>';
-if ($action != 'editdemandreason' && $object->Status == "DRAFT")
-    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editdemandreason&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetDemandReason'), 1) . '</a></td>';
-print '</tr></table>';
-print '</td><td colspan="3">';
-//print $object->demand_reason_id;
-if ($action == 'editdemandreason') {
-    print '<form name="editdemandreason" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
-    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-    print '<input type="hidden" name="action" value="setdemandreason">';
-    print $object->select_fk_extrafields("demand_reason_code", "demand_reason_code", $object->demand_reason_code);
-    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
-    print '</form>';
-//    $form->form_demand_reason($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->demand_reason_id, 'demand_reason_id', 1);
-} else {
-    //$form->form_demand_reason($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->demand_reason_id, 'none');
-    print $langs->trans($object->getExtraFieldLabel('demand_reason_code'));
-}
+print '</tr>';
 
 print '</td>';
 print '</tr>';
 
 // Payment mode
-print '<tr>';
-print '<td width="25%">';
-print '<table class="nobordernopadding" width="100%"><tr><td>';
-print $langs->trans('PaymentMode');
+//print '<tr>';
+//print '<td width="25%">';
+//print '<table class="nobordernopadding" width="100%"><tr><td>';
+//print $langs->trans('PaymentMode');
+//print '</td>';
+//if ($action != 'editmode' && $object->Status == "DRAFT")
+//    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editmode&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetMode'), 1) . '</a></td>';
+//print '</tr></table>';
+//print '</td><td colspan="3">';
+//if ($action == 'editmode') {
+//    print '<form name="editmode" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
+//    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+//    print '<input type="hidden" name="action" value="setmode">';
+//    print $object->select_fk_extrafields("mode_reglement_code", "mode_reglement_code", $object->mode_reglement_code);
+//    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
+//    print '</form>';
+////    $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->mode_reglement_id, 'mode_reglement_id');
+//} else {
+////    $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->mode_reglement_id, 'none');
+//    print $langs->trans($object->fk_extrafields->fields->mode_reglement_code->values->{$object->mode_reglement_code}->label);
+//}
+//print '</td></tr>';
+print '<tr><td>' . $form->editfieldkey("PaymentMode", 'mode_reglement_code', $object->mode_reglement_code, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "select") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("PaymentMode", 'mode_reglement_code', $object->mode_reglement_code, $object, $user->rights->propal->creer  && $object->Status == "DRAFT", "select");
 print '</td>';
-if ($action != 'editmode' && $object->Status == "DRAFT")
-    print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editmode&amp;id=' . $object->id . '">' . img_edit($langs->transnoentitiesnoconv('SetMode'), 1) . '</a></td>';
-print '</tr></table>';
-print '</td><td colspan="3">';
-if ($action == 'editmode') {
-    print '<form name="editmode" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="post">';
-    print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-    print '<input type="hidden" name="action" value="setmode">';
-    print $object->select_fk_extrafields("mode_reglement_code", "mode_reglement_code", $object->mode_reglement_code);
-    print '<input type="submit" class="button" value="' . $langs->trans('Modify') . '">';
-    print '</form>';
-//    $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->mode_reglement_id, 'mode_reglement_id');
-} else {
-//    $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->mode_reglement_id, 'none');
-    print $langs->trans($object->fk_extrafields->fields->mode_reglement_code->values->{$object->mode_reglement_code}->label);
-}
-print '</td></tr>';
+print '</tr>';
 
 // Project
 if (!empty($conf->projet->enabled)) {
@@ -1442,7 +1456,12 @@ print '<td align="right" nowrap>' . price($object->total_ttc) . '</td>';
 print '<td>' . $langs->trans("Currency" . $conf->currency) . '</td></tr>';
 
 // Statut
-print '<tr><td height="10">' . $langs->trans('Status') . '</td><td align="left" colspan="2">' . $langs->trans($object->getExtraFieldLabel('Status')) . '</td></tr>';
+//print '<tr><td height="10">' . $langs->trans('Status') . '</td><td align="left" colspan="2">' . $langs->trans($object->getExtraFieldLabel('Status')) . '</td></tr>';
+print '<tr><td>' . $form->editfieldkey("Status", 'Status', $object->Status, $object, $user->rights->propal->creer, "select") . '</td>';
+print '<td td colspan="5">';
+print $form->editfieldval("Status", 'Status', $object->Status, $object, $user->rights->propal->creer, "select");
+print '</td>';
+print '</tr>';
 
 print '</table><br>';
 dol_fiche_end();
@@ -1557,7 +1576,8 @@ if ($action != 'presend') {
     /*
      * Linked object block
      */
-    $object->printLinkedObjects();
+//    $object->printLinkedObjects();
+    $object->showLinkedObjects();
 //    $somethingshown = $object->showLinkedObjectBlock();
 //    print '</td><td valign="top" width="50%">';
 //

@@ -81,6 +81,9 @@ if (!empty($json) && !empty($class)) {
                 }
             }
         }
+        
+        if (method_exists($object, 'addInPlace'))
+                $object->addInPlace($obj);
 
         try {
             $res = $object->record();
