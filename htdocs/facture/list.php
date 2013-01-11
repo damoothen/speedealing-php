@@ -22,9 +22,9 @@
 
 
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php';
 
 $langs->load('bills');
 $langs->load('deliveries');
@@ -71,16 +71,16 @@ if (!empty($_GET['json'])) {
  * View
  */
 
-$now=dol_now();
+$now = dol_now();
 
 $form = new Form($db);
 $formother = new FormOther($db);
 $formfile = new FormFile($db);
 $companystatic = new Societe($db);
 
-$help_url="EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
+$help_url = "EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
 $title = $langs->trans('Bills');
-llxHeader('',$title,$help_url);
+llxHeader('', $title, $help_url);
 print_fiche_titre($title);
 ?>
 <div class="dashboard">
@@ -147,6 +147,7 @@ $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "ref_client";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->editable = true;
 $i++;
 print'<th class="essential">';
@@ -178,7 +179,6 @@ $i++;
 //$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date_livraison", "datetime");
 ////$obj->aoColumns[$i]->sClass = "edit";
 //$i++;
-
 //print'<th class="essential">';
 //print $langs->trans('Contact');
 //print'</th>';
@@ -186,13 +186,13 @@ $i++;
 //$obj->aoColumns[$i]->sDefaultContent = "";
 //$obj->aoColumns[$i]->fnRender = $contact->datatablesFnRender("contact.name", "url", array('id' => "contact.id"));
 //$i++;
- print'<th class="essential">';
-  print $langs->trans('Author');
-  print'</th>';
-  $obj->aoColumns[$i]->mDataProp = "author";
-  $obj->aoColumns[$i]->sDefaultContent = "";
-  $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("author.name", "url", array('id' => "author.id"));
-  $i++; 
+//print'<th class="essential">';
+//print $langs->trans('Author');
+//print'</th>';
+//$obj->aoColumns[$i]->mDataProp = "author";
+//$obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("author.name", "url", array('id' => "author.id"));
+//$i++;
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
@@ -242,8 +242,8 @@ print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Sea
 $i++;
 //print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search DateEnd") . '" /></th>';
 //$i++;
-print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
-$i++; 
+//print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
+//$i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
 $i++;
 print'<th id="' . $i . '"></th>';
@@ -257,7 +257,6 @@ print "</table>";
 
 $obj->aaSorting = array(array(2, 'asc'));
 //$obj->bServerSide = true;
-
 //if ($all) {
 //    if ($type == "DONE")
 //        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsDONE&class=" . get_class($object);
