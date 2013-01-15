@@ -1453,6 +1453,9 @@ abstract class nosqlDocument extends CommonObject {
             case "text":
                 $out.= $value;
                 break;
+            case "textarea":
+                $out.= $value;
+                break;
             case "date":
                 $out .= dol_print_date($value,"%d/%m/%Y");
                 break;
