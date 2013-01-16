@@ -292,6 +292,33 @@ class Societe extends nosqlDocument {
 
         dol_syslog(get_class($this) . "::Update id=" . $id . " call_trigger=" . $call_trigger . " allowmodcodeclient=" . $allowmodcodeclient . " allowmodcodefournisseur=" . $allowmodcodefournisseur);
 
+        ### Calcul des coordonnées GPS
+        if ($conf->map->enabled) {
+            //Retire le CEDEX de la ville :
+            $town = strtolower($this->town);
+            $find = "cedex";
+            $pos = strpos($town, $find);
+            if ($pos != false) {
+                $town = substr($town, 0, $pos);
+                //print $town;exit;
+            }
+            $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" . urlencode($_POST["adresse"] . "," . $_POST["zipcode"] . "," . $_POST["town"]);
+            $c = curl_init();
+            curl_setopt($c, CURLOPT_URL, $apiUrl);
+            curl_setopt($c, CURLOPT_HEADER, false);
+            curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+            // make the call
+            $json = curl_exec($c);
+            $response = json_decode($json);
+            curl_close($c);
+            if ($response->status == "OK") {
+                $this->gps = array($response->results[0]->geometry->location->lat,
+                    $response->results[0]->geometry->location->lng);
+            } else {
+                unset($this->gps);
+            }
+        }
+
         $now = dol_now();
 
         // Clean parameters
@@ -1882,7 +1909,7 @@ class Societe extends nosqlDocument {
                     $label = $langs->trans($aRow->key);
 
                 if ($i == 0) { // first element
-                	$output[$i] = new stdClass();
+                    $output[$i] = new stdClass();
                     $output[$i]->name = $label;
                     $output[$i]->y = $aRow->value;
                     $output[$i]->sliced = true;
@@ -1998,19 +2025,19 @@ class Societe extends nosqlDocument {
                 //print_r($aRow);exit;
                 $label = $langs->trans($key);
                 if ($aRow->enable) {
-					$tab[$key] = new stdClass();
+                    $tab[$key] = new stdClass();
                     $tab[$key]->label = $label;
                     $tab[$key]->value = 0;
                 }
             }
 
-			foreach ($result->rows as $aRow) { // Update counters from view
-				if (! is_object($tab[$aRow->key[1]]))
-					$tab[$aRow->key[1]] = new stdClass();
-				if (isset($tab[$aRow->key[1]]->value))
-					$tab[$aRow->key[1]]->value = 0;
-				$tab[$aRow->key[1]]->value+=$aRow->value;
-			}
+            foreach ($result->rows as $aRow) { // Update counters from view
+                if (!is_object($tab[$aRow->key[1]]))
+                    $tab[$aRow->key[1]] = new stdClass();
+                if (isset($tab[$aRow->key[1]]->value))
+                    $tab[$aRow->key[1]]->value = 0;
+                $tab[$aRow->key[1]]->value+=$aRow->value;
+            }
 
             foreach ($tab as $aRow)
                 $output[] = array($aRow->label, $aRow->value);
@@ -2140,16 +2167,16 @@ class Societe extends nosqlDocument {
             <?php
         }
     }
-    
-    public function showCommandes(){
-        
-        global $langs; 
-        
+
+    public function showCommandes() {
+
+        global $langs;
+
         require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
         $commande = new Commande($this->db);
-        
-         print start_box($langs->trans("Orders"), "six", $this->fk_extrafields->ico, false);
-           print '<table class="display dt_act" id="listcommandes" >';
+
+        print start_box($langs->trans("Orders"), "six", $this->fk_extrafields->ico, false);
+        print '<table class="display dt_act" id="listcommandes" >';
         // Ligne des titres
 
         print '<thead>';
@@ -2208,18 +2235,17 @@ class Societe extends nosqlDocument {
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listCommandes&class=" . get_class($this) . "&key=" . $this->id;
         $this->datatablesCreate($obj, "listcommandes", true);
         print end_box();
-        
     }
-    
-    public function showPropals(){
-        
-        global $langs; 
-        
+
+    public function showPropals() {
+
+        global $langs;
+
         require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');
         $propal = new Propal($this->db);
-        
-         print start_box($langs->trans("Proposals"), "six", $this->fk_extrafields->ico, false);
-           print '<table class="display dt_act" id="listpropals" >';
+
+        print start_box($langs->trans("Proposals"), "six", $this->fk_extrafields->ico, false);
+        print '<table class="display dt_act" id="listpropals" >';
         // Ligne des titres
 
         print '<thead>';
@@ -2278,18 +2304,17 @@ class Societe extends nosqlDocument {
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listPropals&class=" . get_class($this) . "&key=" . $this->id;
         $this->datatablesCreate($obj, "listpropals", true);
         print end_box();
-        
     }
 
-    public function showFactures(){
-        
-        global $langs; 
-        
+    public function showFactures() {
+
+        global $langs;
+
         require_once(DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php');
         $facture = new Facture($this->db);
-        
-         print start_box($langs->trans("Bills"), "six", $this->fk_extrafields->ico, false);
-           print '<table class="display dt_act" id="listfactures" >';
+
+        print start_box($langs->trans("Bills"), "six", $this->fk_extrafields->ico, false);
+        print '<table class="display dt_act" id="listfactures" >';
         // Ligne des titres
 
         print '<thead>';
@@ -2348,7 +2373,6 @@ class Societe extends nosqlDocument {
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listFactures&class=" . get_class($this) . "&key=" . $this->id;
         $this->datatablesCreate($obj, "listfactures", true);
         print end_box();
-        
     }
 
 }

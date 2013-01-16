@@ -174,53 +174,23 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
     $i++;
 }
 
-$db->free($resultSocietes);
-unset($resultSocietes);
-
-/* sql query get sales */
-$sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u) 
-where "/* sc.fk_soc in ($companies) and */ . " sc.fk_user=u.rowid";
-//$sql .= " LIMIT 100";
-$resultCommerciaux = $db->query($sql);
-
-/* init society sales array  */
-while ($aRow = $db->fetch_object($resultCommerciaux)) {
-    if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->commercial_id->id = "user:" . strtolower(dol_delaccents($aRow->login));
-        $col[$aRow->fk_soc]->commercial_id->name = strtolower(dol_delaccents($aRow->login));
-    }
-}
-$db->free($resultCommerciaux);
-unset($resultCommerciaux);
-
-/* sql query get categories */
-$sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
-where "/* cs.fk_societe in ($companies) and */ . "cs.fk_categorie=c.rowid";
-//$sql .= " LIMIT 100";
-$resultCate = $db->query($sql);
-
-
-/* init society categories array */
-while ($aRow = $db->fetch_object($resultCate)) {
-
-    if (!empty($col[$aRow->fk_societe]->rowid)) {
-        $col[$aRow->fk_societe]->Tag[] = $aRow->label;
-    }
-}
-$db->free($resultCate);
-unset($resultCate);
-
 //print_r($col);exit;
 
-try {
-    $couchdb->clean($col);
-    $result = $couchdb->storeDocs($col, false);
-} catch (Exception $e) {
-    echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
-    exit(1);
+foreach ($col as $row) {
+    if (is_array($row->gps)) {
+        try {
+            $soc = new Societe($db);
+            $soc->fetch($row->rowid);
+            $soc->gps = $row->gps;
+            $soc->record();
+        } catch (Exception $e) {
+            echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+            exit(1);
+        }
+    }
 }
 
-print_r($result);
+//print_r($result);
 
-print "Import société terminée : " . count($col);
+print "Upgrade société terminée : " . count($col);
 ?>

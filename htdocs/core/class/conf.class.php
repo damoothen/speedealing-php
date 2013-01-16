@@ -246,7 +246,9 @@ class Conf extends nosqlDocument {
 
 
 
-        // Variable globales LDAP
+
+            
+// Variable globales LDAP
         if (empty($this->global->LDAP_FIELD_FULLNAME))
             $this->global->LDAP_FIELD_FULLNAME = '';
         if (!isset($this->global->LDAP_KEY_USERS))
@@ -347,6 +349,8 @@ class Conf extends nosqlDocument {
 
 
 
+
+            
 // conf->use_javascript_ajax
         $this->use_javascript_ajax = 1;
 
@@ -363,6 +367,8 @@ class Conf extends nosqlDocument {
 
 
 
+
+            
 // conf->liste_limit = constante de taille maximale des listes
         if (empty($this->global->MAIN_SIZE_LISTE_LIMIT))
             $this->global->MAIN_SIZE_LISTE_LIMIT = 25;
@@ -469,6 +475,21 @@ class Conf extends nosqlDocument {
             $this->top_menu = (empty($this->global->MAIN_MENUFRONT_STANDARD_FORCED) ? $this->global->MAIN_MENUFRONT_STANDARD : $this->global->MAIN_MENUFRONT_STANDARD_FORCED);
             $this->smart_menu = (empty($this->global->MAIN_MENUFRONT_SMARTPHONE_FORCED) ? $this->global->MAIN_MENUFRONT_SMARTPHONE : $this->global->MAIN_MENUFRONT_SMARTPHONE_FORCED);
         }
+    }
+
+    /**
+     * Specific record for conf
+     */
+    function record() {
+        $result = dol_getcache("const");
+
+        unset($result->values); // reset old values
+        foreach ($this->global as $key => $value)
+            $result->values->$key = $value; // Write New Value
+
+        $this->couchdb->storeDoc($result); // record new values
+        dol_delcache("const"); //reset cache
+        return 1;
     }
 
 }
