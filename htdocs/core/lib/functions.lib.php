@@ -1298,9 +1298,10 @@ function dol_user_country() {
  *  @param  int		$htmlid      Html ID (for example 'gmap')
  *  @param  int		$mode        thirdparty|contact|member|other
  *  @param  int		$id          Id of object
+ *  @param  bool	$gps         See MAP
  *  @return void
  */
-function dol_print_address($address, $htmlid, $mode, $id) {
+function dol_print_address($address, $htmlid, $mode, $id, $gps=false) {
     global $conf, $user, $langs;
 
     $rtr = "";
@@ -1320,6 +1321,12 @@ function dol_print_address($address, $htmlid, $mode, $id) {
             $showomap = 1;
         if ($mode == 'member' && !empty($conf->openstreetmap->enabled) && !empty($conf->global->OPENSTREETMAP_ENABLE_MAPS_MEMBERS))
             $showomap = 1;
+        
+        if ($conf->map->enabled && $gps) {
+            $url = dol_buildpath('/map/map.php?id='.$id,1);
+            $rtr.= ' <a href="' . $url . '" target="_gmaps"><img id="' . $htmlid . '" border="0" src="' . DOL_URL_ROOT . '/theme/common/gmap.png"></a>';
+        }
+            
 
         // TODO Add a hook here
         if ($showgmap) {

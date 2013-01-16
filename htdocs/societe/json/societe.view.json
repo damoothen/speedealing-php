@@ -42,6 +42,9 @@
        },
        "listFactures": {
            "map": "function(doc) {\nif (doc.class && doc.class == 'Facture')\n  emit(doc.client.id, doc);\n}"
+       },
+       "listGPS": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.gps && doc.Status!=\"ST_NEVER\" && doc.Status!=\"ST_NO\")\n  emit(doc.name, doc);\n}"
        }
    },
    "updates": {
