@@ -668,21 +668,21 @@ if ($action == 'create') {
 
     // Societe, contact
     print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionOnCompany") . '</td><td>';
-    /* if (!empty($socid)) {
-      $societe = new Societe($db);
-      $societe->fetch($socid);
-      if ($societe->class == "Societe")
-      print $societe->getNomUrl(1);
-      else { // Is a contact
-      $object->contact->id = $socid;
-      $socid = $societe->societe->id;
-      $societe->fetch($socid);
-      print $societe->getNomUrl(1);
-      }
-      print '<input type="hidden" name="socid" value="' . $socid . '">';
-      } else { */
-    print $object->select_fk_extrafields("societe", 'socid');
-    //}
+    if (!empty($socid)) {
+        $societe = new Societe($db);
+        $societe->load($socid);
+        if ($societe->class == "Societe")
+            print $societe->getNomUrl(1);
+        else { // Is a contact
+            $object->contact->id = $socid;
+            $socid = $societe->societe->id;
+            $societe->load($socid);
+            print $societe->getNomUrl(1);
+        }
+        print '<input type="hidden" name="socid" value="' . $socid . '">';
+    } else {
+        print $object->select_fk_extrafields("societe", 'socid');
+    }
     print '</td></tr>';
 
     // If company is forced, we propose contacts (may be contact is also forced)
@@ -953,9 +953,9 @@ if ($id) {
             $form->select_date($datef, 'p2', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
         print '</td></tr>';
 
-        /*print '<tr id="jqend"><td>' . $langs->trans("DateActionEnd") . '</td><td>';
-        print $object->select_fk_extrafields('datef', 'datef');
-        print '</td></tr>';*/
+        /* print '<tr id="jqend"><td>' . $langs->trans("DateActionEnd") . '</td><td>';
+          print $object->select_fk_extrafields('datef', 'datef');
+          print '</td></tr>'; */
 
         // duration task
         print '<tr id="jqduration"><td>' . $langs->trans("Duration") . '</td><td colspan="3">';

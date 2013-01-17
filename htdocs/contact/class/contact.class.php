@@ -847,7 +847,14 @@ class Contact extends nosqlDocument {
          *
          */
 
-        print $this->datatablesEdit("contacts_datatable");
+        //print $this->datatablesEdit("contacts_datatable");
+        if ($user->rights->societe->contact->creer) {
+            print '<p class="button-height right">';
+            print '<span class="button-group">';
+            print '<a class="button compact icon-star" href="contact/fiche.php?action=create&socid='.$id.'">' . $langs->trans("NewContact") . '</a>';
+            print "</span>";
+            print "</p>";
+        }
 
         print '<table class="display dt_act" id="contacts_datatable" >';
         // Ligne des titres

@@ -104,8 +104,7 @@ if (empty($reshook)) {
         if ($action == 'update') {
             $ret = $object->fetch($socid);
             $oldcopy = dol_clone($object);
-        }
-        else {
+        } else {
             $object->canvas = $canvas;
             $object->commercial_id->id = GETPOST('commercial_id');
         }
@@ -539,8 +538,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         $object->tva_intra = GETPOST('tva_intra');
 
-        if (! is_object($object->commercial_id))
-        	$object->commercial_id = new stdClass();
+        if (!is_object($object->commercial_id))
+            $object->commercial_id = new stdClass();
         $object->commercial_id->id = GETPOST('commercial_id');
         $object->default_lang = GETPOST('default_lang');
 
@@ -895,18 +894,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 
         // Other attributes
-       /* $parameters = array('colspan' => ' colspan="3"');
-        $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-        if (empty($reshook)) {
-            foreach ($object->fk_extrafields->fields as $key => $aRow) {
-                if ($aRow->optional && $aRow->enable) {
-                    $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
-                    print '<tr><td><strong class="blue">' . $aRow->label . '</strong></td><td colspan="3">';
-                    print $object->fk_extrafields->showInputField($key, $value);
-                    print '</td></tr>' . "\n";
-                }
-            }
-        }*/
+        /* $parameters = array('colspan' => ' colspan="3"');
+          $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
+          if (empty($reshook)) {
+          foreach ($object->fk_extrafields->fields as $key => $aRow) {
+          if ($aRow->optional && $aRow->enable) {
+          $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
+          print '<tr><td><strong class="blue">' . $aRow->label . '</strong></td><td colspan="3">';
+          print $object->fk_extrafields->showInputField($key, $value);
+          print '</td></tr>' . "\n";
+          }
+          }
+          } */
 
         // Ajout du logo
         print '<tr>';
@@ -1281,18 +1280,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             }
 
             // Other attributes
-            /*$parameters = array('colspan' => ' colspan="3"');
-            $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-            if (empty($reshook)) {
-                foreach ($object->fk_extrafields->fields as $key => $aRow) {
-                    if ($aRow->optional && $aRow->enable) {
-                        $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
-                        print '<tr><td><strong class="blue">' . $aRow->label . '</strong></td><td colspan="3">';
-                        print $object->fk_extrafields->showInputField($key, $value);
-                        print '</td></tr>' . "\n";
-                    }
-                }
-            }*/
+            /* $parameters = array('colspan' => ' colspan="3"');
+              $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
+              if (empty($reshook)) {
+              foreach ($object->fk_extrafields->fields as $key => $aRow) {
+              if ($aRow->optional && $aRow->enable) {
+              $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
+              print '<tr><td><strong class="blue">' . $aRow->label . '</strong></td><td colspan="3">';
+              print $object->fk_extrafields->showInputField($key, $value);
+              print '</td></tr>' . "\n";
+              }
+              }
+              } */
 
             // Logo
             print '<tr>';
@@ -1737,20 +1736,24 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         /*
          *  Actions
          */
+
         print '<div class="tabsAction">' . "\n";
+        print '<div class="button-height">';
+        print '<span class="button-group">';
 
         if ($user->rights->societe->creer) {
-            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n";
+            print '<a class="button icon-pencil" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n";
         }
 
         if ($user->rights->societe->supprimer) {
             if ($conf->use_javascript_ajax) {
-                print '<span id="action-delete" class="butActionDelete">' . $langs->trans('Delete') . '</span>' . "\n";
+                print '<span id="action-delete" class="button icon-trash red-gradient">' . $langs->trans('Delete') . '</span>' . "\n";
             } else {
-                print '<a class="butActionDelete" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete">' . $langs->trans('Delete') . '</a>' . "\n";
+                print '<a class="button icon-trash red-gradient" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete">' . $langs->trans('Delete') . '</a>' . "\n";
             }
         }
-
+        print "</span>";
+        print "</div>";
         print '</div>';
 
         print end_box();
@@ -1788,20 +1791,22 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         //$result = show_contacts($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
         // Show actions
 
-        $cal = new Agenda($db);
-        $cal->show(25, $object->id);
+        if ($conf->agenda->enabled) {
+            $cal = new Agenda($db);
+            $cal->show(25, $object->id);
+        }
 
         // Addresses list
         //$result = show_addresses($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
         // Projects list
         $result = show_projects($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
-        
+
         if ($conf->propal->enabled)
             $object->showPropals();
 
         if ($conf->commande->enabled)
             $object->showCommandes();
-        
+
         if ($conf->facture->enabled)
             $object->showFactures();
 

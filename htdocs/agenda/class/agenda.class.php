@@ -938,8 +938,18 @@ class Agenda extends nosqlDocument {
          *
          */
 
-        print $this->datatablesEdit("actions_datatable", $langs->trans("NewAction"));
-        
+        //print $this->datatablesEdit("actions_datatable", $langs->trans("NewAction"));
+
+        if ($user->rights->agenda->myactions->create || $user->rights->agenda->allactions->create) {
+            print '<p class="button-height right">';
+            print '<span class="button-group">';
+            print '<a class="button compact icon-star" href="agenda/fiche.php?action=create&socid='.$id.'">' . $langs->trans("NewAction") . '</a>';
+            print "</span>";
+            print "</p>";
+        }
+
+        //https://crm.symeos.com/symeos/comm/action/fiche.php?action=create&socid=573
+
         print '<table class="display dt_act" id="actions_datatable" >';
         // Ligne des titres
 
