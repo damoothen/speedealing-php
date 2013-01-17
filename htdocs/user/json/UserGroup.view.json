@@ -1,9 +1,14 @@
 {
    "_id": "_design/UserGroup",
+   "_rev": "15-fc5ff348ef3359e6d4d0cb13ded356a1",
    "language": "javascript",
    "views": {
        "list": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"UserGroup\")\n  emit(doc.name, doc);\n}"
+       },
+       "count_list": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"User\" && doc.group.length > 0) {\n    for(var idx in doc.group) {\n      emit(doc.group[idx], doc);\n    }\n  }\n}",
+           "reduce": "_count"
        }
    }
 }

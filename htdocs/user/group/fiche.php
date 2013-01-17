@@ -103,12 +103,10 @@ if ($action == 'add_right' && $caneditperms) {
         $editgroup->load($id);
 
         // For avoid error in strict mode
-        if (! is_object($editgroup->values))
-        	$editgroup->values = new stdClass();
-        if (! is_object($editgroup->values->rights))
-        	$editgroup->values->rights = new stdClass();
+        if (! is_object($editgroup->rights))
+        	$editgroup->rights = new stdClass();
 
-        $editgroup->values->rights->$_GET['pid'] = true;
+        $editgroup->rights->$_GET['pid'] = true;
         $editgroup->record();
     } catch (Exception $e) {
         $mesg = $e->getMessage();
@@ -121,7 +119,7 @@ if ($action == 'remove_right' && $caneditperms) {
     $editgroup = new Usergroup($db);
     try {
         $editgroup->load($id);
-        unset($editgroup->values->rights->$_GET['pid']);
+        unset($editgroup->rights->$_GET['pid']);
 
         $editgroup->record();
     } catch (Exception $e) {
@@ -421,7 +419,7 @@ if ($action == 'create') {
                     if ($caneditperms) {
                         if ($aRow->value->Status)
                             print $objectM->getLibStatus(); // Enable by default
-                        elseif ($fgroup->rights->$perm)
+                        elseif ($object->rights->$perm)
                             print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&pid=' . $aRow->value->id . '&amp;action=remove_right#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
                         else
                             print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&pid=' . $aRow->value->id . '&amp;action=add_right#' . $aRow->value->id . '">' . img_edit_add() . '</a>';

@@ -26,11 +26,11 @@ require_once DOL_DOCUMENT_ROOT . '/user/class/usergroup.class.php';
 require_once DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/images.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/usergroups.lib.php';
-if (! empty($conf->ldap->enabled))
+if (!empty($conf->ldap->enabled))
     require_once DOL_DOCUMENT_ROOT . '/core/class/ldap.class.php';
-if (! empty($conf->adherent->enabled))
+if (!empty($conf->adherent->enabled))
     require_once DOL_DOCUMENT_ROOT . '/adherent/class/adherent.class.php';
-if (! empty($conf->multicompany->enabled))
+if (!empty($conf->multicompany->enabled))
     dol_include_once("/multicompany/class/actions_multicompany.class.php");
 
 $id = GETPOST('id');
@@ -85,13 +85,11 @@ if ($action == 'add_right' && $caneditperms) {
         $fuser->load($id);
 
         // For avoid error in strict mode
-        if (! is_object($fuser->values))
-        	$fuser->values = new stdClass();
-        if (! is_object($fuser->values->rights))
-        	$fuser->values->rights = new stdClass();
+        if (!is_object($fuser->rights))
+            $fuser->rights = new stdClass();
 
-        $fuser->values->rights->$_GET['pid'] = true;
-        $fuser->record();
+        $fuser->rights->$_GET['pid'] = true;
+        $fuser->record(); // TODO BUG FIX DOESN'T WORK
     } catch (Exception $e) {
         $mesg = $e->getMessage();
         setEventMessage($mesg, 'errors');
@@ -103,7 +101,7 @@ if ($action == 'add_right' && $caneditperms) {
 if ($action == 'remove_right' && $caneditperms) {
     try {
         $fuser->load($id);
-        unset($fuser->values->rights->$_GET['pid']);
+        unset($fuser->rights->$_GET['pid']);
 
         $fuser->record();
     } catch (Exception $e) {
@@ -125,19 +123,19 @@ if ($action == 'confirm_disable' && $confirm == "yes" && $candisableuser) {
 if ($action == 'confirm_enable' && $confirm == "yes" && $candisableuser) {
     if ($id <> $user->id) {
 
-    	$error=0;
+        $error = 0;
 
         $edituser->fetch($id);
 
         if (!empty($conf->file->main_limit_users)) {
             $nb = $edituser->getNbOfUsers("active", 1);
             if ($nb >= $conf->file->main_limit_users) {
-            	setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
-            	$error++;
+                setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
+                $error++;
             }
         }
 
-        if (! $error) {
+        if (!$error) {
             $edituser->setstatus(1);
             Header("Location: " . $_SERVER['PHP_SELF'] . '?id=' . $id);
             exit;
@@ -161,28 +159,28 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
 
 // Action ajout user
 if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser)) && !$_POST["cancel"]) {
-    $error=0;
+    $error = 0;
     if (!$_POST["nom"]) {
-    	setEventMessage($langs->trans("NameNotDefined"), 'errors');
-    	$error++;
+        setEventMessage($langs->trans("NameNotDefined"), 'errors');
+        $error++;
         $action = "create"; // Go back to create page
     }
     if (!$_POST["login"]) {
-    	setEventMessage($langs->trans("LoginNotDefined"), 'errors');
-    	$error++;
+        setEventMessage($langs->trans("LoginNotDefined"), 'errors');
+        $error++;
         $action = "create"; // Go back to create page
     }
 
     if (!empty($conf->file->main_limit_users) && $action == 'add') { // If option to limit users is set
         $nb = $edituser->getNbOfUsers("active", 1);
         if ($nb >= $conf->file->main_limit_users) {
-        	setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
-        	$error++;
+            setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
+            $error++;
             $action = "create"; // Go back to create page
         }
     }
 
-    if (! $error) {
+    if (!$error) {
         if ($action == "update")
             $edituser->fetch($id);
 
@@ -226,9 +224,9 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
         } else {
             $langs->load("errors");
             if (is_array($edituser->errors) && count($edituser->errors))
-            	setEventMessage(join('<br>', $langs->trans($edituser->errors)), 'errors');
+                setEventMessage(join('<br>', $langs->trans($edituser->errors)), 'errors');
             else
-            	setEventMessage($langs->trans($edituser->error), 'errors');
+                setEventMessage($langs->trans($edituser->error), 'errors');
             //print $edituser->error;
             if ($action == "add")
                 $action = "create"; // Go back to create page
@@ -334,29 +332,29 @@ if (($action == 'create') || ($action == 'adduserldap')) {
         print '<td>';
         print $form->selectyesno('admin', $_POST["admin"], 1);
         ?><script type="text/javascript">
-            $(function() {
-                $("select[name=admin]").change(function() {
-                    if ( $(this).val() == 0 ) {
-                        $("input[name=superadmin]")
-                        .attr("disabled", true)
-                        .attr("checked", false);
-                        $("select[name=entity]")
-                        .attr("disabled", false);
-                    } else {
-                        $("input[name=superadmin]")
-                        .attr("disabled", false);
-                    }
-                });
-                $("input[name=superadmin]").change(function() {
-                    if ( $(this).attr("checked") == "checked" ) {
-                        $("select[name=entity]")
-                        .attr("disabled", true);
-                    } else {
-                        $("select[name=entity]")
-                        .attr("disabled", false);
-                    }
-                });
-            });
+                    $(function() {
+                        $("select[name=admin]").change(function() {
+                            if ( $(this).val() == 0 ) {
+                                $("input[name=superadmin]")
+                                .attr("disabled", true)
+                                .attr("checked", false);
+                                $("select[name=entity]")
+                                .attr("disabled", false);
+                            } else {
+                                $("input[name=superadmin]")
+                                .attr("disabled", false);
+                            }
+                        });
+                        $("input[name=superadmin]").change(function() {
+                            if ( $(this).attr("checked") == "checked" ) {
+                                $("select[name=entity]")
+                                .attr("disabled", true);
+                            } else {
+                                $("select[name=entity]")
+                                .attr("disabled", false);
+                            }
+                        });
+                    });
         </script><?php
         $checked = ($_POST["superadmin"] ? ' checked' : '');
         $disabled = ($_POST["superadmin"] ? '' : ' disabled');
@@ -864,17 +862,17 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                         $perm = $aRow->value->id;
 
 
-                        if ($caneditperms) {
-                            if ($aRow->value->Status)
-                                print $object->getLibStatus(); // Enable by default
-                            elseif ($fuser->rights->$perm)
-                                print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=remove_right#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
-                            else
-                                print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=add_right#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
-                        }
-                        else {
-                            print $object->getLibStatus();
-                        }
+                        /* if ($caneditperms) {
+                          if ($aRow->value->Status)
+                          print $object->getLibStatus(); // Enable by default
+                          elseif ($fuser->rights->$perm)
+                          print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=remove_right#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
+                          else
+                          print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=add_right#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
+                          }
+                          else { */
+                        print $object->getLibStatus();
+                        //}
                         print '</td>';
 
                         print'</tr>';
