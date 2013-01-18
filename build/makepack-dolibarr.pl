@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 #----------------------------------------------------------------------------
 # \file         build/makepack-dolibarr.pl
-# \brief        Dolibarr package builder (tgz, zip, rpm, deb, exe, aps)
+# \brief        Speedealing package builder (tgz, zip, rpm, deb, exe, aps)
 # \author       (c)2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
 #----------------------------------------------------------------------------
 

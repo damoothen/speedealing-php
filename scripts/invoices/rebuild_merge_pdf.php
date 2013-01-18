@@ -33,7 +33,7 @@ if (substr($sapi_type, 0, 3) == 'cgi') {
     exit;
 }
 
-// Include Dolibarr environment
+// Include Speedealing environment
 require_once($path."../../htdocs/master.inc.php");
 // After this $db is an opened handler to database. We close it at end of file.
 require_once(FPDFI_PATH.'fpdi_protection.php');

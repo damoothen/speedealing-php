@@ -3,7 +3,7 @@ Howto (English)
 Building a live CD/USB
 ##################################################
 
-This is all steps to follow to build a live CD/USB demo of Dolibarr using
+This is all steps to follow to build a live CD/USB demo of Speedealing using
 SLAX distribution.
 
 1) Download SLAX (www.slax.org) as a zip file.
@@ -66,7 +66,7 @@ Add a link to application
 
 11) Reboot again on your USB key.
 
-12) Now you can run Dolibarr install process
+12) Now you can run Speedealing install process
 http://localhost/dolibarr/htdocs/install/index.php
 or copy USB key content to build another one quickly.
 or build a CD with command (TODO).

@@ -37,7 +37,7 @@ if (substr($sapi_type, 0, 3) == 'cgi') {
     exit;
 }
 
-// Include Dolibarr environment
+// Include Speedealing environment
 require_once($path."../../htdocs/master.inc.php");
 
 // After this $db is a defined handler to database.

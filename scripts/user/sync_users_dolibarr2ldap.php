@@ -21,7 +21,7 @@
 /**
  *      \file       scripts/user/sync_users_dolibarr2ldap.php
  *      \ingroup    ldap core
- *      \brief      Script de mise a jour des users dans LDAP depuis base Dolibarr
+ *      \brief      Script de mise a jour des users dans LDAP depuis base Speedealing
  */
 
 $sapi_type = php_sapi_name();
@@ -55,7 +55,7 @@ print "***** $script_file ($version) *****\n";
 /*
 if (! $conf->global->LDAP_SYNCHRO_ACTIVE)
 {
-	print $langs->trans("LDAPSynchronizationNotSetupInDolibarr");
+	print $langs->trans("LDAPSynchronizationNotSetupInSpeedealing");
 	exit 1;
 }
 */

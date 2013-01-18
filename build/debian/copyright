@@ -1,7 +1,7 @@
 Format: http://anonscm.debian.org/viewvc/dep/web/deps/dep5.mdwn?revision=174
-Upstream-Name: Dolibarr
+Upstream-Name: Speedealing
 Upstream-Contact: Laurent Destailleur <eldy@users.sourceforge.net>
-Source: git@github.com:Dolibarr/dolibarr.git
+Source: git@github.com:Speedealing/dolibarr.git
 
 Files: *
 Copyright: 2002-2009, Rodolphe Quiedeville   <rodolphe@quiedeville.org>

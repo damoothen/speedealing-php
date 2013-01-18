@@ -1,5 +1,5 @@
 <?php
-// File to force Dolibarr wizard installer choices.
+// File to force Speedealing wizard installer choices.
 //
 // This file must be present into htdocs/install directory
 // during install process to be used.

@@ -59,7 +59,7 @@ See ChangeLog file found into package.
 - Code is highly customizable (a lot of use of modules and submodules).
 - Works with PHP 5.3 or higher.
 - An easy to understand and maintain code (PHP with no heavy frameworks).
-- A trigger architecture to allow you to make Dolibarr business events run PHP code to update your own information system.
+- A trigger architecture to allow you to make Speedealing business events run PHP code to update your own information system.
 - "NPR VAT Rate" (French particularity for managing VAT in DOM-TOM called "Non Perçue Récupérable").
 
 ## WHAT SPEEDEALING CAN'T DO YET (TODO LIST)
@@ -67,7 +67,7 @@ See ChangeLog file found into package.
 This is features that Speedealing does not support completely yet:
 
 - No accountancy (only bank management).
-- Dolibarr manage one currency at once (mono-currency).
+- Speedealing manage one currency at once (mono-currency).
 - Does not support double VAT (Federal / provincial) for Canada.
 - Tasks on module project can't have dependencies between each other.
 - Speedealing does not include any Webmail.

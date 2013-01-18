@@ -3,7 +3,7 @@ README (French)
 
 *** Demo
 
-Ce script permet de reinitialiser une base de donnée Dolibarr avec des
+Ce script permet de reinitialiser une base de donnée Speedealing avec des
 données de demo.
 ATTENTION: Ceci efface les données en cours de la base avec les données
 du fichier initdemo.sql.

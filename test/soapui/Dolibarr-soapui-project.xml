@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project name="Dolibarr" soapui-version="3.6.1" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesDolibarrOtherBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesDolibarrOtherBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<con:soapui-project name="Speedealing" soapui-version="3.6.1" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingOtherBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingOtherBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
     <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -31,14 +31,14 @@
     <part name="php" type="xsd:string"/>
     <part name="webserver" type="xsd:string"/>
   </message>
-  <portType name="WebServicesDolibarrOtherPortType">
+  <portType name="WebServicesSpeedealingOtherPortType">
     <operation name="getVersions">
       <documentation>WS to get Versions</documentation>
       <input message="tns:getVersionsRequest"/>
       <output message="tns:getVersionsResponse"/>
     </operation>
   </portType>
-  <binding name="WebServicesDolibarrOtherBinding" type="tns:WebServicesDolibarrOtherPortType">
+  <binding name="WebServicesSpeedealingOtherBinding" type="tns:WebServicesSpeedealingOtherPortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getVersions">
       <soap:operation soapAction="http://www.dolibarr.org/ns/#getVersions" style="rpc"/>
@@ -50,8 +50,8 @@
       </output>
     </operation>
   </binding>
-  <service name="WebServicesDolibarrOther">
-    <port name="WebServicesDolibarrOtherPort" binding="tns:WebServicesDolibarrOtherBinding">
+  <service name="WebServicesSpeedealingOther">
+    <port name="WebServicesSpeedealingOtherPort" binding="tns:WebServicesSpeedealingOtherBinding">
       <soap:address location="http://localhostdolibarr/dolibarrnew/webservices/server_other.php"/>
     </port>
   </service>
@@ -69,7 +69,7 @@
          </authentication>
       </ns:getVersions>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getVersions"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesDolibarrInvoiceBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesDolibarrInvoiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getVersions"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingInvoiceBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingInvoiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
     <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -187,7 +187,7 @@
     <part name="id" type="xsd:string"/>
     <part name="ref" type="xsd:string"/>
   </message>
-  <portType name="WebServicesDolibarrInvoicePortType">
+  <portType name="WebServicesSpeedealingInvoicePortType">
     <operation name="getInvoice">
       <documentation>WS to get a particular invoice</documentation>
       <input message="tns:getInvoiceRequest"/>
@@ -204,7 +204,7 @@
       <output message="tns:createInvoiceResponse"/>
     </operation>
   </portType>
-  <binding name="WebServicesDolibarrInvoiceBinding" type="tns:WebServicesDolibarrInvoicePortType">
+  <binding name="WebServicesSpeedealingInvoiceBinding" type="tns:WebServicesSpeedealingInvoicePortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getInvoice">
       <soap:operation soapAction="http://www.dolibarr.org/ns/#getInvoice" style="rpc"/>
@@ -234,8 +234,8 @@
       </output>
     </operation>
   </binding>
-  <service name="WebServicesDolibarrInvoice">
-    <port name="WebServicesDolibarrInvoicePort" binding="tns:WebServicesDolibarrInvoiceBinding">
+  <service name="WebServicesSpeedealingInvoice">
+    <port name="WebServicesSpeedealingInvoicePort" binding="tns:WebServicesSpeedealingInvoiceBinding">
       <soap:address location="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php"/>
     </port>
   </service>
@@ -370,7 +370,7 @@
          <idthirdparty xsi:type="xsd:string">4</idthirdparty>
       </ns:getInvoicesForThirdParty>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getInvoicesForThirdParty"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesDolibarrSupplierInvoiceBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesDolibarrSupplierInvoiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getInvoicesForThirdParty"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingSupplierInvoiceBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingSupplierInvoiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
     <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -475,7 +475,7 @@
     <part name="result" type="tns:result"/>
     <part name="invoices" type="tns:invoices"/>
   </message>
-  <portType name="WebServicesDolibarrSupplierInvoicePortType">
+  <portType name="WebServicesSpeedealingSupplierInvoicePortType">
     <operation name="getSupplierInvoice">
       <documentation>WS to get SupplierInvoice</documentation>
       <input message="tns:getSupplierInvoiceRequest"/>
@@ -487,7 +487,7 @@
       <output message="tns:getSupplierInvoicesForThirdPartyResponse"/>
     </operation>
   </portType>
-  <binding name="WebServicesDolibarrSupplierInvoiceBinding" type="tns:WebServicesDolibarrSupplierInvoicePortType">
+  <binding name="WebServicesSpeedealingSupplierInvoiceBinding" type="tns:WebServicesSpeedealingSupplierInvoicePortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getSupplierInvoice">
       <soap:operation soapAction="http://www.dolibarr.org/ns/#getSupplierInvoice" style="rpc"/>
@@ -508,8 +508,8 @@
       </output>
     </operation>
   </binding>
-  <service name="WebServicesDolibarrSupplierInvoice">
-    <port name="WebServicesDolibarrSupplierInvoicePort" binding="tns:WebServicesDolibarrSupplierInvoiceBinding">
+  <service name="WebServicesSpeedealingSupplierInvoice">
+    <port name="WebServicesSpeedealingSupplierInvoicePort" binding="tns:WebServicesSpeedealingSupplierInvoiceBinding">
       <soap:address location="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php"/>
     </port>
   </service>
@@ -545,7 +545,7 @@
          <idthirdparty xsi:type="xsd:string">all</idthirdparty>
       </ns:getSupplierInvoicesForThirdParty>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getSupplierInvoicesForThirdParty"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesDolibarrProductOrServiceBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesDolibarrProductOrServiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getSupplierInvoicesForThirdParty"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingProductOrServiceBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingProductOrServiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
     <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -640,7 +640,7 @@
     <part name="result" type="tns:result"/>
     <part name="products" type="tns:ProductsArray2"/>
   </message>
-  <portType name="WebServicesDolibarrProductOrServicePortType">
+  <portType name="WebServicesSpeedealingProductOrServicePortType">
     <operation name="getProductOrService">
       <documentation>WS to get product or service</documentation>
       <input message="tns:getProductOrServiceRequest"/>
@@ -657,7 +657,7 @@
       <output message="tns:getListOfProductsOrServicesResponse"/>
     </operation>
   </portType>
-  <binding name="WebServicesDolibarrProductOrServiceBinding" type="tns:WebServicesDolibarrProductOrServicePortType">
+  <binding name="WebServicesSpeedealingProductOrServiceBinding" type="tns:WebServicesSpeedealingProductOrServicePortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getProductOrService">
       <soap:operation soapAction="http://www.dolibarr.org/ns/#getProductOrService" style="rpc"/>
@@ -687,8 +687,8 @@
       </output>
     </operation>
   </binding>
-  <service name="WebServicesDolibarrProductOrService">
-    <port name="WebServicesDolibarrProductOrServicePort" binding="tns:WebServicesDolibarrProductOrServiceBinding">
+  <service name="WebServicesSpeedealingProductOrService">
+    <port name="WebServicesSpeedealingProductOrServicePort" binding="tns:WebServicesSpeedealingProductOrServiceBinding">
       <soap:address location="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php"/>
     </port>
   </service>
@@ -770,7 +770,7 @@
          </filterproduct>
       </ns:getListOfProductsOrServices>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getListOfProductsOrServices"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesDolibarrUserBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesDolibarrUserBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/webservices/server_user.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/webservices/server_user.php?wsdl"><con:part><con:url>http://localhostdolibarr/webservices/server_user.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getListOfProductsOrServices"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingUserBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingUserBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/webservices/server_user.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/webservices/server_user.php?wsdl"><con:part><con:url>http://localhostdolibarr/webservices/server_user.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
     <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -832,14 +832,14 @@
     <part name="result" type="tns:result"/>
     <part name="user" type="tns:user"/>
   </message>
-  <portType name="WebServicesDolibarrUserPortType">
+  <portType name="WebServicesSpeedealingUserPortType">
     <operation name="getUser">
       <documentation>WS to get user</documentation>
       <input message="tns:getUserRequest"/>
       <output message="tns:getUserResponse"/>
     </operation>
   </portType>
-  <binding name="WebServicesDolibarrUserBinding" type="tns:WebServicesDolibarrUserPortType">
+  <binding name="WebServicesSpeedealingUserBinding" type="tns:WebServicesSpeedealingUserPortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getUser">
       <soap:operation soapAction="http://www.dolibarr.org/ns/#getUser" style="rpc"/>
@@ -851,8 +851,8 @@
       </output>
     </operation>
   </binding>
-  <service name="WebServicesDolibarrUser">
-    <port name="WebServicesDolibarrUserPort" binding="tns:WebServicesDolibarrUserBinding">
+  <service name="WebServicesSpeedealingUser">
+    <port name="WebServicesSpeedealingUserPort" binding="tns:WebServicesSpeedealingUserBinding">
       <soap:address location="http://localhostdolibarr/webservices/server_user.php"/>
     </port>
   </service>
@@ -873,7 +873,7 @@
          <ref_ext xsi:type="xsd:string"></ref_ext>
       </ns:getUser>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getUser"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesDolibarrThirdPartyBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesDolibarrThirdPartyBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/webservices/server_thirdparty.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/webservices/server_thirdparty.php?wsdl"><con:part><con:url>http://localhostdolibarr/webservices/server_thirdparty.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getUser"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingThirdPartyBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingThirdPartyBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/webservices/server_thirdparty.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/webservices/server_thirdparty.php?wsdl"><con:part><con:url>http://localhostdolibarr/webservices/server_thirdparty.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
     <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -976,7 +976,7 @@
     <part name="result" type="tns:result"/>
     <part name="thirdparties" type="tns:ThirdPartiesArray2"/>
   </message>
-  <portType name="WebServicesDolibarrThirdPartyPortType">
+  <portType name="WebServicesSpeedealingThirdPartyPortType">
     <operation name="getThirdParty">
       <documentation>WS to get a thirdparty from its id, ref or ref_ext</documentation>
       <input message="tns:getThirdPartyRequest"/>
@@ -993,7 +993,7 @@
       <output message="tns:getListOfThirdPartiesResponse"/>
     </operation>
   </portType>
-  <binding name="WebServicesDolibarrThirdPartyBinding" type="tns:WebServicesDolibarrThirdPartyPortType">
+  <binding name="WebServicesSpeedealingThirdPartyBinding" type="tns:WebServicesSpeedealingThirdPartyPortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getThirdParty">
       <soap:operation soapAction="http://www.dolibarr.org/ns/#getThirdParty" style="rpc"/>
@@ -1023,14 +1023,14 @@
       </output>
     </operation>
   </binding>
-  <service name="WebServicesDolibarrThirdParty">
-    <port name="WebServicesDolibarrThirdPartyPort" binding="tns:WebServicesDolibarrThirdPartyBinding">
+  <service name="WebServicesSpeedealingThirdParty">
+    <port name="WebServicesSpeedealingThirdPartyPort" binding="tns:WebServicesSpeedealingThirdPartyBinding">
       <soap:address location="http://localhostdolibarr/webservices/server_thirdparty.php"/>
     </port>
   </service>
 </definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getThirdParty" name="getThirdParty" bindingOperationName="getThirdParty" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint><con:request><![CDATA[<SOAP-ENV:Envelope SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/">
    <SOAP-ENV:Body>
-      <ns9290:getVersions xmlns:ns9290="http://www.Dolibarr.org/ns/">
+      <ns9290:getVersions xmlns:ns9290="http://www.Speedealing.org/ns/">
          <authentication>
             <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
             <sourceapplication xsi:type="xsd:string">PRESTASHOP</sourceapplication>

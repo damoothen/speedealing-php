@@ -5,8 +5,8 @@
 # \author       (c)2009-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
 #----------------------------------------------------------------------------
 # This script can be used to build a patch after a developer has made
-# changes on files in its Dolibarr tree.
-# The output patch file can then be submited on Dolibarr dev mailing-list,
+# changes on files in its Speedealing tree.
+# The output patch file can then be submited on Speedealing dev mailing-list,
 # with explanation on its goal, for inclusion in main branch.
 #----------------------------------------------------------------------------
 

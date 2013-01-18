@@ -1,6 +1,6 @@
 #!/bin/sh
 #------------------------------------------------------
-# Script to remove setup of a Dolibarr installation.
+# Script to remove setup of a Speedealing installation.
 # Note: "dialog" tool need to be available.
 #
 # Regis Houssin       - regis.houssin@capnetworks.com
@@ -31,7 +31,7 @@ DIALOG=${DIALOG=dialog}
 DIALOG="$DIALOG --ascii-lines"
 fichtemp=`tempfile 2>/dev/null` || fichtemp=/tmp/test$$
 trap "rm -f $fichtemp" 0 1 2 5 15
-$DIALOG --title "Remove Dolibarr install" --clear \
+$DIALOG --title "Remove Speedealing install" --clear \
 		--yesno "Do you confirm ?" 15 40
 valret=$?
 case $valret in
@@ -50,5 +50,5 @@ rm $mydir../../htdocs/conf/conf.php 2>/dev/null
 echo "Remove file $mydir../../install.lock"
 rm $mydir../../install.lock 2>/dev/null
 
-echo "Dolibarr setup has been removed (need to be installed again. database not dropped)."
+echo "Speedealing setup has been removed (need to be installed again. database not dropped)."
 echo

@@ -1,44 +1,44 @@
 
 [CustomMessages]
 
-NameAndVersion=%1 versió %2
+NameAndVersion=%1 versiï¿½ %2
 AdditionalIcons=Icones addicionals:
 CreateDesktopIcon=Crea una icona a l'&Escriptori
 CreateQuickLaunchIcon=Crea una icona a la &Barra de tasques
 ProgramOnTheWeb=%1 a Internet
-UninstallProgram=Desinstal·la %1
+UninstallProgram=Desinstalï¿½la %1
 LaunchProgram=Obre %1
-AssocFileExtension=&Associa %1 amb l'extensió de fitxer %2
-AssocingFileExtension=Associant %1 amb l'extensió de fitxer %2...
+AssocFileExtension=&Associa %1 amb l'extensiï¿½ de fitxer %2
+AssocingFileExtension=Associant %1 amb l'extensiï¿½ de fitxer %2...
 
-YouWillInstallDoliWamp=Va a instal·lar o actualitzar (Apache + Mysql + PHP + Dolibarr) al seu ordinador.
-ThisAssistantInstallOrUpgrade=Aquest assistent instal·la o actualitza Dolibarr ERP-CRM i tots els seus requisits (Apache, Mysql i PHP) optimitzats per a l'ús de Dolibarr.
-IfYouHaveTechnicalKnowledge=Si teniu coneixements tècnics i necessita usar la seva Apache, Mysql i PHP amb altres aplicacions a part de Dolibarr, no utilitzeu aquest assistent, hauria lació manual d'Dolibarr sobre un Apache, Mysql i PHP existent.
-ButIfYouLook=Però si busca una instal·lació automàtica, es troba en el bon camí...
-DoYouWantToStart=Vol iniciar el procés d'instal·lació/actualització?
+YouWillInstallDoliWamp=Va a instalï¿½lar o actualitzar (Apache + Mysql + PHP + Speedealing) al seu ordinador.
+ThisAssistantInstallOrUpgrade=Aquest assistent instalï¿½la o actualitza Speedealing ERP-CRM i tots els seus requisits (Apache, Mysql i PHP) optimitzats per a l'ï¿½s de Speedealing.
+IfYouHaveTechnicalKnowledge=Si teniu coneixements tï¿½cnics i necessita usar la seva Apache, Mysql i PHP amb altres aplicacions a part de Speedealing, no utilitzeu aquest assistent, hauria laciï¿½ manual d'Speedealing sobre un Apache, Mysql i PHP existent.
+ButIfYouLook=Perï¿½ si busca una instalï¿½laciï¿½ automï¿½tica, es troba en el bon camï¿½...
+DoYouWantToStart=Vol iniciar el procï¿½s d'instalï¿½laciï¿½/actualitzaciï¿½?
 
-TechnicalParameters=Paràmetres tècnics
-IfFirstInstall=Si es tracta de la primera instal lació, haurà d'especificar alguns paràmetres tècnics. Si no els entén, no sabeu o va a procedir a una actualització, deixi els camps amb els valors proposats per defecte.
+TechnicalParameters=Parï¿½metres tï¿½cnics
+IfFirstInstall=Si es tracta de la primera instal laciï¿½, haurï¿½ d'especificar alguns parï¿½metres tï¿½cnics. Si no els entï¿½n, no sabeu o va a procedir a una actualitzaciï¿½, deixi els camps amb els valors proposats per defecte.
 
 ; WARNING !!! STRINGS HERE MUST BE LOWER THAN 60 CHARACTERS
-SMTPServer=Servidor SMTP (El seu o el del seu ISP, únicament primera instal.lació) :
-ApachePort=Puerto Apache (únicament primera instal.lació, normalment és el 80) :
-MySqlPort=Puerto Mysql (únicament primera instal.lació, normalment és el 3306) :
-MySqlPassword=Contrasenya del servidor i la base de dades MySQL de root (únicament primera instal.lació):
+SMTPServer=Servidor SMTP (El seu o el del seu ISP, ï¿½nicament primera instal.laciï¿½) :
+ApachePort=Puerto Apache (ï¿½nicament primera instal.laciï¿½, normalment ï¿½s el 80) :
+MySqlPort=Puerto Mysql (ï¿½nicament primera instal.laciï¿½, normalment ï¿½s el 3306) :
+MySqlPassword=Contrasenya del servidor i la base de dades MySQL de root (ï¿½nicament primera instal.laciï¿½):
 
-FailedToDeleteLock=FailedToDeleteLock=Error en l'eliminació del fitxer %1/www/dolibarr/install.lock. Pot ignorar l'avís però és possible que hagi de eliminar-lo manualment més tard. En aquest cas, serà informat. Feu clic a OK per continuar...
+FailedToDeleteLock=FailedToDeleteLock=Error en l'eliminaciï¿½ del fitxer %1/www/dolibarr/install.lock. Pot ignorar l'avï¿½s perï¿½ ï¿½s possible que hagi de eliminar-lo manualment mï¿½s tard. En aquest cas, serï¿½ informat. Feu clic a OK per continuar...
 
-PortAlreadyInUse=Sembla que el port %1 ja està sent utilitzat. Es recomana cancel·lar, tornar enrere i especificar un altre valor per al port% 2. Cancel·lar i escollir un altre valor?
+PortAlreadyInUse=Sembla que el port %1 ja estï¿½ sent utilitzat. Es recomana cancelï¿½lar, tornar enrere i especificar un altre valor per al port% 2. Cancelï¿½lar i escollir un altre valor?
 
-FirefoxDetected=S'ha detectat Firefox al seu ordinador. Voleu activar per defecte com a navegador per Dolibarr?
-ChooseDefaultBrowser=Esculli el seu navegador per defecte. Si no està segur, simplement feu clic a Obrir:
+FirefoxDetected=S'ha detectat Firefox al seu ordinador. Voleu activar per defecte com a navegador per Speedealing?
+ChooseDefaultBrowser=Esculli el seu navegador per defecte. Si no estï¿½ segur, simplement feu clic a Obrir:
 
-LaunchNow=Llançar ara Dolibarr
+LaunchNow=Llanï¿½ar ara Speedealing
 
-ProgramHasBeenRemoved=Els arxius del programa Dolibarr han estat eliminats. No obstant això tots els seus arxius de dades es troben encara al directori %1. Haurà eliminar aquest directori manualment per a una desinstal completa.
+ProgramHasBeenRemoved=Els arxius del programa Speedealing han estat eliminats. No obstant aixï¿½ tots els seus arxius de dades es troben encara al directori %1. Haurï¿½ eliminar aquest directori manualment per a una desinstal completa.
 
-DoliWampWillStartApacheMysql=L'instal·lador DoliWamp intentarà iniciar o reiniciar Apache i MySQL, això pot durar des de diversos segons a un minut després de la confirmació. Iniciar la instal·lació o actualització dels servidors web i bases de dades requerides per Dolibarr?
+DoliWampWillStartApacheMysql=L'instalï¿½lador DoliWamp intentarï¿½ iniciar o reiniciar Apache i MySQL, aixï¿½ pot durar des de diversos segons a un minut desprï¿½s de la confirmaciï¿½. Iniciar la instalï¿½laciï¿½ o actualitzaciï¿½ dels servidors web i bases de dades requerides per Speedealing?
 
-OldVersionFoundAndMoveInNew=S'ha trobat una versió antiga de base de dades i ha estat moguda per a ser utilitzada per la nova versió de Dolibarr
-OldVersionFoundButFailedToMoveInNew=S'ha trobat una versió antiga de base de dades, però no es pot moure per a ser utilitzada per la nova versió de Dolibarr
+OldVersionFoundAndMoveInNew=S'ha trobat una versiï¿½ antiga de base de dades i ha estat moguda per a ser utilitzada per la nova versiï¿½ de Speedealing
+OldVersionFoundButFailedToMoveInNew=S'ha trobat una versiï¿½ antiga de base de dades, perï¿½ no es pot moure per a ser utilitzada per la nova versiï¿½ de Speedealing
 

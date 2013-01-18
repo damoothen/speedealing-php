@@ -39,7 +39,7 @@ $error=0;
 
 
 // -------------------- START OF YOUR CODE HERE --------------------
-// Include Dolibarr environment
+// Include Speedealing environment
 require_once($path."../../htdocs/master.inc.php");
 // After this $db, $mysoc, $langs and $conf->entity are defined. Opened handler to database will be closed at end of file.
 

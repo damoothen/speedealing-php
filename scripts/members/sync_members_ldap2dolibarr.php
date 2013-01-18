@@ -21,7 +21,7 @@
 /**
  *      \file       scripts/members/sync_members_ldap2dolibarr.php
  *      \ingroup    ldap member
- *      \brief      Script de mise a jour des adherents dans Dolibarr depuis LDAP
+ *      \brief      Script de mise a jour des adherents dans Speedealing depuis LDAP
  */
 
 $sapi_type = php_sapi_name();
@@ -71,7 +71,7 @@ print "login=".$conf->global->LDAP_ADMIN_DN."\n";
 print "pass=".preg_replace('/./i','*',$conf->global->LDAP_ADMIN_PASS)."\n";
 print "DN to extract=".$conf->global->LDAP_MEMBER_DN."\n";
 print 'Filter=('.$conf->global->LDAP_KEY_MEMBERS.'=*)'."\n";
-print "----- To Dolibarr database:\n";
+print "----- To Speedealing database:\n";
 print "type=".$conf->db->type."\n";
 print "host=".$conf->db->host."\n";
 print "port=".$conf->db->port."\n";
@@ -87,7 +87,7 @@ $input = trim(fgets(STDIN));
 
 if (! $conf->global->LDAP_MEMBER_DN)
 {
-	print $langs->trans("Error").': '.$langs->trans("LDAP setup for members not defined inside Dolibarr");
+	print $langs->trans("Error").': '.$langs->trans("LDAP setup for members not defined inside Speedealing");
 	exit(1);
 }
 
@@ -134,7 +134,7 @@ if ($result >= 0)
 	$justthese=array();
 
 
-	// On d�sactive la synchro Dolibarr vers LDAP
+	// On d�sactive la synchro Speedealing vers LDAP
 	$conf->global->LDAP_MEMBER_ACTIVE=0;
 
 	// Liste des champs a r�cup�rer de LDAP

@@ -4,7 +4,7 @@ Building DOAP files
 ##################################################
 
 This directory contains files and docs used to build
-a DOAP descriptor file for Dolibarr.
+a DOAP descriptor file for Speedealing.
 DOAP files are files to describe a software to submit
 easily its description, in one way, to several software
 directories.

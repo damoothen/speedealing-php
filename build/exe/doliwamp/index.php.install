@@ -55,7 +55,7 @@ $langues = array(
 		'NotAvailable' => 'Not available',
 		'faq' => 'http://www.en.wampserver.com/faq.php',
 		'ipserver' => 'Name/IP Server:',
-		'askhelp' => 'Dolibarr Help center'
+		'askhelp' => 'Speedealing Help center'
 	),
 	'fr' => array(
 		'langue' => 'Français',
@@ -80,7 +80,7 @@ $langues = array(
 		'NotAvailable' => 'Non disponible',
 		'faq' => 'http://www.wampserver.com/faq.php',
 		'ipserver' => 'Name/IP Serveur:',
-		'askhelp' => 'Centre d\'assistance Dolibarr'
+		'askhelp' => 'Centre d\'assistance Speedealing'
 	),
 	'es' => array(
 		'langue' => 'Español',

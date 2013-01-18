@@ -1,7 +1,7 @@
 @echo off
-REM Launch Dolibarr Help center
+REM Launch Speedealing Help center
 REM ---------------------------
 
 REM Go to help center page
 echo Please wait...
-start "Dolibarr Help center" "WAMPBROWSER" http://localhost:WAMPAPACHEPORT/dolibarr/support/
+start "Speedealing Help center" "WAMPBROWSER" http://localhost:WAMPAPACHEPORT/dolibarr/support/

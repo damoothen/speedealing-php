@@ -64,7 +64,7 @@ $objPHPExcel->getProperties()->setSubject("Test Document");
 $objPHPExcel->getProperties()->setDescription("Test document, generated using PHP classes.");
 
 
-//$page = &$objPHPExcel->addworksheet('Export Dolibarr');
+//$page = &$objPHPExcel->addworksheet('Export Speedealing');
 $objPHPExcel->setActiveSheetIndex(0);
 $objPHPExcel->getActiveSheet()->setTitle('Contacts');
 

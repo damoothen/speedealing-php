@@ -40,7 +40,7 @@ msgstr ""
 #. Description
 #: ../templates:2001
 msgid ""
-"Answer if you want to removed the Dolibarr MySQL database and all other "
-"datas (datas related to this question are the Dolibarr DBMS account, all "
-"Dolibarr tables, and all uploaded files)."
+"Answer if you want to removed the Speedealing MySQL database and all other "
+"datas (datas related to this question are the Speedealing DBMS account, all "
+"Speedealing tables, and all uploaded files)."
 msgstr ""

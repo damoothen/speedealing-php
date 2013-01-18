@@ -1,6 +1,6 @@
 
 This file describe changes made on external library after beeing included
-in Dolibarr root.
+in Speedealing root.
 
 
 

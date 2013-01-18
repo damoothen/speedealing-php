@@ -4,10 +4,10 @@ Building packages
 ##################################################
 
 All sub-directories of "build" directory contains files required to build
-automatically Dolibarr packages.
+automatically Speedealing packages.
 There are several tools:
 
-- To build full Dolibarr packages, launch the script
+- To build full Speedealing packages, launch the script
 > Edit version in makepack-dolibarr.pl file.
 > Launch command perl makepack-dolibarr.pl
 
@@ -26,7 +26,7 @@ There are several tools:
 > Install WampServer addon to have versions:
    Apache2.2.6, Mysql5.0.45, Php5.2.5
 > Modify file build/exe/doliwamp.iss to change variable SourceDir
-  with value of Dolibarr repository.
+  with value of Speedealing repository.
 > Modify AppVerName and OutputBaseFilename.
 > Launch innosetup, open file build/exe/doliwamp.iss and click on
   button "Compile". The .exe file will be build into directory build.
@@ -37,7 +37,7 @@ There are several tools:
 
 Note: 
 The build directory and all its contents is absolutely not required to make
-Dolibarr working. It is here only to build Dolibarr packages, and those
+Speedealing working. It is here only to build Speedealing packages, and those
 generated packages will not contains this "build" directory.
 
 
@@ -53,20 +53,20 @@ To build Redhat or Mandrake package.
 To build a tgz package.
 
 * exe:
-To build exe package for Windows that distribute Dolibarr sources or
+To build exe package for Windows that distribute Speedealing sources or
 to build the complete DoliWamp package.
 
 * tgz:
 To build a zip package.
 
 * doap:
-To build Doap descriptor to promote/describe Dolibarr releases.
+To build Doap descriptor to promote/describe Speedealing releases.
 
 * pad:
-To build a PAD file descriptor to promote/describe Dolibarr releases.
+To build a PAD file descriptor to promote/describe Speedealing releases.
 
 * patch:
-Script file to generate a patch file to distribute a Dolibarr mod.
+Script file to generate a patch file to distribute a Speedealing mod.
 
 * dmg:
 To build dmg DoliMamp package for Mac OS X

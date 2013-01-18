@@ -154,7 +154,7 @@ foreach my $PROJECT (@PROJECTLIST) {
 	
 	# Choose package targets
 	#-----------------------
-	$target="ZIP";    # Dolibarr modules are this format
+	$target="ZIP";    # Speedealing modules are this format
 	$CHOOSEDTARGET{uc($target)}=1;
 	
 	

@@ -21,7 +21,7 @@ print "Running dir for doxygen must be: $DIR\n";
 
 if (! -s $CONFFILE)
 {
-    print "Error: current directory for building Dolibarr doxygen documentation is not correct.\n";
+    print "Error: current directory for building Speedealing doxygen documentation is not correct.\n";
     print "\n";
 	print "Change your current directory then, to launch the script, run:\n";
 	print '> perl ..\dolibarr-doxygen-build.pl  (on Windows)'."\n";

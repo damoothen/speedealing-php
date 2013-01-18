@@ -1,8 +1,8 @@
 README (English)
 --------------------------------
 
-This directory contains samples of code to use Dolibarr business classes to build
-external interfaces that need to read/update data from/into Dolibarr.
+This directory contains samples of code to use Speedealing business classes to build
+external interfaces that need to read/update data from/into Speedealing.
 
-You can also have a look at the Dolibarr doxygen doc that describes all files and classes:
+You can also have a look at the Speedealing doxygen doc that describes all files and classes:
 http://www.dolibarr.org/html_doxygen/index.html

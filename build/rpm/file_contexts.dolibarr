@@ -1,6 +1,6 @@
 # This file is useless.
 # It is provided as example to know contexts modified by installer
-# to make Dolibarr working.
+# to make Speedealing working.
 #
 # Note: To allow temporary write permission for httpd:
 # chcon -R -h -t httpd_sys_script_rw_t /dirtoallow

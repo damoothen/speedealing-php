@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 #-----------------------------------------------------------------------------
 # \file         build/makepack-dolibarrtheme.pl
-# \brief        Script to build a theme Package for Dolibarr
+# \brief        Script to build a theme Package for Speedealing
 # \author       (c)2005-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
 #-----------------------------------------------------------------------------
 

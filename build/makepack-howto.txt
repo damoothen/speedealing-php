@@ -1,11 +1,11 @@
------ Dolibarr Makepack How To -----
+----- Speedealing Makepack How To -----
 This documentation describe steps to build a BETA or RELEASE versions
-of Dolibarr. There is a chapter for BETA version and a chapter for 
+of Speedealing. There is a chapter for BETA version and a chapter for 
 RELEASE version.
 
 ***** Actions to do a BETA *****
-This files describe steps made by Dolibarr packaging team to make a 
-beta version of Dolibarr, step by step.
+This files describe steps made by Speedealing packaging team to make a 
+beta version of Speedealing, step by step.
 
 - Check all files are commited.
 - Update version/info in /ChangeLog
@@ -28,8 +28,8 @@ beta version of Dolibarr, step by step.
 
 
 ***** Actions to do a RELEASE *****
-This files describe steps made by Dolibarr packaging team to make a 
-complete release of Dolibarr, step by step.
+This files describe steps made by Speedealing packaging team to make a 
+complete release of Speedealing, step by step.
 
 - Check all files are commited.
 - Update version/info in /ChangeLog and /filefunc.inc.php
@@ -42,7 +42,7 @@ complete release of Dolibarr, step by step.
 - Commit all changes.
 - Add a Tag (DOLIBARR_x_y)
 
-- Build Dolibarr and DoliWamp packages with makepack-dolibarr.pl
+- Build Speedealing and DoliWamp packages with makepack-dolibarr.pl
 - Check content of built packages.
 - Move build files (tgz+exe+deb+rpm...), ChangeLog and PAD files
   into www.dolibarr.org web site (/home/dolibarr/wwwroot/files).

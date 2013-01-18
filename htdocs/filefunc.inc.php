@@ -65,7 +65,7 @@ if (!$result && !empty($_SERVER["GATEWAY_INTERFACE"])) {    // If install not do
     exit;
 }
 
-// Force PHP error_reporting setup (Dolibarr may report warning without this)
+// Force PHP error_reporting setup (Speedealing may report warning without this)
 if (!empty($dolibarr_strict_mode)) {
     error_reporting(E_ALL | E_STRICT);
 } else {
@@ -111,7 +111,7 @@ if (empty($dolibarr_strict_mode))
 
 
 // Security: CSRF protection
-// This test check if referrer ($_SERVER['HTTP_REFERER']) is same web site than Dolibarr ($_SERVER['HTTP_HOST'])
+// This test check if referrer ($_SERVER['HTTP_REFERER']) is same web site than Speedealing ($_SERVER['HTTP_HOST'])
 // when we post forms (we allow GET to allow direct link to access a particular page).
 if (!defined('NOCSRFCHECK') && empty($dolibarr_nocsrfcheck) && !empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] != 'GET' && !empty($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_REFERER']) && !preg_match('/' . preg_quote($_SERVER['HTTP_HOST'], '/') . '/i', $_SERVER['HTTP_REFERER'])) {
     //print 'HTTP_POST='.$_SERVER['HTTP_HOST'].' HTTP_REFERER='.$_SERVER['HTTP_REFERER'];
@@ -120,13 +120,13 @@ if (!defined('NOCSRFCHECK') && empty($dolibarr_nocsrfcheck) && !empty($_SERVER['
     die;
 }
 if (empty($dolibarr_main_db_host)) {
-    print '<div align="center">Dolibarr setup is not yet complete.<br><br>' . "\n";
-    print '<a href="install/index.php">Click here to finish Dolibarr install process</a> ...</div>' . "\n";
+    print '<div align="center">Speedealing setup is not yet complete.<br><br>' . "\n";
+    print '<a href="install/index.php">Click here to finish Speedealing install process</a> ...</div>' . "\n";
     die;
 }
 if (empty($dolibarr_main_url_root)) {
     print 'Value for parameter \'dolibarr_main_url_root\' is not defined in your \'htdocs\conf\conf.php\' file.<br>' . "\n";
-    print 'You must add this parameter with your full Dolibarr root Url (Example: http://myvirtualdomain/ or http://mydomain/mydolibarrurl/)' . "\n";
+    print 'You must add this parameter with your full Speedealing root Url (Example: http://myvirtualdomain/ or http://mydomain/mydolibarrurl/)' . "\n";
     die;
 }
 if (empty($dolibarr_main_db_type))
@@ -265,7 +265,7 @@ if (!defined('ADODB_DATE_VERSION'))
     include_once ADODB_PATH . 'adodb-time.inc.php';
 
 if (!file_exists(DOL_DOCUMENT_ROOT . "/core/lib/functions.lib.php")) {
-    print "Error: Dolibarr config file content seems to be not correctly defined.<br>\n";
+    print "Error: Speedealing config file content seems to be not correctly defined.<br>\n";
     print "Please run dolibarr setup by calling page <b>/install</b>.<br>\n";
     exit;
 }

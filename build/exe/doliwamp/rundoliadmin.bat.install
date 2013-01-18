@@ -1,5 +1,5 @@
 @echo off
-REM Launch Dolibarr Admin center
+REM Launch Speedealing Admin center
 REM ----------------------------
 
 REM Go to admin center page

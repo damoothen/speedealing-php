@@ -1,5 +1,5 @@
 ; ----- DoliWamp.iss ---------------------------------------------------------------------
-; Script to build an auto installer for Dolibarr.
+; Script to build an auto installer for Speedealing.
 ; Works with InnoSetup 5.4.0 (a)
 ; Idea from WampServer 2 (http://www.wampserver.com)
 ;----------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@
 ; package contains only one user called root with no password.
 ; For this, you can edit the mysql.user table of the source database to keep
 ; only the root user with no password, stop server and catch
-; files user.MY* to put them in the Dolibarr build/exe/doliwamp/mysql directory.
+; files user.MY* to put them in the Speedealing build/exe/doliwamp/mysql directory.
 ;
 ;----------------------------------------------------------------------------------------
 
@@ -31,10 +31,10 @@ AppPublisher=NLTechno
 AppPublisherURL=http://www.nltechno.com
 AppSupportURL=http://www.dolibarr.org
 AppUpdatesURL=http://www.dolibarr.org
-AppComments=DoliWamp includes Dolibarr, Apache, PHP and Mysql softwares.
+AppComments=DoliWamp includes Speedealing, Apache, PHP and Mysql softwares.
 AppCopyright=Copyright (C) 2008-2012 Laurent Destailleur, NLTechno
 DefaultDirName=c:\dolibarr
-DefaultGroupName=Dolibarr
+DefaultGroupName=Speedealing
 ;LicenseFile=COPYING
 ;Compression=none
 Compression=lzma
@@ -108,7 +108,7 @@ Source: "C:\Program Files\Wamp\bin\php\php5.3.0\*.*"; DestDir: "{app}\bin\php\ph
 Source: "C:\Program Files\Wamp\bin\mysql\mysql5.0.45\*.*"; DestDir: "{app}\bin\mysql\mysql5.0.45"; Flags: ignoreversion recursesubdirs; Excludes: "my.ini,data\*,wampserver.conf,*.log,*_log,MySQLInstanceConfig.exe"
 ; Mysql data files (does not overwrite if exists)
 Source: "build\exe\doliwamp\mysql\*.*"; DestDir: "{app}\bin\mysql\data\mysql"; Flags: onlyifdoesntexist ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db"
-; Dolibarr
+; Speedealing
 Source: "htdocs\*.*"; DestDir: "{app}\www\dolibarr\htdocs"; Flags: ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db,custom\*,custom2\*,telephonie\*,*\conf.php,*\conf.php.mysql,*\conf.php.old,*\conf.php.postgres,*\install.forced.php"
 Source: "dev\*.*"; DestDir: "{app}\www\dolibarr\dev"; Flags: ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db,dbmodel\*,fpdf\*,initdata\*,iso-normes\*,licence\*,phpcheckstyle\*,phpunit\*,samples\*,test\*,uml\*,xdebug\*"
 Source: "doc\*.*"; DestDir: "{app}\www\dolibarr\doc"; Flags: ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db,wiki\*,plaquette\*,dev\*,images\dolibarr_screenshot2.png,images\dolibarr_screenshot3.png,images\dolibarr_screenshot4.png,images\dolibarr_screenshot5.png,images\dolibarr_screenshot6.png,images\dolibarr_screenshot7.png,images\dolibarr_screenshot8.png,images\dolibarr_screenshot9.png,images\dolibarr_screenshot10.png,images\dolibarr_screenshot11.png,images\dolibarr_screenshot12.png"
@@ -132,15 +132,15 @@ Source: "COPYRIGHT"; DestDir: "{app}"; Flags: ignoreversion;
 
 
 [Icons]
-Name: "{group}\Dolibarr ERP-CRM"; Filename: "{app}\rundoliwamp.bat"; WorkingDir: "{app}"; IconFilename: {app}\www\dolibarr\doc\images\dolibarr.ico
+Name: "{group}\Speedealing ERP-CRM"; Filename: "{app}\rundoliwamp.bat"; WorkingDir: "{app}"; IconFilename: {app}\www\dolibarr\doc\images\dolibarr.ico
 Name: "{group}\Tools\Help center"; Filename: "{app}\rundolihelp.bat"; WorkingDir: "{app}"; IconFilename: {app}\www\dolibarr\doc\images\dolihelp.ico
 Name: "{group}\Tools\Start DoliWamp server"; Filename: "{app}\startdoliwamp.bat"; WorkingDir: "{app}"; IconFilename: {app}\www\dolibarr\doc\images\doliwampon.ico
 Name: "{group}\Tools\Stop DoliWamp server"; Filename: "{app}\stopdoliwamp.bat"; WorkingDir: "{app}"; IconFilename: {app}\www\dolibarr\doc\images\doliwampoff.ico
 Name: "{group}\Tools\Admin DoliWamp server"; Filename: "{app}\rundoliadmin.bat"; WorkingDir: "{app}"; IconFilename: {app}\www\dolibarr\doc\images\doliadmin.ico
 Name: "{group}\Tools\Uninstall DoliWamp"; Filename: "{app}\unins000.exe"; WorkingDir: "{app}"; IconFilename: {app}\uninstall_services.bat
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Dolibarr"; WorkingDir: "{app}"; Filename: "{app}\rundoliwamp.bat"; Tasks: quicklaunchicon; IconFilename: {app}\www\dolibarr\doc\images\dolibarr.ico
-Name: "{userdesktop}\Dolibarr ERP-CRM"; Filename: "{app}\rundoliwamp.bat"; WorkingDir: "{app}"; Tasks: desktopicon; IconFilename: {app}\www\dolibarr\doc\images\dolibarr.ico
-Name: "{userdesktop}\Dolibarr Help center"; Filename: "{app}\rundolihelp.bat"; WorkingDir: "{app}"; Tasks: desktopicon; IconFilename: {app}\www\dolibarr\doc\images\dolihelp.ico
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Speedealing"; WorkingDir: "{app}"; Filename: "{app}\rundoliwamp.bat"; Tasks: quicklaunchicon; IconFilename: {app}\www\dolibarr\doc\images\dolibarr.ico
+Name: "{userdesktop}\Speedealing ERP-CRM"; Filename: "{app}\rundoliwamp.bat"; WorkingDir: "{app}"; Tasks: desktopicon; IconFilename: {app}\www\dolibarr\doc\images\dolibarr.ico
+Name: "{userdesktop}\Speedealing Help center"; Filename: "{app}\rundolihelp.bat"; WorkingDir: "{app}"; Tasks: desktopicon; IconFilename: {app}\www\dolibarr\doc\images\dolihelp.ico
 ;Start of servers fromstartup menu disabled as services are auto
 ;Name: "{userstartup}\DoliWamp server"; Filename: "{app}\startdoliwamp.bat"; WorkingDir: "{app}"; Flags: runminimized; IconFilename: {app}\www\dolibarr\doc\images\dolibarr.ico
 
@@ -996,7 +996,7 @@ end;
 
 
 [Run]
-; Launch Dolibarr in browser. This is run after Wizard because of postinstall flag
+; Launch Speedealing in browser. This is run after Wizard because of postinstall flag
 Filename: "{app}\rundoliwamp.bat"; Description: {cm:LaunchNow}; Flags: shellexec postinstall skipifsilent runhidden
 
 

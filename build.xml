@@ -82,7 +82,7 @@
  </target>
 
  <!-- Generate Doxygen documentation -->
- <target name="doxygen" description="Dolibarr documentation" >
+ <target name="doxygen" description="Speedealing documentation" >
   <exec executable="doxygen" dir="${basedir}" failonerror="false">
    <arg value="${basedir}/build/doxygen/jenkins_doxygen.doxyfile"/>
   </exec>

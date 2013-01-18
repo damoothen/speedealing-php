@@ -25,13 +25,13 @@
  *  \ingroup    mymodule
  *  \brief      Description and activation file for module MyModule
  */
-include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT .'/core/modules/SpeedealingModules.class.php';
 
 
 /**
  *  Description and activation class for module MyModule
  */
-class modMyModule extends DolibarrModules
+class modMyModule extends SpeedealingModules
 {
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
@@ -45,7 +45,7 @@ class modMyModule extends DolibarrModules
         $this->db = $db;
 
 		// Id for module (must be unique).
-		// Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).
+		// Use here a free id (See in Home -> System information -> Speedealing for list of used modules id).
 		$this->numero = 10000;
 		// Key text used to identify module (for permissions, menus, etc...)
 		$this->rights_class = 'mymodule';
@@ -100,7 +100,7 @@ class modMyModule extends DolibarrModules
 		$this->depends = array();		// List of modules id that must be enabled if this module is enabled
 		$this->requiredby = array();	// List of modules id to disable if this one is disabled
 		$this->phpmin = array(5,0);					// Minimum version of PHP required by module
-		$this->need_dolibarr_version = array(3,0);	// Minimum version of Dolibarr required by module
+		$this->need_dolibarr_version = array(3,0);	// Minimum version of Speedealing required by module
 		$this->langfiles = array("mylangfile@mymodule");
 
 		// Constants
@@ -233,7 +233,7 @@ class modMyModule extends DolibarrModules
 
 	/**
 	 *		Function called when module is enabled.
-	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Speedealing database.
 	 *		It also creates data directories
 	 *
      *      @param      string	$options    Options when enabling module ('', 'noboxes')
@@ -250,7 +250,7 @@ class modMyModule extends DolibarrModules
 
 	/**
 	 *		Function called when module is disabled.
-	 *      Remove from database constants, boxes and permissions from Dolibarr database.
+	 *      Remove from database constants, boxes and permissions from Speedealing database.
 	 *		Data directories are not deleted
 	 *
      *      @param      string	$options    Options when enabling module ('', 'noboxes')
