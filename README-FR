@@ -13,19 +13,10 @@ Documentation démarrage rapide
 I - INSTALLER SPEEDEALING
 ----------------------
 
-Si vous n'avez pas de connaissances techniques, et que vous recherchez
-un programme d'installation qui install Speedealing ERP/CRM en quelques clics,
-vous devez vous réorienter vers DoliWamp (la version tout-en-un
-de Speedealing pour Windows), DoliDeb (la version tout-en-un pour Debian ou
-Ubuntu) ou DoliRpm (la version tout-en-un de Speedealing pour Fedora, Redhat,
-OpenSuse, Mandriva ou Mageia).
-Vous pouvez les télécharger à l'adresse: 
-http://sourceforge.net/projects/speedealing/files/
-
-Si vous avez déjà installé un serveur Web avec PHP et une base de donnée (Mysql),
+Si vous avez déjà installé un serveur Web avec PHP et une base de donnée CouchDB,
 vous pouvez installer Speedealing avec cette version de la manière suivante:
 
-- Copier le répertoire "dolibarr" et son contenu dans la racine de votre serveur
+- Copier le répertoire "speedealing" et son contenu dans la racine de votre serveur
   web, ou bien copier le répertoire sur le serveur et configurer ce serveur pour
   utiliser "dolibarr/htdocs" comme racine d'un nouveau virtual host (ce second 
   choix requiert des compétences et habilitations en administration du serveur
@@ -35,11 +26,11 @@ vous pouvez installer Speedealing avec cette version de la manière suivante:
   en lecture et écriture pour le user du serveur web (les permissions en 
   écriture seront supprimées une fois l'installation terminée).
 
-- Depuis votre navigateur, appeler la page "install/" de dolibarr. L'url dépend 
+- Depuis votre navigateur, appeler la page "install/" de speedealing. L'url dépend 
   du choix fait à la première etape:
-   http://localhost/dolibarr/htdocs/install/
+   http://localhost/speedealing/htdocs/install/
   ou
-   http://yourdolibarrvirtualhost/install/
+   http://yourvirtualhost/install/
    
 - Suivez les instructions fournies par l'installeur...
 
@@ -49,7 +40,7 @@ II - METTRE A JOUR SPEEDEALING
 ---------------------------
 
 Pour mettre a jour Speedealing depuis une vieille version vers celle ci:
-- Ecraser les vieux fichiers dans le vieux repertoire 'dolibarr' par les fichiers
+- Ecraser les vieux fichiers dans le vieux repertoire 'speedealing' par les fichiers
   fournis dans ce nouveau package.
   
 - Si vous venez d'une version x.y.z vers x.y.w (seul le 3eme chiffre varie),
@@ -59,9 +50,9 @@ Pour mettre a jour Speedealing depuis une vieille version vers celle ci:
   ou y varient, vous devez appelez la page "install/" de migration dans votre 
   navigateur (ceci doit se faire automatiquement au premier accès de l'application).
   Ce sera une URL du genre:
-   http://localhost/dolibarr/htdocs/install/index.php
+   http://localhost/speedealing/htdocs/install/index.php
   ou
-   http://yourdolibarrhost/install/index.php
+   http://yourvirtualhost/install/index.php
 
   Ensuite, choisir l'option de "mise a jour" en rapport avec votre cas.
   Note: Le processus de migration peut etre lance plusieurs fois sans risque.

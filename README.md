@@ -5,10 +5,10 @@ Speedealing ERP & CRM is a modern software to manage yours companies or foundati
 
 ## Philosophy
 
-Speedealing is a fork compatible and migrating from Dolibarr (www.speedealing.com).
+Speedealing is a fork compatible and migrating from Dolibarr (www.dolibarr.org).
 
 Speedealing is now using NoSQL database to replace old MySql and Postgresql. We can now use it in a distribute environnement and synchronisation.
-The NoSQL database is couchdb 1.2.0 a NoSQL oriented document. This new database will be synchronise with iOS an Android application.
+The database used is CouchDB (couchdb.apache.org) a NoSQL oriented document. This new database will be synchronise with iOS an Android application.
 
 ## WHAT'S NEW
 
