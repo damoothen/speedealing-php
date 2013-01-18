@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2000-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -827,12 +826,14 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
+        
 // If date undefined or "", we return ""
     if (dol_strlen($time) == 0)
         return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
 
 
 
+        
 //print 'x'.$time;
 
     if (preg_match('/%b/i', $format)) {  // There is some text to translate
@@ -1301,7 +1302,7 @@ function dol_user_country() {
  *  @param  bool	$gps         See MAP
  *  @return void
  */
-function dol_print_address($address, $htmlid, $mode, $id, $gps=false) {
+function dol_print_address($address, $htmlid, $mode, $id, $gps = false) {
     global $conf, $user, $langs;
 
     $rtr = "";
@@ -1321,12 +1322,12 @@ function dol_print_address($address, $htmlid, $mode, $id, $gps=false) {
             $showomap = 1;
         if ($mode == 'member' && !empty($conf->openstreetmap->enabled) && !empty($conf->global->OPENSTREETMAP_ENABLE_MAPS_MEMBERS))
             $showomap = 1;
-        
+
         if ($conf->map->enabled && $gps) {
-            $url = dol_buildpath('/map/map.php?id='.$id,1);
+            $url = dol_buildpath('/map/map.php?id=' . $id, 1);
             $rtr.= ' <a href="' . $url . '" target="_gmaps"><img id="' . $htmlid . '" border="0" src="' . DOL_URL_ROOT . '/theme/common/gmap.png"></a>';
         }
-            
+
 
         // TODO Add a hook here
         if ($showgmap) {
@@ -2114,14 +2115,14 @@ function dol_print_error($db = '', $error = '') {
     $langs->load("errors");
 
     if ($_SERVER['DOCUMENT_ROOT']) {    // Mode web
-        $out.=$langs->trans("DolibarrHasDetectedError") . ".<br>\n";
+        //$out.=$langs->trans("DolibarrHasDetectedError") . ".<br>\n";
         if (!empty($conf->global->MAIN_FEATURES_LEVEL))
             $out.="You use an experimental level of features, so please do NOT report any bugs, anywhere, until going back to MAIN_FEATURES_LEVEL = 0.<br>\n";
         $out.=$langs->trans("InformationToHelpDiagnose") . ":<br>\n";
 
         $out.="<b>" . $langs->trans("Date") . ":</b> " . dol_print_date(time(), 'dayhourlog') . "<br>\n";
         ;
-        $out.="<b>" . $langs->trans("Dolibarr") . ":</b> " . DOL_VERSION . "<br>\n";
+        $out.="<b>" . $langs->trans("Speedealing") . ":</b> " . DOL_VERSION . "<br>\n";
         ;
         if (isset($conf->global->MAIN_FEATURES_LEVEL))
             $out.="<b>" . $langs->trans("LevelOfFeature") . ":</b> " . $conf->global->MAIN_FEATURES_LEVEL . "<br>\n";;
@@ -2309,36 +2310,36 @@ function print_titre($title) {
  * 	@return	string				Title to show
  */
 function start_box($title, $nbcolumn = 'twelve', $icon = '16-Abacus.png', $box_action = true, $head = null) {
-	global $conf, $langs;
+    global $conf, $langs;
 
-	$path = DOL_URL_ROOT;
-	if (empty($path))
-		$path = "..";
+    $path = DOL_URL_ROOT;
+    if (empty($path))
+        $path = "..";
 
-	if (empty($conf->theme))
-		$conf->theme = "eldy";
+    if (empty($conf->theme))
+        $conf->theme = "eldy";
 
-	$rtr = '<div class="' . $nbcolumn . '-columns twelve-columns-mobile">';
-	$rtr.= '<div class="box_c">';
-	if ($box_action && empty($head))
-		$rtr.= '<div class="box_c_heading cf box_actions">';
-	else
-		$rtr.= '<div class="box_c_heading cf">';
-	$rtr.= '<div class="box_c_ico"><img src="' . $path . '/theme/' . $conf->theme . '/img/ico/icSw2/' . $icon . '" alt="" /></div>';
-	$rtr.= '<p>' . $title . '</p>';
+    $rtr = '<div class="' . $nbcolumn . '-columns twelve-columns-mobile">';
+    $rtr.= '<div class="box_c">';
+    if ($box_action && empty($head))
+        $rtr.= '<div class="box_c_heading cf box_actions">';
+    else
+        $rtr.= '<div class="box_c_heading cf">';
+    $rtr.= '<div class="box_c_ico"><img src="' . $path . '/theme/' . $conf->theme . '/img/ico/icSw2/' . $icon . '" alt="" /></div>';
+    $rtr.= '<p>' . $title . '</p>';
 
-	// See menu on top box
-	if (!empty($head)) {
-		$rtr.='<ul class="tabs cf right">';
-		foreach ($head as $aRow) {
-			$rtr.='<li><a href="#" id="'.$aRow[2].'">' . $aRow[1] . '</a></li>';
-		}
-		$rtr.='</ul>';
-	}
-	$rtr.= '</div>';
-	$rtr.= '<div class="box_c_content">';
+    // See menu on top box
+    if (!empty($head)) {
+        $rtr.='<ul class="tabs cf right">';
+        foreach ($head as $aRow) {
+            $rtr.='<li><a href="#" id="' . $aRow[2] . '">' . $aRow[1] . '</a></li>';
+        }
+        $rtr.='</ul>';
+    }
+    $rtr.= '</div>';
+    $rtr.= '<div class="box_c_content">';
 
-	return $rtr;
+    return $rtr;
 }
 
 /**
@@ -2347,10 +2348,10 @@ function start_box($title, $nbcolumn = 'twelve', $icon = '16-Abacus.png', $box_a
  * 	@return	string					Title to show
  */
 function end_box() {
-	$rtr = '</div>'; //end content box
-	$rtr.= '</div>'; //end box
-	$rtr.= '</div>'; //end columns
-	return $rtr;
+    $rtr = '</div>'; //end content box
+    $rtr.= '</div>'; //end box
+    $rtr.= '</div>'; //end columns
+    return $rtr;
 }
 
 /**
@@ -2364,18 +2365,18 @@ function end_box() {
  * 	@return	void
  */
 function print_fiche_titre($title, $showDate = false) {
-	global $langs;
+    global $langs;
 
-	if ($showDate)
-		$now = dol_now();
-	?>
-	<hgroup id="main-title" class="thin">
-		<h1><?php echo $title; ?></h1>
-		<?php if ($showDate): ?>
-			<h2><?php echo strtolower($langs->trans(date('F', $now))); ?> <strong><?php echo date('d', $now); ?></strong></h2>
-		<?php endif ?>
-	</hgroup>
-	<?php
+    if ($showDate)
+        $now = dol_now();
+    ?>
+    <hgroup id="main-title" class="thin">
+        <h1><?php echo $title; ?></h1>
+        <?php if ($showDate): ?>
+            <h2><?php echo strtolower($langs->trans(date('F', $now))); ?> <strong><?php echo date('d', $now); ?></strong></h2>
+    <?php endif ?>
+    </hgroup>
+    <?php
 }
 
 /**
@@ -2708,6 +2709,7 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
             $nbofdectoround = $rounding;  // For admin info page
 
 
+            
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
         if (dol_strlen($nbofdectoround))
             $amount = round($amount, $nbofdectoround); // $nbofdectoround can be 0.
@@ -2892,7 +2894,7 @@ function get_product_localtax_for_country($idprod, $local, $countrycode) {
  */
 function get_default_tva($thirdparty_seller, $thirdparty_buyer, $idprod = 0, $idprodfournprice = 0) {
     global $conf;
-    
+
     if (!is_object($thirdparty_seller))
         return -1;
     if (!is_object($thirdparty_buyer))
@@ -3095,6 +3097,7 @@ function dol_mkdir($dir, $dataroot = '') {
 
 
 
+            
 // Attention, le is_dir() peut echouer bien que le rep existe.
         // (ex selon config de open_basedir)
         if ($ccdir) {
@@ -3246,8 +3249,7 @@ function dol_htmlcleanlastbr($stringtodecode) {
  * 	@param	string	$str		String with accent
  * 	@return	string			String without accent
  */
-function dol_delaccents($str, $encoding='utf-8')
-{
+function dol_delaccents($str, $encoding = 'utf-8') {
     // transformer les caractères accentués en entités HTML
     $str = htmlentities($str, ENT_NOQUOTES, $encoding);
 
@@ -3566,25 +3568,25 @@ function get_date_range($date_start, $date_end, $format = '', $outputlangs = '')
 }
 
 /**
- *	Set event message in dol_events session
+ * 	Set event message in dol_events session
  *
- *	@param	mixed	$mesgs			Message string or array
+ * 	@param	mixed	$mesgs			Message string or array
  *  @param  string	$style      	Which style to use ('mesgs', 'warnings', 'errors')
  *  @return	void
  *  @see	dol_htmloutput_events
  */
-function setEventMessage($mesgs, $style='mesgs') {
-	if (! in_array((string) $style, array('mesgs','warnings','errors')))
-		dol_print_error('','Bad parameter for setEventMessage');
-	if (! is_array($mesgs))	{	// If mesgs is a string
-		if (! empty($mesgs))
-			$_SESSION['dol_events'][$style][] = $mesgs;
-	} else {					// If mesgs is an array
-		foreach($mesgs as $mesg) {
-			if (! empty($mesg))
-				$_SESSION['dol_events'][$style][] = $mesg;
-		}
-	}
+function setEventMessage($mesgs, $style = 'mesgs') {
+    if (!in_array((string) $style, array('mesgs', 'warnings', 'errors')))
+        dol_print_error('', 'Bad parameter for setEventMessage');
+    if (!is_array($mesgs)) { // If mesgs is a string
+        if (!empty($mesgs))
+            $_SESSION['dol_events'][$style][] = $mesgs;
+    } else {     // If mesgs is an array
+        foreach ($mesgs as $mesg) {
+            if (!empty($mesg))
+                $_SESSION['dol_events'][$style][] = $mesg;
+        }
+    }
 }
 
 /**

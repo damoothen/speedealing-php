@@ -47,6 +47,7 @@ function check_user_password_couchdb($usertotest, $passwordtotest, $dbname) {
 
             $client = new couchClient('http://' . $usertotest . ':' . $passwordtotest . '@' . $host . ':' . $conf->Couchdb->port . '/', $dbname, array("cookie_auth" => TRUE));
         } catch (Exception $e) {
+            dol_print_error($e->getMessage());
             error_log($e->getMessage());
             exit;
         }
