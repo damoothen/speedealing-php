@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-/**
- *       \file       htdocs/core/ajax/saveinplace.php
- *       \brief      File to save field value
- */
 if (!defined('NOTOKENRENEWAL'))
     define('NOTOKENRENEWAL', '1'); // Disables token renewal
 if (!defined('NOREQUIREMENU'))
@@ -26,7 +22,7 @@ if (!defined('NOREQUIREMENU'))
 //if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
 if (!defined('NOREQUIREAJAX'))
     define('NOREQUIREAJAX', '1');
-//if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
+if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 require '../../main.inc.php';

@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2007-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007-2009 Regis Houssin        <regis.houssin@capnetworks.com>
  * Copyright (C) 2010-2011 Juanjo Menent		<jmenent@2byte.es>
@@ -22,7 +23,6 @@
  *      \brief      Authentication functions for Dolibarr mode
  */
 
-
 /**
  * Check validity of user/password/entity
  * If test is ko, reason must be filled into $_SESSION["dol_loginmesg"]
@@ -32,41 +32,33 @@
  * @param   int		$entitytotest   Number of instance (always 1 if module multicompany not enabled)
  * @return	string					Login if OK, '' if KO
  */
-function check_user_password_dolibarr($usertotest,$passwordtotest,$entitytotest=1)
-{
-	global $db,$conf,$langs;
-	global $mc;
+function check_user_password_couchdb($usertotest, $passwordtotest, $dbname) {
+    global $db, $conf, $langs;
+    global $mc;
 
-	dol_syslog("functions_dolibarr::check_user_password_dolibarr usertotest=".$usertotest);
+    dol_syslog("functions_dolibarr::check_user_password_dolibarr usertotest=" . $usertotest);
 
-	$login='';
+    $login = '';
 
-	if (! empty($usertotest))
-	{
-	
-		try {
-			$host = substr($conf->couchdb->host,7);
-	
-			$client = new couchClient('http://'.$usertotest.':'.$passwordtotest.'@'.$host.':'.$conf->couchdb->port.'/',$conf->couchdb->name, array("cookie_auth"=>TRUE));
-			$_SESSION['couchdb']=$client->getSessionCookie();
-		} catch (Exception $e)
-		{
-			print $e->getMessage();exit;
-		}
-		
-		if(strlen($_SESSION['couchdb']) < 15)
-		{
-			sleep(1);
-			$langs->load('main');
-			$langs->load('errors');
-			$_SESSION["dol_loginmesg"]=$langs->trans("ErrorBadLoginPassword");
-		}
-		else
-			$login=$usertotest;
-	}
+    if (!empty($usertotest)) {
 
-	return $login;
+        try {
+            $host = substr($conf->Couchdb->host, 7);
+
+            $client = new couchClient('http://' . $usertotest . ':' . $passwordtotest . '@' . $host . ':' . $conf->Couchdb->port . '/', $dbname, array("cookie_auth" => TRUE));
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            exit;
+        }
+
+        return $client;
+    }
+
+    $langs->load('main');
+    $langs->load('errors');
+    sleep(10);
+    print $langs->trans("ErrorBadLoginPassword");
+    exit;
 }
-
 
 ?>

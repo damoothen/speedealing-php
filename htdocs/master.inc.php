@@ -25,15 +25,15 @@
  */
 
 //require_once("filefunc.inc.php");	// May have been already require by main.inc.php. But may not by scripts.
-/*error_reporting(E_ALL);
-ini_set('display_errors', true);
-ini_set('html_errors', false);*/
+/* error_reporting(E_ALL);
+  ini_set('display_errors', true);
+  ini_set('html_errors', false); */
 
 /*
  * Create $conf object
  */
-if (! class_exists('Conf'))
-	require DOL_DOCUMENT_ROOT . '/core/class/conf.class.php';
+if (!class_exists('Conf'))
+    require DOL_DOCUMENT_ROOT . '/core/class/conf.class.php';
 
 $conf = new Conf();
 // Identifiant propres au serveur couchdb
@@ -81,37 +81,39 @@ if (defined('TEST_DB_FORCE_TYPE'))
     $conf->db->type = constant('TEST_DB_FORCE_TYPE');
 
 // Chargement des includes principaux de librairies communes
-if (! defined('NOREQUIREUSER')) {
-	if (! class_exists('User'))
-		require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';  // Need 500ko memory
+if (!defined('NOREQUIREUSER')) {
+    if (!class_exists('User'))
+        require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';  // Need 500ko memory
 }
 
 
 // For couchdb
-if (! class_exists('couch'))
-	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couch.php';
-if (! class_exists('couchClient'))
-	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
-if (! class_exists('nosqlDocument'))
-	require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+if (!class_exists('couch'))
+    require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couch.php';
+if (!class_exists('couchClient'))
+    require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
+if (!class_exists('nosqlDocument'))
+    require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
 
 // Load Memcache configuration
 if (!empty($conf->memcached->host) && class_exists('Memcached')) {
-	$memcache = new Memcached();
-	$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
-	if ($result) $conf->memcached->enabled = true;
+    $memcache = new Memcached();
+    $result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
+    if ($result)
+        $conf->memcached->enabled = true;
 } elseif (!empty($conf->memcached->host) && class_exists('Memcache')) {
-	$memcache = new Memcache();
-	$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
-	if ($result) $conf->memcached->enabled = true;
+    $memcache = new Memcache();
+    $result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
+    if ($result)
+        $conf->memcached->enabled = true;
 }
 
 /*
  * Creation objet $langs (must be before all other code)
  */
-if (! defined('NOREQUIRETRAN')) {
-	if (! class_exists('Translate'))
-		require DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
+if (!defined('NOREQUIRETRAN')) {
+    if (!class_exists('Translate'))
+        require DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
     $langs = new Translate('', $conf); // A mettre apres lecture de la conf
 }
 
