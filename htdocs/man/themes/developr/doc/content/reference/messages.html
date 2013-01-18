@@ -236,6 +236,12 @@
 			</p>
 
 			<p class="inline-label">
+				<label for="autoclose" class="label">Auto-close</label>
+				<input type="checkbox" name="autoclose" id="autoclose" value="1" class="switch"> after
+				<input type="text" name="autoclose-delay" id="autoclose-delay" class="input" value="3000"> milliseconds
+			</p>
+
+			<p class="inline-label">
 				<button type="submit" class="button blue-gradient">Show message</button>
 				<button type="button" class="button" id="messages-clear">Clear</button>
 			</p>
@@ -411,6 +417,13 @@
 			<span class="icon-marker black">Type:</span> boolean<br>
 			<span class="icon-star black">Default:</span> false
 		</dd>
+
+		<dt>autoClose</dt>
+		<dd class="boxed margin-bottom">
+			Auto-close after specified delay (in milliseconds), or false to disable<br>
+			<span class="icon-marker black">Type:</span> int|boolean<br>
+			<span class="icon-star black">Default:</span> false
+		</dd>
 	</dl>
 
 </div>
@@ -445,6 +458,9 @@
 			showCloseOnHover = true;
 		}
 
+		// Auto-close delay
+		autoCloseDelay = parseInt($('#autoclose-delay').val(), 10) || 0;
+
 		// Gather options
 		options = {
 			position:			$('#position-top').prop('checked') ? 'top' : 'bottom',
@@ -453,7 +469,8 @@
 			arrow:				$('#arrow').prop('checked') ? ($('#arrow-direction-top').prop('checked') ? 'top' : 'bottom') : false,
 			closable:			closable,
 			showCloseOnHover:	showCloseOnHover,
-			groupSimilar:		$('#group-similar').prop('checked')
+			groupSimilar:		$('#group-similar').prop('checked'),
+			autoClose:			($('#autoclose').prop('checked') && autoCloseDelay) ? autoCloseDelay : false
 		};
 
 		// Filter default values

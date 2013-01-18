@@ -62,14 +62,18 @@
 			// Root navigable element
 			root = mainUL.closest('.navigable'),
 
+			// Settings
+			settings = $.extend({}, $.template.navigable, root.data('navigable-options')),
+
 			// Back button
 			back = root.children('.back'),
+			backText,
 
 			// Load indicator
 			load = root.children('.load'),
 
 			// Other vars
-			current, url;
+			current, url, delayedOpen, text;
 
 		// Prepare on first call
 		if (!mainUL.hasClass('fixed'))
@@ -81,11 +85,14 @@
 		// Create back button if needed
 		if (back.length === 0)
 		{
+			// Text
+			text = settings.backText || '&nbsp;';
+
 			// Create element
-			back = $('<div class="back"><span class="back-arrow"></span>Back</div>').prependTo(root).click(function(event)
+			back = $('<div class="back"><span class="back-arrow"></span><span class="back-text">'+text+'</span></div>').prependTo(root).click(function(event)
 			{
 				var current = root.data('navigableCurrent'),
-					target, left, backHeight;
+					target, left, backHeight, parentLi, parentLink;
 
 				// If no current element, we're already at the top level
 				if (!current)
@@ -110,6 +117,22 @@
 					left = -target.parentsUntil('.navigable', 'ul').length*100;
 					backHeight = back.outerHeight();
 					root.data('navigableCurrent', target);
+
+					// Text
+					if (settings.backText)
+					{
+						backText.text(settings.backText);
+					}
+					else
+					{
+						parentLi = target.closest('li');
+						parentLink = parentLi.children('a, span').first();
+						if (!parentLink.length)
+						{
+							parentLink = parentLi;
+						}
+						backText.text(parentLink.contents().filter(function(){ return(this.nodeType == 3); }).text() );
+					}
 				}
 
 				// Set root element size according to target size
@@ -125,6 +148,9 @@
 			// Hide it
 			back.css({ marginTop: -back.outerHeight()+'px' });
 		}
+
+		// Button
+		backText = back.children('.back-text');
 
 		// If there is a load indicator on, remove it first
 		if (load.length > 0)
@@ -159,14 +185,23 @@
 		if (submenu.length > 0)
 		{
 			// If not ready yet
-			if (parentUL.outerHeight(true) == 0)
+			if (parentUL.outerHeight(true) === 0 && allUL.length < 3)
 			{
 				// Delay action
-				setTimeout(function()
+				delayedOpen = function()
 				{
-					clicked.click();
-
-				}, 40);
+					if (parentUL.outerHeight(true) > 0)
+					{
+						animate = false;
+						clicked.click();
+						animate = true;
+					}
+					else
+					{
+						setTimeout(delayedOpen, 40);
+					}
+				};
+				setTimeout(delayedOpen, 40);
 				return;
 			}
 
@@ -206,6 +241,7 @@
 
 			// Show back button
 			back[animate ? 'animate' : 'css']({ marginTop: 0 });
+			backText.text(settings.backText || clicked.contents().filter(function(){ return(this.nodeType == 3); }).text() );
 
 			// Send open event
 			li.trigger('navigable-open');
@@ -304,6 +340,32 @@
 		}
 	});
 
+	/**
+	 * Reset navigable position to main menu
+	 */
+	$.fn.navigableReset = function()
+	{
+		this.filter('.navigable').each( function(i)
+		{
+				// Navigable element
+			var root = $(this),
+
+				// Back button
+				back = root.children('.back');
+
+				// If valid
+				if (back.length > 0)
+				{
+					while (root.data('navigableCurrent'))
+					{
+						back.click();
+					}
+				}
+		});
+
+		return this;
+	};
+
 	// Add to template setup function
 	$.template.addSetupFunction(function(self, children)
 	{
@@ -333,9 +395,22 @@
 				// Enable animation
 				animate = true;
 			}
-		})
+		});
 
 		return this;
 	});
+
+	/**
+	 * Navigable menu defaults
+	 * @var object
+	 */
+	$.template.navigable = {
+
+		/**
+		 * Text of the back button, or false to use the parent element's text
+		 * @var string|boolean
+		 */
+		backText: false
+	};
 
 })(jQuery, window, document);

@@ -27,6 +27,10 @@
 
 	<p>To achieve this, the template uses a set of files designed for each layout, which are loaded accordingly to viewport size by media queries. For older browsers, a polyfill (<a href="https://github.com/scottjehl/Respond" title="View plugin's repo on Github">respond.js</a>) is used.</p>
 
+	<p class="wrapped left-icon icon-info-round">
+		If your application uses nested folders, you need to set the path to the polyfill (located in /js/ folder) using <strong>$.template.respondPath</strong>
+	</p>
+
 	<p>The template use the principle behind <a href="http://stuffandnonsense.co.uk/projects/320andup/" title="View project website">320 and up</a> developed by <a href="http://stuffandnonsense.co.uk/">Andy Clarke</a> (<a href="http://twitter.com/malarkey">@malarkey</a>): as mobile device are the least powerful devices, they need to have as few styles to parse as possible, so the base styles are designed for them. Then, for each larger layout, an additional stylesheet is loaded and will override some styles to give the expected layout.</p>
 
 	<p>So if you are changing some style and can't get the right result, check if one of the mediaqueries files don't overwrite your changes - sound obvious, but it may happen more often than you think!</p>

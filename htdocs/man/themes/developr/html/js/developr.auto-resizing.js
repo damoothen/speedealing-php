@@ -38,18 +38,39 @@
 	 */
 	function buildTextareaPre(textarea)
 	{
+			// Box-sizing type
+		var boxSized = ( textarea.css('box-sizing') === 'border-box' || textarea.css('-webkit-box-sizing') === 'border-box' || textarea.css('-moz-box-sizing') === 'border-box' ),
+			boxPadding = boxSized ? 'padding-bottom:'+(textarea.parseCSSValue('padding-top')+textarea.parseCSSValue('padding-bottom'))+'px; ' : '',
+
+			// Some browsers break lines a little bit before the padding box
+			breakPadding = 0;
+			if ( $.browser.mozilla )
+			{
+				breakPadding = 8;
+			}
+			else if ( $.browser.opera )
+			{
+				breakPadding = 4;
+			}
+			else if ( $.browser.msie )
+			{
+				breakPadding = 2;
+			}
+
 		return $('<pre style="position: absolute; '+
 						'top:0; '+
 						'left:0; '+
-						'visibility:hidden; '+
 						'padding:0; '+
-						'width:'+textarea.width()+'px; '+
+						'visibility:hidden; '+
+						boxPadding+
+						'width:'+(textarea.width()-breakPadding)+'px; '+
 						'font-size:'+textarea.css('font-size')+'; '+
 						'font-family:'+textarea.css('font-family')+'; '+
 						'line-height:'+textarea.css('line-height')+'; '+
+						'min-height:'+textarea.css('line-height')+'; '+
 						'letter-spacing:'+textarea.css('letter-spacing')+'; '+
 					'">'+formatPreText(textarea.val())+'</pre>').appendTo(bod);
-	};
+	}
 
 	/**
 	 * Helper function to format the text from the textarea before inserting
@@ -79,26 +100,27 @@
 	{
 		var textarea = $(this).css({ overflow: 'hidden', resize: 'none' }),
 
-			// Box-sizing type
-			boxSized = textarea.css('box-sizing') === 'border-box' || textarea.css('-webkit-box-sizing') === 'border-box' || textarea.css('-moz-box-sizing') === 'border-box',
-
-			// Extra spacing when using border-box
-			extraSpacing = boxSized ? textarea.parseCSSValue('padding-top')+textarea.parseCSSValue('padding-bottom') : 0,
-
 			// Pre to get actual size
 			pre = buildTextareaPre(textarea);
 
 		// Set size
-		textarea.height((pre.height()+extraSpacing)+'px');
+		textarea.height((pre.innerHeight())+'px');
 
 		// Remove pre
 		pre.remove();
-	};
+	}
 
 	// Template setup function
 	$.template.addSetupFunction(function(self, children)
 	{
-		this.findIn(self, children, 'textarea.autoexpanding').each(resizeTextarea).widthchange(resizeTextarea);
+		var elements = this.findIn(self, children, 'textarea.autoexpanding').widthchange(resizeTextarea);
+
+		// Timeout to handle browser initial redraw
+		setTimeout(function()
+		{
+			elements.each(resizeTextarea);
+
+		}, 40);
 
 		return this;
 	});
@@ -108,12 +130,6 @@
 	{
 			// Target
 		var textarea = $(this),
-
-			// Box-sizing type
-			boxSized = textarea.css('box-sizing') === 'border-box' || textarea.css('-webkit-box-sizing') === 'border-box' || textarea.css('-moz-box-sizing') === 'border-box',
-
-			// Extra spacing when using border-box
-			extraSpacing = boxSized ? textarea.parseCSSValue('padding-top')+textarea.parseCSSValue('padding-bottom') : 0,
 
 			// Pre to get actual size
 			pre = buildTextareaPre(textarea),
@@ -134,7 +150,7 @@
 				}
 
 				// Refresh size
-				textarea.height((pre.height()+extraSpacing)+'px');
+				textarea.height((pre.innerHeight())+'px');
 			},
 
 			// Blur handling

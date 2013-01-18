@@ -33,6 +33,10 @@ body {
 	#container input[type="checkbox"] {
 		width: auto !important;
 	}
+	#container input[type="text"],
+	#container input[type="password"] {
+		-webkit-appearance: none;
+	}
 #form-block {
 	position: relative;
 	}

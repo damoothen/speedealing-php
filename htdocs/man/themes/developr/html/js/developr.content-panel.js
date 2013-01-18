@@ -59,8 +59,9 @@
 	/**
 	 * Load navigation panel content with AJAX
 	 * @param string url the url of the content to load
+	 * @param object options any additional options for the AJAX call
 	 */
-	$.fn.loadPanelNavigation = function(url)
+	$.fn.loadPanelNavigation = function(url, options)
 	{
 		return this.each(function(i)
 		{
@@ -68,15 +69,35 @@
 				panelNavigation = contentPanel.children('.panel-navigation');
 
 			// Load content
-			loadPanelContent(url, contentPanel, panelNavigation, true);
+			loadPanelContent(url, contentPanel, panelNavigation, true, options);
+		});
+	};
+
+	/**
+	 * Refresh the navigation panel content if it was previously loaded at least once
+	 */
+	$.fn.refreshPanelNavigation = function()
+	{
+		return this.each(function(i)
+		{
+			var contentPanel = $(this).closest('.content-panel'),
+				panelNavigation = contentPanel.children('.panel-navigation'),
+				url = panelNavigation.data('content-panel-url');
+
+			// Load content if url is set
+			if (url)
+			{
+				loadPanelContent(url, contentPanel, panelNavigation, true, panelNavigation.data('content-panel-options'));
+			}
 		});
 	};
 
 	/**
 	 * Load content panel content with AJAX
 	 * @param string url the url of the content to load
+	 * @param object options any additional options for the AJAX call
 	 */
-	$.fn.loadPanelContent = function(url)
+	$.fn.loadPanelContent = function(url, options)
 	{
 		return this.each(function(i)
 		{
@@ -84,7 +105,26 @@
 				panelContent = contentPanel.children('.panel-content');
 
 			// Load content
-			loadPanelContent(url, contentPanel, panelContent, false);
+			loadPanelContent(url, contentPanel, panelContent, false, options);
+		});
+	};
+
+	/**
+	 * Refresh the content panel content if it was previously loaded at last once
+	 */
+	$.fn.refreshPanelContent = function()
+	{
+		return this.each(function(i)
+		{
+			var contentPanel = $(this).closest('.content-panel'),
+				panelContent = contentPanel.children('.panel-content'),
+				url = panelContent.data('content-panel-url');
+
+			// Load content if url is set
+			if (url)
+			{
+				loadPanelContent(url, contentPanel, panelContent, false, panelContent.data('content-panel-options'));
+			}
 		});
 	};
 
@@ -94,8 +134,9 @@
 	 * @param jQuery wrapper the main block
 	 * @param jQuery panel the panel in which to load content
 	 * @param boolean isNav indicate if the panel is the navigation panel
+	 * @param object options any additional options for the AJAX call
 	 */
-	function loadPanelContent(url, wrapper, panel, isNav)
+	function loadPanelContent(url, wrapper, panel, isNav, options)
 	{
 		// If not valid, exit
 		if (!wrapper.length || !panel.length)
@@ -123,21 +164,34 @@
 		wrapper[isNav ? 'removeClass' : 'addClass']('show-panel-content');
 
 		// Load content
-		$.ajax(url, $.extend({}, settings.ajax, {
+		$.ajax(url, $.extend({}, settings.ajax, options, {
 
 			success: function(data, textStatus, jqXHR)
 			{
-				// Insert content
-				target.html(data);
+				// Insert content if text/html
+				if ( typeof data === 'string' )
+				{
+					target.html(data);
+				}
 
 				// Callback in settings
 				if (settings.ajax && settings.ajax.success)
 				{
-					settings.ajax.success.call(this, data, textStatus, jqXHR);
+					settings.ajax.success.call(target[0], data, textStatus, jqXHR);
+				}
+
+				// Callback in options
+				if (options && options.success)
+				{
+					options.success.call(target[0], data, textStatus, jqXHR);
 				}
 			}
 
 		}));
+
+		// Store url and options
+		panel.data('content-panel-url', url);
+		panel.data('content-panel-options', options);
 	};
 
 	/**

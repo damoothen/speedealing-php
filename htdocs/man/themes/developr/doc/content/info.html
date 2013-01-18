@@ -74,6 +74,7 @@
 		<li><span class="version-upgraded">Upg.</span> Improved datepicker for better support in overflow:hidden elements</li>
 		<li><span class="version-upgraded">Upg.</span> Navigable menus now trigger <b>navigable-open</b> and <b>navigable-close</b> events</li>
 		<li><span class="version-upgraded">Upg.</span> Collapsible menus now trigger <b>collapsible-open</b> and <b>collapsible-close</b> events</li>
+		<li><span class="version-upgraded">Upg.</span> Tabs now trigger <b>showtab</b> and <b>hidetab</b> events</li>
 		<li><span class="version-upgraded">Upg.</span> Improved legacy browser's features detection</li>
 		<li><span class="version-upgraded">Upg.</span> Drop down navigation menu (on mobile layout) now closes when losing focus</li>
 		<li><span class="version-upgraded">Upg.</span> Added syntax to style the size select when using Datatables plugin</li>
@@ -81,6 +82,65 @@
 		<li><span class="version-fixed">Fixed</span> Selects with multiple selected values now display the correct value on load</li>
 		<li><span class="version-fixed">Fixed</span> Fixed a bug with responsive tables on webkit browsers</li>
 		<li><span class="version-fixed">Fixed</span> Fixed a bug with custom scrolling</li>
+	</ul>
+
+	<h5>Version 1.4</h5>
+	<ul class="version-history">
+		<li><span class="version-new">New</span> Added RTL version</li>
+		<li><span class="version-new">New</span> Added CSS classes to display/hide elements depending on active media query</li>
+		<li><span class="version-new">New</span> Added support for webapp mode under iOS (links open in the app, not in Safari)</li>
+		<li><span class="version-new">New</span> Added support for one side shortcut at the bottom</li>
+		<li><span class="version-new">New</span> Added automatic positioning for info-spots bubbles</li>
+		<li><span class="version-new">New</span> Added compact and mini sizes for fields lists labels</li>
+		<li><span class="version-new">New</span> Confirm plugin now allow direct call on target element, several minor improvements also included</li>
+		<li><span class="version-new">New</span> New methods for content panels to refresh content</li>
+		<li><span class="version-new">New</span> Added custom method to reset navigable menu to main level</li>
+		<li><span class="version-new">New</span> Added method to show a specific tab</li>
+		<li><span class="version-new">New</span> Added auto-close delay option for messages plugin</li>
+		<li><span class="version-new">New</span> Added an option to display the parent menu name in the back button in navigable menus</li>
+		<li><span class="version-new">New</span> Added example page for full height content-panels layout</li>
+		<li><span class="version-upgraded">Upg.</span> Upgraded several external libs and plugins</li>
+		<li><span class="version-upgraded">Upg.</span> Improved fixed position support detection</li>
+		<li><span class="version-upgraded">Upg.</span> Improved fixed title bar handling</li>
+		<li><span class="version-upgraded">Upg.</span> Added a visual style for disabled select options</li>
+		<li><span class="version-upgraded">Upg.</span> Added visual style for active sorting column with DataTables</li>
+		<li><span class="version-upgraded">Upg.</span> Content panels now accept options for the ajax call</li>
+		<li><span class="version-upgraded">Upg.</span> Added l18n number formatting options for number inputs</li>
+		<li><span class="version-upgraded">Upg.</span> Improved styled selects on touch screens</li>
+		<li><span class="version-upgraded">Upg.</span> Added option to pass custom classes to modal windows main element</li>
+		<li><span class="version-upgraded">Upg.</span> Added modal drag on touch screens</li>
+		<li><span class="version-upgraded">Upg.</span> Upgraded $.modal.prompt method and $.modal.confirm to allow more options overriding</li>
+		<li><span class="version-upgraded">Upg.</span> Added options to change prompt and confirm modal windows buttons text</li>
+		<li><span class="version-upgraded">Upg.</span> Added automatic fading on custom scrollbars</li>
+		<li><span class="version-upgraded">Upg.</span> Improved support for validation plugin in wizard</li>
+		<li><span class="version-upgraded">Upg.</span> Improved auto-resizing textareas support</li>
+		<li><span class="version-upgraded">Upg.</span> Improved the look of some form elements</li>
+		<li><span class="version-fixed">Fixed</span> Splash screen now displays correctly on iPad in landscape mode</li>
+		<li><span class="version-fixed">Fixed</span> Fixed an issue with font-icons alignement on block-lists under some browsers</li>
+		<li><span class="version-fixed">Fixed</span> Fixed duplicated icon class names</li>
+		<li><span class="version-fixed">Fixed</span> Fixed title bar buttons position in reversed mode</li>
+		<li><span class="version-fixed">Fixed</span> Fixed side tabs missing hover effect in reversed mode</li>
+		<li><span class="version-fixed">Fixed</span> Fixed tabs redraw issue with older versions of IE when changing media query</li>
+		<li><span class="version-fixed">Fixed</span> Fixed issues with styled forms elements and validation plugin</li>
+		<li><span class="version-fixed">Fixed</span> Fixed issues with placeholders being submitted</li>
+		<li><span class="version-fixed">Fixed</span> Fixed issues with inputs placeholders and validation plugin</li>
+		<li><span class="version-fixed">Fixed</span> Fixed issues with focus detection on IE7/8</li>
+		<li><span class="version-fixed">Fixed</span> Fixed an issue in detection of fixed-width selects size</li>
+		<li><span class="version-fixed">Fixed</span> Fixed an issue when submitting form with an open drop-down select list</li>
+		<li><span class="version-fixed">Fixed</span> Fixed missing disabled state for multiple selects</li>
+		<li><span class="version-fixed">Fixed</span> Fixed an issue with text selection when using switches</li>
+		<li><span class="version-fixed">Fixed</span> Fixed issue with iFrame size on modals</li>
+		<li><span class="version-fixed">Fixed</span> Fixed issue with autospacing on slider/progress</li>
+		<li><span class="version-fixed">Fixed</span> Fixed duplicate buttons in wizard in some cases</li>
+		<li><span class="version-fixed">Fixed</span> Fixed issue with glDatePicker calendar when using static mode</li>
+		<li><span class="version-fixed">Fixed</span> Fixed button-icons position under Firefox</li>
+		<li><span class="version-fixed">Fixed</span> Added a workaround for jQuery's inconsistency accros browsers on css() with percentage values</li>
+	</ul>
+
+	<h5>Version 1.4.1</h5>
+	<ul class="version-history">
+		<li><span class="version-fixed">Fixed</span> Fixed a bug with navigable menu size</li>
+		<li><span class="version-fixed">Fixed</span> Fixed a bug with empty auto-sizing textarea</li>
 	</ul>
 
 </div>

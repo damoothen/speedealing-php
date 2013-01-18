@@ -204,7 +204,7 @@
 				autoSpacingRight	= _parseAutoSpacing(settings.autoSpacingRight, settings.autoSpacing),
 				autoSpacingBottom	= _parseAutoSpacing(settings.autoSpacingBottom, settings.autoSpacing),
 				autoSpacingLeft		= _parseAutoSpacing(settings.autoSpacingLeft, settings.autoSpacing),
-				autoSpacing = (autoSpacingTop !== false && autoSpacingRight !== false && autoSpacingBottom !== false && autoSpacingLeft !== false),
+				autoSpacing = (autoSpacingTop !== false || autoSpacingRight !== false || autoSpacingBottom !== false || autoSpacingLeft !== false),
 
 				// Work vars
 				position, label, labelAlign;

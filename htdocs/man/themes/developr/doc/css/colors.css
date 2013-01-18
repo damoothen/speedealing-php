@@ -1605,7 +1605,7 @@ li.message-menu,
 }
 
 /* Green */
-.disabled .switch-on, .disabled .switch-on {
+.disabled .switch-on {
 	color: white !important;
 	border-color: #b2b9ab !important;
 	background: #b3d36b url(../img/old-browsers/colors/bg_disabled_switch-on.png) repeat-x !important;

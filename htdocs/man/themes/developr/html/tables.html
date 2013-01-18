@@ -757,7 +757,7 @@
 	<!-- JavaScript at the bottom for fast page loading -->
 
 	<!-- Scripts -->
-	<script src="js/libs/jquery-1.7.2.min.js"></script>
+	<script src="js/libs/jquery-1.8.2.min.js"></script>
 	<script src="js/setup.js"></script>
 
 	<!-- Template functions -->
@@ -778,23 +778,18 @@
 		$.template.init();
 
 		// Table sort - DataTables
-		var table = $('#sorting-advanced'),
-			tableStyled = false;
-
+		var table = $('#sorting-advanced');
 		table.dataTable({
 			'aoColumnDefs': [
 				{ 'bSortable': false, 'aTargets': [ 0, 5 ] }
 			],
 			'sPaginationType': 'full_numbers',
 			'sDom': '<"dataTables_header"lfr>t<"dataTables_footer"ip>',
-			'fnDrawCallback': function( oSettings )
+			'fnInitComplete': function( oSettings )
 			{
-				// Only run once
-				if (!tableStyled)
-				{
-					table.closest('.dataTables_wrapper').find('.dataTables_length select').addClass('select blue-gradient glossy').styleSelect();
-					tableStyled = true;
-				}
+				// Style length select
+				table.closest('.dataTables_wrapper').find('.dataTables_length select').addClass('select blue-gradient glossy').styleSelect();
+				tableStyled = true;
 			}
 		});
 

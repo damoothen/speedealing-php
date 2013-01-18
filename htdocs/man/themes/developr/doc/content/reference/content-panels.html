@@ -327,6 +327,18 @@
 
 	<p>You can add as much extra elements as wanted, just make sure the panel heights are the same for best looking result.</p>
 
+	<h5 class="green">Forcing mobile style</h5>
+
+	<p>If you want to use the mobile style (full width menu and content) everywhere, even on desktops, just add the class <b>mobile-panels</b> to the main wrapper:</p>
+
+	<pre class="prettyprint">
+&lt;div class="content-panel mobile-panels"&gt;
+
+	...
+
+&lt;/div&gt;
+</pre>
+
 	<h3 class="thin">Loading content</h3>
 
 	<p>This is the easy part: anywhere within the panels, just add the class <b>open-on-panel-content</b> or <b>open-on-panel-navigation</b> to the links (or their parent), depending on which panel should be targeted:</p>
@@ -347,21 +359,33 @@
 
 	<h5 class="green">Methods</h5>
 
-	<p>The plugin provides 2 methods to load content dynamically, which may be called on any element within the panels or on the wrapper itself:</p>
+	<p>The plugin provides 2 methods to load content dynamically and 2 to refresh it, which may be called on any element within the panels or on the wrapper itself:</p>
 
 	<dl class="definition">
-		<dt>$(selector).loadPanelNavigation(url)</dt>
+		<dt>$(selector).loadPanelNavigation(url, options)</dt>
 		<dd class="boxed margin-bottom">
 			<p>Load navigation panel content with AJAX</p>
 			<h6>Parameters</h6>
-			<p>@param string url the url of the content to load</p>
+			<p>@param string url the url of the content to load<br>
+			@param object options any additional options for the AJAX call</p>
 		</dd>
 
-		<dt>$(selector).loadPanelContent(url)</dt>
+		<dt>$(selector).refreshPanelNavigation()</dt>
+		<dd class="boxed margin-bottom">
+			<p>Refresh the navigation panel content if it was previously loaded at least once</p>
+		</dd>
+
+		<dt>$(selector).loadPanelContent(url, options)</dt>
 		<dd class="boxed margin-bottom">
 			<p>Load content panel content with AJAX</p>
 			<h6>Parameters</h6>
-			<p>@param string url the url of the content to load</p>
+			<p>@param string url the url of the content to load<br>
+			@param object options any additional options for the AJAX call</p>
+		</dd>
+
+		<dt>$(selector).refreshPanelContent()</dt>
+		<dd class="boxed margin-bottom">
+			<p>Refresh the content panel content if it was previously loaded at least once</p>
 		</dd>
 	</dl>
 

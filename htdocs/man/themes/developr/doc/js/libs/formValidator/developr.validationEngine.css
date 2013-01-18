@@ -42,6 +42,7 @@
 	padding: 6px 8px;
 	color: white;
 	background: #d52607 url(../img/old-browsers/colors/bg_red-gradient.png) repeat-x;
+	line-height: 18px;
 	-webkit-background-size: 100% 100%;
 	-moz-background-size: 100% 100%;
 	-o-background-size: 100% 100%;

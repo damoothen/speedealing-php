@@ -216,6 +216,13 @@ openModal('My modal content', {
 			<span class="icon-star black">Default:</span> true
 		</dd>
 
+		<dt>classes</dt>
+		<dd class="boxed margin-bottom">
+			CSS classes for the modal<br>
+			<span class="icon-marker black">Type:</span> string<br>
+			<span class="icon-star black">Default:</span> ''
+		</dd>
+
 		<dt>beforeContent</dt>
 		<dd class="boxed margin-bottom">
 			HTML before the content<br>
@@ -468,7 +475,9 @@ openModal('My modal content', {
 			&nbsp;&nbsp;&nbsp;&nbsp;width:			false,<br>
 			&nbsp;&nbsp;&nbsp;&nbsp;maxWidth:		260,<br>
 			&nbsp;&nbsp;&nbsp;&nbsp;resizable:		false,<br>
-			&nbsp;&nbsp;&nbsp;&nbsp;actions:		{}<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;actions:		{},<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;textCancel:		'Cancel',<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;textSubmit:		'Submit'<br>
 			}
 		</dd>
 
@@ -481,7 +490,9 @@ openModal('My modal content', {
 			&nbsp;&nbsp;&nbsp;&nbsp;minWidth:		120,<br>
 			&nbsp;&nbsp;&nbsp;&nbsp;width:			false,<br>
 			&nbsp;&nbsp;&nbsp;&nbsp;maxWidth:		260,<br>
-			&nbsp;&nbsp;&nbsp;&nbsp;buttonsAlign:	'center'<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;buttonsAlign:	'center',<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;textCancel:		'Cancel',<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;textConfirm:	'Confirm'<br>
 			}
 		</dd>
 	</dl>

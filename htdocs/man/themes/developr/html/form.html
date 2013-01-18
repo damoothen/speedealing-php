@@ -115,27 +115,27 @@
 
 						<p class="inline-label">
 							<label for="input-1" class="label">Unstyled input</label>
-							<input type="text" name="input-1" id="input-1" value="Unstyled text input">
+							<input type="text" name="input-1" id="input-1" size="9" value="Unstyled text input">
 						</p>
 
 						<p class="button-height inline-label">
 							<label for="input-2" class="label">Styled input</label>
-							<input type="text" name="input-2" id="input-2" class="input" value="Styled text input">
+							<input type="text" name="input-2" id="input-2" size="9" class="input" value="Styled text input">
 						</p>
 
 						<p class="button-height inline-label">
 							<label for="input-3" class="label">Full width</label>
-							<input type="text" name="input-3" id="input-3" class="input full-width" value="Full-width text input">
+							<input type="text" name="input-3" id="input-3" size="9" class="input full-width" value="Full-width text input">
 						</p>
 
 						<p class="button-height inline-label">
 							<label for="input-3" class="label">Disabled</label>
-							<input type="text" name="input-3" id="input-3" class="input full-width" value="Disabled text input" disabled>
+							<input type="text" name="input-3" id="input-3" size="9" class="input full-width" value="Disabled text input" disabled>
 						</p>
 
 						<p class="inline-label">
 							<label for="input-4" class="label">Invisible</label>
-							<input type="text" name="input-4" id="input-4" class="input-unstyled" value="Transparent text input">
+							<input type="text" name="input-4" id="input-4" size="9" class="input-unstyled" value="Transparent text input">
 						</p>
 					</fieldset>
 
@@ -556,7 +556,7 @@
 					<p class="button-height">
 						<span class="number input margin-right">
 							<button type="button" class="button number-down">-</button>
-							<input type="text" name="special-input-2" id="special-input-2" value="320" class="input-unstyled">
+							<input type="text" name="special-input-2" id="special-input-2" value="320" size="4" class="input-unstyled">
 							<button type="button" class="button number-up">+</button>
 						</span>
 					</p>
@@ -600,7 +600,7 @@
 							<label for="validation-number" class="label">Number</label>
 							<span class="number input margin-right">
 								<button type="button" class="button number-down">-</button>
-								<input type="text" name="validation-number" id="validation-number" value="45" class="input-unstyled validate[required,min[5],max[40]]">
+								<input type="text" name="validation-number" id="validation-number" value="45" size="4" class="input-unstyled validate[required,min[5],max[40]]">
 								<button type="button" class="button number-up">+</button>
 							</span>
 						</p>
@@ -629,12 +629,12 @@
 					<p class="button-height">
 						<select class="select">
 							<option value="1">First value</option>
-							<option value="2">Second value</option>
+							<option value="2" disabled>Second value</option>
 							<optgroup label="Group">
-								<option value="1">First value</option>
-								<option value="2">Second value</option>
-								<option value="3" selected="selected">Selected value</option>
-								<option value="4">Last value</option>
+								<option value="11">First value</option>
+								<option value="12">Second value</option>
+								<option value="13" selected="selected">Selected value</option>
+								<option value="14" disabled>Disabled value</option>
 							</optgroup>
 							<option value="3">Other value</option>
 							<option value="4">Last value</option>
@@ -675,7 +675,7 @@
 								<option value="1">First very long value</option>
 								<option value="2">Second value even longer than the first one</option>
 								<option value="3" selected="selected">Expand</option>
-								<option value="4">Last value</option>
+								<option value="4" disabled>Disabled value</option>
 							</select>
 						</p>
 					</div>
@@ -688,7 +688,7 @@
 								<option value="1">First value</option>
 								<option value="2">Second value</option>
 								<option value="3" selected="selected">Disabled</option>
-								<option value="4">Last value</option>
+								<option value="4" disabled>Disabled value</option>
 							</select>
 						</p>
 					</div>
@@ -701,7 +701,7 @@
 								<option value="1">First value</option>
 								<option value="2">Second value</option>
 								<option value="3" selected="selected">Check list</option>
-								<option value="4">Last value</option>
+								<option value="4" disabled>Disabled value</option>
 							</select>
 						</p>
 					</div>
@@ -714,7 +714,7 @@
 								<option value="1">First value</option>
 								<option value="2">Second value</option>
 								<option value="3" selected="selected">Multiple</option>
-								<option value="4">Last value</option>
+								<option value="4" disabled>Disabled value</option>
 							</select>
 						</p>
 					</div>
@@ -727,7 +727,7 @@
 								<option value="1">First value</option>
 								<option value="2">Second value</option>
 								<option value="3" selected="selected">Multiple</option>
-								<option value="4">Last value</option>
+								<option value="4" disabled>Disabled value</option>
 							</select>
 						</p>
 					</div>
@@ -740,7 +740,7 @@
 								<option value="1">First value</option>
 								<option value="2">Second value</option>
 								<option value="3" selected="selected">Multiple</option>
-								<option value="4">Last value</option>
+								<option value="4" disabled>Disabled value</option>
 							</select>
 						</p>
 					</div>
@@ -752,7 +752,7 @@
 							<option value="1">First value</option>
 							<option value="2">Second value</option>
 							<option value="3" selected="selected">Multiple</option>
-							<option value="4">Last value</option>
+							<option value="4" disabled>Disabled value</option>
 						</select>
 					</div>
 
@@ -763,7 +763,7 @@
 							<option value="1">First value</option>
 							<option value="2">Second value</option>
 							<option value="3" selected="selected">Multiple</option>
-							<option value="4">Last value</option>
+							<option value="4" disabled>Disabled value</option>
 						</select>
 					</div>
 
@@ -774,7 +774,7 @@
 							<option value="1">First value</option>
 							<option value="2">Second value</option>
 							<option value="3" selected="selected">Multiple</option>
-							<option value="4">Last value</option>
+							<option value="4" disabled>Disabled value</option>
 						</select>
 					</div>
 
@@ -787,7 +787,7 @@
 								<option value="1">First value</option>
 								<option value="2">Second value</option>
 								<option value="3" selected="selected">Context menu</option>
-								<option value="4">Last value</option>
+								<option value="4" disabled>Disabled value</option>
 							</select>
 						</div>
 					</div>
@@ -965,7 +965,7 @@
 	<!-- JavaScript at the bottom for fast page loading -->
 
 	<!-- Scripts -->
-	<script src="js/libs/jquery-1.7.2.min.js"></script>
+	<script src="js/libs/jquery-1.8.2.min.js"></script>
 	<script src="js/setup.js"></script>
 
 	<!-- Template functions -->

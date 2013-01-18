@@ -344,6 +344,20 @@ table.dataTable th:active {
 	color: #0059a0;
 	cursor: pointer;
 }
+.sorting:before {
+	content: '';
+	display: inline-block;
+	width: 7px;
+	height: 10px;
+	vertical-align: middle;
+	background: url(../../../img/standard/sprites.png) no-repeat -137px -8px;
+	margin: -1px 4px 1px 1px;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+	filter: alpha(opacity=30);
+	-khtml-opacity: 0.3;
+	-moz-opacity: 0.3;
+	opacity: 0.3;
+}
 .sorting_asc:before,
 .sorting_desc:before {
 	font-size: 0.75em;

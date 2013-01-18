@@ -311,6 +311,26 @@ $(selector).disableInput();
 		</select>
 	</p>
 
+	<h3 class="thin">Dynamic changes</h3>
+
+	<p>If you change the value of the select with javascript, you need to tell the styling plugin that it has changed: just fire a <strong>change</strong> event:</p>
+
+	<pre class="prettyprint">
+$(selector).change();
+</pre>
+
+	<p>And if you change the option's list, trigger the corresponding special event to force a refresh:</p>
+
+	<pre class="prettyprint">
+$(selector).trigger('update-select-list');
+</pre>
+
+	<p>Both events can be chained if both options list and value have changed:</p>
+
+	<pre class="prettyprint">
+$(selector).trigger('update-select-list').change();
+</pre>
+
 	<h3 class="thin">Option classes</h3>
 
 	<h5 class="green">Colors</h5>
@@ -508,6 +528,29 @@ $(selector).disableInput();
 	...
 &lt;/select&gt;
 </pre>
+
+	<h3 class="thin">Using the style only</h3>
+
+	<p>It is possible to use the drop-down style without any underlying select element: just build the corresponding markup, and the plugin will handle it as well:</p>
+
+	<pre class="prettyprint">
+&lt;span class="select" tabindex="0"&gt;
+	&lt;a href="#" class="select-value"&gt;Edit&lt;/a&gt;
+	&lt;span class="select-arrow"&gt;&lt;/span&gt;
+	&lt;span class="drop-down"&gt;
+		&lt;a href="#"&gt;Option 1&lt;/a&gt;
+		&lt;a href="#"&gt;Option 2&lt;/a&gt;
+		&lt;a href="#"&gt;Option 3&lt;/a&gt;
+		&lt;a href="#"&gt;Option 4&lt;/a&gt;
+	&lt;/span&gt;
+&lt;/span&gt;
+</pre>
+
+	<p class="wrapped left-icon icon-info-round">
+		The tabindex attribute is used to make the element focusable
+	</p>
+
+	<p>Note that most styling options will work as well.</p>
 
 	<h3 class="thin">Options reference</h3>
 

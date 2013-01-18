@@ -293,12 +293,19 @@
 			var calendar = $("#"+calId);
 			if(calendar.length == 0)
 			{
-				calendar = $("<div id='"+calId+"'></div>")
-				.appendTo(document.body)
-				.css({
-					"position":settings.position,
-					"z-index": target.closest('.modal').length ? 999600 : 100
-				});
+				calendar = $("<div id='"+calId+"'></div>");
+				if (settings.showAlways)
+				{
+					calendar.appendTo(target);
+				}
+				else
+				{
+					calendar.appendTo(document.body)
+					.css({
+						"position":settings.position,
+						"z-index": target.closest('.modal').length ? 999600 : 100
+					});
+				}
 			}
 
 			// Show calendar

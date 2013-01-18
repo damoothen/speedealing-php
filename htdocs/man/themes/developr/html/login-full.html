@@ -147,7 +147,7 @@
 	<!-- JavaScript at the bottom for fast page loading -->
 
 	<!-- Scripts -->
-	<script src="js/libs/jquery-1.7.2.min.js"></script>
+	<script src="js/libs/jquery-1.8.2.min.js"></script>
 	<script src="js/setup.js"></script>
 
 	<!-- Template functions -->
@@ -419,6 +419,9 @@
 				form.data('button', $('<a href="#'+this.id+'" class="button anthracite-gradient'+color+(active ? ' active' : '')+'">'+this.title+'</a>')
 									.appendTo(formSwitch)
 									.data('form', form));
+
+				// Remove title to prevent tooltip from showing - thanks efreed :)
+				this.title = '';
 
 				// If active
 				if (active)

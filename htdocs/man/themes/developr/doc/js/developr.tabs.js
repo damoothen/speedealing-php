@@ -419,6 +419,38 @@
 		return this;
 	};
 
+	/**
+	 * Show the target's tab
+	 */
+	$.fn.showTab = function()
+	{
+		this.each(function(i)
+		{
+				// Current element
+			var element = $(this),
+
+				// Tabs wrapper
+				wrapper = element.closest('.tabs-content'),
+
+				// Parent tab content wrapper
+				tab;
+
+			// If not in a tab, exit
+			if (wrapper.length === 0)
+			{
+				return;
+			}
+
+			// Get tab content wrapper
+			tab = element.parent().hasClass('tabs-content') ? element : element.parentsUntil(wrapper).last();
+
+			// Click corresponding tab
+			$('a[href="#'+tab[0].id+'"]').click();
+		});
+
+		return this;
+	};
+
 	// Add template setup function
 	$.template.addSetupFunction(function(self, children)
 	{
