@@ -37,12 +37,12 @@ $ldap = array(
 		'LDAPFieldFirstSubscriptionAmount' => 'Höhe des ersten Mitgliedsbeitrags',
 		'LDAPFieldLastSubscriptionDate' => 'Datum der letzten Mitgliedschaft',
 		'LDAPFieldLastSubscriptionAmount' => 'Höhe des letzten Mitgliedsbeitrags',
-		'SynchronizeDolibarr2Ldap' => 'Systembenutzer & LDAP-Benutzer synchronisieren',
+		'SynchronizeSpeedealing2Ldap' => 'Synchronize user (Speedealing -> LDAP)',
 		'UserSynchronized' => 'Benutzer synchronisiert',
 		'GroupSynchronized' => 'Gruppe synchronisiert',
 		'MemberSynchronized' => 'Mitglied synchronisiert',
 		'ContactSynchronized' => 'Kontakt synchronisiert',
 		'ForceSynchronize' => 'Erzwinge System-LDAP-Synchronisation',
-		'ErrorFailedToReadLDAP' => 'Fehler beim Lesen der LDAP-Datenbank. Überprüfen Sie die Verfügbarkeit der Datenbank sowie die entsprechenden Moduleinstellungen.',
+		'ErrorFailedToReadLDAP' => 'Fehler beim Lesen der LDAP-Datenbank. Überprüfen Sie die Verfügbarkeit der Datenbank sowie die entsprechenden Moduleinstellungen.'
 );
 ?>

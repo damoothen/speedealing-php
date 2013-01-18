@@ -30,9 +30,9 @@ $bookmarks = array(
 		'BehaviourOnClick' => 'Verhalten bei Klick auf den Link',
 		'CreateBookmark' => 'Erstelle Lesezeichen',
 		'SetHereATitleForLink' => 'Geben Sie hier einen Linktitel ein',
-		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Verwenden Sie eine externe http-URL oder eine URL relativ zum Systempfad',
+		'UseAnExternalHttpLinkOrRelativeSpeedealingLink' => 'Use an external http URL or a relative Speedealing URL',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Bitte wählen Sie, ob sich ein geklickter Link in einem neuen oder demselben Fenster öffnet',
 		'BookmarksManagement' => 'Bookmarks-Verwaltung',
-		'ListOfBookmarks' => 'Liste der Lesezeichen',
+		'ListOfBookmarks' => 'Liste der Lesezeichen'
 );
 ?>
