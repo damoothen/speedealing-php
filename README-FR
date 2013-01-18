@@ -3,27 +3,27 @@ README (french)
 Documentation démarrage rapide
 --------------------------------
 
-1) Installer Dolibarr
-2) Mettre à jour Dolibarr depuis une ancienne version
+1) Installer Speedealing
+2) Mettre à jour Speedealing depuis une ancienne version
 3) Ce qui est nouveau dans cette version
-4) Ce que peux faire Dolibarr
-5) Ce que ne peux pas faire Dolibarr (pas encore)
+4) Ce que peux faire Speedealing
+5) Ce que ne peux pas faire Speedealing (pas encore)
 
 
-I - INSTALLER DOLIBARR
+I - INSTALLER SPEEDEALING
 ----------------------
 
 Si vous n'avez pas de connaissances techniques, et que vous recherchez
-un programme d'installation qui install Dolibarr ERP/CRM en quelques clics,
+un programme d'installation qui install Speedealing ERP/CRM en quelques clics,
 vous devez vous réorienter vers DoliWamp (la version tout-en-un
-de Dolibarr pour Windows), DoliDeb (la version tout-en-un pour Debian ou
-Ubuntu) ou DoliRpm (la version tout-en-un de Dolibarr pour Fedora, Redhat,
+de Speedealing pour Windows), DoliDeb (la version tout-en-un pour Debian ou
+Ubuntu) ou DoliRpm (la version tout-en-un de Speedealing pour Fedora, Redhat,
 OpenSuse, Mandriva ou Mageia).
 Vous pouvez les télécharger à l'adresse: 
 http://www.dolibarr.org/downloads/
 
 Si vous avez déjà installé un serveur Web avec PHP et une base de donnée (Mysql),
-vous pouvez installer Dolibarr avec cette version de la manière suivante:
+vous pouvez installer Speedealing avec cette version de la manière suivante:
 
 - Copier le répertoire "dolibarr" et son contenu dans la racine de votre serveur
   web, ou bien copier le répertoire sur le serveur et configurer ce serveur pour
@@ -45,10 +45,10 @@ vous pouvez installer Dolibarr avec cette version de la manière suivante:
 
 
 
-II - METTRE A JOUR DOLIBARR
+II - METTRE A JOUR SPEEDEALING
 ---------------------------
 
-Pour mettre a jour Dolibarr depuis une vieille version vers celle ci:
+Pour mettre a jour Speedealing depuis une vieille version vers celle ci:
 - Ecraser les vieux fichiers dans le vieux repertoire 'dolibarr' par les fichiers
   fournis dans ce nouveau package.
   
@@ -74,7 +74,7 @@ Voir fichier ChangeLog.
 
 
 
-IV - CE QUE DOLIBARR PEUT FAIRE
+IV - CE QUE SPEEDEALING PEUT FAIRE
 -------------------------------
 
 Modules principaux:
@@ -99,7 +99,7 @@ Autres modules:
 - Gestion de marque-pages
 - Agenda
 - Point de vente/Caisse enregistreuse
-- Fonctions d'EMailing de masses vers les clients, prospect ou utilisateurs Dolibarr
+- Fonctions d'EMailing de masses vers les clients, prospect ou utilisateurs Speedealing
 - Rapports
 - Fonctions d'exports
 - Connectivité LDAP
@@ -117,14 +117,14 @@ Miscellanous:
 - Compatible avec toutes les offres Cloud du marché respectant les prérequis MySQL et PHP. 
 
 
-V - CE QUE DOLIBARR NE PEUT PAS FAIRE (TACHES A FAIRE)
+V - CE QUE SPEEDEALING NE PEUT PAS FAIRE (TACHES A FAIRE)
 ------------------------------------------------------
-Voici un liste de fonctionnalites pas encore gérées par Dolibarr:
+Voici un liste de fonctionnalites pas encore gérées par Speedealing:
 - Pas de compta analytique (uniquement gestion de trésorerie).
-- Dolibarr ne gère qu'une seule monnaie à la fois (mono-devise).
-- Dolibarr ne gère en standard qu'une société/institution/association (mono-société). Pour en gérer plusieurs (comme vos filiales), il faut, soit faire plusieurs installations de Dolibarr, soit installer le module MutliCompany qui permet de gérer n société/institutions/associations dans une seule instance par une isolation logique des données.
+- Speedealing ne gère qu'une seule monnaie à la fois (mono-devise).
+- Speedealing ne gère en standard qu'une société/institution/association (mono-société). Pour en gérer plusieurs (comme vos filiales), il faut, soit faire plusieurs installations de Speedealing, soit installer le module MutliCompany qui permet de gérer n société/institutions/associations dans une seule instance par une isolation logique des données.
 - Ne gère pas la double tva (Fédérale / provinciale) du canada.
-- Dolibarr ne contient pas de module de Gestion de la paie.
+- Speedealing ne contient pas de module de Gestion de la paie.
 - Les taches du module de gestion de projets n'ont pas de dépendance entre elle.
-- Dolibarr ne contient pas de Webmail.
-- Dolibarr ne fait pas le café (pas encore). 
+- Speedealing ne contient pas de Webmail.
+- Speedealing ne fait pas le café (pas encore). 
