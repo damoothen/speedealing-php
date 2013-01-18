@@ -659,10 +659,6 @@ min-width: 40px;
     background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/tools.png', 1) ?>);
     }
 
-    div.mainmenu.shop {
-    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/shop.png', 1) ?>);
-    }
-
     div.mainmenu.webservices {
     }
 
@@ -689,7 +685,7 @@ min-width: 40px;
     $mainmenuusedarray = array_unique(explode(',', $mainmenuused));
 
     $generic = 1;
-    $divalreadydefined = array('home', 'companies', 'products', 'commercial', 'accountancy', 'project', 'tools', 'members', 'shop', 'agenda', 'holiday', 'bookmark', 'cashdesk', 'ecm', 'geoipmaxmind', 'gravatar', 'clicktodial', 'paypal', 'webservices');
+    $divalreadydefined = array('home', 'companies', 'products', 'commercial', 'accountancy', 'project', 'tools', 'members', 'agenda', 'holiday', 'bookmark', 'cashdesk', 'ecm', 'geoipmaxmind', 'gravatar', 'clicktodial', 'paypal', 'webservices');
     foreach ($mainmenuusedarray as $val) {
         if (empty($val) || in_array($val, $divalreadydefined))
             continue;
