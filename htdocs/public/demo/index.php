@@ -80,9 +80,9 @@ $alwayshiddencheckedmodules=array('accounting','barcode','bookmark','clicktodial
 								'mailmanspip','notification','syslog','user','webservices',
                                 // Extended modules
                                 'memcached','numberwords','zipautofillfr');
-$alwayshiddenuncheckedmodules=array('boutique','ftp',
+$alwayshiddenuncheckedmodules=array('ftp',
                                 // Extended modules
-                                'awstats','bittorrent','cabinetmed','cmcic','concatpdf','dolicloud','filemanager','lightbox','mantis','monitoring','moretemplates','nltechno','numberingpack','openstreetmap',
+                                'awstats','bittorrent','cmcic','concatpdf','filemanager','lightbox','mantis','monitoring','moretemplates','numberingpack','openstreetmap',
                                 'ovh','phenix','phpsysinfo','pibarcode','postnuke','skincoloreditor','submiteverywhere','survey','thomsonphonebook','topten','tvacerfa','voyage','webcalendar','webmail');
 
 // Search modules

@@ -25,7 +25,7 @@
 /**
  *  Check authentication array and set error, errorcode, errorlabel
  *
- *  @param	array	$authentication     Array with authentication informations ('login'=>,'password'=>,'entity'=>,'dolibarrkey'=>)
+ *  @param	array	$authentication     Array with authentication informations ('login'=>,'password'=>,'entity'=>,'securekey'=>)
  *  @param 	int		&$error				Number of errors
  *  @param  string	&$errorcode			Error string code
  *  @param  string	&$errorlabel		Error string label
@@ -38,10 +38,10 @@ function check_authentication($authentication,&$error,&$errorcode,&$errorlabel)
 
     $fuser=new User($db);
 
-    if (! $error && ($authentication['dolibarrkey'] != $conf->global->WEBSERVICES_KEY))
+    if (! $error && ($authentication['securekey'] != $conf->global->WEBSERVICES_KEY))
     {
         $error++;
-        $errorcode='BAD_VALUE_FOR_SECURITY_KEY'; $errorlabel='Value provided into dolibarrkey entry field does not match security key defined in Webservice module setup';
+        $errorcode='BAD_VALUE_FOR_SECURITY_KEY'; $errorlabel='Value provided into securekey entry field does not match security key defined in Webservice module setup';
     }
 
     if (! $error && ! empty($authentication['entity']) && ! is_numeric($authentication['entity']))

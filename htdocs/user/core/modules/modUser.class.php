@@ -171,7 +171,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Parameters";
 		$r++;
-                
+
 		$this->menus[$r]->_id = "menu:setup";
 		$this->menus[$r]->url = "/admin/index.php";
 		$this->menus[$r]->langs = "admin";
@@ -325,7 +325,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->title = "Infos";
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
-		
+
 		$this->menus[$r]->_id = "menu:memcached";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/memcached/admin/memcached.php";
@@ -335,7 +335,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->enabled = '$conf->memcached->host';
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
-		
+
 		$this->menus[$r]->_id = "menu:phpinfo";
 		$this->menus[$r]->position = 3;
 		$this->menus[$r]->url = "/admin/system/phpinfo.php";
@@ -434,19 +434,10 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systemtools";
 		$r++;
 
-		$this->menus[$r]->_id = "menu:helpcenter";
-		$this->menus[$r]->position = 7;
-		$this->menus[$r]->url = "/support/index.php";
-		$this->menus[$r]->langs = "help";
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "HelpCenter";
-		$this->menus[$r]->fk_menu = "menu:systemtools";
-		$r++;
-                
-                $this->menus[$r]->_id = "menu:directoryusers";
-                $this->menus[$r]->position = 5;
+		$this->menus[$r]->_id = "menu:directoryusers";
+		$this->menus[$r]->position = 5;
 		$this->menus[$r]->langs = "users";
-                $this->menus[$r]->url = "/useradmin/index.php";
+		$this->menus[$r]->url = "/useradmin/index.php";
 		$this->menus[$r]->perms = '$user->superadmin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Users";
@@ -456,27 +447,26 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->_id = "menu:databases";
 		$this->menus[$r]->position = 6;
 		$this->menus[$r]->langs = "users";
-                $this->menus[$r]->url = "/user/database/index.php";
+		$this->menus[$r]->url = "/user/database/index.php";
 		$this->menus[$r]->perms = '$user->superadmin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Databases";
 		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
-                
-                // Module RH
-                
-                $this->menus[$r]->_id = "menu:rh";
+
+		// Module RH
+		$this->menus[$r]->_id = "menu:rh";
 		$this->menus[$r]->type = "top";
 		$this->menus[$r]->position = 999;
 		$this->menus[$r]->enabled = '$user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "RH";
 		$r++;
-                
-                $this->menus[$r]->_id = "menu:team";
-                $this->menus[$r]->position = 3;
+
+		$this->menus[$r]->_id = "menu:team";
+		$this->menus[$r]->position = 3;
 		$this->menus[$r]->langs = "users";
-                $this->menus[$r]->url = "/user/index.php";
+		$this->menus[$r]->url = "/user/index.php";
 		$this->menus[$r]->perms = '$user->rights->user->user->lire || $user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Collaborators";
@@ -486,7 +476,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->_id = "menu:groups";
 		$this->menus[$r]->position = 4;
 		$this->menus[$r]->langs = "users";
-                $this->menus[$r]->url = "/user/group/index.php";
+		$this->menus[$r]->url = "/user/group/index.php";
 		$this->menus[$r]->perms = '($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Profiles";

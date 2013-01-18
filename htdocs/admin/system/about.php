@@ -3,7 +3,7 @@
  * Copyright (C) 2003      Jean-Louis Bergamo    <jlb@j1b.org>
  * Copyright (C) 2004-2012 Laurent Destailleur   <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerke@telenet.be>
- * Copyright (C) 2005-2007 Regis Houssin         <regis.houssin@capnetworks.com>
+ * Copyright (C) 2005-2013 Regis Houssin         <regis.houssin@capnetworks.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 /**
  *       \file       htdocs/admin/system/about.php
- *       \brief      About Dolibarr File page
+ *       \brief      About Speedealing File page
  */
 
 require '../../main.inc.php';
@@ -37,21 +37,20 @@ $langs->load("members");
 llxHeader();
 
 
-print_fiche_titre("Dolibarr",'','setup');
+print_fiche_titre("Speedealing",'','setup');
 
 print '<div style="padding-left: 30px;">'.img_picto_common('', 'dolibarr_box.png','height="120"').'</div>';
 
-print $langs->trans("Version").' / '.$langs->trans("DolibarrLicense").':';
+print $langs->trans("Version").' / '.$langs->trans("SpeedealingLicense").':';
 print '<ul>';
-print '<li>'.DOL_VERSION.' / <a href="http://www.gnu.org/copyleft/gpl.html">GNU-GPL</a></li>';
+print '<li>'.DOL_VERSION.' / <a href="http://www.apache.org/licenses/">Apache V2</a></li>';
 print '</ul>';
 
 //print "<br>\n";
 
 print $langs->trans("Developpers").':';
 print '<ul>';
-print '<li>'.$langs->trans("SeeWikiForAllTeam").': <a href="http://wiki.dolibarr.org/index.php/Dolibarr_Project" target="_blank">http://wiki.dolibarr.org/index.php/Dolibarr_Project</a></li>';
-print '<li>'.$langs->trans("DoliForge").': <a href="http://www.doliforge.org" target="_blank">http://wwww.doliforge.org</a></li>';
+print '<li>'.$langs->trans("DevelopmentPlatform").': <a href="https://speedealing.atlassian.net/" target="_blank">https://speedealing.atlassian.net/</a></li>';
 print '</ul>';
 
 //print "<br>\n";
@@ -60,66 +59,26 @@ print $langs->trans("OtherInformations").':';
 
 print '<ul>';
 print '<li>';
-print '<a target="_blank" href="http://www.dolibarr.org/">'.$langs->trans("OfficialWebSite").'</a>';
+print '<a target="_blank" href="http://www.speedealing.com/">'.$langs->trans("OfficialWebSite").'</a>';
 print '</li>';
-// If the French language, it displays French website
-if (preg_match('/^fr_/i',$langs->getDefaultLang()))
-{
-	print '<li>';
-	print '<a target="_blank" href="http://www.dolibarr.fr/">'.$langs->trans("OfficialWebSiteFr").'</a>';
-	print '</li>';
-}
+
 print '<li>';
-print '<a target="_blank" href="http://wiki.dolibarr.org/">'.$langs->trans("OfficialWiki").'</a>';
+print '<a target="_blank" href="http://wiki.speedealing.com/">'.$langs->trans("OfficialWiki").'</a>';
 print '</li>';
 print '</ul>';
 
 print $langs->trans("Demo").':';
 print '<ul>';
 print '<li>';
-print '<a target="_blank" href="http://www.dolibarr.org/onlinedemo/">'.$langs->trans("OfficialDemo").'</a>';
+print '<a target="_blank" href="http://demo.speedealing.com/">'.$langs->trans("OfficialDemo").'</a>';
 print '</li>';
 print '</ul>';
 
 print $langs->trans("ModulesMarketPlaces").':';
 print '<ul>';
 print '<li>';
-print '<a target="_blank" href="http://www.dolistore.com">'.$langs->trans("OfficialMarketPlace").'</a>';
+print '<a target="_blank" href="http://shop.speedealing.com">'.$langs->trans("OfficialMarketPlace").'</a>';
 print '</li>';
-print '</ul>';
-
-
-print $langs->trans("HelpCenter").':';
-print '<ul>';
-print '<li>';
-//print $langs->trans("SeeWikiPage",'http://wiki.dolibarr.org/index.php/List_of_OpenSource_Software_companies_and_freelancers');
-print '<a target="_blank" href="'.DOL_URL_ROOT.'/support/index.php">'.$langs->trans("HelpCenter").'</a>';
-print '</li>';
-print '</ul>';
-
-print $langs->trans("Foundation").':';
-
-print '<ul>';
-$url='http://wiki.dolibarr.org/index.php/Subscribe';
-if (preg_match('/^fr_/i',$langs->getDefaultLang())) $url='http://wiki.dolibarr.org/index.php/Adh%C3%A9rer';
-if (preg_match('/^es_/i',$langs->getDefaultLang())) $url='http://wiki.dolibarr.org/index.php/Subscribirse';
-print '<li><a href="'.$url.'" target="_blank">'.$langs->trans("SubscribeToFoundation").'</a></li>';
-print '</ul>';
-
-
-print $langs->trans("OfficialWebHostingService").':';
-$url='http://www.dolicloud.com'; $title='DoliCloud';
-print '<ul>';
-print '<li>';
-print '<a target="_blank" href="'.$url.'">'.$title.'</a>';
-print '</li>';
-if (preg_match('/^fr_/i',$langs->getDefaultLang()))
-{
-    $url='http://www.dolibox.fr'; $title='DoliBox';
-    print '<li>';
-    print '<a target="_blank" href="'.$url.'">'.$title.'</a>';
-    print '</li>';
-}
 print '</ul>';
 
 print dol_fiche_end();
@@ -128,13 +87,3 @@ llxFooter();
 
 $db->close();
 ?>
-
-
-
-
-
-
-
-
-
-

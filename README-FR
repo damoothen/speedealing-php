@@ -20,7 +20,7 @@ de Speedealing pour Windows), DoliDeb (la version tout-en-un pour Debian ou
 Ubuntu) ou DoliRpm (la version tout-en-un de Speedealing pour Fedora, Redhat,
 OpenSuse, Mandriva ou Mageia).
 Vous pouvez les télécharger à l'adresse: 
-http://www.dolibarr.org/downloads/
+http://sourceforge.net/projects/speedealing/files/
 
 Si vous avez déjà installé un serveur Web avec PHP et une base de donnée (Mysql),
 vous pouvez installer Speedealing avec cette version de la manière suivante:

@@ -29,7 +29,7 @@ $WS_DOL_URL = DOL_MAIN_URL_ROOT.'/webservices/server_invoice.php';
 //$WS_DOL_URL = 'http://localhost:8080/';	// To test with Soapui mock. If not a page, should end with /
 $WS_METHOD1  = 'getInvoice';
 $WS_METHOD2  = 'getInvoicesForThirdParty';
-$ns='http://www.dolibarr.org/ns/';
+$ns='http://www.speedealing.com/ns/';
 
 
 // Set the WebService URL
@@ -49,7 +49,7 @@ if ($soapclient2)
 
 // Call the WebService method and store its result in $result.
 $authentication=array(
-    'dolibarrkey'=>$conf->global->WEBSERVICES_KEY,
+    'securekey'=>$conf->global->WEBSERVICES_KEY,
     'sourceapplication'=>'DEMO',
     'login'=>'admin',
     'password'=>'changeme',

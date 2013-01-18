@@ -5,15 +5,15 @@
 	<name>Speedealing</name>
 	<version>__VERSION__</version>
 	<release>__RELEASE__</release>
-	<homepage>http://www.dolibarr.org/</homepage>
+	<homepage>http://www.speedealing.com/</homepage>
 	<vendor>
 		<name>Speedealing</name>
-		<homepage>http://www.dolibarr.org/</homepage>
+		<homepage>http://www.speedealing.com/</homepage>
 		<icon path="images/appicon_64.png" />
 	</vendor>
 	<packager>
-        <name>Laurent Destailleur</name>
-        <homepage>http://www.nltechno.com</homepage>
+        <name>Speedealing Team</name>
+        <homepage>http://www.speedealing.com</homepage>
 		<uri>uuid:e743ee30-9fe8-11e0-a32e-0025115d642c</uri>
 	</packager>
 	<presentation>
@@ -34,7 +34,7 @@ standalone software. Speedealing is designed to provide simplicity to end-user.
 		</screenshot>
 		<changelog>
 			<version version="3.1.0" release="0">
-				<entry>See http://www.dolibarr.org/files/ChangeLog</entry>
+				<entry>See http://www.speedealing.com/files/ChangeLog</entry>
 			</version>
 		</changelog>
 		<categories>

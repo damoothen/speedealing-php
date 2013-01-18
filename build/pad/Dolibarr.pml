@@ -16,7 +16,7 @@
 		<Program_Install_Support>No Install Support</Program_Install_Support>
 		<Program_OS_Support>Linux,Mac OS X,Mac Other,Unix,Win2000,Win7 x32,Win7 x64,Win98,WinOther,WinServer,WinVista,WinVista x64,WinXP,Other</Program_OS_Support>
 		<Program_Language>English,Arabic,Catalan,Chinese,Danish,Dutch,Finnish,French,German,Greek,Icelandic,Italian,Norwegian,Polish,Portuguese,Romanian,Russian,Slovenian,Spanish,Swedish,Turkish</Program_Language>
-		<Program_Change_Info>http://www.dolibarr.org</Program_Change_Info>
+		<Program_Change_Info>http://www.speedealing.com</Program_Change_Info>
 		<Program_Specific_Category>Business</Program_Specific_Category>
 		<Program_Category_Class>Business::Accounting &amp; Finance</Program_Category_Class>
 		<Program_System_Requirements>None</Program_System_Requirements>
@@ -71,15 +71,15 @@ Speedealing intègre en effet sa propre architecture (design patterns) permettan
 	</Program_Descriptions>
 	<Web_Info>
 		<Application_URLs>
-			<Application_Info_URL>http://www.dolibarr.org</Application_Info_URL>
-			<Application_Order_URL>http://www.dolibarr.org</Application_Order_URL>
-			<Application_Screenshot_URL>http://www.dolibarr.org/images/dolibarr_screenshot1.png</Application_Screenshot_URL>
-			<Application_Icon_URL>http://www.dolibarr.org/images/dolibarr.gif</Application_Icon_URL>
-			<Application_XML_File_URL>http://www.dolibarr.org/files/pad_dolibarr.xml</Application_XML_File_URL>
+			<Application_Info_URL>http://www.speedealing.com</Application_Info_URL>
+			<Application_Order_URL>http://www.speedealing.com</Application_Order_URL>
+			<Application_Screenshot_URL>http://www.speedealing.com/images/dolibarr_screenshot1.png</Application_Screenshot_URL>
+			<Application_Icon_URL>http://www.speedealing.com/images/dolibarr.gif</Application_Icon_URL>
+			<Application_XML_File_URL>http://www.speedealing.com/files/pad_dolibarr.xml</Application_XML_File_URL>
 		</Application_URLs>
 		<Download_URLs>
-			<Primary_Download_URL>http://www.dolibarr.org/files/dolibarr.tgz</Primary_Download_URL>
-			<Secondary_Download_URL>http://www.dolibarr.org/files/dolibarr.tgz</Secondary_Download_URL>
+			<Primary_Download_URL>http://www.speedealing.com/files/dolibarr.tgz</Primary_Download_URL>
+			<Secondary_Download_URL>http://www.speedealing.com/files/dolibarr.tgz</Secondary_Download_URL>
 			<Additional_Download_URL_1 />
 			<Additional_Download_URL_2 />
 		</Download_URLs>

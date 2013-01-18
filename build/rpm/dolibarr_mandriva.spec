@@ -18,8 +18,8 @@ License: GPLv2+
 #Packager: Laurent Destailleur (Eldy) <eldy@users.sourceforge.net>
 Vendor: Speedealing dev team
 
-URL: http://www.dolibarr.org
-Source0: http://www.dolibarr.org/files/lastbuild/package_rpm_mandriva/%{name}-%{version}.tgz
+URL: http://www.speedealing.com
+Source0: http://www.speedealing.com/files/lastbuild/package_rpm_mandriva/%{name}-%{version}.tgz
 Patch0: %{name}-forrpm.patch
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-build

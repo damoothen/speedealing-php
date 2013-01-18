@@ -32,7 +32,7 @@ if (! $user->admin) accessforbidden();
 if (GETPOST('msg','alpha')) $message='<div class="error">'.GETPOST('msg','alpha').'</div>';
 
 
-$urldolibarr='http://www.dolibarr.org/downloads/';
+$urldolibarr='http://www.speedealing.com/downloads/';
 $urldolibarrmodules='http://www.dolistore.com/';
 $urldolibarrthemes='http://www.dolistore.com/';
 $dolibarrroot=preg_replace('/([\\/]+)$/i','',DOL_DOCUMENT_ROOT);

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project name="Speedealing" soapui-version="3.6.1" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingOtherBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingOtherBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<con:soapui-project name="Speedealing" soapui-version="3.6.1" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingOtherBinding" type="wsdl" bindingName="{http://www.speedealing.com/ns/}WebServicesSpeedealingOtherBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_other.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.speedealing.com/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.speedealing.com/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
-    <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
+    <xsd:schema targetNamespace="http://www.speedealing.com/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
       <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
       <xsd:complexType name="authentication">
         <xsd:all>
-          <xsd:element name="dolibarrkey" type="xsd:string"/>
+          <xsd:element name="securekey" type="xsd:string"/>
           <xsd:element name="sourceapplication" type="xsd:string"/>
           <xsd:element name="login" type="xsd:string"/>
           <xsd:element name="password" type="xsd:string"/>
@@ -41,12 +41,12 @@
   <binding name="WebServicesSpeedealingOtherBinding" type="tns:WebServicesSpeedealingOtherPortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getVersions">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getVersions" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getVersions" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
   </binding>
@@ -55,13 +55,13 @@
       <soap:address location="http://localhostdolibarr/dolibarrnew/webservices/server_other.php"/>
     </port>
   </service>
-</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_other.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getVersions" name="getVersions" bindingOperationName="getVersions" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_other.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_other.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getVersions" name="getVersions" bindingOperationName="getVersions" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_other.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getVersions soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string">?</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -69,14 +69,14 @@
          </authentication>
       </ns:getVersions>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getVersions"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingInvoiceBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingInvoiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getVersions"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingInvoiceBinding" type="wsdl" bindingName="{http://www.speedealing.com/ns/}WebServicesSpeedealingInvoiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.speedealing.com/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.speedealing.com/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
-    <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
+    <xsd:schema targetNamespace="http://www.speedealing.com/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
       <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
       <xsd:complexType name="authentication">
         <xsd:all>
-          <xsd:element name="dolibarrkey" type="xsd:string"/>
+          <xsd:element name="securekey" type="xsd:string"/>
           <xsd:element name="sourceapplication" type="xsd:string"/>
           <xsd:element name="login" type="xsd:string"/>
           <xsd:element name="password" type="xsd:string"/>
@@ -207,30 +207,30 @@
   <binding name="WebServicesSpeedealingInvoiceBinding" type="tns:WebServicesSpeedealingInvoicePortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getInvoice">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getInvoice" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getInvoice" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
     <operation name="getInvoicesForThirdParty">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getInvoicesForThirdParty" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getInvoicesForThirdParty" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
     <operation name="createInvoice">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#createInvoice" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#createInvoice" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
   </binding>
@@ -239,13 +239,13 @@
       <soap:address location="http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php"/>
     </port>
   </service>
-</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#createInvoice" name="createInvoice" bindingOperationName="createInvoice" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#createInvoice" name="createInvoice" bindingOperationName="createInvoice" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:createInvoice soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string">aaa</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -298,13 +298,13 @@
          </invoice>
       </ns:createInvoice>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#createInvoice"/><con:wsrmConfig version="1.2"/></con:call><con:call name="Request 2"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#createInvoice"/><con:wsrmConfig version="1.2"/></con:call><con:call name="Request 2"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:createInvoice soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">?</dolibarrkey>
+            <securekey xsi:type="xsd:string">?</securekey>
             <sourceapplication xsi:type="xsd:string">?</sourceapplication>
             <login xsi:type="xsd:string">?</login>
             <password xsi:type="xsd:string">?</password>
@@ -338,13 +338,13 @@
          </invoice>
       </ns:createInvoice>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#createInvoice"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getInvoice" name="getInvoice" bindingOperationName="getInvoice" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#createInvoice"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getInvoice" name="getInvoice" bindingOperationName="getInvoice" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getInvoice soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string">?</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -355,13 +355,13 @@
          <ref_ext xsi:type="xsd:string"></ref_ext>
       </ns:getInvoice>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getInvoice"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getInvoicesForThirdParty" name="getInvoicesForThirdParty" bindingOperationName="getInvoicesForThirdParty" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getInvoice"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getInvoicesForThirdParty" name="getInvoicesForThirdParty" bindingOperationName="getInvoicesForThirdParty" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getInvoicesForThirdParty soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">?</dolibarrkey>
+            <securekey xsi:type="xsd:string">?</securekey>
             <sourceapplication xsi:type="xsd:string">?</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -370,14 +370,14 @@
          <idthirdparty xsi:type="xsd:string">4</idthirdparty>
       </ns:getInvoicesForThirdParty>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getInvoicesForThirdParty"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingSupplierInvoiceBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingSupplierInvoiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getInvoicesForThirdParty"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingSupplierInvoiceBinding" type="wsdl" bindingName="{http://www.speedealing.com/ns/}WebServicesSpeedealingSupplierInvoiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.speedealing.com/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.speedealing.com/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
-    <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
+    <xsd:schema targetNamespace="http://www.speedealing.com/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
       <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
       <xsd:complexType name="authentication">
         <xsd:all>
-          <xsd:element name="dolibarrkey" type="xsd:string"/>
+          <xsd:element name="securekey" type="xsd:string"/>
           <xsd:element name="sourceapplication" type="xsd:string"/>
           <xsd:element name="login" type="xsd:string"/>
           <xsd:element name="password" type="xsd:string"/>
@@ -490,21 +490,21 @@
   <binding name="WebServicesSpeedealingSupplierInvoiceBinding" type="tns:WebServicesSpeedealingSupplierInvoicePortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getSupplierInvoice">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getSupplierInvoice" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getSupplierInvoice" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
     <operation name="getSupplierInvoicesForThirdParty">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getSupplierInvoicesForThirdParty" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getSupplierInvoicesForThirdParty" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
   </binding>
@@ -513,13 +513,13 @@
       <soap:address location="http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php"/>
     </port>
   </service>
-</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getSupplierInvoice" name="getSupplierInvoice" bindingOperationName="getSupplierInvoice" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getSupplierInvoice" name="getSupplierInvoice" bindingOperationName="getSupplierInvoice" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getSupplierInvoice soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string">aaa</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -530,13 +530,13 @@
          <ref_ext xsi:type="xsd:string"></ref_ext>
       </ns:getSupplierInvoice>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getSupplierInvoice"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getSupplierInvoicesForThirdParty" name="getSupplierInvoicesForThirdParty" bindingOperationName="getSupplierInvoicesForThirdParty" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getSupplierInvoice"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getSupplierInvoicesForThirdParty" name="getSupplierInvoicesForThirdParty" bindingOperationName="getSupplierInvoicesForThirdParty" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_supplier_invoice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getSupplierInvoicesForThirdParty soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string">?</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -545,14 +545,14 @@
          <idthirdparty xsi:type="xsd:string">all</idthirdparty>
       </ns:getSupplierInvoicesForThirdParty>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getSupplierInvoicesForThirdParty"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingProductOrServiceBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingProductOrServiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getSupplierInvoicesForThirdParty"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingProductOrServiceBinding" type="wsdl" bindingName="{http://www.speedealing.com/ns/}WebServicesSpeedealingProductOrServiceBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl"><con:part><con:url>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.speedealing.com/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.speedealing.com/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
-    <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
+    <xsd:schema targetNamespace="http://www.speedealing.com/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
       <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
       <xsd:complexType name="authentication">
         <xsd:all>
-          <xsd:element name="dolibarrkey" type="xsd:string"/>
+          <xsd:element name="securekey" type="xsd:string"/>
           <xsd:element name="sourceapplication" type="xsd:string"/>
           <xsd:element name="login" type="xsd:string"/>
           <xsd:element name="password" type="xsd:string"/>
@@ -660,30 +660,30 @@
   <binding name="WebServicesSpeedealingProductOrServiceBinding" type="tns:WebServicesSpeedealingProductOrServicePortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getProductOrService">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getProductOrService" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getProductOrService" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
     <operation name="createProductOrService">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#createProductOrService" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#createProductOrService" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
     <operation name="getListOfProductsOrServices">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getListOfProductsOrServices" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getListOfProductsOrServices" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
   </binding>
@@ -692,13 +692,13 @@
       <soap:address location="http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php"/>
     </port>
   </service>
-</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#createProductOrService" name="createProductOrService" bindingOperationName="createProductOrService" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#createProductOrService" name="createProductOrService" bindingOperationName="createProductOrService" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:createProductOrService soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string">aaa</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -733,13 +733,13 @@
          </product>
       </ns:createProductOrService>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#createProductOrService"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getProductOrService" name="getProductOrService" bindingOperationName="getProductOrService" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#createProductOrService"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getProductOrService" name="getProductOrService" bindingOperationName="getProductOrService" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getProductOrService soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string"></sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -750,13 +750,13 @@
          <ref_ext xsi:type="xsd:string"></ref_ext>
       </ns:getProductOrService>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getProductOrService"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getListOfProductsOrServices" name="getListOfProductsOrServices" bindingOperationName="getListOfProductsOrServices" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getProductOrService"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getListOfProductsOrServices" name="getListOfProductsOrServices" bindingOperationName="getListOfProductsOrServices" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/dolibarrnew/webservices/server_productorservice.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getListOfProductsOrServices soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string">?</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -770,14 +770,14 @@
          </filterproduct>
       </ns:getListOfProductsOrServices>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getListOfProductsOrServices"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingUserBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingUserBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/webservices/server_user.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/webservices/server_user.php?wsdl"><con:part><con:url>http://localhostdolibarr/webservices/server_user.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getListOfProductsOrServices"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingUserBinding" type="wsdl" bindingName="{http://www.speedealing.com/ns/}WebServicesSpeedealingUserBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/webservices/server_user.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/webservices/server_user.php?wsdl"><con:part><con:url>http://localhostdolibarr/webservices/server_user.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.speedealing.com/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.speedealing.com/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
-    <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
+    <xsd:schema targetNamespace="http://www.speedealing.com/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
       <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
       <xsd:complexType name="authentication">
         <xsd:all>
-          <xsd:element name="dolibarrkey" type="xsd:string"/>
+          <xsd:element name="securekey" type="xsd:string"/>
           <xsd:element name="sourceapplication" type="xsd:string"/>
           <xsd:element name="login" type="xsd:string"/>
           <xsd:element name="password" type="xsd:string"/>
@@ -842,12 +842,12 @@
   <binding name="WebServicesSpeedealingUserBinding" type="tns:WebServicesSpeedealingUserPortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getUser">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getUser" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getUser" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
   </binding>
@@ -856,13 +856,13 @@
       <soap:address location="http://localhostdolibarr/webservices/server_user.php"/>
     </port>
   </service>
-</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/webservices/server_user.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getUser" name="getUser" bindingOperationName="getUser" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/webservices/server_user.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/webservices/server_user.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getUser" name="getUser" bindingOperationName="getUser" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/webservices/server_user.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getUser soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string">aaa</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -873,14 +873,14 @@
          <ref_ext xsi:type="xsd:string"></ref_ext>
       </ns:getUser>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getUser"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingThirdPartyBinding" type="wsdl" bindingName="{http://www.dolibarr.org/ns/}WebServicesSpeedealingThirdPartyBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/webservices/server_thirdparty.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/webservices/server_thirdparty.php?wsdl"><con:part><con:url>http://localhostdolibarr/webservices/server_thirdparty.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.dolibarr.org/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.dolibarr.org/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getUser"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="WebServicesSpeedealingThirdPartyBinding" type="wsdl" bindingName="{http://www.speedealing.com/ns/}WebServicesSpeedealingThirdPartyBinding" soapVersion="1_1" anonymous="optional" definition="http://localhostdolibarr/webservices/server_thirdparty.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhostdolibarr/webservices/server_thirdparty.php?wsdl"><con:part><con:url>http://localhostdolibarr/webservices/server_thirdparty.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="http://www.speedealing.com/ns/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.speedealing.com/ns/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
-    <xsd:schema targetNamespace="http://www.dolibarr.org/ns/">
+    <xsd:schema targetNamespace="http://www.speedealing.com/ns/">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
       <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
       <xsd:complexType name="authentication">
         <xsd:all>
-          <xsd:element name="dolibarrkey" type="xsd:string"/>
+          <xsd:element name="securekey" type="xsd:string"/>
           <xsd:element name="sourceapplication" type="xsd:string"/>
           <xsd:element name="login" type="xsd:string"/>
           <xsd:element name="password" type="xsd:string"/>
@@ -996,30 +996,30 @@
   <binding name="WebServicesSpeedealingThirdPartyBinding" type="tns:WebServicesSpeedealingThirdPartyPortType">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="getThirdParty">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getThirdParty" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getThirdParty" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
     <operation name="createThirdParty">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#createThirdParty" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#createThirdParty" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
     <operation name="getListOfThirdParties">
-      <soap:operation soapAction="http://www.dolibarr.org/ns/#getListOfThirdParties" style="rpc"/>
+      <soap:operation soapAction="http://www.speedealing.com/ns/#getListOfThirdParties" style="rpc"/>
       <input>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
       <output>
-        <soap:body use="encoded" namespace="http://www.dolibarr.org/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+        <soap:body use="encoded" namespace="http://www.speedealing.com/ns/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
   </binding>
@@ -1028,11 +1028,11 @@
       <soap:address location="http://localhostdolibarr/webservices/server_thirdparty.php"/>
     </port>
   </service>
-</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getThirdParty" name="getThirdParty" bindingOperationName="getThirdParty" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint><con:request><![CDATA[<SOAP-ENV:Envelope SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/">
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getThirdParty" name="getThirdParty" bindingOperationName="getThirdParty" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint><con:request><![CDATA[<SOAP-ENV:Envelope SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/">
    <SOAP-ENV:Body>
       <ns9290:getVersions xmlns:ns9290="http://www.Speedealing.org/ns/">
          <authentication>
-            <dolibarrkey xsi:type="xsd:string">dolibarrkey</dolibarrkey>
+            <securekey xsi:type="xsd:string">securekey</securekey>
             <sourceapplication xsi:type="xsd:string">PRESTASHOP</sourceapplication>
             <login xsi:type="xsd:string">admin</login>
             <password xsi:type="xsd:string">admin</password>
@@ -1042,13 +1042,13 @@
    </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 
-]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getVersions"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#createThirdParty" name="createThirdParty" bindingOperationName="createThirdParty" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getVersions"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#createThirdParty" name="createThirdParty" bindingOperationName="createThirdParty" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:createThirdParty soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">?</dolibarrkey>
+            <securekey xsi:type="xsd:string">?</securekey>
             <sourceapplication xsi:type="xsd:string">?</sourceapplication>
             <login xsi:type="xsd:string">?</login>
             <password xsi:type="xsd:string">?</password>
@@ -1092,13 +1092,13 @@
          </thirdparty>
       </ns:createThirdParty>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#createThirdParty"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.dolibarr.org/ns/#getListOfThirdParties" name="getListOfThirdParties" bindingOperationName="getListOfThirdParties" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.dolibarr.org/ns/">
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#createThirdParty"/></con:call></con:operation><con:operation isOneWay="false" action="http://www.speedealing.com/ns/#getListOfThirdParties" name="getListOfThirdParties" bindingOperationName="getListOfThirdParties" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhostdolibarr/webservices/server_thirdparty.php</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.speedealing.com/ns/">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getListOfThirdParties soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
          <authentication xsi:type="ns:authentication">
             <!--You may enter the following 5 items in any order-->
-            <dolibarrkey xsi:type="xsd:string">?</dolibarrkey>
+            <securekey xsi:type="xsd:string">?</securekey>
             <sourceapplication xsi:type="xsd:string">?</sourceapplication>
             <login xsi:type="xsd:string">?</login>
             <password xsi:type="xsd:string">?</password>
@@ -1111,7 +1111,7 @@
          </filterthirdparty>
       </ns:getListOfThirdParties>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.dolibarr.org/ns/#getListOfThirdParties"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="managerBinding" type="wsdl" bindingName="{http://soapi.ovh.com/manager}managerBinding" soapVersion="1_1" anonymous="optional" definition="https://www.ovh.com/soapi/soapi-re-1.32.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="https://www.ovh.com/soapi/soapi-re-1.32.wsdl"><con:part><con:url>https://www.ovh.com/soapi/soapi-re-1.32.wsdl</con:url><con:content><![CDATA[<!--SOAPI WSDL, RPC/Encoded style, version 1.32
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.speedealing.com/ns/#getListOfThirdParties"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="managerBinding" type="wsdl" bindingName="{http://soapi.ovh.com/manager}managerBinding" soapVersion="1_1" anonymous="optional" definition="https://www.ovh.com/soapi/soapi-re-1.32.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="https://www.ovh.com/soapi/soapi-re-1.32.wsdl"><con:part><con:url>https://www.ovh.com/soapi/soapi-re-1.32.wsdl</con:url><con:content><![CDATA[<!--SOAPI WSDL, RPC/Encoded style, version 1.32
 
     The SOAPI technical specifications are available at this url : http://www.ovh.com/soapi .
 

@@ -373,7 +373,7 @@ return $ver eq $vers[0] ? undef : $vers[0];
 
 sub script_dolibarr_site
 {
-return 'http://www.dolibarr.org/';
+return 'http://www.speedealing.com/';
 }
 
 sub script_dolibarr_passmode

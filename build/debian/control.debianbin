@@ -15,7 +15,7 @@ Depends: libapache2-mod-php5 | libapache2-mod-php5filter | php5-cgi | php5-fpm |
     mysql-server
 Section: web
 Priority: optional
-Homepage: http://www.dolibarr.org
+Homepage: http://www.speedealing.com
 Description: Web based software to manage a small company or foundation
  Speedealing ERP & CRM is an easy to use open source/free software for small 
  and medium companies, foundations or freelances. It includes different 

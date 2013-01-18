@@ -132,7 +132,7 @@ class WebservicesTest extends PHPUnit_Framework_TestCase
         $WS_DOL_URL = DOL_MAIN_URL_ROOT.'/webservices/server_other.php';
         //$WS_DOL_URL = 'http://localhost:8080/';   // If not a page, should end with /
         $WS_METHOD  = 'getVersions';
-        $ns='http://www.dolibarr.org/ns/';
+        $ns='http://www.speedealing.com/ns/';
 
 
         // Set the WebService URL
@@ -146,7 +146,7 @@ class WebservicesTest extends PHPUnit_Framework_TestCase
 
         // Call the WebService method and store its result in $result.
         $authentication=array(
-            'dolibarrkey'=>$conf->global->WEBSERVICES_KEY,
+            'securekey'=>$conf->global->WEBSERVICES_KEY,
             'sourceapplication'=>'DEMO',
             'login'=>'admin',
             'password'=>'admin',

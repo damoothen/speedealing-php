@@ -9,19 +9,19 @@
 		<State_Province />
 		<Zip_Postal_Code>92500</Zip_Postal_Code>
 		<Country>FRANCE</Country>
-		<Company_WebSite_URL>http://www.dolibarr.org</Company_WebSite_URL>
+		<Company_WebSite_URL>http://www.speedealing.com</Company_WebSite_URL>
 		<Contact_Info>
 			<Author_First_Name>Speedealing team</Author_First_Name>
 			<Author_Last_Name>Speedealing team</Author_Last_Name>
-			<Author_Email>dolibarr-dev@nongnu.org</Author_Email>
+			<Author_Email>develop@forge.speedealing.com</Author_Email>
 			<Contact_First_Name>Speedealing team</Contact_First_Name>
 			<Contact_Last_Name>Speedealing team</Contact_Last_Name>
-			<Contact_Email>dolibarr-dev@nongnu.org</Contact_Email>
+			<Contact_Email>develop@forge.speedealing.com</Contact_Email>
 		</Contact_Info>
 		<Support_Info>
-			<Sales_Email>dolibarr-dev@nongnu.org</Sales_Email>
-			<Support_Email>dolibarr-dev@nongnu.org</Support_Email>
-			<General_Email>dolibarr-dev@nongnu.org</General_Email>
+			<Sales_Email>develop@forge.speedealing.com</Sales_Email>
+			<Support_Email>develop@forge.speedealing.com</Support_Email>
+			<General_Email>develop@forge.speedealing.com</General_Email>
 			<Sales_Phone />
 			<Support_Phone />
 			<General_Phone />

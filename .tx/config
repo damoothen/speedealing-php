@@ -166,11 +166,6 @@ file_filter = htdocs/langs/<lang>/orders.lang.php
 source_file = htdocs/langs/en_US/orders.lang.php
 source_lang = en_US
 
-[speedealing.oscommerce]
-file_filter = htdocs/langs/<lang>/oscommerce.lang.php
-source_file = htdocs/langs/en_US/oscommerce.lang.php
-source_lang = en_US
-
 [speedealing.other]
 file_filter = htdocs/langs/<lang>/other.lang.php
 source_file = htdocs/langs/en_US/other.lang.php
@@ -204,11 +199,6 @@ source_lang = en_US
 [speedealing.sendings]
 file_filter = htdocs/langs/<lang>/sendings.lang.php
 source_file = htdocs/langs/en_US/sendings.lang.php
-source_lang = en_US
-
-[speedealing.shop]
-file_filter = htdocs/langs/<lang>/shop.lang.php
-source_file = htdocs/langs/en_US/shop.lang.php
 source_lang = en_US
 
 [speedealing.sms]

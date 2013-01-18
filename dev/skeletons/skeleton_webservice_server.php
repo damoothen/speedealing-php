@@ -46,7 +46,7 @@ if (empty($conf->global->MAIN_MODULE_WEBSERVICES))
 $server = new nusoap_server();
 $server->soap_defencoding='UTF-8';
 $server->decode_utf8=false;
-$ns='http://www.dolibarr.org/ns/';
+$ns='http://www.speedealing.com/ns/';
 $server->configureWSDL('WebServicesSpeedealingSkeleton',$ns);
 $server->wsdl->schemaTargetNamespace=$ns;
 
@@ -59,7 +59,7 @@ $server->wsdl->addComplexType(
     'all',
     '',
     array(
-        'dolibarrkey' => array('name'=>'dolibarrkey','type'=>'xsd:string'),
+        'securekey' => array('name'=>'securekey','type'=>'xsd:string'),
     	'sourceapplication' => array('name'=>'sourceapplication','type'=>'xsd:string'),
     	'login' => array('name'=>'login','type'=>'xsd:string'),
     	'password' => array('name'=>'password','type'=>'xsd:string'),

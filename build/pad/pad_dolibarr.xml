@@ -13,19 +13,19 @@
 		<State_Province />
 		<Zip_Postal_Code>92500</Zip_Postal_Code>
 		<Country>FRANCE</Country>
-		<Company_WebSite_URL>http://www.dolibarr.org</Company_WebSite_URL>
+		<Company_WebSite_URL>http://www.speedealing.com</Company_WebSite_URL>
 		<Contact_Info>
 			<Author_First_Name>Speedealing team</Author_First_Name>
 			<Author_Last_Name>Speedealing team</Author_Last_Name>
-			<Author_Email>dolibarr-dev@nongnu.org</Author_Email>
+			<Author_Email>develop@forge.speedealing.com</Author_Email>
 			<Contact_First_Name>Speedealing team</Contact_First_Name>
 			<Contact_Last_Name>Speedealing team</Contact_Last_Name>
-			<Contact_Email>dolibarr-dev@nongnu.org</Contact_Email>
+			<Contact_Email>develop@forge.speedealing.com</Contact_Email>
 		</Contact_Info>
 		<Support_Info>
-			<Sales_Email>dolibarr-dev@nongnu.org</Sales_Email>
-			<Support_Email>dolibarr-dev@nongnu.org</Support_Email>
-			<General_Email>dolibarr-dev@nongnu.org</General_Email>
+			<Sales_Email>develop@forge.speedealing.com</Sales_Email>
+			<Support_Email>develop@forge.speedealing.com</Support_Email>
+			<General_Email>develop@forge.speedealing.com</General_Email>
 			<Sales_Phone />
 			<Support_Phone />
 			<General_Phone />
@@ -101,15 +101,15 @@ Speedealing intègre en effet sa propre architecture (design patterns) permettan
 	</Program_Descriptions>
 	<Web_Info>
 		<Application_URLs>
-			<Application_Info_URL>http://www.dolibarr.org</Application_Info_URL>
-			<Application_Order_URL>http://www.dolibarr.org</Application_Order_URL>
-			<Application_Screenshot_URL>http://www.dolibarr.org/images/dolibarr_screenshot1.png</Application_Screenshot_URL>
-			<Application_Icon_URL>http://www.dolibarr.org/images/dolibarr.gif</Application_Icon_URL>
-			<Application_XML_File_URL>http://www.dolibarr.org/files/pad_dolibarr.xml</Application_XML_File_URL>
+			<Application_Info_URL>http://www.speedealing.com</Application_Info_URL>
+			<Application_Order_URL>http://www.speedealing.com</Application_Order_URL>
+			<Application_Screenshot_URL>http://www.speedealing.com/images/dolibarr_screenshot1.png</Application_Screenshot_URL>
+			<Application_Icon_URL>http://www.speedealing.com/images/dolibarr.gif</Application_Icon_URL>
+			<Application_XML_File_URL>http://www.speedealing.com/files/pad_dolibarr.xml</Application_XML_File_URL>
 		</Application_URLs>
 		<Download_URLs>
-			<Primary_Download_URL>http://www.dolibarr.org/files/dolibarr.tgz</Primary_Download_URL>
-			<Secondary_Download_URL>http://www.dolibarr.org/files/dolibarr.tgz</Secondary_Download_URL>
+			<Primary_Download_URL>http://www.speedealing.com/files/dolibarr.tgz</Primary_Download_URL>
+			<Secondary_Download_URL>http://www.speedealing.com/files/dolibarr.tgz</Secondary_Download_URL>
 			<Additional_Download_URL_1 />
 			<Additional_Download_URL_2 />
 		</Download_URLs>
