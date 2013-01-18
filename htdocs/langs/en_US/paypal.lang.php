@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal module setup',
-		'PaypalDesc' => 'This module offer pages to allow payment on <a href="http://www.paypal.com" target="_blank">PayPal</a> by customers. This can be used for a free payment or for a payment on a particular Dolibarr object (invoice, order, ...)',
+		'PaypalDesc' => 'This module offer pages to allow payment on <a href="http://www.paypal.com" target="_blank">PayPal</a> by customers. This can be used for a free payment or for a payment on a particular Speedealing object (invoice, order, ...)',
 		'PaypalOrCBDoPayment' => 'Pay with credit card or Paypal',
 		'PaypalDoPayment' => 'Pay with Paypal',
 		'PaypalCBDoPayment' => 'Pay with credit card',

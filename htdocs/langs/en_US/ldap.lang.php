@@ -37,12 +37,12 @@ $ldap = array(
 		'LDAPFieldFirstSubscriptionAmount' => 'First subscription amount',
 		'LDAPFieldLastSubscriptionDate' => 'Last subscription date',
 		'LDAPFieldLastSubscriptionAmount' => 'Last subscription amount',
-		'SynchronizeDolibarr2Ldap' => 'Synchronize user (Dolibarr -> LDAP)',
+		'SynchronizeSpeedealing2Ldap' => 'Synchronize user (Speedealing -> LDAP)',
 		'UserSynchronized' => 'User synchronized',
 		'GroupSynchronized' => 'Group synchronized',
 		'MemberSynchronized' => 'Member synchronized',
 		'ContactSynchronized' => 'Contact synchronized',
-		'ForceSynchronize' => 'Force synchronizing Dolibarr -> LDAP',
+		'ForceSynchronize' => 'Force synchronizing Speedealing -> LDAP',
 		'ErrorFailedToReadLDAP' => 'Failed to read LDAP database. Check LDAP module setup and database accessibility.'
 );
 ?>
