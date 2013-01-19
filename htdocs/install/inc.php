@@ -5,7 +5,7 @@
  * Copyright (C) 2004		Sebastien DiCintio		<sdicintio@ressource-toi.org>
  * Copyright (C) 2007-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2012		Herve Prot                      <herve.prot@symeos.com>
- * Copyright (C) 2012           Marcos García			
+ * Copyright (C) 2012           Marcos García
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ if (!defined('DONOTLOADCONF') && file_exists($conffile)) {
 
 
 
-            
+
 // Clean parameters
         $dolibarr_main_data_root = isset($dolibarr_main_data_root) ? trim($dolibarr_main_data_root) : '';
         $dolibarr_main_url_root = isset($dolibarr_main_url_root) ? trim($dolibarr_main_url_root) : '';
@@ -223,7 +223,7 @@ if (!defined('SYSLOG_FILE')) { // To avoid warning on systems with constant alre
 
 
 
-        
+
 //print 'SYSLOG_FILE='.SYSLOG_FILE;exit;
 }
 if (!defined('SYSLOG_FILE_NO_ERROR'))
@@ -338,7 +338,7 @@ function conf($dolibarr_main_document_root) {
 
 
 
-            
+
 //print 'SYSLOG_FILE='.SYSLOG_FILE;exit;
     }
     if (!defined('SYSLOG_FILE_NO_ERROR'))
@@ -429,7 +429,8 @@ function pHeader($subtitle, $next, $action = 'set', $param = '', $forcejqueryurl
         <div class="five phone-two columns">
         <div id="logo">';
     $urllogo = '../theme/speedealing_logo.png';
-    print '<center><img src="' . $urllogo . '" alt="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '" title="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '"/>';
+    $title = (!empty($conf->global->MAIN_INFO_SOCIETE_NOM)?$conf->global->MAIN_INFO_SOCIETE_NOM:'Speedealing');
+    print '<center><img src="' . $urllogo . '" alt="' . $title . '" title="' . $title . '"/>';
     print DOL_VERSION . '</center>';
     print '</div></div>';
     print '</div>';
@@ -441,7 +442,7 @@ function pHeader($subtitle, $next, $action = 'set', $param = '', $forcejqueryurl
 
     print '<div class="row">';
 
-    if ($soutitre)
+    if (!empty($soutitre))
         print start_box($langs->trans("SpeedealingSetup") . ' - ' . $soutitre, "twelve", "16-Settings.png");
     else
         print start_box($langs->trans("SpeedealingSetup"), "twelve", "16-Settings.png");

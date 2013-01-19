@@ -137,18 +137,6 @@ else
 	print '<img src="../theme/eldy/img/tick.png" alt="Ok"> '.$langs->trans("PHPSupportUTF8")."<br>\n";
 }
 
-// Check if mb_convert_encoding supported (used by getCurrencySymbol)
-/*if (! function_exists("mb_convert_encoding"))
-{
-	$langs->load("errors");
-	print '<img src="../theme/eldy/img/warning.png" alt="Error"> '.$langs->trans("ErrorPHPDoesNotSupportUTF8")."<br>\n";
-	// $checksok=0;		// If image ko, just warning. So check must still be 1 (otherwise no way to install)
-}
-else
-{
-	print '<img src="../theme/eldy/img/tick.png" alt="Ok"> '.$langs->trans("PHPSupportUTF8")."<br>\n";
-}*/
-
 
 // Check memory
 $memrequiredorig='64M';
@@ -313,13 +301,13 @@ else
 		}
 
 		// If a database access is available, we set more variable
-		
+
 		print end_box();
 		print '</div>';
-		
+
 		print '<div class="row">';
 		print start_box($langs->trans("SpeedealingSetup"),"twelve","16-Settings.png");
-		
+
 		if ($ok)
 		{
 			if (empty($dolibarr_main_db_encryption)) $dolibarr_main_db_encryption=0;
@@ -389,19 +377,9 @@ else
 			$allowupgrade=false;
 		}
 		if (defined("MAIN_NOT_INSTALLED")) $allowupgrade=false;
-		$migrationscript=array( //array('from'=>'2.0.0', 'to'=>'2.1.0'),
-								//array('from'=>'2.1.0', 'to'=>'2.2.0'),
-								//array('from'=>'2.2.0', 'to'=>'2.4.0'),
-								//array('from'=>'2.4.0', 'to'=>'2.5.0'),
-								//array('from'=>'2.5.0', 'to'=>'2.6.0'),
-								array('from'=>'2.6.0', 'to'=>'2.7.0'),
-								array('from'=>'2.7.0', 'to'=>'2.8.0'),
-								array('from'=>'2.8.0', 'to'=>'2.9.0'),
-								array('from'=>'2.9.0', 'to'=>'3.0.0'),
-								array('from'=>'3.0.0', 'to'=>'3.1.0'),
-								array('from'=>'3.1.0', 'to'=>'3.2.0'),
-								array('from'=>'3.2.0', 'to'=>'3.3.0')
-                                );
+		$migrationscript=array(
+				//array('from'=>'1.0.0', 'to'=>'1.1.0')
+		);
 
 		$count=0;
 		foreach ($migrationscript as $migarray)

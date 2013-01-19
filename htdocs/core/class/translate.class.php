@@ -201,7 +201,7 @@ class Translate {
                 // Enable caching of lang file in memory (not by default)
                 $usecachekey = '';
                 // Using a memcached server
-                if ($conf->memcached->enabled) {
+                if (!empty($conf->memcached->enabled)) {
                     $usecachekey = $newdomain . '_' . $langofdir . '_' . md5($file_lang);    // Should not contains special chars
                 }
                 // Using cache with shmop. Speed gain: 40ms - Memory overusage: 200ko (Size of session cache file)

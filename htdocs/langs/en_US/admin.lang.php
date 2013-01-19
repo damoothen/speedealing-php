@@ -910,7 +910,7 @@ $admin = array(
 		'SimpleNumRefModelDesc' => 'Return the reference number with format %syymm-nnnn where yy is year, mm is month and nnnn is a sequence without hole and with no reset',
 		'ShowProfIdInAddress' => 'Show professionnal id with addresses on documents',
 		'TranslationUncomplete' => 'Partial translation',
-		'SomeTranslationAreUncomplete' => 'Some languages may be partially translated or may contains errors. If you detect some, you can fix <b>.lang</b> text files into directory <b>htdocs/langs</b> and submit them on the forum at <a href="http://www.speedealing.com/forum" target="_blank">http://www.speedealing.com</a>.',
+		'SomeTranslationAreUncomplete' => 'Some languages may be partially translated or may contains errors. If you detect some, you can fix and submit them at <a href="https://www.transifex.com/projects/p/speedealing/" target="_blank">https://www.transifex.com/projects/p/speedealing/</a>.',
 		'MenuUseLayout' => 'Make vertical menu hidable (option javascript must not be disabled)',
 		'MAIN_DISABLE_METEO' => 'Disable meteo view',
 		'TestLoginToAPI' => 'Test login to API',

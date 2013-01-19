@@ -910,7 +910,7 @@ $admin = array(
 		'SimpleNumRefModelDesc' => 'Renvoie le numéro sous la forme %syymm-nnnn où yy est l\'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0.',
 		'ShowProfIdInAddress' => 'Afficher l\'identifiant professionnel dans les adresses sur les documents',
 		'TranslationUncomplete' => 'Traduction partielle',
-		'SomeTranslationAreUncomplete' => 'Certaines langues sont traduites partiellement ou peuvent contenir des erreurs. Si vous en détectez, vous pouvez corriger les fichiers textes <b>.lang</b> du répertoire <b>htdocs/langs</b> et les soumettre sur le forum à <a href="http://www.dolibarr.fr/forum" target="_blank">http://www.dolibarr.fr</a>.',
+		'SomeTranslationAreUncomplete' => 'Certaines langues sont traduites partiellement ou peuvent contenir des erreurs. Si vous en détectez, vous pouvez soumettre vos corrections sur <a href="https://www.transifex.com/projects/p/speedealing/" target="_blank">https://www.transifex.com/projects/p/speedealing/</a>.',
 		'MenuUseLayout' => 'Rendre le menu gauche cachable (L\'option javascript ne doit pas avoir été désactivée)',
 		'MAIN_DISABLE_METEO' => 'Désactiver la vue météo',
 		'TestLoginToAPI' => 'Tester connexion à l\'API',

@@ -75,7 +75,7 @@ if (@file_exists($forcedfile)) {
  * 	View
  */
 
-pHeader($langs->trans("ConfigurationFile"), "etape1", "set", "", ($force_dolibarr_js_JQUERY ? $force_dolibarr_js_JQUERY . '/' : ''));
+pHeader($langs->trans("ConfigurationFile"), "etape1", "set", "", (!empty($force_dolibarr_js_JQUERY) ? $force_dolibarr_js_JQUERY . '/' : ''));
 
 // Test if we can run a first install process
 if (!is_writable($conffile)) {
@@ -86,19 +86,6 @@ if (!is_writable($conffile)) {
 
 if (!empty($force_install_message)) {
     print '<div><table><tr><td valign="middle"><img src="../theme/common/information.png" style="height:40px;"></td><td valign="middle">' . $langs->trans($force_install_message) . '</td></tr></table>';
-
-    /* print '<script type="text/javascript">';
-      print '	jQuery(document).ready(function() {
-      jQuery("#linktoshowtechnicalparam").click(function() {
-      jQuery(".hidewhenedit").hide();
-      jQuery(".hidewhennoedit").show();
-      });';
-      if ($force_install_noedit) print 'jQuery(".hidewhennoedit").hide();';
-      print '});';
-      print '</script>';
-
-      print '<br><a href="#" id="linktoshowtechnicalparam" class="hidewhenedit">'.$langs->trans("ShowEditTechnicalParameters").'</a><br>';
-     */
 }
 ?>
 <div>
@@ -277,7 +264,7 @@ http://www.myserver.com:8180/speedealing</pre>
                                 <h5><?php echo $langs->trans("CheckToForceHttps"); ?></h5>
                             </div>
                         </div>
-                    </div>	
+                    </div>
                     <?php
                 }
                 ?>
@@ -299,7 +286,7 @@ http://www.myserver.com:8180/speedealing</pre>
                                 <div class="form_content">
                                     <div class="formRow elVal">
                                         <label><?php echo $langs->trans("DatabaseName"); ?></label>
-                                        <input type="text" class="input-text small" 
+                                        <input type="text" class="input-text small"
                                                id="couchdb_name"
                                                name="couchdb_name"
                                                value="<?php echo (!empty($dolibarr_main_couchdb_host)) ? $dolibarr_main_couchdb_host : ($force_install_database ? $force_install_database : 'speedealing'); ?>">
@@ -472,7 +459,7 @@ https://couchdb.speedealing.com</pre>
 
 
 
-                                                        
+
 // Version min of database
                                                     $versionbasemin = getStaticMember($class, 'versionmin');
                                                     $note = '(' . getStaticMember($class, 'label') . ' >= ' . versiontostring($versionbasemin) . ')';
@@ -799,18 +786,18 @@ postgres (PostgreSql)</pre>
                             })
                         }
                     };
-	
+
                 </script>
 
                 <!--
                 <script type="text/javascript">
                                                 jQuery(document).ready(function() {
-                
+
                                                     jQuery("#db_type").change(function() {
                                                         if (jQuery("#db_type").val()=='sqlite') { jQuery(".hidesqlite").hide(); }
                                                         else  { jQuery(".hidesqlite").show(); }
                                                     });
-                
+
                                                     function init_needroot()
                                                     {
                                                         /*alert(jQuery("#db_create_database").attr("checked")); */
@@ -825,7 +812,7 @@ postgres (PostgreSql)</pre>
                                                             jQuery(".needroot").attr('disabled','disabled');
                                                         }
                                                     }
-                
+
                                                     init_needroot();
                                                     jQuery("#db_create_database").click(function() {
                                                         init_needroot();
@@ -840,16 +827,16 @@ postgres (PostgreSql)</pre>
                                                             jQuery("#db_pass").focus();
 <?php } ?>
                                                 });
-                
+
                                                 function checkDatabaseName(databasename) {
                                                     if (databasename.match(/[;\.]/)) { return false; }
                                                     return true;
                                                 }
-                
+
                                                 function jscheckparam()
                                                 {
                                                     ok=true;
-                
+
                                                     if (document.forminstall.main_dir.value == '')
                                                     {
                                                         ok=false;
@@ -902,7 +889,7 @@ postgres (PostgreSql)</pre>
                                                         ok=false;
                                                         alert('<?php echo dol_escape_js($langs->transnoentities("YouAskToCreateDatabaseUserSoRootRequired")); ?>');
                                                     }
-                
+
                                                     return ok;
                                                 }
                                             </script>
