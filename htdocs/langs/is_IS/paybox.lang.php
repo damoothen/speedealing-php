@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'PayBox mát skipulag',
-		'PayBoxDesc' => 'Þessi eining síður bjóða upp á til að heimila greiðslu á <a href="http://www.paybox.com" target="_blank">Paybox</a> við viðskiptavini. Þetta má nota til a frjáls greiðslu eða til greiðslu á tilteknum Dolibarr mótmæla (Reikningar, röð, ...)',
-		'FollowingUrlAreAvailableToMakePayments' => 'Eftirfarandi vefslóðir eru að bjóða upp síðu til viðskiptavina til að framkvæma greiðslu á Dolibarr mótmæla',
+		'PayBoxDesc' => 'Þessi eining síður bjóða upp á til að heimila greiðslu á <a href="http://www.paybox.com" target="_blank">Paybox</a> við viðskiptavini. Þetta má nota til a frjáls greiðslu eða til greiðslu á tilteknum Speedealing mótmæla (Reikningar, röð, ...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'Eftirfarandi vefslóðir eru að bjóða upp síðu til viðskiptavina til að framkvæma greiðslu á Speedealing mótmæla',
 		'PaymentForm' => 'Greiðsla mynd',
 		'WelcomeOnPaymentPage' => 'Velkomin á netinu greiðsluþjónustu okkar',
 		'ThisScreenAllowsYouToPay' => 'Þessi skjár leyfa þér að gera á netinu greiðslu til %s.',

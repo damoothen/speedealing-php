@@ -41,7 +41,7 @@ $form=new Form($db);
 
 llxHeader();
 
-print_fiche_titre($langs->trans("InfoDolibarr"),'','setup');
+print_fiche_titre($langs->trans("InfoSpeedealing"),'','setup');
 
 // Version
 $var=true;
@@ -124,7 +124,7 @@ if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_S
 // Localisation
 $var=true;
 print '<table class="noborder" width="100%">';
-print '<tr class="liste_titre"><td>'.$langs->trans("LocalisationDolibarrParameters").'</td><td>'.$langs->trans("Value").'</td></tr>'."\n";
+print '<tr class="liste_titre"><td>'.$langs->trans("LocalisationSpeedealingParameters").'</td><td>'.$langs->trans("Value").'</td></tr>'."\n";
 $var=!$var;
 print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("LanguageBrowserParameter","HTTP_ACCEPT_LANGUAGE").'</td><td>'.$_SERVER["HTTP_ACCEPT_LANGUAGE"].'</td></tr>'."\n";
 $var=!$var;

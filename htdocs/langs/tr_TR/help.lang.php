@@ -35,12 +35,12 @@ $help = array(
 		'TypeHelpDev' => 'Yardım+Geliştirme',
 		'TypeHelpDevForm' => 'Yardım+Geliştirme+Biçimlendirme',
 		'ToGetHelpGoOnSparkAngels1' => 'Bazı firmalar ve bilgisayarınızın kontrolünü alarak daha hızlı çevrimiçi destek verir (bazen anında). Bu tür yardımcılar <b>%s</b> web sitesinden bulunabilir:',
-		'ToGetHelpGoOnSparkAngels3' => 'Ayrıca Dolibarr’n tüm eğiticileri listesine bakabilirsiniz, bunun için burayı tıklayın',
+		'ToGetHelpGoOnSparkAngels3' => 'Ayrıca Speedealing’n tüm eğiticileri listesine bakabilirsiniz, bunun için burayı tıklayın',
 		'ToGetHelpGoOnSparkAngels2' => 'Bazen, arama yaptığınız sırada bir firma bulunmaz, bu nedenle süzgeçi “uygun olanların hepsi” değiştirerek aramayı düşünün.',
 		'BackToHelpCenter' => 'Aksi durumda yardım merkezine geri gitmek için <a href="%s">burayı </a>.',
 		'LinkToGoldMember' => 'Bo parçaçcığı (widget) tıklayarak Dolibar tarafından sizin için dilinizde önseçilen eğitmeni arayabilirsiniz (durumu ve ençok ücreti otomatikmen güncellenir):',
 		'PossibleLanguages' => 'Desteklenen diller',
-		'MakeADonation' => 'Dolibarr projesine bağış yapın',
-		'SubscribeToFoundation' => 'Dolibarr projesine yardım edin, vakıfa abone olun'
+		'MakeADonation' => 'Speedealing projesine bağış yapın',
+		'SubscribeToFoundation' => 'Speedealing projesine yardım edin, vakıfa abone olun'
 );
 ?>

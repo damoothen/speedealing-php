@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'PayBox modul opsætning',
-		'PayBoxDesc' => 'Dette modul tilbyder sider at muliggøre betaling på <a href="http://www.paybox.com" target="_blank">Paybox</a> af kunderne. Dette kan bruges til en gratis betaling eller til en betaling på en bestemt Dolibarr genstand (faktura, ordre, ...)',
-		'FollowingUrlAreAvailableToMakePayments' => 'Følgende webadresser findes til at tilbyde en side til en kunde for at foretage en indbetaling på Dolibarr objekter',
+		'PayBoxDesc' => 'Dette modul tilbyder sider at muliggøre betaling på <a href="http://www.paybox.com" target="_blank">Paybox</a> af kunderne. Dette kan bruges til en gratis betaling eller til en betaling på en bestemt Speedealing genstand (faktura, ordre, ...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'Følgende webadresser findes til at tilbyde en side til en kunde for at foretage en indbetaling på Speedealing objekter',
 		'PaymentForm' => 'Betaling form',
 		'WelcomeOnPaymentPage' => 'Velkommen på vores online betalingstjenesten',
 		'ThisScreenAllowsYouToPay' => 'Dette skærmbillede giver dig mulighed for at foretage en online-betaling til %s.',

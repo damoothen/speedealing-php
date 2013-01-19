@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal modul de configurare',
-		'PaypalDesc' => 'Această ofertă modul de pagini pentru a permite plata pe <a href="http://www.paypal.com" target="_blank">PayPal</a> de catre clientii. Acest lucru poate fi folosit pentru o plată gratuit sau pentru o plată pe un anumit obiect Dolibarr (facturi, ordine, ...)',
+		'PaypalDesc' => 'Această ofertă modul de pagini pentru a permite plata pe <a href="http://www.paypal.com" target="_blank">PayPal</a> de catre clientii. Acest lucru poate fi folosit pentru o plată gratuit sau pentru o plată pe un anumit obiect Speedealing (facturi, ordine, ...)',
 		'PaypalOrCBDoPayment' => 'Plata cu card de credit sau Paypal',
 		'PaypalDoPayment' => 'Plata cu Paypal',
 		'PaypalCBDoPayment' => 'Plata cu card de credit',

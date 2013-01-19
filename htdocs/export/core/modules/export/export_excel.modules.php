@@ -180,7 +180,7 @@ class ExportExcel extends ModeleExports
             require_once PHPEXCEL_PATH.'PHPExcel/Style/Alignment.php';
             $this->workbook = new PHPExcel();
             $this->workbook->getProperties()->setCreator($user->getFullName($outputlangs).' - Dolibarr '.DOL_VERSION);
-            //$this->workbook->getProperties()->setLastModifiedBy('Dolibarr '.DOL_VERSION);
+            //$this->workbook->getProperties()->setLastModifiedBy('Speedealing '.DOL_VERSION);
             $this->workbook->getProperties()->setTitle($outputlangs->trans("Export").' - '.$file);
             $this->workbook->getProperties()->setSubject($outputlangs->trans("Export").' - '.$file);
             $this->workbook->getProperties()->setDescription($outputlangs->trans("Export").' - '.$file);

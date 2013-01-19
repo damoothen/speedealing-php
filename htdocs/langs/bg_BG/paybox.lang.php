@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'Paybox модул за настройка',
-		'PayBoxDesc' => 'В този модул се предлагат страници, които да дават възможност за заплащане на <a href="http://www.paybox.com" target="_blank">Paybox</a> от клиентите. Това може да се използва за плащане или за плащане на даден обект Dolibarr (фактура, поръчка, ...)',
-		'FollowingUrlAreAvailableToMakePayments' => 'Следните интернет адреси са на разположение, за да предложи на клиента да направи плащане по Dolibarr обекти',
+		'PayBoxDesc' => 'В този модул се предлагат страници, които да дават възможност за заплащане на <a href="http://www.paybox.com" target="_blank">Paybox</a> от клиентите. Това може да се използва за плащане или за плащане на даден обект Speedealing (фактура, поръчка, ...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'Следните интернет адреси са на разположение, за да предложи на клиента да направи плащане по Speedealing обекти',
 		'PaymentForm' => 'Формуляра за плащане',
 		'WelcomeOnPaymentPage' => 'Добре дошли на нашия онлайн платежни услуги',
 		'ThisScreenAllowsYouToPay' => 'Този екран ви позволи да направите онлайн плащане на %s.',

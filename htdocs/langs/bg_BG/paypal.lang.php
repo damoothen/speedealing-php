@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal модул за настройка',
-		'PaypalDesc' => 'В този модул се предлагат страници, които да дават възможност за заплащане от клиентите на <a href="http://www.paypal.com" target="_blank">PayPal</a> . Това може да се използва за плащане или за плащане на даден обект Dolibarr (фактура, поръчка, ...)',
+		'PaypalDesc' => 'В този модул се предлагат страници, които да дават възможност за заплащане от клиентите на <a href="http://www.paypal.com" target="_blank">PayPal</a> . Това може да се използва за плащане или за плащане на даден обект Speedealing (фактура, поръчка, ...)',
 		'PaypalOrCBDoPayment' => 'Плащане с кредитна карта или Paypal',
 		'PaypalDoPayment' => 'Плащане с Paypal',
 		'PaypalCBDoPayment' => 'Плащане с кредитна карта',

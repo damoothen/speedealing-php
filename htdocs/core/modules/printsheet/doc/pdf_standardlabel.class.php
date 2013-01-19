@@ -443,7 +443,7 @@ class pdf_standardlabel
 
         $pdf->SetTitle($outputlangs->transnoentities('MembersLabels'));
         $pdf->SetSubject($outputlangs->transnoentities("MembersLabels"));
-        $pdf->SetCreator("Dolibarr ".DOL_VERSION);
+        $pdf->SetCreator("Speedealing ".DOL_VERSION);
         $pdf->SetAuthor($outputlangs->convToOutputCharset($user->getFullName($outputlangs)));
         $pdf->SetKeyWords($outputlangs->transnoentities('MembersLabels')." ".$outputlangs->transnoentities("Foundation")." ".$outputlangs->convToOutputCharset($mysoc->name));
         if (! empty($conf->global->MAIN_DISABLE_PDF_COMPRESSION)) $pdf->SetCompression(false);

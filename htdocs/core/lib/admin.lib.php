@@ -626,7 +626,7 @@ function activateModule($value, $withdeps = 1) {
     $vermin = isset($objMod->need_dolibarr_version) ? $objMod->need_dolibarr_version : 0;
     //print 'eee'.versioncompare($verdol,$vermin).join(',',$verdol).' - '.join(',',$vermin);exit;
     if (is_array($vermin) && versioncompare($verdol, $vermin) < 0) {
-        return $langs->trans("ErrorModuleRequireDolibarrVersion", versiontostring($vermin));
+        return $langs->trans("ErrorModuleRequireSpeedealingVersion", versiontostring($vermin));
     }
 
     // Test if javascript requirement ok

@@ -42,7 +42,7 @@ $ldap = array(
 		'GroupSynchronized' => 'مجموعة متزامنة',
 		'MemberSynchronized' => 'عضو متزامنة',
 		'ContactSynchronized' => 'وتزامن الاتصال',
-		'ForceSynchronize' => 'واكبت قوة Dolibarr --> LDAP',
+		'ForceSynchronize' => 'واكبت قوة Speedealing --> LDAP',
 		'ErrorFailedToReadLDAP' => 'فشل في قراءة قاعدة البيانات LDAP. LDAP وحدة التحقق من الإعداد ، وإمكانية الوصول إلى قاعدة البيانات.'
 );
 ?>

@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'Paybox moodul setup',
-		'PayBoxDesc' => 'See moodul pakkumise leheküljed, mis võimaldab makse <a href="http://www.paybox.com" target="_blank">Paybox</a> kliendid. Seda saab kasutada tasuta makse või makse teatud Dolibarr objekti (arve, et ...)',
-		'FollowingUrlAreAvailableToMakePayments' => 'Pärast URL-id on saadaval pakkuda leht kliendi teha makse Dolibarr esemeid',
+		'PayBoxDesc' => 'See moodul pakkumise leheküljed, mis võimaldab makse <a href="http://www.paybox.com" target="_blank">Paybox</a> kliendid. Seda saab kasutada tasuta makse või makse teatud Speedealing objekti (arve, et ...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'Pärast URL-id on saadaval pakkuda leht kliendi teha makse Speedealing esemeid',
 		'PaymentForm' => 'Maksevahendina',
 		'WelcomeOnPaymentPage' => 'Tere tulemast meie online makseteenuse',
 		'ThisScreenAllowsYouToPay' => 'See ekraan võimaldab teil teha online-väljamaksed %s.',

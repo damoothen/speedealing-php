@@ -65,7 +65,7 @@ class mailing_pomme extends MailingTargets
 		$langs->load("users");
 
 		$statssql=array();
-		$sql = "SELECT '".$langs->trans("DolibarrUsers")."' as label,";
+		$sql = "SELECT '".$langs->trans("SpeedealingUsers")."' as label,";
 		$sql.= " count(distinct(u.email)) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."user as u";
 		$sql.= " WHERE u.email != ''"; // u.email IS NOT NULL est implicite dans ce test

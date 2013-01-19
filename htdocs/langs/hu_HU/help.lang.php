@@ -35,12 +35,12 @@ $help = array(
 		'TypeHelpDev' => 'Segítség és fejlesztés',
 		'TypeHelpDevForm' => 'Segítség, fejlesztés és formálás',
 		'ToGetHelpGoOnSparkAngels1' => 'Egyes cégek gyors (időnként azonnali) segítséget tudnak nyújtani, azzal, hogy a gépe fölött átveszik az irányítást. Ilyen cégek listája a <b>%s</b> weboldalon található:',
-		'ToGetHelpGoOnSparkAngels3' => 'Ugyanakkor megtekintheti a Dolibarr oktatók listáját erre a gomra kattintva',
+		'ToGetHelpGoOnSparkAngels3' => 'Ugyanakkor megtekintheti a Speedealing oktatók listáját erre a gomra kattintva',
 		'ToGetHelpGoOnSparkAngels2' => 'Bizonyos esetekben nincs elérhető cég, változtassa meg a keresését "minden elérhető"-re. Több kérést tud így elküldeni.',
 		'BackToHelpCenter' => 'Más esetben, kattintson ide, hogy visszatérjen a <a href="%s">Segítség központ nyitólap</a>jára.',
-		'LinkToGoldMember' => 'Hívhatja az egyik előre kiválasztott az ön nyelvén (%s) tudó Dolibarr oktatót ha erre a Widget-re kattint (álltapot és maximális ár autómatikusan frissül):',
+		'LinkToGoldMember' => 'Hívhatja az egyik előre kiválasztott az ön nyelvén (%s) tudó Speedealing oktatót ha erre a Widget-re kattint (álltapot és maximális ár autómatikusan frissül):',
 		'PossibleLanguages' => 'Támogatott nyelvek',
-		'MakeADonation' => 'Segítse a Dolibarr projektet, adományozzon',
-		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
+		'MakeADonation' => 'Segítse a Speedealing projektet, adományozzon',
+		'SubscribeToFoundation' => 'Help Speedealing project, subscribe to the foundation'
 );
 ?>

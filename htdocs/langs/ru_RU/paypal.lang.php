@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal модуль установки',
-		'PaypalDesc' => 'Этот модуль предлагает страниц, чтобы выплаты по <a href="http://www.paypal.com" target="_blank">PayPal</a> клиентами. Это может быть использовано для свободного оплаты или оплаты на определенный объект Dolibarr (счет-фактура, заказ, ...)',
+		'PaypalDesc' => 'Этот модуль предлагает страниц, чтобы выплаты по <a href="http://www.paypal.com" target="_blank">PayPal</a> клиентами. Это может быть использовано для свободного оплаты или оплаты на определенный объект Speedealing (счет-фактура, заказ, ...)',
 		'PaypalOrCBDoPayment' => 'Оплатить с помощью кредитной карты или Paypal',
 		'PaypalDoPayment' => 'Оплатить с помощью Paypal',
 		'PaypalCBDoPayment' => 'Оплата кредитной картой',

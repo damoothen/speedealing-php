@@ -555,7 +555,7 @@ if ($rowid)
     {
         print '<tr><td>';
         print '<table class="nobordernopadding" width="100%"><tr><td>';
-        print $langs->trans("LinkedToDolibarrThirdParty");
+        print $langs->trans("LinkedToSpeedealingThirdParty");
         print '</td>';
         if ($_GET['action'] != 'editthirdparty' && $user->rights->adherent->creer) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editthirdparty&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToThirdParty'),1).'</a></td>';
         print '</tr></table>';
@@ -593,7 +593,7 @@ if ($rowid)
     // Login Dolibarr
     print '<tr><td>';
     print '<table class="nobordernopadding" width="100%"><tr><td>';
-    print $langs->trans("LinkedToDolibarrUser");
+    print $langs->trans("LinkedToSpeedealingUser");
     print '</td>';
     if ($action != 'editlogin' && $user->rights->adherent->creer) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editlogin&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToUser'),1).'</a></td>';
     print '</tr></table>';
@@ -613,7 +613,7 @@ if ($rowid)
         {
             print $form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'none');
         }
-        else print $langs->trans("NoDolibarrAccess");
+        else print $langs->trans("NoSpeedealingAccess");
     }
     print '</td></tr>';
 
@@ -802,7 +802,7 @@ if ($rowid)
 			// Create a form array
 			$formquestion=array(array('label' => $langs->trans("NameToCreate"), 'type' => 'text', 'name' => 'companyname', 'value' => $name));
 
-			$ret=$form->form_confirm($_SERVER["PHP_SELF"]."?rowid=".$object->id,$langs->trans("CreateDolibarrThirdParty"),$langs->trans("ConfirmCreateThirdParty"),"confirm_create_thirdparty",$formquestion,1);
+			$ret=$form->form_confirm($_SERVER["PHP_SELF"]."?rowid=".$object->id,$langs->trans("CreateSpeedealingThirdParty"),$langs->trans("ConfirmCreateThirdParty"),"confirm_create_thirdparty",$formquestion,1);
 			if ($ret == 'html') print '<br>';
 		}
 
@@ -901,7 +901,7 @@ if ($rowid)
                     {
                     	print ' ('.$langs->trans("NoThirdPartyAssociatedToMember");
                     	print ' - <a href="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'&amp;action=create_thirdparty">';
-                    	print $langs->trans("CreateDolibarrThirdParty");
+                    	print $langs->trans("CreateSpeedealingThirdParty");
                     	print '</a>)';
                     }
                     print '<br>';
@@ -916,7 +916,7 @@ if ($rowid)
                     {
                     	print ' ('.$langs->trans("NoThirdPartyAssociatedToMember");
                     	print ' - <a href="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'&amp;action=create_thirdparty">';
-                    	print $langs->trans("CreateDolibarrThirdParty");
+                    	print $langs->trans("CreateSpeedealingThirdParty");
                     	print '</a>)';
                     }
                     print '<br>';

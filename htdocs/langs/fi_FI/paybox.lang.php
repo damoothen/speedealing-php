@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'PayBox moduulin asetukset',
-		'PayBoxDesc' => 'Tämä moduuli tarjota sivuja, jotta maksua <a href="http://www.paybox.com" target="_blank">Paybox</a> asiakkaat. Tätä voidaan käyttää vapaa-maksun tai maksaa tietyn Dolibarr objektin (lasku-, tilaus-, ...)',
-		'FollowingUrlAreAvailableToMakePayments' => 'Seuraavat URL-osoitteet ovat käytettävissä tarjota sivu asiakas tehdä maksua Dolibarr esineitä',
+		'PayBoxDesc' => 'Tämä moduuli tarjota sivuja, jotta maksua <a href="http://www.paybox.com" target="_blank">Paybox</a> asiakkaat. Tätä voidaan käyttää vapaa-maksun tai maksaa tietyn Speedealing objektin (lasku-, tilaus-, ...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'Seuraavat URL-osoitteet ovat käytettävissä tarjota sivu asiakas tehdä maksua Speedealing esineitä',
 		'PaymentForm' => 'Maksu-muodossa',
 		'WelcomeOnPaymentPage' => 'Tervetuloa online maksupalveluntarjoajan',
 		'ThisScreenAllowsYouToPay' => 'Tässä näytössä voit tehdä online-maksu %s.',

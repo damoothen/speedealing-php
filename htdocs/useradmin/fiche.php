@@ -541,7 +541,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             if ($caneditpassword) {
                 $text = '<input size="12" maxlength="32" type="password" class="flat" name="password" value="' . $fuser->pass . '">';
                 if ($dolibarr_main_authentication && $dolibarr_main_authentication == 'http') {
-                    $text = $form->textwithpicto($text, $langs->trans("DolibarrInHttpAuthenticationSoPasswordUseless", $dolibarr_main_authentication), 1, 'warning');
+                    $text = $form->textwithpicto($text, $langs->trans("SpeedealingInHttpAuthenticationSoPasswordUseless", $dolibarr_main_authentication), 1, 'warning');
                 }
             } else {
                 $text = preg_replace('/./i', '*', $fuser->pass);

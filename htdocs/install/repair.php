@@ -421,7 +421,7 @@ if (empty($actiondone))
 
 
 print '<center><a href="../index.php?mainmenu=home'.(isset($_POST["login"])?'&username='.urlencode($_POST["login"]):'').'">';
-print $langs->trans("GoToDolibarr");
+print $langs->trans("GoToSpeedealing");
 print '</a></center>';
 
 pFooter(1,$setuplang);

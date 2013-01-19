@@ -128,14 +128,14 @@ if (!$error) {
     if ($result) {
         // If we ask database or user creation we need to connect as root, so we need root login
         if (!empty($_POST["db_create_database"]) && !$userroot) {
-            print '<div class="error">' . $langs->trans("YouAskDatabaseCreationSoDolibarrNeedToConnect", $db_name) . '</div>';
+            print '<div class="error">' . $langs->trans("YouAskDatabaseCreationSoSpeedealingNeedToConnect", $db_name) . '</div>';
             print '<br>';
             print $langs->trans("BecauseConnectionFailedParametersMayBeWrong") . '<br><br>';
             print $langs->trans("ErrorGoBackAndCorrectParameters");
             $error++;
         }
         if (!empty($_POST["db_create_user"]) && !$userroot) {
-            print '<div class="error">' . $langs->trans("YouAskLoginCreationSoDolibarrNeedToConnect", $db_user) . '</div>';
+            print '<div class="error">' . $langs->trans("YouAskLoginCreationSoSpeedealingNeedToConnect", $db_user) . '</div>';
             print '<br>';
             print $langs->trans("BecauseConnectionFailedParametersMayBeWrong") . '<br><br>';
             print $langs->trans("ErrorGoBackAndCorrectParameters");
@@ -465,7 +465,7 @@ if (!$error && $db->connected && $action == "set") {
 
                     // Affiche aide diagnostique
                     print '<tr><td colspan="2"><br>';
-                    print $langs->trans("YouAskDatabaseCreationSoDolibarrNeedToConnect", $dolibarr_main_db_user, $dolibarr_main_db_host, $userroot);
+                    print $langs->trans("YouAskDatabaseCreationSoSpeedealingNeedToConnect", $dolibarr_main_db_user, $dolibarr_main_db_host, $userroot);
                     print '<br>';
                     print $langs->trans("BecauseConnectionFailedParametersMayBeWrong") . '<br><br>';
                     print $langs->trans("ErrorGoBackAndCorrectParameters") . '<br><br>';
@@ -521,7 +521,7 @@ if (!$error && $db->connected && $action == "set") {
 
                 // Affiche aide diagnostique
                 print '<tr><td colspan="2"><br>';
-                print $langs->trans("YouAskDatabaseCreationSoDolibarrNeedToConnect", $dolibarr_main_db_user, $dolibarr_main_db_host, $userroot);
+                print $langs->trans("YouAskDatabaseCreationSoSpeedealingNeedToConnect", $dolibarr_main_db_user, $dolibarr_main_db_host, $userroot);
                 print '<br>';
                 print $langs->trans("BecauseConnectionFailedParametersMayBeWrong") . '<br><br>';
                 print $langs->trans("ErrorGoBackAndCorrectParameters") . '<br><br>';

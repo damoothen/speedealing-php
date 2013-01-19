@@ -25,7 +25,7 @@ $bookmarks = array(
 		'BehaviourOnClick' => 'Поведение при нажатии URL',
 		'CreateBookmark' => 'Создать закладку',
 		'SetHereATitleForLink' => 'Установить название для закладки',
-		'UseAnExternalHttpLinkOrRelativeDolibarrLink' => 'Используйте внешний HTTP URL или относительный URL Dolibarr',
+		'UseAnExternalHttpLinkOrRelativeSpeedealingLink' => 'Используйте внешний HTTP URL или относительный URL Speedealing',
 		'ChooseIfANewWindowMustBeOpenedOnClickOnBookmark' => 'Выберите, если страница открыта ссылка должна появиться на текущем или новом окне',
 		'BookmarksManagement' => 'Закладки управления',
 );

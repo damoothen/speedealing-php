@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => '切符売り場のモジュールのセットアップ',
-		'PayBoxDesc' => 'このモジュールは、上の支払いを可能にするためにページを提供して<a href="http://www.paybox.com" target="_blank">切符売り場</a>の顧客によって。これはフリーの支払いのためにまたは特定のDolibarrオブジェクトの支払いに用いることができる（請求書、発注、...）',
-		'FollowingUrlAreAvailableToMakePayments' => '以下のURLはDolibarrオブジェクト上で支払いをするために顧客にページを提供するために利用可能です',
+		'PayBoxDesc' => 'このモジュールは、上の支払いを可能にするためにページを提供して<a href="http://www.paybox.com" target="_blank">切符売り場</a>の顧客によって。これはフリーの支払いのためにまたは特定のSpeedealingオブジェクトの支払いに用いることができる（請求書、発注、...）',
+		'FollowingUrlAreAvailableToMakePayments' => '以下のURLはSpeedealingオブジェクト上で支払いをするために顧客にページを提供するために利用可能です',
 		'PaymentForm' => '支払い形態',
 		'WelcomeOnPaymentPage' => 'ようこそ私たちのオンライン決済サービスについて',
 		'ThisScreenAllowsYouToPay' => 'この画面では、%sにオンライン決済を行うことができます。',

@@ -144,7 +144,7 @@ print '<table class="noborder" width="100%">';
 $var=true;
 
 print '<tr class="liste_titre">';
-print '<td width="25%">'.$langs->trans("LDAPDolibarrMapping").'</td>';
+print '<td width="25%">'.$langs->trans("LDAPSpeedealingMapping").'</td>';
 print '<td colspan="2">'.$langs->trans("LDAPLdapMapping").'</td>';
 print '<td align="right">'.$langs->trans("LDAPNamingAttribute").'</td>';
 print "</tr>\n";

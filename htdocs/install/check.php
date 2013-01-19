@@ -41,7 +41,7 @@ $forcedfile="./install.forced.php";
 if ($conffile == "/etc/dolibarr/conf.php") $forcedfile="/etc/dolibarr/install.forced.php";
 if (@file_exists($forcedfile)) { $useforcedwizard=true; include_once($forcedfile); }
 
-dolibarr_install_syslog("Dolibarr install/upgrade process started");
+dolibarr_install_syslog("Speedealing install/upgrade process started");
 
 
 
@@ -318,7 +318,7 @@ else
 		print '</div>';
 		
 		print '<div class="row">';
-		print start_box($langs->trans("DolibarrSetup"),"twelve","16-Settings.png");
+		print start_box($langs->trans("SpeedealingSetup"),"twelve","16-Settings.png");
 		
 		if ($ok)
 		{

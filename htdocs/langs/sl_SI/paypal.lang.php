@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'Nastavitev modula PayPal',
-		'PaypalDesc' => 'Ta modul ponuja stran, ki kupcem omogoča plačila na <a href="http://www.paypal.com" target="_blank">PayPal</a>. Lahko se uporablja za prosta plačila ali za plačila določenih Dolibarr objektov (računi, naročila, ...)',
+		'PaypalDesc' => 'Ta modul ponuja stran, ki kupcem omogoča plačila na <a href="http://www.paypal.com" target="_blank">PayPal</a>. Lahko se uporablja za prosta plačila ali za plačila določenih Speedealing objektov (računi, naročila, ...)',
 		'PaypalOrCBDoPayment' => 'Plačilo s kreditnimi karticami ali Paypal',
 		'PaypalDoPayment' => 'Plačilo z Paypal',
 		'PaypalCBDoPayment' => 'Plačilo s kreditno kartico',

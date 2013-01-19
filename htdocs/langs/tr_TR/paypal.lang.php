@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal modülü kurulumu',
-		'PaypalDesc' => 'Bu modül  <a href="http://www.paypal.com" target="_blank">PayPal</a> üzerinden müşteriler tarafından ödeme yapılmasını sağlar. Bu bir ücretsiz ödeme veya belirli bir Dolibarr nesnesine (fatura, siparş,…) bir ödeme yapmak için kullanılabilir',
+		'PaypalDesc' => 'Bu modül  <a href="http://www.paypal.com" target="_blank">PayPal</a> üzerinden müşteriler tarafından ödeme yapılmasını sağlar. Bu bir ücretsiz ödeme veya belirli bir Speedealing nesnesine (fatura, siparş,…) bir ödeme yapmak için kullanılabilir',
 		'PaypalOrCBDoPayment' => 'Kredi kartı veya PayPal ile ödeme',
 		'PaypalDoPayment' => 'Paypal ile ödeme',
 		'PaypalCBDoPayment' => 'Kredi kartı ile ödeme',

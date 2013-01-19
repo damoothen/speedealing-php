@@ -42,7 +42,7 @@ $ldap = array(
 		'GroupSynchronized' => 'Skupina sinhronizirana',
 		'MemberSynchronized' => 'Član sinhroniziran',
 		'ContactSynchronized' => 'Kontakt sinhroniziran',
-		'ForceSynchronize' => 'Vsili sinhronizacijo Dolibarr -> LDAP',
+		'ForceSynchronize' => 'Vsili sinhronizacijo Speedealing -> LDAP',
 		'ErrorFailedToReadLDAP' => 'Branje LDAP baze podatkov ni uspelo. Preverite nastavitev LDAP modula in dostopnost baze podatkov.'
 );
 ?>

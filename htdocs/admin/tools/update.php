@@ -61,7 +61,7 @@ if (GETPOST('action','alpha')=='install')
 		if (! preg_match('/\.zip/i',$original_file))
 		{
 			$langs->load("errors");
-			$mesg = '<div class="error">'.$langs->trans("ErrorFileMustBeADolibarrPackage",$original_file).'</div>';
+			$mesg = '<div class="error">'.$langs->trans("ErrorFileMustBeASpeedealingPackage",$original_file).'</div>';
 			$error++;
 		}
 	}
@@ -116,7 +116,7 @@ print '<b>'.$langs->trans("StepNb",1).'</b>: ';
 $fullurl='<a href="'.$urldolibarr.'" target="_blank">'.$urldolibarr.'</a>';
 print $langs->trans("DownloadPackageFromWebSite",$fullurl).'<br>';
 print '<b>'.$langs->trans("StepNb",2).'</b>: ';
-print $langs->trans("UnpackPackageInDolibarrRoot",$dolibarrroot).'<br>';
+print $langs->trans("UnpackPackageInSpeedealingRoot",$dolibarrroot).'<br>';
 print '<b>'.$langs->trans("StepNb",3).'</b>: ';
 print $langs->trans("RemoveLock",$dolibarrdataroot.'/install.lock').'<br>';
 print '<b>'.$langs->trans("StepNb",4).'</b>: ';
@@ -137,7 +137,7 @@ print $langs->trans("FindPackageFromWebSite",$fullurl).'<br>';
 print '<b>'.$langs->trans("StepNb",2).'</b>: ';
 print $langs->trans("DownloadPackageFromWebSite",$fullurl).'<br>';
 print '<b>'.$langs->trans("StepNb",3).'</b>: ';
-print $langs->trans("UnpackPackageInDolibarrRoot",$dolibarrroot).'<br>';
+print $langs->trans("UnpackPackageInSpeedealingRoot",$dolibarrroot).'<br>';
 if (! empty($conf->global->MAIN_ONLINE_INSTALL_MODULE))
 {
 	if ($dirins_ok && $dirins != 'DOL_DOCUMENT_ROOT_ALT')

@@ -42,7 +42,7 @@ $ldap = array(
 		'GroupSynchronized' => 'Grup senkronize edildi',
 		'MemberSynchronized' => 'Üye senkronize edildi',
 		'ContactSynchronized' => 'Kişi senkronize edildi',
-		'ForceSynchronize' => 'Dolibarr -> LDAP senkronizyona zorla',
+		'ForceSynchronize' => 'Speedealing -> LDAP senkronizyona zorla',
 		'ErrorFailedToReadLDAP' => 'LDAP veritabanı okunamadı. LDAP modülü kurulumunu ve veritabanı erişilebilirliğini denetleyin.'
 );
 ?>

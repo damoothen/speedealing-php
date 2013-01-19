@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'ペイパルモジュールのセットアップ',
-		'PaypalDesc' => 'このモジュールの提供は、ページ上で支払いを可能にする<a href="http://www.paypal.com" target="_blank">PayPalの</a>顧客がいます。これは無料の支払いのために、または特定のDolibarrオブジェクトの支払いのために使用することができる（請求書、注文、...）',
+		'PaypalDesc' => 'このモジュールの提供は、ページ上で支払いを可能にする<a href="http://www.paypal.com" target="_blank">PayPalの</a>顧客がいます。これは無料の支払いのために、または特定のSpeedealingオブジェクトの支払いのために使用することができる（請求書、注文、...）',
 		'PaypalOrCBDoPayment' => 'クレジットカードまたはPayPalでの支払い',
 		'PaypalDoPayment' => 'PayPalでの支払い',
 		'PaypalCBDoPayment' => 'クレジットカードで支払う',

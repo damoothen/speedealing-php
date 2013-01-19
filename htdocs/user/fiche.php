@@ -508,7 +508,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             // Login
             print '<tr><td valign="top">' . $langs->trans("Login") . '</td>';
             if ($fuser->ldap_sid && $fuser->statut == 0) {
-                print '<td class="error">' . $langs->trans("LoginAccountDisableInDolibarr") . '</td>';
+                print '<td class="error">' . $langs->trans("LoginAccountDisableInSpeedealing") . '</td>';
             } else {
                 print '<td>' . $fuser->name . '</td>';
             }
@@ -613,7 +613,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             // Module Adherent
             if ($conf->adherent->enabled) {
                 $langs->load("members");
-                print '<tr><td valign="top">' . $langs->trans("LinkedToDolibarrMember") . '</td>';
+                print '<tr><td valign="top">' . $langs->trans("LinkedToSpeedealingMember") . '</td>';
                 print '<td>';
                 if ($fuser->fk_member) {
                     $adh = new Adherent($db);
@@ -1093,7 +1093,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             // Module Adherent
             if ($conf->adherent->enabled) {
                 $langs->load("members");
-                print '<tr><td width="25%" valign="top">' . $langs->trans("LinkedToDolibarrMember") . '</td>';
+                print '<tr><td width="25%" valign="top">' . $langs->trans("LinkedToSpeedealingMember") . '</td>';
                 print '<td>';
                 if ($fuser->fk_member) {
                     $adh = new Adherent($db);

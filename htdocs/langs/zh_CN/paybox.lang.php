@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'PayBox模块设置',
-		'PayBoxDesc' => '该模块提供的网页，以便在付款<a href="http://www.paybox.com" target="_blank">Paybox</a>客户。这可以用来为一个自由付款或就某一Dolibarr对象（发票，订货，付款...）',
-		'FollowingUrlAreAvailableToMakePayments' => '以下网址可提供给客户的网页上，能够作出Dolibarr支付对象',
+		'PayBoxDesc' => '该模块提供的网页，以便在付款<a href="http://www.paybox.com" target="_blank">Paybox</a>客户。这可以用来为一个自由付款或就某一Speedealing对象（发票，订货，付款...）',
+		'FollowingUrlAreAvailableToMakePayments' => '以下网址可提供给客户的网页上，能够作出Speedealing支付对象',
 		'PaymentForm' => '付款方式',
 		'WelcomeOnPaymentPage' => '欢迎您来到我们的在线支付服务',
 		'ThisScreenAllowsYouToPay' => '这个屏幕允许你进行网上支付%s。',

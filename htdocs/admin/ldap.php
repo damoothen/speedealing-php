@@ -112,8 +112,8 @@ $var=!$var;
 print '<tr '.$bc[$var].'><td>'.$langs->trans("LDAPDnSynchroActive").'</td><td>';
 $arraylist=array();
 $arraylist['0']=$langs->trans("No");
-$arraylist['ldap2dolibarr']=$langs->trans("LDAPToDolibarr");
-$arraylist['dolibarr2ldap']=$langs->trans("DolibarrToLDAP");
+$arraylist['ldap2dolibarr']=$langs->trans("LDAPToSpeedealing");
+$arraylist['dolibarr2ldap']=$langs->trans("SpeedealingToLDAP");
 print $form->selectarray('activesynchro',$arraylist,$conf->global->LDAP_SYNCHRO_ACTIVE);
 print '</td><td>'.$langs->trans("LDAPDnSynchroActiveExample");
 if ($conf->global->LDAP_SYNCHRO_ACTIVE && ! $conf->global->LDAP_USER_DN)
@@ -129,7 +129,7 @@ if (! empty($conf->societe->enabled))
 	print '<tr '.$bc[$var].'><td>'.$langs->trans("LDAPDnContactActive").'</td><td>';
 	$arraylist=array();
 	$arraylist['0']=$langs->trans("No");
-	$arraylist['1']=$langs->trans("DolibarrToLDAP");
+	$arraylist['1']=$langs->trans("SpeedealingToLDAP");
 	print $form->selectarray('activecontact',$arraylist,$conf->global->LDAP_CONTACT_ACTIVE);
 	print '</td><td>'.$langs->trans("LDAPDnContactActiveExample").'</td></tr>';
 }
@@ -141,7 +141,7 @@ if (! empty($conf->adherent->enabled))
 	print '<tr '.$bc[$var].'><td>'.$langs->trans("LDAPDnMemberActive").'</td><td>';
 	$arraylist=array();
 	$arraylist['0']=$langs->trans("No");
-	$arraylist['1']=$langs->trans("DolibarrToLDAP");
+	$arraylist['1']=$langs->trans("SpeedealingToLDAP");
 	print $form->selectarray('activemembers',$arraylist,$conf->global->LDAP_MEMBER_ACTIVE);
 	print '</td><td>'.$langs->trans("LDAPDnMemberActiveExample").'</td></tr>';
 }

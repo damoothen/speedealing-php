@@ -113,7 +113,7 @@ print "</tr>\n";
 print '<tr><td width="25%" valign="top">'.$langs->trans("Login").'</td>';
 if ($fuser->ldap_sid)
 {
-    print '<td class="warning">'.$langs->trans("LoginAccountDisableInDolibarr").'</td>';
+    print '<td class="warning">'.$langs->trans("LoginAccountDisableInSpeedealing").'</td>';
 }
 else
 {

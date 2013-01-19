@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'PayBox modülü kurulumu',
-		'PayBoxDesc' => 'Bu modül <a href="http://www.paybox.com" target="_blank">Paybox</a> üzerinden müşteriler tarafından ödeme yapılmasını sağlar. Bu bir ücretsiz ödeme veya belirli bir Dolibarr nesnesine (fatura, siparş,…) bir ödeme yapmak için kullanılabilir',
-		'FollowingUrlAreAvailableToMakePayments' => 'Aşağıdaki URL\'ler bir müşteriye Dolibarr nesnelerine bir ödeme yapmak için bir sayfa sunmak için kullanılabilir',
+		'PayBoxDesc' => 'Bu modül <a href="http://www.paybox.com" target="_blank">Paybox</a> üzerinden müşteriler tarafından ödeme yapılmasını sağlar. Bu bir ücretsiz ödeme veya belirli bir Speedealing nesnesine (fatura, siparş,…) bir ödeme yapmak için kullanılabilir',
+		'FollowingUrlAreAvailableToMakePayments' => 'Aşağıdaki URL\'ler bir müşteriye Speedealing nesnelerine bir ödeme yapmak için bir sayfa sunmak için kullanılabilir',
 		'PaymentForm' => 'Ödeme Formu',
 		'WelcomeOnPaymentPage' => 'Çevrimiçi ödeme hizmetimize hoşgeldiniz',
 		'ThisScreenAllowsYouToPay' => 'Bu ekran %s için çevrimiçi bir ödeme yapmanızı sağlar',

@@ -42,7 +42,7 @@ if ($contact->socid)
 
 // We create VCard
 $v = new vCard();
-$v->setProdId('Dolibarr '.DOL_VERSION);
+$v->setProdId('Speedealing '.DOL_VERSION);
 
 $v->setUid('DOLIBARR-CONTACTID-'.$contact->id);
 $v->setName($contact->name, $contact->firstname, "", "", "");

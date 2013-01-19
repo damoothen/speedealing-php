@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => '贝宝模块的设置',
-		'PaypalDesc' => '该模块提供的网页，允许<a href="http://www.paypal.com" target="_blank">对贝</a>宝支付客户的。这可以使用一个免费的付款或支付上一个特定的Dolibarr对象（发票，订单，... ...）',
+		'PaypalDesc' => '该模块提供的网页，允许<a href="http://www.paypal.com" target="_blank">对贝</a>宝支付客户的。这可以使用一个免费的付款或支付上一个特定的Speedealing对象（发票，订单，... ...）',
 		'PaypalOrCBDoPayment' => '与信用卡或PayPal付款',
 		'PaypalDoPayment' => '用PayPal',
 		'PaypalCBDoPayment' => '信用卡支付',

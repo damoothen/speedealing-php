@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'PayBox ההתקנה מודול',
-		'PayBoxDesc' => 'זה מציעים מודול דפים המאפשרים תשלום על <a href="http://www.paybox.com" target="_blank">Paybox</a> על ידי הלקוחות. זה יכול לשמש לתשלום בחינם או תמורת תשלום על אובייקט מסוים Dolibarr (חשבונית, הסדר, ...)',
-		'FollowingUrlAreAvailableToMakePayments' => 'כתובות האתרים הבאות זמינות להציע דף ללקוח לבצע תשלום על Dolibarr אובייקטים',
+		'PayBoxDesc' => 'זה מציעים מודול דפים המאפשרים תשלום על <a href="http://www.paybox.com" target="_blank">Paybox</a> על ידי הלקוחות. זה יכול לשמש לתשלום בחינם או תמורת תשלום על אובייקט מסוים Speedealing (חשבונית, הסדר, ...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'כתובות האתרים הבאות זמינות להציע דף ללקוח לבצע תשלום על Speedealing אובייקטים',
 		'PaymentForm' => 'צורת תשלום',
 		'WelcomeOnPaymentPage' => 'ברוך הבא על שירות התשלומים המקוון שלנו',
 		'ThisScreenAllowsYouToPay' => 'מסך זה מאפשר לך לבצע תשלום מקוון כדי %s.',

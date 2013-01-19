@@ -391,7 +391,7 @@ function pHeader($subtitle, $next, $action = 'set', $param = '', $forcejqueryurl
     //print '<link rel="stylesheet" type="text/css" href="../includes/jquery/css/smoothness/jquery-ui-latest.custom.css" type="text/css">'."\n";
     print '<script type="text/javascript" src="../includes/jquery/js/jquery-latest.min.js"></script>' . "\n";
     print '<script type="text/javascript" src="../includes/jquery/js/jquery-ui-latest.custom.min.js"></script>' . "\n";
-    print '<title>' . $langs->trans("DolibarrSetup") . '</title>' . "\n";
+    print '<title>' . $langs->trans("SpeedealingSetup") . '</title>' . "\n";
     print '<!-- Google fonts -->';
     //print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
     print '<style type="text/css" media="screen, print">
@@ -442,9 +442,9 @@ function pHeader($subtitle, $next, $action = 'set', $param = '', $forcejqueryurl
     print '<div class="row">';
 
     if ($soutitre)
-        print start_box($langs->trans("DolibarrSetup") . ' - ' . $soutitre, "twelve", "16-Settings.png");
+        print start_box($langs->trans("SpeedealingSetup") . ' - ' . $soutitre, "twelve", "16-Settings.png");
     else
-        print start_box($langs->trans("DolibarrSetup"), "twelve", "16-Settings.png");
+        print start_box($langs->trans("SpeedealingSetup"), "twelve", "16-Settings.png");
 
     print '<form name="forminstall" id="validate_wizard" class="stepy-wizzard nice" action="' . $next . '.php' . ($param ? '?' . $param : '') . '" method="POST">' . "\n";
     print '<input type="hidden" name="testpost" value="ok">' . "\n";

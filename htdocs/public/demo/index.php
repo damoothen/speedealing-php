@@ -232,7 +232,7 @@ if (GETPOST("action") == 'gotodemo')
  * View
  */
 
-llxHeaderVierge($langs->trans("DolibarrDemo"));
+llxHeaderVierge($langs->trans("SpeedealingDemo"));
 
 ?>
 <script type="text/javascript">

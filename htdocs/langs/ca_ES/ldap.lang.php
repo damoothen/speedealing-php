@@ -42,7 +42,7 @@ $ldap = array(
 		'GroupSynchronized' => 'Grup sincronizado',
 		'MemberSynchronized' => 'Membre sincronitzat',
 		'ContactSynchronized' => 'Contacte sincronitzat',
-		'ForceSynchronize' => 'Forçar sincronització Dolibarr -> LDAP',
+		'ForceSynchronize' => 'Forçar sincronització Speedealing -> LDAP',
 		'ErrorFailedToReadLDAP' => 'Error de la lectura de l\'anuari LDAP. Comprovar la configuració del mòdul LDAP i l\'accessibilitat de l\'anuari.'
 );
 ?>

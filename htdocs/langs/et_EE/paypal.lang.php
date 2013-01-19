@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal moodul setup',
-		'PaypalDesc' => 'See moodul pakkumise leheküljed, mis võimaldab makse <a href="http://www.paypal.com" target="_blank">PayPal</a> kliendid. Seda saab kasutada tasuta makse või makse teatud Dolibarr objekti (arve, et ...)',
+		'PaypalDesc' => 'See moodul pakkumise leheküljed, mis võimaldab makse <a href="http://www.paypal.com" target="_blank">PayPal</a> kliendid. Seda saab kasutada tasuta makse või makse teatud Speedealing objekti (arve, et ...)',
 		'PaypalOrCBDoPayment' => 'Maksta krediitkaardiga või Paypal',
 		'PaypalDoPayment' => 'Maksa Paypal',
 		'PaypalCBDoPayment' => 'Maksa krediitkaardi',

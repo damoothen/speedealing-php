@@ -17,7 +17,7 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'Configuració mòdul PayBox',
-		'PayBoxDesc' => 'Aquest mòdul ofereix una pàgina de pagament a través del proveïdor <a href="http://www.paybox.com" target="_blank">Paybox</a> per realitzar qualsevol pagament o un pagament en relació amb un objecte Dolibarr (factures, comandes ...)',
+		'PayBoxDesc' => 'Aquest mòdul ofereix una pàgina de pagament a través del proveïdor <a href="http://www.paybox.com" target="_blank">Paybox</a> per realitzar qualsevol pagament o un pagament en relació amb un objecte Speedealing (factures, comandes ...)',
 		'FollowingUrlAreAvailableToMakePayments' => 'Les següents URL estan disponibles per a permetre a un client fer un pagament',
 		'PaymentForm' => 'Formulari de pagament',
 		'WelcomeOnPaymentPage' => 'Benvingut als nostres serveis de pagament en línia',

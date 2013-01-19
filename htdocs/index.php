@@ -118,10 +118,10 @@ print end_box();
 /*$showweather = empty($conf->global->MAIN_DISABLE_METEO) ? 1 : 0;
 $rowspan = 0;
 $dashboardlines = array();
-print start_box($langs->trans("DolibarrWorkBoard"), "eight", "16-Cloud.png");
+print start_box($langs->trans("SpeedealingWorkBoard"), "eight", "16-Cloud.png");
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
-print '<th class="liste_titre"colspan="2">' . $langs->trans("DolibarrWorkBoard") . '</th>';
+print '<th class="liste_titre"colspan="2">' . $langs->trans("SpeedealingWorkBoard") . '</th>';
 print '<th class="liste_titre"align="right">' . $langs->trans("Number") . '</th>';
 print '<th class="liste_titre"align="right">' . $langs->trans("Late") . '</th>';
 print '<th class="liste_titre">&nbsp;</th>';
@@ -366,7 +366,7 @@ $langs->load("bills");
 $langs->load("orders");
 
 /*if ($user->societe_id == 0) {
-    print start_box($langs->trans("DolibarrStateBoard"), 'four', '16-Graph.png');
+    print start_box($langs->trans("SpeedealingStateBoard"), 'four', '16-Graph.png');
     print '<table class="noborder" width="100%">';
 
     $var = true;

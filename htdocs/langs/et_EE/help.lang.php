@@ -35,12 +35,12 @@ $help = array(
 		'TypeHelpDev' => 'Aidake + Development',
 		'TypeHelpDevForm' => 'Aidake + Development + moodustamine',
 		'ToGetHelpGoOnSparkAngels1' => 'Mõned ettevõtted pakuvad kiire (millalgi kohe) ja tõhusam võrgutugi võttes kontrolli arvuti. Sellised abilised võib leida <b>%s</b> kodulehel:',
-		'ToGetHelpGoOnSparkAngels3' => 'Võite minna ka nimekiri kõigist saadaval busse Dolibarr, seda kliki nupule',
+		'ToGetHelpGoOnSparkAngels3' => 'Võite minna ka nimekiri kõigist saadaval busse Speedealing, seda kliki nupule',
 		'ToGetHelpGoOnSparkAngels2' => 'Mõnikord ei ole ettevõte hetkel teete otsingut, seega mõtle, et muuta filter otsima &quot;kõik kättesaadavus&quot;. Sul on võimalik saata rohkem taotlusi.',
 		'BackToHelpCenter' => 'Vastasel korral kliki siia, et minna <a href="%s">tagasi, et aidata avalehele</a> .',
-		'LinkToGoldMember' => 'Teil on võimalik helistada üks treener esivalittu poolt Dolibarr oma keel (%s), klõpsates oma Widget (staatus ja maksimaalne hind automaatselt uuendatud):',
+		'LinkToGoldMember' => 'Teil on võimalik helistada üks treener esivalittu poolt Speedealing oma keel (%s), klõpsates oma Widget (staatus ja maksimaalne hind automaatselt uuendatud):',
 		'PossibleLanguages' => 'Toetatud keeled',
-		'MakeADonation' => 'Abi Dolibarr projekti teha annetuse',
-		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
+		'MakeADonation' => 'Abi Speedealing projekti teha annetuse',
+		'SubscribeToFoundation' => 'Help Speedealing project, subscribe to the foundation'
 );
 ?>

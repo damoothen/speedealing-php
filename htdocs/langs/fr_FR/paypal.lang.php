@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'Configuration module PayPal',
-		'PaypalDesc' => 'Ce module permet d\'offrir une page de paiement via le prestataire <a href="http://www.paypal.com" target="_blank">Paypal</a> pour réaliser un paiement quelconque ou un paiement par rapport à un objet Dolibarr (factures, commande...)',
+		'PaypalDesc' => 'Ce module permet d\'offrir une page de paiement via le prestataire <a href="http://www.paypal.com" target="_blank">Paypal</a> pour réaliser un paiement quelconque ou un paiement par rapport à un objet Speedealing (factures, commande...)',
 		'PaypalOrCBDoPayment' => 'Poursuivre le paiement par carte ou par Paypal',
 		'PaypalDoPayment' => 'Poursuivre le paiement par Paypal',
 		'PaypalCBDoPayment' => 'Poursuivre le paiement par carte',

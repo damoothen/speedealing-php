@@ -201,7 +201,7 @@ if ($socid > 0) {
     if (!empty($conf->adherent->enabled)) {
         $langs->load("members");
         $langs->load("users");
-        print '<tr><td width="25%" valign="top">' . $langs->trans("LinkedToDolibarrMember") . '</td>';
+        print '<tr><td width="25%" valign="top">' . $langs->trans("LinkedToSpeedealingMember") . '</td>';
         print '<td colspan="3">';
         $adh = new Adherent($db);
         $result = $adh->fetch('', '', $object->id);

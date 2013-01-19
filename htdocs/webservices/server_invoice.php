@@ -50,7 +50,7 @@ $server = new nusoap_server();
 $server->soap_defencoding='UTF-8';
 $server->decode_utf8=false;
 $ns='http://www.speedealing.com/ns/';
-$server->configureWSDL('WebServicesDolibarrInvoice',$ns);
+$server->configureWSDL('WebServicesSpeedealingInvoice',$ns);
 $server->wsdl->schemaTargetNamespace=$ns;
 
 

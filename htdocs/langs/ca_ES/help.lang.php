@@ -38,9 +38,9 @@ $help = array(
 		'ToGetHelpGoOnSparkAngels3' => 'Per accedir a la recerca de <b>assistents disponibles</b>, feu clic aquí',
 		'ToGetHelpGoOnSparkAngels2' => 'En ocasions, cap operador es troba disponible en el moment de la seva recerca, no oblideu canviar el criteri de cerca indicant "tots els disponibles". Pot, doncs, posar-se en contacte en diferit.',
 		'BackToHelpCenter' => 'Sinó, feu clic aquí per <a href="%s"> tornar al centre d\'assistència</a>.',
-		'LinkToGoldMember' => 'En cas contrari, podeu trucar immediatament a un dels assistents preseleccionats per Dolibarr per al seu idioma (%s) fent clic en el seu widget (disponibilitat i tarifa màxima actualitzades automàticament):',
+		'LinkToGoldMember' => 'En cas contrari, podeu trucar immediatament a un dels assistents preseleccionats per Speedealing per al seu idioma (%s) fent clic en el seu widget (disponibilitat i tarifa màxima actualitzades automàticament):',
 		'PossibleLanguages' => 'Idiomes disponibles',
-		'MakeADonation' => 'Ajudeu-nos al projecte Dolibarr, feu una donació',
-		'SubscribeToFoundation' => 'Ajudeu-nos al projecte Dolibarr, Adhereixi a l\'associació Dolibarr'
+		'MakeADonation' => 'Ajudeu-nos al projecte Speedealing, feu una donació',
+		'SubscribeToFoundation' => 'Ajudeu-nos al projecte Speedealing, Adhereixi a l\'associació Speedealing'
 );
 ?>

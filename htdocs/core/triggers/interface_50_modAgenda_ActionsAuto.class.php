@@ -127,8 +127,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("NewCompanyToDolibarr",$object->nom);
-            $object->actionmsg=$langs->transnoentities("NewCompanyToDolibarr",$object->nom);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("NewCompanyToSpeedealing",$object->nom);
+            $object->actionmsg=$langs->transnoentities("NewCompanyToSpeedealing",$object->nom);
             if ($object->prefix) $object->actionmsg.=" (".$object->prefix.")";
             //$this->desc.="\n".$langs->transnoentities("Customer").': '.yn($object->client);
             //$this->desc.="\n".$langs->transnoentities("Supplier").': '.yn($object->fournisseur);
@@ -146,8 +146,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("ContractValidatedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("ContractValidatedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("ContractValidatedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("ContractValidatedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
             $object->sendtoid=0;
@@ -160,8 +160,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("PropalValidatedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("PropalValidatedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("PropalValidatedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("PropalValidatedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
 			$object->sendtoid=0;
@@ -192,8 +192,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("PropalClosedSignedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("PropalClosedSignedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("PropalClosedSignedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("PropalClosedSignedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
 			$object->sendtoid=0;
@@ -206,8 +206,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("PropalClosedRefusedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("PropalClosedRefusedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("PropalClosedRefusedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("PropalClosedRefusedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
 			$object->sendtoid=0;
@@ -220,8 +220,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("OrderValidatedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("OrderValidatedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("OrderValidatedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("OrderValidatedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
 			$object->sendtoid=0;
@@ -253,8 +253,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoiceValidatedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("InvoiceValidatedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoiceValidatedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("InvoiceValidatedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
 			$object->sendtoid=0;
@@ -287,8 +287,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoicePaidInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("InvoicePaidInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoicePaidInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("InvoicePaidInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
             $object->sendtoid=0;
@@ -302,8 +302,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoiceCanceledInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("InvoiceCanceledInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoiceCanceledInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("InvoiceCanceledInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
             $object->sendtoid=0;
@@ -317,8 +317,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InterventionValidatedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("InterventionValidatedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InterventionValidatedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("InterventionValidatedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
             $object->sendtoid=0;
@@ -368,8 +368,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("OrderValidatedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("OrderValidatedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("OrderValidatedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("OrderValidatedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
             $object->sendtoid=0;
@@ -403,8 +403,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoiceValidatedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("InvoiceValidatedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoiceValidatedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("InvoiceValidatedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
             $object->sendtoid=0;
@@ -438,8 +438,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoicePaidInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("InvoicePaidInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoicePaidInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("InvoicePaidInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
 			$object->sendtoid=0;
@@ -453,8 +453,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoiceCanceledInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("InvoiceCanceledInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("InvoiceCanceledInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("InvoiceCanceledInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
 
 			$object->sendtoid=0;
@@ -470,8 +470,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("MemberValidatedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("MemberValidatedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("MemberValidatedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("MemberValidatedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Member").': '.$object->getFullName($langs);
             $object->actionmsg.="\n".$langs->transnoentities("Type").': '.$object->type;
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
@@ -487,8 +487,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("MemberSubscriptionAddedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("MemberSubscriptionAddedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("MemberSubscriptionAddedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("MemberSubscriptionAddedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Member").': '.$object->getFullName($langs);
             $object->actionmsg.="\n".$langs->transnoentities("Type").': '.$object->type;
             $object->actionmsg.="\n".$langs->transnoentities("Amount").': '.$object->last_subscription_amount;
@@ -510,8 +510,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("MemberResiliatedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("MemberResiliatedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("MemberResiliatedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("MemberResiliatedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Member").': '.$object->getFullName($langs);
             $object->actionmsg.="\n".$langs->transnoentities("Type").': '.$object->type;
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;
@@ -527,8 +527,8 @@ class InterfaceActionsAuto
             $langs->load("agenda");
 
 			$object->actiontypecode='AC_OTH';
-            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("MemberDeletedInDolibarr",$object->ref);
-            $object->actionmsg=$langs->transnoentities("MemberDeletedInDolibarr",$object->ref);
+            if (empty($object->actionmsg2)) $object->actionmsg2=$langs->transnoentities("MemberDeletedInSpeedealing",$object->ref);
+            $object->actionmsg=$langs->transnoentities("MemberDeletedInSpeedealing",$object->ref);
             $object->actionmsg.="\n".$langs->transnoentities("Member").': '.$object->getFullName($langs);
             $object->actionmsg.="\n".$langs->transnoentities("Type").': '.$object->type;
             $object->actionmsg.="\n".$langs->transnoentities("Author").': '.$user->login;

@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal modul beállítása',
-		'PaypalDesc' => 'Ez a modul ajánlat oldalakat, hogy fizetést <a href="http://www.paypal.com" target="_blank">PayPal</a> ügyfelek. Ezt fel lehet használni a szabad fizetés vagy a fizetés egy adott Dolibarr objektum (számla, megrendelés, ...)',
+		'PaypalDesc' => 'Ez a modul ajánlat oldalakat, hogy fizetést <a href="http://www.paypal.com" target="_blank">PayPal</a> ügyfelek. Ezt fel lehet használni a szabad fizetés vagy a fizetés egy adott Speedealing objektum (számla, megrendelés, ...)',
 		'PaypalOrCBDoPayment' => 'Fizessen hitelkártyával vagy Paypal',
 		'PaypalDoPayment' => 'Fizetés Paypal',
 		'PaypalCBDoPayment' => 'Fizess bankkártyával',

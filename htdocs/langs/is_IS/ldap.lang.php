@@ -42,7 +42,7 @@ $ldap = array(
 		'GroupSynchronized' => 'Group samstilla',
 		'MemberSynchronized' => 'Aðildarríkin samstilla',
 		'ContactSynchronized' => 'Hafðu samstilla',
-		'ForceSynchronize' => 'Force synchronizing Dolibarr -> LDAP',
+		'ForceSynchronize' => 'Force synchronizing Speedealing -> LDAP',
 		'ErrorFailedToReadLDAP' => 'Ekki tókst að lesa LDAP gagnagrunninn. Athugaðu LDAP mát skipulag og gagnasafn aðgengi.'
 );
 ?>

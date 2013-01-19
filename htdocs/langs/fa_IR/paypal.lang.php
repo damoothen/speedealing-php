@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'پی پال نصب ماژول',
-		'PaypalDesc' => 'این ماژول صفحات پیشنهاد پرداخت در <a href="http://www.paypal.com" target="_blank">پی پال</a> توسط مشتریان اجازه می دهد. این را می توان برای پرداخت رایگان یا پرداخت بر روی یک شیء خاص Dolibarr استفاده می شود (فاکتور ، سفارش ،...)',
+		'PaypalDesc' => 'این ماژول صفحات پیشنهاد پرداخت در <a href="http://www.paypal.com" target="_blank">پی پال</a> توسط مشتریان اجازه می دهد. این را می توان برای پرداخت رایگان یا پرداخت بر روی یک شیء خاص Speedealing استفاده می شود (فاکتور ، سفارش ،...)',
 		'PaypalOrCBDoPayment' => 'پرداخت با کارت اعتباری یا پی پال',
 		'PaypalDoPayment' => 'Pay with Paypal',
 		'PaypalCBDoPayment' => 'Pay with credit card',

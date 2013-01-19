@@ -164,7 +164,7 @@ class Notify
                 	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
                 	$application=($conf->global->MAIN_APPLICATION_TITLE?$conf->global->MAIN_APPLICATION_TITLE:'Dolibarr ERP/CRM');
 
-                	$subject = '['.$application.'] '.$langs->transnoentitiesnoconv("DolibarrNotification");
+                	$subject = '['.$application.'] '.$langs->transnoentitiesnoconv("SpeedealingNotification");
 
                 	$message = $langs->transnoentities("YouReceiveMailBecauseOfNotification",$application,$mysoc->name)."\n";
                 	$message.= $langs->transnoentities("YouReceiveMailBecauseOfNotification2",$application,$mysoc->name)."\n";

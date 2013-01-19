@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal module setup',
-		'PaypalDesc' => 'Deze module biedt om betaling op laten <a href="http://www.paypal.com" target="_blank">PayPal</a> door de klanten. Dit kan gebruikt worden voor een gratis betaling of voor een betaling op een bepaald Dolibarr object (factuur, bestelling, ...)',
+		'PaypalDesc' => 'Deze module biedt om betaling op laten <a href="http://www.paypal.com" target="_blank">PayPal</a> door de klanten. Dit kan gebruikt worden voor een gratis betaling of voor een betaling op een bepaald Speedealing object (factuur, bestelling, ...)',
 		'PaypalOrCBDoPayment' => 'Betalen met credit card of Paypal',
 		'PaypalDoPayment' => 'Betalen met Paypal',
 		'PaypalCBDoPayment' => 'Betalen met creditcard',

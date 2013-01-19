@@ -968,13 +968,13 @@ if ($action == 'create') {
       // Third party Dolibarr
       if ($conf->societe->enabled)
       {
-      print '<tr><td>'.$langs->trans("LinkedToDolibarrThirdParty").'</td><td class="valeur">';
+      print '<tr><td>'.$langs->trans("LinkedToSpeedealingThirdParty").'</td><td class="valeur">';
       print $form->select_company($object->fk_soc,'socid','',1);
       print '</td></tr>';
       }
 
       // Login Dolibarr
-      print '<tr><td>'.$langs->trans("LinkedToDolibarrUser").'</td><td class="valeur">';
+      print '<tr><td>'.$langs->trans("LinkedToSpeedealingUser").'</td><td class="valeur">';
       print $form->select_users($object->user_id,'userid',1);
       print '</td></tr>';
      */
@@ -1197,7 +1197,7 @@ if ($action == 'edit') {
 
     // Third party Dolibarr
     /* if ($conf->societe->enabled) {
-      print '<tr><td>' . $langs->trans("LinkedToDolibarrThirdParty") . '</td><td colspan="2" class="valeur">';
+      print '<tr><td>' . $langs->trans("LinkedToSpeedealingThirdParty") . '</td><td colspan="2" class="valeur">';
       if ($object->fk_soc) {
       $company = new Societe($db);
       $result = $company->fetch($object->fk_soc);
@@ -1209,12 +1209,12 @@ if ($action == 'edit') {
       }
 
       // Login Dolibarr
-      print '<tr><td>' . $langs->trans("LinkedToDolibarrUser") . '</td><td colspan="2" class="valeur">';
+      print '<tr><td>' . $langs->trans("LinkedToSpeedealingUser") . '</td><td colspan="2" class="valeur">';
       if ($object->user_id) {
       print $form->form_users($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->user_id, 'none');
       }
       else
-      print $langs->trans("NoDolibarrAccess");
+      print $langs->trans("NoSpeedealingAccess");
       print '</td></tr>'; */
 
     print '</table>';
@@ -1305,7 +1305,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
         // Create a form array
         $formquestion = array(array('label' => $langs->trans("NameToCreate"), 'type' => 'text', 'name' => 'companyname', 'value' => $name));
 
-        $ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?rowid=" . $object->id, $langs->trans("CreateDolibarrThirdParty"), $langs->trans("ConfirmCreateThirdParty"), "confirm_create_thirdparty", $formquestion, 1);
+        $ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?rowid=" . $object->id, $langs->trans("CreateSpeedealingThirdParty"), $langs->trans("ConfirmCreateThirdParty"), "confirm_create_thirdparty", $formquestion, 1);
         if ($ret == 'html')
             print '<br>';
     }
@@ -1391,7 +1391,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
                 else {
                     print ' (' . $langs->trans("NoThirdPartyAssociatedToMember");
                     print ' - <a href="' . $_SERVER["PHP_SELF"] . '?rowid=' . $object->id . '&amp;action=create_thirdparty">';
-                    print $langs->trans("CreateDolibarrThirdParty");
+                    print $langs->trans("CreateSpeedealingThirdParty");
                     print '</a>)';
                 }
                 print '<br>';
@@ -1406,7 +1406,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
                 else {
                     print ' (' . $langs->trans("NoThirdPartyAssociatedToMember");
                     print ' - <a href="' . $_SERVER["PHP_SELF"] . '?rowid=' . $object->id . '&amp;action=create_thirdparty">';
-                    print $langs->trans("CreateDolibarrThirdParty");
+                    print $langs->trans("CreateSpeedealingThirdParty");
                     print '</a>)';
                 }
                 print '<br>';
@@ -1547,7 +1547,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
             else
                 $text.=$langs->trans("UserWillBeInternalUser");
         }
-        $ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $object->id, $langs->trans("CreateDolibarrLogin"), $text, "confirm_create_user", $formquestion, 'yes');
+        $ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $object->id, $langs->trans("CreateSpeedealingLogin"), $text, "confirm_create_user", $formquestion, 'yes');
         if ($ret == 'html')
             print '<br>';
     }
@@ -1566,7 +1566,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
         // Create a form array
         $formquestion = array(array('label' => $langs->trans("NameToCreate"), 'type' => 'text', 'name' => 'companyname', 'value' => $name));
 
-        $ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $object->id, $langs->trans("CreateDolibarrThirdParty"), $langs->trans("ConfirmCreateThirdParty"), "confirm_create_thirdparty", $formquestion, 1);
+        $ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $object->id, $langs->trans("CreateSpeedealingThirdParty"), $langs->trans("ConfirmCreateThirdParty"), "confirm_create_thirdparty", $formquestion, 1);
         if ($ret == 'html')
             print '<br>';
     }
@@ -1798,7 +1798,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
       print $form->form_users($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->user_id, 'none');
       }
       else
-      print $langs->trans("NoDolibarrAccess");
+      print $langs->trans("NoSpeedealingAccess");
       }
       print '</td></tr>'; */
 

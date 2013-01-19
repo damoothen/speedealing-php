@@ -42,7 +42,7 @@ $ldap = array(
 		'GroupSynchronized' => 'Csoport szinkronizálva',
 		'MemberSynchronized' => 'Tag szinkronizálva',
 		'ContactSynchronized' => 'Kapcsolat szinkronizálva',
-		'ForceSynchronize' => 'Eröltetett szinkronizáció Dolibarr -> LDAP',
+		'ForceSynchronize' => 'Eröltetett szinkronizáció Speedealing -> LDAP',
 		'ErrorFailedToReadLDAP' => 'Nem sikerült olvasni az LDAP adatbázist. Ellenőrizze az LDAP modul beállítását és az adatbázis hozzáférhetőségét.'
 );
 ?>

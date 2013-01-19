@@ -253,7 +253,7 @@ else
 
 // Important: can debug rounding, to simulate the rounded total
 /*
-print '<br><b>'.$langs->trans("VATRoundedByLine").' ('.$langs->trans("DolibarrDefault").')</b><br>';
+print '<br><b>'.$langs->trans("VATRoundedByLine").' ('.$langs->trans("SpeedealingDefault").')</b><br>';
 
 foreach($vat_rates as $vat)
 {

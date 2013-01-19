@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal-Modul Setup',
-		'PaypalDesc' => 'Dieses Modul bieten Seiten, die Zahlung ermöglichen <a href="http://www.paypal.com" target="_blank">PayPal</a> von Kunden. Dies kann für eine kostenlose Zahlung oder eine Zahlung zu einem bestimmten Dolibarr Objekt verwendet werden (Rechnung, Bestellung, ...)',
+		'PaypalDesc' => 'Dieses Modul bieten Seiten, die Zahlung ermöglichen <a href="http://www.paypal.com" target="_blank">PayPal</a> von Kunden. Dies kann für eine kostenlose Zahlung oder eine Zahlung zu einem bestimmten Speedealing Objekt verwendet werden (Rechnung, Bestellung, ...)',
 		'PaypalOrCBDoPayment' => 'Bezahlen Sie mit Kreditkarte oder Paypal',
 		'PaypalDoPayment' => 'Bezahlen Sie mit Paypal',
 		'PaypalCBDoPayment' => 'Bezahlen mit Kreditkarte',

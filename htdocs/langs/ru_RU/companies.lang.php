@@ -320,7 +320,7 @@ $companies = array(
 		'EditDeliveryAddress' => 'Изменить адрес доставки',
 		'ThisUserIsNot' => 'Этот пользователь не является потенциальным клиентом, покупателем или поставщиком',
 		'VATIntraCheck' => 'Проверить',
-		'VATIntraCheckDesc' => 'Эта ссылка <b>%s</b> позволяет направлять запросы к Европейской службе проверки НДС. Для работы этой службы необходим внешний доступ в Интернет с сервера Dolibarr.',
+		'VATIntraCheckDesc' => 'Эта ссылка <b>%s</b> позволяет направлять запросы к Европейской службе проверки НДС. Для работы этой службы необходим внешний доступ в Интернет с сервера Speedealing.',
 		'VATIntraCheckURL' => 'http://ec.europa.eu/taxation_customs/vies/vieshome.do',
 		'VATIntraCheckableOnEUSite' => 'Проверка НДС на сайте Европейской комиссии',
 		'VATIntraManualCheck' => 'Вы также можете проверить его вручную а сайте европейской комиссии <a href="%s" target="_blank">%s</a>',

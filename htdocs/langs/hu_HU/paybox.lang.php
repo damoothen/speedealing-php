@@ -18,7 +18,7 @@ $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'PayBox modul beállítás',
 		'PayBoxDesc' => 'Ez a nodul lehetővé teszi az oldalak számára a <a href="http://www.paybox.com" target="_blank">Paybox</a>-on keresztüli fizetést az ügyfelek számára. Ingyenes fizetési megoldás.',
-		'FollowingUrlAreAvailableToMakePayments' => 'Following URLs are available to offer a page to a customer to make a payment on Dolibarr objects',
+		'FollowingUrlAreAvailableToMakePayments' => 'Following URLs are available to offer a page to a customer to make a payment on Speedealing objects',
 		'PaymentForm' => 'Fizetési ürlap',
 		'WelcomeOnPaymentPage' => 'Üdvözöljük az online fizetési oldalunkon',
 		'ThisScreenAllowsYouToPay' => 'Ez az oldal lehetővé teszi az online fizetést %s számára.',

@@ -673,14 +673,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             }
 
             // Login Dolibarr
-            print '<tr><td>' . $langs->trans("DolibarrLogin") . '</td><td colspan="3">';
+            print '<tr><td>' . $langs->trans("SpeedealingLogin") . '</td><td colspan="3">';
             if ($object->user_id) {
                 $dolibarr_user = new User($db);
                 $result = $dolibarr_user->fetch($object->user_id);
                 print $dolibarr_user->getLoginUrl(1);
             }
             else
-                print $langs->trans("NoDolibarrAccess");
+                print $langs->trans("NoSpeedealingAccess");
             print '</td></tr>';
 
             print '</table><br>';
@@ -731,7 +731,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                 else
                     $text.=$langs->trans("UserWillBeInternalUser");
             }
-            $ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $object->id, $langs->trans("CreateDolibarrLogin"), $text, "confirm_create_user", $formquestion, 'yes');
+            $ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $object->id, $langs->trans("CreateSpeedealingLogin"), $text, "confirm_create_user", $formquestion, 'yes');
             if ($ret == 'html')
                 print '<br>';
         }
@@ -865,14 +865,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '</td></tr>';
         }
 
-        print '<tr><td>' . $langs->trans("DolibarrLogin") . '</td><td colspan="3">';
+        print '<tr><td>' . $langs->trans("SpeedealingLogin") . '</td><td colspan="3">';
         if ($object->user_id) {
             $dolibarr_user = new User($db);
             $result = $dolibarr_user->fetch($object->user_id);
             print $dolibarr_user->getLoginUrl(1);
         }
         else
-            print $langs->trans("NoDolibarrAccess");
+            print $langs->trans("NoSpeedealingAccess");
         print '</td></tr>';
 
         print "</table>";
@@ -888,7 +888,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             }
 
             if (!$object->user_id && $user->rights->user->user->creer) {
-                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=create_user">' . $langs->trans("CreateDolibarrLogin") . '</a>';
+                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=create_user">' . $langs->trans("CreateSpeedealingLogin") . '</a>';
             }
 
             if ($user->rights->societe->contact->supprimer) {

@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'إعداد وحدة PayBox',
-		'PayBoxDesc' => 'This module offer pages to allow payment on <a href="http://www.paybox.com" target=هذا نموذج للسماح بعرض الصفحات على دفع <a href="http://www.paybox.com" target="_blank">Paybox</a> الواحد. هذه يمكن استخدامها لدفع حر أو لدفع مبلغ معين على وجوه Dolibarr (الفاتورة ، والنظام ،...)',
-		'FollowingUrlAreAvailableToMakePayments' => 'فيما يلي عناوين المواقع المتاحة لعرض هذه الصفحة زبون لتسديد دفعة Dolibarr على الأجسام',
+		'PayBoxDesc' => 'This module offer pages to allow payment on <a href="http://www.paybox.com" target=هذا نموذج للسماح بعرض الصفحات على دفع <a href="http://www.paybox.com" target="_blank">Paybox</a> الواحد. هذه يمكن استخدامها لدفع حر أو لدفع مبلغ معين على وجوه Speedealing (الفاتورة ، والنظام ،...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'فيما يلي عناوين المواقع المتاحة لعرض هذه الصفحة زبون لتسديد دفعة Speedealing على الأجسام',
 		'PaymentForm' => 'شكل الدفع',
 		'WelcomeOnPaymentPage' => 'ونحن نرحب على خدمة الدفع عبر الإنترنت',
 		'ThisScreenAllowsYouToPay' => 'تتيح لك هذه الشاشة إجراء الدفع الإلكتروني إلى ٪ s.',

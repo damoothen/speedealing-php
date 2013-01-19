@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal modul oppsett',
-		'PaypalDesc' => 'Denne modulen tilbyr sider for å tillate betaling på <a href="http://www.paypal.com" target="_blank">PayPal</a> av kunder. Dette kan brukes til en gratis betaling eller for en betaling på en bestemt Dolibarr objekt (faktura, ordre, ...)',
+		'PaypalDesc' => 'Denne modulen tilbyr sider for å tillate betaling på <a href="http://www.paypal.com" target="_blank">PayPal</a> av kunder. Dette kan brukes til en gratis betaling eller for en betaling på en bestemt Speedealing objekt (faktura, ordre, ...)',
 		'PaypalOrCBDoPayment' => 'Betal med kredittkort eller Paypal',
 		'PaypalDoPayment' => 'Betal med Paypal',
 		'PaypalCBDoPayment' => 'Betal med kredittkort',

@@ -42,7 +42,7 @@ $ldap = array(
 		'GroupSynchronized' => 'Group synchronized',
 		'MemberSynchronized' => 'Member synchronized',
 		'ContactSynchronized' => 'Contact synchronized',
-		'ForceSynchronize' => 'Force synchronizing Dolibarr -> LDAP',
+		'ForceSynchronize' => 'Force synchronizing Speedealing -> LDAP',
 		'ErrorFailedToReadLDAP' => 'Failed to read LDAP database. Check LDAP module setup and database accessibility.'
 );
 ?>

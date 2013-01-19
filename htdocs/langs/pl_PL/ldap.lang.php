@@ -42,7 +42,7 @@ $ldap = array(
 		'GroupSynchronized' => 'Grupa zsynchronizowane',
 		'MemberSynchronized' => 'Państwa zsynchronizowane',
 		'ContactSynchronized' => 'Kontakt zsynchronizowane',
-		'ForceSynchronize' => 'Siły synchronizujące Dolibarr -> LDAP',
+		'ForceSynchronize' => 'Siły synchronizujące Speedealing -> LDAP',
 		'ErrorFailedToReadLDAP' => 'Nie można odczytać bazy danych LDAP. Sprawdź LDAP moduł konfiguracji bazy danych i dostępności.'
 );
 ?>

@@ -35,12 +35,12 @@ $help = array(
 		'TypeHelpDev' => 'Pomoč+razvoj',
 		'TypeHelpDevForm' => 'Pomoč+razvoj+oblikovanje',
 		'ToGetHelpGoOnSparkAngels1' => 'Nekatera podjetja lahko zagotovijo hitro (včasih takojšnjo) in učinkovitejšo online podporo z direktnim dostopom do vašega računalnika. Take pomočnike lahko najdete na <b>%s</b> spletni strani:',
-		'ToGetHelpGoOnSparkAngels3' => 'Lahko si ogledate tudi seznam vseh Dolibarr inštruktorjev, ki so na voljo; kliknite na gumb',
+		'ToGetHelpGoOnSparkAngels3' => 'Lahko si ogledate tudi seznam vseh Speedealing inštruktorjev, ki so na voljo; kliknite na gumb',
 		'ToGetHelpGoOnSparkAngels2' => 'Včasih v trenutku vašega iskanja ni na voljo nobenega podjetja, zato lahko spremenite filter na "all availability". Tako boste lahko poslali več zahtevkov.',
 		'BackToHelpCenter' => 'Sicer kliknite <a href="%s">tukaj za prehod nazaj na domačo stran za pomoč</a>.',
-		'LinkToGoldMember' => 'Lahko pokličete enega of inštruktorjev, ki jih je Dolibarr izbral vnaprej za vaš jezik (%s) s kliko na ustrezno ikono (status in maksimalna cena se posodobita avtomatsko):',
+		'LinkToGoldMember' => 'Lahko pokličete enega of inštruktorjev, ki jih je Speedealing izbral vnaprej za vaš jezik (%s) s kliko na ustrezno ikono (status in maksimalna cena se posodobita avtomatsko):',
 		'PossibleLanguages' => 'Podprti jeziki',
-		'MakeADonation' => 'Pomagajte projektu Dolibarr z vašo donacijo',
-		'SubscribeToFoundation' => 'Help Dolibarr project, subscribe to the foundation'
+		'MakeADonation' => 'Pomagajte projektu Speedealing z vašo donacijo',
+		'SubscribeToFoundation' => 'Help Speedealing project, subscribe to the foundation'
 );
 ?>

@@ -42,7 +42,7 @@ $ldap = array(
 		'GroupSynchronized' => 'קבוצת מסונכרן',
 		'MemberSynchronized' => 'חבר מסונכרן',
 		'ContactSynchronized' => 'צור מסונכרן',
-		'ForceSynchronize' => 'Dolibarr חיל סנכרון -> LDAP',
+		'ForceSynchronize' => 'Speedealing חיל סנכרון -> LDAP',
 		'ErrorFailedToReadLDAP' => 'נכשל בקריאת הנתונים LDAP. בדוק את הגדרות מודול LDAP ונגישות הנתונים.'
 );
 ?>

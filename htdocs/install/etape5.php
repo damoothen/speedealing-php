@@ -374,7 +374,7 @@ elseif (empty($action) || preg_match('/upgrade/i', $action)) {
         print "<br>";
 
         print '<center><a href="../index.php?mainmenu=home' . (isset($_POST["login"]) ? '&username=' . urlencode($_POST["login"]) : '') . '">';
-        print $langs->trans("GoToDolibarr");
+        print $langs->trans("GoToSpeedealing");
         print '</a></center>';
     } else {
         // If here MAIN_VERSION_LAST_UPGRADE is not empty

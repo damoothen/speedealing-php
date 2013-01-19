@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'Nastavitev modula za online plačila Paybox',
-		'PayBoxDesc' => 'Ta modul omogoča kupcem plačevanje na <a href="http://www.paybox.com" target="_blank">Paybox</a>. Lahko se uporabi za prosto plačevanje ali za plačilo posameznih Dolibarr postavk (račun, naročilo, ...)',
-		'FollowingUrlAreAvailableToMakePayments' => 'Naslednji URL naslovi so na voljo kupcem za izvedbo plačil Dolibarr postavk',
+		'PayBoxDesc' => 'Ta modul omogoča kupcem plačevanje na <a href="http://www.paybox.com" target="_blank">Paybox</a>. Lahko se uporabi za prosto plačevanje ali za plačilo posameznih Speedealing postavk (račun, naročilo, ...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'Naslednji URL naslovi so na voljo kupcem za izvedbo plačil Speedealing postavk',
 		'PaymentForm' => 'Obrazec za plačilo',
 		'WelcomeOnPaymentPage' => 'Dobrodošli v naši storitvi online plačil',
 		'ThisScreenAllowsYouToPay' => 'Ta zaslon omogoča online plačilo za %s.',

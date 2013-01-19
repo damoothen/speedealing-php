@@ -17,8 +17,8 @@
 $paybox = array(
 		'CHARSET' => 'UTF-8',
 		'PayBoxSetup' => 'PayBox modul de configurare',
-		'PayBoxDesc' => 'Acest modul oferă pagini pentru a permite plata pe <a href="http://www.paybox.com" target="_blank">Paybox</a> de către clienţi. Acest lucru poate fi folosit pentru un cont gratuit sau plată pentru o plată de pe un anumit obiect Dolibarr (factură, pentru, ...)',
-		'FollowingUrlAreAvailableToMakePayments' => 'Ca urmare a URL-uri sunt disponibile pentru a oferi o pagină de la un client pentru a face o plată pe Dolibarr obiecte',
+		'PayBoxDesc' => 'Acest modul oferă pagini pentru a permite plata pe <a href="http://www.paybox.com" target="_blank">Paybox</a> de către clienţi. Acest lucru poate fi folosit pentru un cont gratuit sau plată pentru o plată de pe un anumit obiect Speedealing (factură, pentru, ...)',
+		'FollowingUrlAreAvailableToMakePayments' => 'Ca urmare a URL-uri sunt disponibile pentru a oferi o pagină de la un client pentru a face o plată pe Speedealing obiecte',
 		'PaymentForm' => 'Formă de plată',
 		'WelcomeOnPaymentPage' => 'Bine ati venit la serviciul de plată online',
 		'ThisScreenAllowsYouToPay' => 'Acest ecran vă permite de a face o plată online pentru %s.',

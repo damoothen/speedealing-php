@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'Configuració mòdul PayPal',
-		'PaypalDesc' => 'Aquest mòdul ofereix una pàgina de pagament a través del proveïdor <a href="http://www.paypal.com" target="_blank">Paypal</a> per realitzar qualsevol pagament o un pagament en relació amb un objecte Dolibarr (factures, comandes ...)',
+		'PaypalDesc' => 'Aquest mòdul ofereix una pàgina de pagament a través del proveïdor <a href="http://www.paypal.com" target="_blank">Paypal</a> per realitzar qualsevol pagament o un pagament en relació amb un objecte Speedealing (factures, comandes ...)',
 		'PaypalOrCBDoPayment' => 'Continuar el pagament mitjançant targeta o Paypal',
 		'PaypalDoPayment' => 'Continuar el pagament mitjançant Paypal',
 		'PaypalCBDoPayment' => 'Continuar el pagament mitjançant targeta',

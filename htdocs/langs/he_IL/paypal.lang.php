@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'מודול PayPal ההתקנה',
-		'PaypalDesc' => 'זה מציעים מודול דפים המאפשרים תשלום <a href="http://www.paypal.com" target="_blank">PayPal</a> על ידי הלקוחות. זה יכול לשמש לתשלום בחינם או תמורת תשלום על אובייקט מסוים Dolibarr (חשבונית, הסדר, ...)',
+		'PaypalDesc' => 'זה מציעים מודול דפים המאפשרים תשלום <a href="http://www.paypal.com" target="_blank">PayPal</a> על ידי הלקוחות. זה יכול לשמש לתשלום בחינם או תמורת תשלום על אובייקט מסוים Speedealing (חשבונית, הסדר, ...)',
 		'PaypalOrCBDoPayment' => 'לשלם באמצעות כרטיס אשראי או Paypal',
 		'PaypalDoPayment' => 'לשלם עם PayPal',
 		'PaypalCBDoPayment' => 'לשלם באמצעות כרטיס אשראי',

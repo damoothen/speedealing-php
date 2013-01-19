@@ -15,7 +15,7 @@
  */
 
 $main = array(
-		'Dolibarr language file - es_HN - main' => '',
+		'Speedealing language file - es_HN - main' => '',
 		'CHARSET' => 'UTF-8',
 		'DIRECTION' => 'ltr',
 		'SeparatorDecimal' => ',',

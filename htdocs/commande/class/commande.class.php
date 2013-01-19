@@ -191,7 +191,7 @@ class Commande extends nosqlDocument {
                     if ($this->lines[$i]->fk_product > 0) {
                         $mouvP = new MouvementStock($this->db);
                         // We decrement stock of product (and sub-products)
-                        $result = $mouvP->livraison($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderValidatedInDolibarr", $num));
+                        $result = $mouvP->livraison($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderValidatedInSpeedealing", $num));
                         if ($result < 0) {
                             $error++;
                         }
@@ -284,7 +284,7 @@ class Commande extends nosqlDocument {
 //                    {
 //                        $mouvP = new MouvementStock($this->db);
 //                        // We decrement stock of product (and sub-products)
-//                        $result=$mouvP->livraison($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderValidatedInDolibarr",$num));
+//                        $result=$mouvP->livraison($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderValidatedInSpeedealing",$num));
 //                        if ($result < 0) { $error++; }
 //                    }
 //                }
@@ -390,7 +390,7 @@ class Commande extends nosqlDocument {
                 if ($this->lines[$i]->fk_product > 0) {
                     $mouvP = new MouvementStock($this->db);
                     // We increment stock of product (and sub-products)
-                    $result = $mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderBackToDraftInDolibarr", $this->ref));
+                    $result = $mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderBackToDraftInSpeedealing", $this->ref));
                     if ($result < 0) {
                         $error++;
                     }
@@ -569,7 +569,7 @@ class Commande extends nosqlDocument {
                 if ($this->lines[$i]->fk_product > 0) {
                     $mouvP = new MouvementStock($this->db);
                     // We increment stock of product (and sub-products)
-                    $result = $mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderCanceledInDolibarr", $this->ref));
+                    $result = $mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderCanceledInSpeedealing", $this->ref));
                     if ($result < 0) {
                         $error++;
                     }
@@ -618,7 +618,7 @@ class Commande extends nosqlDocument {
 //					{
 //						$mouvP = new MouvementStock($this->db);
 //						// We increment stock of product (and sub-products)
-//						$result=$mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderCanceledInDolibarr",$this->ref));
+//						$result=$mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderCanceledInSpeedealing",$this->ref));
 //						if ($result < 0) {
 //							$error++;
 //						}

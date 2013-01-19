@@ -524,7 +524,7 @@ class Expedition extends CommonObject
 					$mouvS = new MouvementStock($this->db);
 					// We decrement stock of product (and sub-products)
 					// We use warehouse selected for each line
-					$result=$mouvS->livraison($user, $obj->fk_product, $obj->fk_entrepot, $obj->qty, $obj->subprice, $langs->trans("ShipmentValidatedInDolibarr",$numref));
+					$result=$mouvS->livraison($user, $obj->fk_product, $obj->fk_entrepot, $obj->qty, $obj->subprice, $langs->trans("ShipmentValidatedInSpeedealing",$numref));
 					if ($result < 0) { $error++; break; }
 				}
 			}

@@ -460,7 +460,7 @@ class CommandeFournisseur extends CommonOrder
                     {
                         $mouvP = new MouvementStock($this->db);
                         // We increment stock of product (and sub-products)
-                        $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderBackToDraftInDolibarr",$this->ref));
+                        $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderBackToDraftInSpeedealing",$this->ref));
                         if ($result < 0) { $error++; }
                     }
                 }
@@ -713,7 +713,7 @@ class CommandeFournisseur extends CommonOrder
                         {
                             $mouvP = new MouvementStock($this->db);
                             // We decrement stock of product (and sub-products)
-                            $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderApprovedInDolibarr",$this->ref));
+                            $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderApprovedInSpeedealing",$this->ref));
                             if ($result < 0) { $error++; }
                         }
                     }

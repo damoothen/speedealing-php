@@ -2115,7 +2115,7 @@ function dol_print_error($db = '', $error = '') {
     $langs->load("errors");
 
     if ($_SERVER['DOCUMENT_ROOT']) {    // Mode web
-        //$out.=$langs->trans("DolibarrHasDetectedError") . ".<br>\n";
+        //$out.=$langs->trans("SpeedealingHasDetectedError") . ".<br>\n";
         if (!empty($conf->global->MAIN_FEATURES_LEVEL))
             $out.="You use an experimental level of features, so please do NOT report any bugs, anywhere, until going back to MAIN_FEATURES_LEVEL = 0.<br>\n";
         $out.=$langs->trans("InformationToHelpDiagnose") . ":<br>\n";

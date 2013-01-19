@@ -324,7 +324,7 @@ abstract class ActionsAdherentCardCommon
 				$result=$dolibarr_user->fetch($this->object->user_id);
 				$this->tpl['dolibarr_user'] = $dolibarr_user->getLoginUrl(1);
 			}
-			else $this->tpl['dolibarr_user'] = $langs->trans("NoDolibarrAccess");
+			else $this->tpl['dolibarr_user'] = $langs->trans("NoSpeedealingAccess");
         }
 
         if ($action == 'view' || $action == 'delete')
@@ -376,7 +376,7 @@ abstract class ActionsAdherentCardCommon
         	array('label' => $langs->trans("LoginToCreate"), 'type' => 'text', 'name' => 'login', 'value' => $login),
         	array('label' => $langs->trans("Password"), 'type' => 'text', 'name' => 'password', 'value' => $password));
 
-        	$this->tpl['action_create_user'] = $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$this->object->id,$langs->trans("CreateDolibarrLogin"),$langs->trans("ConfirmCreateAdherent"),"confirm_create_user",$formquestion,'no');
+        	$this->tpl['action_create_user'] = $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$this->object->id,$langs->trans("CreateSpeedealingLogin"),$langs->trans("ConfirmCreateAdherent"),"confirm_create_user",$formquestion,'no');
         }
     }
 

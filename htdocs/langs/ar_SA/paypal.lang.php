@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'بايبال حدة الإعداد',
-		'PaypalDesc' => 'صفحات تقدم هذه الوحدة للسماح للدفع على <a href="http://www.paypal.com" target="_blank">بال</a> من قبل العملاء. ويمكن استخدام هذا لدفع مجانا أو مقابل دفع Dolibarr على كائن معين (الفاتورة ، والنظام ،...)',
+		'PaypalDesc' => 'صفحات تقدم هذه الوحدة للسماح للدفع على <a href="http://www.paypal.com" target="_blank">بال</a> من قبل العملاء. ويمكن استخدام هذا لدفع مجانا أو مقابل دفع Speedealing على كائن معين (الفاتورة ، والنظام ،...)',
 		'PaypalOrCBDoPayment' => 'الدفع بواسطة بطاقة الائتمان او باي بال',
 		'PaypalDoPayment' => 'مع دفع بايبال',
 		'PaypalCBDoPayment' => 'تدفع بواسطة بطاقة ائتمان',

@@ -17,7 +17,7 @@
 $paypal = array(
 		'CHARSET' => 'UTF-8',
 		'PaypalSetup' => 'PayPal mát skipulag',
-		'PaypalDesc' => 'Þessi eining bjóða síður að leyfa greiðslu á <a href="http://www.paypal.com" target="_blank">PayPal</a> við viðskiptavini. Þetta er hægt að nota fyrir a frjáls greiðslu eða greiðslu á tilteknu Dolibarr hlut (Reikningar, til þess, ...)',
+		'PaypalDesc' => 'Þessi eining bjóða síður að leyfa greiðslu á <a href="http://www.paypal.com" target="_blank">PayPal</a> við viðskiptavini. Þetta er hægt að nota fyrir a frjáls greiðslu eða greiðslu á tilteknu Speedealing hlut (Reikningar, til þess, ...)',
 		'PaypalOrCBDoPayment' => 'Borga með kreditkorti eða Paypal',
 		'PaypalDoPayment' => 'Borga með Paypal',
 		'PaypalCBDoPayment' => 'Borga með kreditkorti',

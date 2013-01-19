@@ -226,7 +226,7 @@ for ($i=1; $i<=4; $i++) {
 
 <?php if (! empty($conf->adherent->enabled)) { ?>
 <tr>
-	<td width="25%" valign="top"><?php echo $langs->trans("LinkedToDolibarrMember"); ?></td>
+	<td width="25%" valign="top"><?php echo $langs->trans("LinkedToSpeedealingMember"); ?></td>
 	<td colspan="3"><?php echo $this->control->tpl['linked_member']; ?></td>
 </tr>
 <?php } ?>

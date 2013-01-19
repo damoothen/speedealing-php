@@ -38,9 +38,9 @@ $help = array(
 		'ToGetHelpGoOnSparkAngels3' => 'Vous pouvez aussi accéder à la <b>liste complète de tous les accompagnants possibles</b>, pour cela cliquez sur le bouton',
 		'ToGetHelpGoOnSparkAngels2' => 'Parfois, aucun intervenant n\'est disponible au moment de votre recherche, aussi pensez à modifier vos critères de recherche en indiquant "Toutes disponibilités". Vous pourrez alors prendre contact en différé.',
 		'BackToHelpCenter' => 'Sinon, cliquez ici pour <a href="%s">retourner au centre d\'assistance</a>.',
-		'LinkToGoldMember' => 'Vous pouvez appeler immédiatement un des quelques accompagnateurs présélectionnés par Dolibarr pour votre langue (%s) en cliquant son Widget (disponibilité et tarif maximum sont rafraichis automatiquement):',
+		'LinkToGoldMember' => 'Vous pouvez appeler immédiatement un des quelques accompagnateurs présélectionnés par Speedealing pour votre langue (%s) en cliquant son Widget (disponibilité et tarif maximum sont rafraichis automatiquement):',
 		'PossibleLanguages' => 'Langages possibles',
-		'MakeADonation' => 'Aidez le projet Dolibarr, faites un don',
-		'SubscribeToFoundation' => 'Aidez le projet Dolibarr, adhérez à l\'association Dolibarr'
+		'MakeADonation' => 'Aidez le projet Speedealing, faites un don',
+		'SubscribeToFoundation' => 'Aidez le projet Speedealing, adhérez à l\'association Speedealing'
 );
 ?>

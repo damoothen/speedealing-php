@@ -850,7 +850,7 @@ class FactureFournisseur extends CommonInvoice
                     {
                         $mouvP = new MouvementStock($this->db);
                         // We increase stock for product
-                        $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->pu_ht, $langs->trans("InvoiceValidatedInDolibarr",$num));
+                        $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->pu_ht, $langs->trans("InvoiceValidatedInSpeedealing",$num));
                         if ($result < 0) { $error++; }
                     }
                 }
@@ -928,7 +928,7 @@ class FactureFournisseur extends CommonInvoice
                     {
                         $mouvP = new MouvementStock($this->db);
                         // We increase stock for product
-                        $result=$mouvP->livraison($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("InvoiceBackToDraftInDolibarr",$this->ref));
+                        $result=$mouvP->livraison($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("InvoiceBackToDraftInSpeedealing",$this->ref));
                     }
                 }
             }
