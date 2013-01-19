@@ -393,7 +393,7 @@ https://couchdb.speedealing.com</pre>
                 </fieldset>
 
                 <!-- SQL database -->
-
+<!--
                 <fieldset title="<?php echo $langs->trans("DatabaseSQL"); ?>">
                     <legend>Lorem ipsum dolor&hellip;</legend>
                     <div class="row sepH_b">
@@ -656,7 +656,7 @@ postgres (PostgreSql)</pre>
 
                     </div>
                 </fieldset>
-
+-->
                 <!-- Memcached -->
                 <fieldset title="<?php echo $langs->trans("Memcached"); ?>">
                     <legend>Lorem ipsum dolor&hellip;</legend>

@@ -66,86 +66,58 @@ $dolibarr_main_document_root_alt='';
 $dolibarr_main_data_root='';
 
 
-// dolibarr_main_db_host
-// This parameter contains host name or ip address of SpeeDealing database
-// server.
+//##################
+// CouchDB
+//##################
+
+// dolibarr_main_couchdb_host
+// This parameter contains host name or ip address of CouchDB database.
 // Examples:
-// $dolibarr_main_db_host='localhost';
-// $dolibarr_main_db_host='127.0.0.1';
-// $dolibarr_main_db_host='192.168.0.10';
-// $dolibarr_main_db_host='mysql.myserver.com';
+// $dolibarr_main_couchdb_host='http://localhost';
+// $dolibarr_main_couchdb_host='http://127.0.0.1';
 //
-$dolibarr_main_db_host='';
+$dolibarr_main_couchdb_host='';
 
 
-// dolibarr_main_db_port
-// This parameter contains the port of the SpeeDealing database.
-// Default value: none
+// dolibarr_main_couchdb_port
+// This parameter contains the port of CouchDB database.
+// Default value: 5984
 // Examples:
-// $dolibarr_main_db_host='3306';
+// $dolibarr_main_couchdb_port='5984';
 //
-$dolibarr_main_db_port='';
+$dolibarr_main_couchdb_port='';
 
 
-// dolibarr_main_db_name
-// This parameter contains name of SpeeDealing database.
+// dolibarr_main_couchdb_name
+// This parameter contains name of CouchDB database.
 // Examples:
-// $dolibarr_main_db_name='dolibarr';
-// $dolibarr_main_db_name='mydatabase';
+// $dolibarr_main_couchdb_name='speedealing';
+// $dolibarr_main_couchdb_name='mydatabase';
 //
-$dolibarr_main_db_name='';
+$dolibarr_main_couchdb_name='';
 
 
-// dolibarr_main_db_user
-// This parameter contains user name used to read and write into
-// Dolibarr database.
+//##################
+// Memcached
+//##################
+
+
+// dolibarr_main_memcached_host
+// This parameter contains host name of Memcached server.
 // Examples:
-// $dolibarr_main_db_user='admin';
-// $dolibarr_main_db_user='dolibarruser';
+// $dolibarr_main_memcached_host='localhost';
+// $dolibarr_main_memcached_host='127.0.0.1';
 //
-$dolibarr_main_db_user='';
+$dolibarr_main_memcached_host='';
 
 
-// dolibarr_main_db_pass
-// This parameter contains password used to read and write into
-// Dolibarr database.
+// dolibarr_main_memcached_port
+// This parameter contains the port of Memcached server.
+// Default value: 11211
 // Examples:
-// $dolibarr_main_db_pass='myadminpass';
-// $dolibarr_main_db_pass='myuserpassword';
+// $dolibarr_main_memcached_port='11211';
 //
-$dolibarr_main_db_pass='';
-
-
-// dolibarr_main_db_type
-// This parameter contains the name of the driver used to access your
-// Dolibarr database.
-// Default value: none
-// Possible values: mysql, mysqli, pgsql
-// Examples:
-// $dolibarr_main_db_type='mysql';
-// $dolibarr_main_db_type='mysqli';
-// $dolibarr_main_db_type='pgsql';
-//
-$dolibarr_main_db_type='';
-
-
-// dolibarr_main_db_character_set
-// Database character set used to store data (forced during database creation).
-// Default value: depends on database driver
-// Examples:
-// dolibarr_main_db_character_set='utf8';
-//
-$dolibarr_main_db_character_set='utf8';
-
-
-// dolibarr_main_db_collation
-// Database character set used to sort data (forced during database creation).
-// Default value: depends on database driver
-// Examples:
-// dolibarr_main_db_collation='utf8_general_ci';
-//
-$dolibarr_main_db_collation='utf8_general_ci';
-
+$dolibarr_main_memcached_port='';
 
 
 //##################
@@ -234,13 +206,6 @@ $dolibarr_main_prod='0';
 // Other
 //##################
 
-// dolibarr_main_db_prefix
-// This parameter contains prefix of Dolibarr database. 'llx_' if not defined.
-// Examples:
-// $dolibarr_main_db_prefix='llx_';
-//
-$dolibarr_main_db_prefix='';
-
 // dolibarr_main_limit_users
 // Can set a limit on the number of users it will be possible to create
 // (the superadmin not included). Can be used for a restricted mode.
@@ -259,6 +224,101 @@ $dolibarr_main_db_prefix='';
 // Default value: 0 (use database value if exist)
 // Examples:
 // $dolibarr_strict_mode=0;
+
+
+//##################
+// Mysql (for dolibarr migration)
+//##################
+
+// dolibarr_main_db_host
+// This parameter contains host name or ip address of SpeeDealing database
+// server.
+// Examples:
+// $dolibarr_main_db_host='localhost';
+// $dolibarr_main_db_host='127.0.0.1';
+// $dolibarr_main_db_host='192.168.0.10';
+// $dolibarr_main_db_host='mysql.myserver.com';
+//
+$dolibarr_main_db_host='';
+
+
+// dolibarr_main_db_port
+// This parameter contains the port of the SpeeDealing database.
+// Default value: none
+// Examples:
+// $dolibarr_main_db_host='3306';
+//
+$dolibarr_main_db_port='';
+
+
+// dolibarr_main_db_name
+// This parameter contains name of SpeeDealing database.
+// Examples:
+// $dolibarr_main_db_name='dolibarr';
+// $dolibarr_main_db_name='mydatabase';
+//
+$dolibarr_main_db_name='';
+
+
+// dolibarr_main_db_prefix
+// This parameter contains prefix of Dolibarr database.
+// Default value: llx_
+// Examples:
+// $dolibarr_main_db_prefix='llx_';
+//
+$dolibarr_main_db_prefix='';
+
+
+// dolibarr_main_db_user
+// This parameter contains user name used to read and write into
+// Dolibarr database.
+// Examples:
+// $dolibarr_main_db_user='admin';
+// $dolibarr_main_db_user='dolibarruser';
+//
+$dolibarr_main_db_user='';
+
+
+// dolibarr_main_db_pass
+// This parameter contains password used to read and write into
+// Dolibarr database.
+// Examples:
+// $dolibarr_main_db_pass='myadminpass';
+// $dolibarr_main_db_pass='myuserpassword';
+//
+$dolibarr_main_db_pass='';
+
+
+// dolibarr_main_db_type
+// This parameter contains the name of the driver used to access your
+// Dolibarr database.
+// Default value: none
+// Possible values: mysql, mysqli, pgsql
+// Examples:
+// $dolibarr_main_db_type='mysql';
+// $dolibarr_main_db_type='mysqli';
+// $dolibarr_main_db_type='pgsql';
+//
+$dolibarr_main_db_type='';
+
+
+// dolibarr_main_db_character_set
+// Database character set used to store data (forced during database creation).
+// Default value: depends on database driver
+// Examples:
+// dolibarr_main_db_character_set='utf8';
+//
+$dolibarr_main_db_character_set='utf8';
+
+
+// dolibarr_main_db_collation
+// Database character set used to sort data (forced during database creation).
+// Default value: depends on database driver
+// Examples:
+// dolibarr_main_db_collation='utf8_general_ci';
+//
+$dolibarr_main_db_collation='utf8_general_ci';
+
 
 
 //#################################
@@ -282,19 +342,5 @@ $dolibarr_main_db_prefix='';
 // Value to overwrite some path to use font instead of embedded one
 //$dolibarr_font_DOL_DEFAULT_TTF="/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
 //$dolibarr_font_DOL_DEFAULT_TTF_BOLD="/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf";
-
-
-//##############################
-// External module
-//##############################
-
-// multicompany_transverse_mode
-// Pyramidal (0): The rights and groups are managed in each entity,
-// users belong to the entity for their rights.
-// Transversal (1): The groups can belong only to the master entity
-// and that the user belongs to a particular entity
-// Default value: 0 (pyramidal)
-// Examples:
-// $multicompany_transverse_mode='1';
 
 ?>
