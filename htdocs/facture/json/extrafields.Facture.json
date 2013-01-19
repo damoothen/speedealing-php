@@ -1,5 +1,6 @@
 {
    "_id": "extrafields:Facture",
+   "_rev": "6-57eadfd147477a693851095e0f311f89",
    "class": "extrafields",
    "ico": "16-Document.png",
    "langs": [
@@ -26,7 +27,7 @@
                "INVOICE_STANDARD": {
                    "enable": true,
                    "label": "InvoiceStandard",
-                   "cssClass": "gray-gradient"
+                   "cssClass": "grey-gradient"
                },
                "INVOICE_DEPOSIT": {
                    "enable": true,
@@ -59,7 +60,7 @@
                "DRAFT": {
                    "enable": true,
                    "label": "BillStatusDraft",
-                   "cssClass": "gray-gradient"
+                   "cssClass": "grey-gradient"
                },
                "NOT_PAID": {
                    "enable": true,

@@ -189,6 +189,7 @@ $obj->aoColumns[$i]->mDataProp = "ref_client";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->editable = true;
+$obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="essential">';
 print $langs->trans('Date');
