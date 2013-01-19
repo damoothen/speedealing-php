@@ -44,8 +44,8 @@ class Planning extends nosqlDocument {
         $this->fk_extrafields->fetch(get_class($this));
 
         $this->Status = "TODO";
-        $this->societe = (object) array();
-        $this->contact = (object) array();
+        $this->societe = new stdClass();
+        $this->contact = new stdClass();
     }
 
     /**

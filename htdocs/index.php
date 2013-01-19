@@ -504,7 +504,7 @@ $langs->load("orders");
         }
     }
 
-    $object = (object) array();
+    $object = new stdClass();
     $parameters = array();
     $action = '';
     $reshook = $hookmanager->executeHooks('addStatisticLine', $parameters, $object, $action); // Note that $action and $object may have been modified by some hooks

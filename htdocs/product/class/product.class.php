@@ -1982,7 +1982,7 @@ class Product extends nosqlDocument {
             if ($num > 0) {
                 while ($i < $num) {
                     $row = $this->db->fetch_object($result);
-                    $this->stock_warehouse[$row->fk_entrepot] = (object) array();
+                    $this->stock_warehouse[$row->fk_entrepot] = new stdClass();
                     $this->stock_warehouse[$row->fk_entrepot]->real = $row->reel;
                     $this->stock_warehouse[$row->fk_entrepot]->pmp = $row->pmp;
                     $this->stock_reel+=$row->reel;

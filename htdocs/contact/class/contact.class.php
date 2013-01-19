@@ -76,7 +76,7 @@ class Contact extends nosqlDocument {
         $this->fk_extrafields->fetch(get_class($this));
 
 
-        $this->societe = (object) array();
+        $this->societe = new stdClass();
 
         return 1;
     }

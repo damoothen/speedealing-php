@@ -79,8 +79,8 @@ class Agenda extends nosqlDocument {
         $this->usermod = null;
         $this->usertodo = null;
         $this->userdone = null;
-        $this->societe = (object) array();
-        $this->contact = (object) array();
+        $this->societe = new stdClass();
+        $this->contact = new stdClass();
     }
 
     /**

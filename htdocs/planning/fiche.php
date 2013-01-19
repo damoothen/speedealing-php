@@ -361,7 +361,7 @@ if ($action == 'update') {
             $object->societe->id = $_POST["socid"];
             $object->societe->name = $societe->ThirdPartyName;
         } else
-            $object->societe = (object) array();
+            $object->societe = new stdClass();
 
         //debug($object);
         //die();
