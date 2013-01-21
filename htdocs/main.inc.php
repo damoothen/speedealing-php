@@ -259,7 +259,6 @@ if (!empty($_SESSION["disablemodules"])) {
     }
 }
 
-
 /*
  * Phase authentication / login
  */
@@ -282,7 +281,7 @@ if (!defined('NOLOGIN')) {
         dol_print_error('', $langs->trans("ErrorConfigParameterNotDefined", 'dolibarr_main_authentication'));
         exit;
     }
-
+    
     // If requested by the login has already occurred, it is retrieved from the session
     // Call module if not realized that his request.
     // At the end of this phase, the variable $login is defined.

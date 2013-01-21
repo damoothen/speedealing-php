@@ -195,8 +195,8 @@ abstract class nosqlDocument extends CommonObject {
             }
 
 
-        if (empty($this->_id) && !empty($this->id))
-            $this->_id = $this->id;
+        if (empty($values->_id) && !empty($this->id))
+            $values->_id = $this->id;
 
         $values->class = get_class($this);
 

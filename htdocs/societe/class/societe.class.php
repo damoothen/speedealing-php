@@ -274,25 +274,13 @@ class Societe extends nosqlDocument {
     }
 
     /**
-     *      Update parameters of third party
-     *
-     *      @param	int		$id              			id societe
-     *      @param  User	$user            			Utilisateur qui demande la mise a jour
-     *      @param  int		$call_trigger    			0=non, 1=oui
-     * 		@param	int		$allowmodcodeclient			Inclut modif code client et code compta
-     * 		@param	int		$allowmodcodefournisseur	Inclut modif code fournisseur et code compta fournisseur
-     * 		@param	string	$action						'create' or 'update'
-     *      @return int  			           			<0 if KO, >=0 if OK
+     *  Update GPS coordonnate
+     * 
      */
-    function update($id, $user = '', $call_trigger = 1, $allowmodcodeclient = 0, $allowmodcodefournisseur = 0, $action = 'update') {
-        global $langs, $conf;
-        require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
+    function updateGPS() {
+        global $conf;
 
-        $error = 0;
-
-        dol_syslog(get_class($this) . "::Update id=" . $id . " call_trigger=" . $call_trigger . " allowmodcodeclient=" . $allowmodcodeclient . " allowmodcodefournisseur=" . $allowmodcodefournisseur);
-
-        ### Calcul des coordonnées GPS
+        // Calcul des coordonnées GPS
         if ($conf->map->enabled) {
             //Retire le CEDEX de la ville :
             $town = strtolower($this->town);
@@ -302,7 +290,7 @@ class Societe extends nosqlDocument {
                 $town = substr($town, 0, $pos);
                 //print $town;exit;
             }
-            $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" . urlencode($_POST["adresse"] . "," . $_POST["zipcode"] . "," . $_POST["town"]);
+            $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" . urlencode($this->address . "," . $this->zip . "," . $this->town);
             $c = curl_init();
             curl_setopt($c, CURLOPT_URL, $apiUrl);
             curl_setopt($c, CURLOPT_HEADER, false);
@@ -318,6 +306,28 @@ class Societe extends nosqlDocument {
                 unset($this->gps);
             }
         }
+
+        return $this->gps;
+    }
+
+    /**
+     *      Update parameters of third party
+     *
+     *      @param	string		$id              			id societe
+     *      @param  User	$user            			Utilisateur qui demande la mise a jour
+     *      @param  int		$call_trigger    			0=non, 1=oui
+     *      @param	int		$allowmodcodeclient			Inclut modif code client et code compta
+     *      @param	int		$allowmodcodefournisseur	Inclut modif code fournisseur et code compta fournisseur
+     *      @param	string	$action						'create' or 'update'
+     *      @return int 		           			<0 if KO, >=0 if OK
+     */
+    function update($id, $user = '', $call_trigger = 1, $allowmodcodeclient = 0, $allowmodcodefournisseur = 0, $action = 'update') {
+        global $langs, $conf;
+        require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
+
+        $error = 0;
+
+        dol_syslog(get_class($this) . "::Update id=" . $id . " call_trigger=" . $call_trigger . " allowmodcodeclient=" . $allowmodcodeclient . " allowmodcodefournisseur=" . $allowmodcodefournisseur);
 
         $now = dol_now();
 
@@ -373,7 +383,7 @@ class Societe extends nosqlDocument {
             $this->get_codeclient($this->prefix_comm, 0);
         if ($this->code_fournisseur == -1)
             $this->get_codefournisseur($this->prefix_comm, 1);
-
+        
         $this->code_compta = trim($this->code_compta);
         $this->code_compta_fournisseur = trim($this->code_compta_fournisseur);
 
@@ -412,6 +422,9 @@ class Societe extends nosqlDocument {
 
             $supplier = true;
         }
+        
+        // Calcul des coordonnées GPS
+        $this->updateGPS();
 
         // Check name is required and codes are ok or unique.
         // If error, this->errors[] is filled
