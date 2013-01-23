@@ -681,7 +681,9 @@ class Commande extends nosqlDocument {
 
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
+        
         unset($this->socid);
+        
         if ($result < 0) {
             $this->error = "Failed to fetch company";
             dol_syslog("Commande::create " . $this->error, LOG_ERR);
@@ -882,6 +884,7 @@ class Commande extends nosqlDocument {
 
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
+        unset($this->socid);
         if ($result < 0) {
             $this->error = "Failed to fetch company";
             dol_syslog("Commande::update " . $this->error, LOG_ERR);

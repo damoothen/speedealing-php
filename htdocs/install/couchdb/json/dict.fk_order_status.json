@@ -1,0 +1,37 @@
+{
+   "_id": "dict:fk_order_status",
+   "_rev": "3-a9282a53a3997aa130dd4bdee438ba1b",
+   "values": {
+       "DRAFT": {
+           "enable": true,
+           "label": "StatusOrderDraft",
+           "cssClass": "grey-gradient"
+       },
+       "AUTO": {
+           "enable": false,
+           "label": "StatusOrderAuto",
+           "cssClass": "orange-gradient"
+       },
+       "VALIDATED": {
+           "enable": true,
+           "label": "StatusOrderValidated",
+           "cssClass": "red-gradient"
+       },
+       "TO_BILL": {
+           "enable": true,
+           "label": "StatusOrderToBill2",
+           "cssClass": "orange-gradient"
+       },
+       "PROCESSED": {
+           "enable": true,
+           "label": "StatusOrderProcessed",
+           "cssClass": "green-gradient"
+       },
+       "CANCELED": {
+           "enable": true,
+           "label": "StatusOrderCanceled",
+           "cssClass": "black-gradient"
+       }
+   },
+   "class": "dict"
+}

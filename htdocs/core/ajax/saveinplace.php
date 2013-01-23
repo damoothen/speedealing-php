@@ -22,7 +22,8 @@ if (!defined('NOREQUIREMENU'))
 //if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
 if (!defined('NOREQUIREAJAX'))
     define('NOREQUIREAJAX', '1');
-if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
+if (!defined('NOREQUIRESOC'))
+    define('NOREQUIRESOC', '1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 require '../../main.inc.php';
@@ -60,9 +61,9 @@ if (!empty($key) && !empty($id) && !empty($class)) {
     if (count($object->fk_extrafields->langs))
         foreach ($object->fk_extrafields->langs as $row)
             $langs->load($row);
-    
-    if($type=="select" && empty($value))
-        $value=""; // remove 0
+
+    if ($type == "select" && empty($value))
+        $value = ""; // remove 0
 
     if (isset($object->fk_extrafields->fields->$key->class) && $type == "select") {
         $class_tmp = $object->fk_extrafields->fields->$key->class;
@@ -79,11 +80,11 @@ if (!empty($key) && !empty($id) && !empty($class)) {
         }
     }
 
-    if ($type == "date") {
+    if ($type == "date" || $type == "datepicker") {
         $res = setlocale(LC_TIME, 'fr_FR.UTF8', 'fra');
         $value = str_replace("/", '-', $value); // 01/12/2012 -> 01-12-2012
         $value = strtotime($value);
-    }
+    }    
 
     try {
 
