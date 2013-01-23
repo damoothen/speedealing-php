@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'وتلقى كل شيء',
 		'StatusOrderCanceled' => 'ألغى',
 		'StatusOrderDraft' => 'مشروع (لا بد من التحقق من صحة)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'صادق',
 		'StatusOrderOnProcess' => 'على عملية',
 		'StatusOrderProcessed' => 'تجهيز',

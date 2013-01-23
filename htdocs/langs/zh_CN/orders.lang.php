@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => '一切都收到',
 		'StatusOrderCanceled' => '取消',
 		'StatusOrderDraft' => '草案（需要验证）',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => '验证',
 		'StatusOrderOnProcess' => '论过程',
 		'StatusOrderProcessed' => '加工',

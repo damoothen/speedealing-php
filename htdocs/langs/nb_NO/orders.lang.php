@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Fullt levert',
 		'StatusOrderCanceled' => 'Kansellert',
 		'StatusOrderDraft' => 'Kladd (trenger godkjenning)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Godkjent',
 		'StatusOrderOnProcess' => 'Under behandling',
 		'StatusOrderProcessed' => 'Behandlet',

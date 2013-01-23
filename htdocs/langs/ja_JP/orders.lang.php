@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'すべてが受信された',
 		'StatusOrderCanceled' => 'キャンセル',
 		'StatusOrderDraft' => 'ドラフト（検証する必要があります）',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => '検証',
 		'StatusOrderOnProcess' => '受け取るために待っている',
 		'StatusOrderProcessed' => '処理',

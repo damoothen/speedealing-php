@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Λήφθηκε πλήρως',
 		'StatusOrderCanceled' => 'Ακυρωμένη',
 		'StatusOrderDraft' => 'Προσχέδιο (χρειάζεται επικύρωση)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Επικυρωμένη',
 		'StatusOrderOnProcess' => 'Σε εξέλιξη',
 		'StatusOrderProcessed' => 'Ολοκληρωμένη',

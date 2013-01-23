@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Komplett erhalten',
 		'StatusOrderCanceled' => 'Storniert',
 		'StatusOrderDraft' => 'Entwurf (freizugeben)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Freigegeben',
 		'StatusOrderOnProcess' => 'Warten auf Empfang',
 		'StatusOrderProcessed' => 'Bearbeitet',

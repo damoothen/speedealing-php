@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Minden beérkezett',
 		'StatusOrderCanceled' => 'Törölve',
 		'StatusOrderDraft' => 'Tervezet (kell érvényesíteni)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Hitelesítette',
 		'StatusOrderOnProcess' => 'Várakozás kapni',
 		'StatusOrderProcessed' => 'Feldolgozott',

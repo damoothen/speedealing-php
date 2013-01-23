@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Kõike sai',
 		'StatusOrderCanceled' => 'Tühistatud',
 		'StatusOrderDraft' => 'Eelnõu (tuleb kinnitada)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Valideeritud',
 		'StatusOrderOnProcess' => 'Ootan, et saada',
 		'StatusOrderProcessed' => 'Töödeldud',

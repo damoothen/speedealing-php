@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'הכל קיבל',
 		'StatusOrderCanceled' => 'בוטלה',
 		'StatusOrderDraft' => 'טיוטה (צריך להיות מאומת)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'תוקף',
 		'StatusOrderOnProcess' => 'מחכה לקבל',
 		'StatusOrderProcessed' => 'מעובד',

@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Herşey alındı',
 		'StatusOrderCanceled' => 'İptal edilmiş',
 		'StatusOrderDraft' => 'Taslak (doğrulanması gerekir)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Doğrulanmış',
 		'StatusOrderOnProcess' => 'Alınmak için bekliyor',
 		'StatusOrderProcessed' => 'İşlenmiş',

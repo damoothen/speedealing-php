@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Rebuda',
 		'StatusOrderCanceled' => 'Anul-lada',
 		'StatusOrderDraft' => 'Esborrany (a validar)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Validada',
 		'StatusOrderOnProcess' => 'Pendent de rebre',
 		'StatusOrderProcessed' => 'Processada',

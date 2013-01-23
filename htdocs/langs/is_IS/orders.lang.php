@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Allt hlaut',
 		'StatusOrderCanceled' => 'Hætt við',
 		'StatusOrderDraft' => 'Víxill (þarf að vera staðfest)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Staðfestar',
 		'StatusOrderOnProcess' => 'Á ferli',
 		'StatusOrderProcessed' => 'Afgreitt',

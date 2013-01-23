@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Prejeto v celoti',
 		'StatusOrderCanceled' => 'Preklicano',
 		'StatusOrderDraft' => 'Osnutek (potrebno potrditi)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Potrjeno',
 		'StatusOrderOnProcess' => 'V obdelavi',
 		'StatusOrderProcessed' => 'Obdelano',

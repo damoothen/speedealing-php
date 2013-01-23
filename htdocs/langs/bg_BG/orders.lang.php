@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Всичко получи',
 		'StatusOrderCanceled' => 'Отменен',
 		'StatusOrderDraft' => 'Проект (трябва да бъдат валидирани)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Утвърден',
 		'StatusOrderOnProcess' => 'Очаквам да получа',
 		'StatusOrderProcessed' => 'Обработен',

@@ -58,6 +58,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Ontvangen',
 		'StatusOrderCanceled' => 'Geannuleerd',
 		'StatusOrderDraft' => 'Klad (moet gevalideerd worden)',
+		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
 		'StatusOrderValidated' => 'Gevalideerd',
 		'StatusOrderOnProcess' => 'In uitvoering',
 		'StatusOrderProcessed' => 'Afgehandeld',
