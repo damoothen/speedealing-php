@@ -52,7 +52,7 @@ class Contact extends nosqlDocument {
     var $email;
     var $birthday;
     var $default_lang;
-    var $note;                  // Private note
+    var $notes;                  // Private note
     var $no_email;    // 1=Don't send e-mail to this contact, 0=do
     var $ref_facturation;       // Nb de reference facture pour lequel il est contact
     var $ref_contrat;           // Nb de reference contrat pour lequel il est contact
