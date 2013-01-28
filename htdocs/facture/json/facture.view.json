@@ -1,5 +1,6 @@
 {
    "_id": "_design/Facture",
+   "_rev": "3-bdc8df241cb42a169fc484354b4891c7",
    "language": "javascript",
    "views": {
        "list": {
@@ -67,6 +68,9 @@
        },
        "listAvoirableInvoicesPerSociete": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && (doc.Status == \"NOT_PAID\" || doc.Status == \"STARTED\" || doc.Status == \"PAID\" || doc.Status == \"PAID_PARTIALLY\") && (doc.type != \"INVOICE_REPLACEMENT\" && doc.type != \"INVOICE_AVOIR\")) \n  emit(doc.client.id, doc);\n}"
+       },
+       "listBySociete": {
+           "map": "function(doc) {\nif (doc.class && doc.class == 'Facture')\n  emit(doc.client.id, doc);\n}"
        }
    },
    "updates": {

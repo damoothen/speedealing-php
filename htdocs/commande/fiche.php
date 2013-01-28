@@ -74,10 +74,9 @@ $title = $langs->trans('Order');
 $object = new Commande($db);
 $soc = new Societe($db);
 if (!empty($id)) {
-    $object->load($id);
+    $object->fetch($id);
     $object->fetch_thirdparty();
     $soc->load($object->client->id);
-    $object->getLinesArray();
 }
 
 //echo '<pre>' . print_r($object->getLinkedObject(), true) . '</pre>';die;
@@ -1381,7 +1380,6 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
     print '<table id="tablelines" class="noborder" width="100%">';
 
-    $object->getLinesArray();
     $nbLines = count($object->lines);
 
     // Show object lines

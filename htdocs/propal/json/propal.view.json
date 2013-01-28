@@ -1,5 +1,6 @@
 {
    "_id": "_design/Propal",
+   "_rev": "2-6b53507de1b1ed572b08f7d053568498",
    "language": "javascript",
    "views": {
        "list": {
@@ -32,9 +33,41 @@
        },
        "listByDate": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Propal\"){\nemit(doc.date, doc);\n}\n}"
+       },
+       "listBySociete": {
+           "map": "function(doc) {\nif (doc.class && doc.class == 'Propal')\n  emit(doc.client.id, doc);\n}"
        }
    },
    "updates": {
        "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
+   },
+   "fields": {
+       "Status": {
+           "enable": true
+       },
+       "cond_reglement_code": {
+           "enable": true
+       },
+       "mode_reglement_code": {
+           "enable": true
+       },
+       "availability_code": {
+           "enable": true
+       },
+       "demand_reason_code": {
+           "enable": true
+       },
+       "client": {
+           "enable": true
+       },
+       "ref_client": {
+           "enable": true
+       },
+       "date": {
+           "enable": true
+       },
+       "date_livraison": {
+           "enable": true
+       }
    }
 }
