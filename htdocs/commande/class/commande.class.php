@@ -92,7 +92,7 @@ class Commande extends nosqlDocument {
      */
     function __construct($db) {
         parent::__construct($db);
-        
+
         $this->no_save[] = 'thirdparty';
         $this->no_save[] = 'line';
         $this->no_save[] = 'lines';
@@ -160,61 +160,56 @@ class Commande extends nosqlDocument {
 
         $error = 0;
 
-        if ($this->Status == "DRAFT") {
+        if (!$user->rights->commande->valider) {
+            $this->error = 'Permission denied';
+            dol_syslog(get_class($this) . "::valid " . $this->error, LOG_ERR);
+            return -1;
+        }
 
-            if (!$user->rights->commande->valider) {
-                $this->error = 'Permission denied';
-                dol_syslog(get_class($this) . "::valid " . $this->error, LOG_ERR);
-                return -1;
-            }
+        $now = dol_now();
 
-            $now = dol_now();
+        // Definition du nom de module de numerotation de commande
+        $soc = new Societe($this->db);
+        $soc->load($this->client->id);
+        
+        $this->ref = $this->getNextNumRef($soc);
+        $this->Status = "VALIDATED";
+        $this->record();
 
-            $this->Status = "VALIDATED";
-            $this->record();
+        // Class of company linked to order
+        $result = $soc->set_as_client();
 
-            // Definition du nom de module de numerotation de commande
-            $soc = new Societe($this->db);
-            $soc->fetch($this->socid);
+        // If stock is incremented on validate order, we must increment it
+        if ($result >= 0 && !empty($conf->stock->enabled) && $conf->global->STOCK_CALCULATE_ON_VALIDATE_ORDER == 1) {
+            require_once DOL_DOCUMENT_ROOT . '/product/stock/class/mouvementstock.class.php';
+            $langs->load("agenda");
 
-            // Class of company linked to order
-            $result = $soc->set_as_client();
-
-            // If stock is incremented on validate order, we must increment it
-            if ($result >= 0 && !empty($conf->stock->enabled) && $conf->global->STOCK_CALCULATE_ON_VALIDATE_ORDER == 1) {
-                require_once DOL_DOCUMENT_ROOT . '/product/stock/class/mouvementstock.class.php';
-                $langs->load("agenda");
-
-                // Loop on each line
-                $cpt = count($this->lines);
-                for ($i = 0; $i < $cpt; $i++) {
-                    if ($this->lines[$i]->fk_product > 0) {
-                        $mouvP = new MouvementStock($this->db);
-                        // We decrement stock of product (and sub-products)
-                        $result = $mouvP->livraison($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderValidatedInSpeedealing", $num));
-                        if ($result < 0) {
-                            $error++;
-                        }
+            // Loop on each line
+            $cpt = count($this->lines);
+            for ($i = 0; $i < $cpt; $i++) {
+                if ($this->lines[$i]->fk_product > 0) {
+                    $mouvP = new MouvementStock($this->db);
+                    // We decrement stock of product (and sub-products)
+                    $result = $mouvP->livraison($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderValidatedInSpeedealing", $num));
+                    if ($result < 0) {
+                        $error++;
                     }
                 }
             }
-
-
-            // Appel des triggers
-            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-            $interface = new Interfaces($this->db);
-            $result = $interface->run_triggers('ORDER_VALIDATE', $this, $user, $langs, $conf);
-            if ($result < 0) {
-                $error++;
-                $this->errors = $interface->errors;
-            }
-            // Fin appel triggers
-
-            return 1;
         }
 
-        dol_syslog(get_class($this) . "::valid no draft status", LOG_WARNING);
-        return 0;
+
+        // Appel des triggers
+        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+        $interface = new Interfaces($this->db);
+        $result = $interface->run_triggers('ORDER_VALIDATE', $this, $user, $langs, $conf);
+        if ($result < 0) {
+            $error++;
+            $this->errors = $interface->errors;
+        }
+        // Fin appel triggers
+
+        return 1;
 
         // Protection
 //        if ($this->statut == 1)
@@ -681,9 +676,9 @@ class Commande extends nosqlDocument {
 
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
-        
+
         unset($this->socid);
-        
+
         if ($result < 0) {
             $this->error = "Failed to fetch company";
             dol_syslog("Commande::create " . $this->error, LOG_ERR);
@@ -700,7 +695,7 @@ class Commande extends nosqlDocument {
         $this->client->country_code = $soc->country_code;
         $this->client->email = $soc->email;
         $this->fetch_thirdparty();
-        
+
         // author
         $this->author = new stdClass();
         $this->author->id = $user->id;
@@ -1199,7 +1194,6 @@ class Commande extends nosqlDocument {
 //                $rangmax = $this->line_max($fk_parent_line);
 //                $rangtouse = $rangmax + 1;
 //            }
-
             // TODO A virer
             // Anciens indicateurs: $price, $remise (a ne plus utiliser)
             $price = $pu;
@@ -2832,8 +2826,8 @@ class Commande extends nosqlDocument {
 
     public function getExtraFieldLabel($field) {
         global $langs;
-        if (! empty($field) && ! empty($this->$field)) // for avoid error
-        	return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
+        if (!empty($field) && !empty($this->$field)) // for avoid error
+            return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
     }
 
     function update_price($exclspec = 0, $roundingadjust = -1, $nodatabaseupdate = 0) {
@@ -3182,15 +3176,15 @@ class Commande extends nosqlDocument {
             <?php
         }
     }
-    
-    public function getLinkedObject(){
-        
+
+    public function getLinkedObject() {
+
         $objects = array();
-        
+
         // Object stored in $this->linked_objects;
         foreach ($this->linked_objects as $obj) {
             switch ($obj->type) {
-                case 'propal': 
+                case 'propal':
                     $classname = 'Propal';
                     dol_include_once('propal/class/propal.class.php');
                     break;
@@ -3199,11 +3193,11 @@ class Commande extends nosqlDocument {
             $tmp->fetch($obj->id);
             $objects[$obj->type][] = $tmp;
         }
-        
+
         // Objects that refer current propal in their $linked_objects variable.
         $res = $this->getView('listLinkedObjects', array('key' => $this->id));
         if (count($res->rows) > 0) {
-            foreach( $res->rows as $r) {
+            foreach ($res->rows as $r) {
                 $classname = $r->value->class;
                 if ($classname == 'Facture')
                     require_once(DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php');
@@ -3212,66 +3206,63 @@ class Commande extends nosqlDocument {
                 $objects[strtolower($classname)][] = $obj;
             }
         }
-        
+
         return $objects;
-        
     }
-    
-    public function printLinkedObjects(){
-        
+
+    public function printLinkedObjects() {
+
         global $langs;
-        
+
         $objects = $this->getLinkedObject();
-        
+
         // Displaying linked propals
         if (isset($objects['propal'])) {
             $this->printLinkedObjectsType('propal', $objects['propal']);
         }
-        
+
         // Displaying linked invoices
         if (isset($objects['facture'])) {
             $this->printLinkedObjectsType('facture', $objects['facture']);
         }
-        
     }
-    
-    public function printLinkedObjectsType($type, $data){
-        
-        global $langs; 
-        
+
+    public function printLinkedObjectsType($type, $data) {
+
+        global $langs;
+
         $title = 'LinkedObjects';
         if ($type == 'propal')
             $title = 'LinkedProposals';
         else if ($type == 'facture')
             $title = 'LinkedInvoices';
 
-        
-            print start_box($langs->trans($title), "six", $this->fk_extrafields->ico, false);
-            print '<table id="tablelines" class="noborder" width="100%">';
-            print '<tr>';
-            print '<th align="left">' . $langs->trans('Ref') . '</th>';
-            print '<th align="left">' . $langs->trans('Date') . '</th>';
-            print '<th align="left">' . $langs->trans('PriceHT') . '</th>';
-            print '<th align="left">' . $langs->trans('Status') . '</th>';
-        print '</tr>';
-            foreach ($data as $p) {
-                print '<tr>';
-                print '<td>' . $p->getNomUrl(1) . '</td>';
-                print '<td>' . dol_print_date($p->date) . '</td>';
-                print '<td>' . price($p->total_ht) . '</td>';
-                print '<td>' . $p->getExtraFieldLabel('Status') . '</td>';
-                print '</tr>';
-            }
-            print '</table>';
-            print end_box();
 
+        print start_box($langs->trans($title), "six", $this->fk_extrafields->ico, false);
+        print '<table id="tablelines" class="noborder" width="100%">';
+        print '<tr>';
+        print '<th align="left">' . $langs->trans('Ref') . '</th>';
+        print '<th align="left">' . $langs->trans('Date') . '</th>';
+        print '<th align="left">' . $langs->trans('PriceHT') . '</th>';
+        print '<th align="left">' . $langs->trans('Status') . '</th>';
+        print '</tr>';
+        foreach ($data as $p) {
+            print '<tr>';
+            print '<td>' . $p->getNomUrl(1) . '</td>';
+            print '<td>' . dol_print_date($p->date) . '</td>';
+            print '<td>' . price($p->total_ht) . '</td>';
+            print '<td>' . $p->getExtraFieldLabel('Status') . '</td>';
+            print '</tr>';
+        }
+        print '</table>';
+        print end_box();
     }
-    
+
     public function showLinkedObjects() {
-        global $langs; 
-                
-         print start_box($langs->trans("LinkedObjects"), "six", $this->fk_extrafields->ico, false);
-           print '<table class="display dt_act" id="listlinkedobjects" >';
+        global $langs;
+
+        print start_box($langs->trans("LinkedObjects"), "six", $this->fk_extrafields->ico, false);
+        print '<table class="display dt_act" id="listlinkedobjects" >';
         // Ligne des titres
 
         print '<thead>';
@@ -3330,45 +3321,41 @@ class Commande extends nosqlDocument {
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listLinkedObjects&class=" . get_class($this) . "&key=" . $this->id;
         $this->datatablesCreate($obj, "listlinkedobjects", true);
         print end_box();
-        
-}
-    
-    public function addInPlace($obj){
-        
+    }
+
+    public function addInPlace($obj) {
+
         global $user;
-        
+
         // Converting date to timestamp
         $date = explode('/', $this->date);
         $this->date = $obj->date = dol_mktime(0, 0, 0, $date[1], $date[0], $date[2]);
-        
+
         // Generating next ref
         $this->ref = $obj->ref = $this->getNextNumRef();
-        
+
         // Setting author of propal
         $this->author = new stdClass();
         $this->author->id = $user->id;
         $this->author->name = $user->login;
-        
     }
 
-    public function deleteInPlace($obj){
-        
+    public function deleteInPlace($obj) {
+
         global $user;
-        
+
         // Delete lines of Commande
         $lines = $this->getView('linesPerCommande', array('key' => $this->id));
         foreach ($lines->rows as $l) {
             $this->deleteline($l->value->_id);
-        }      
-        
+        }
     }
-    
-    public function fetch_thirdparty(){
-        
+
+    public function fetch_thirdparty() {
+
         $thirdparty = new Societe($this->db);
         $thirdparty->fetch($this->client->id);
         $this->thirdparty = $thirdparty;
-        
     }
     
     

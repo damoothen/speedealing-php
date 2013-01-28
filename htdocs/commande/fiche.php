@@ -74,9 +74,9 @@ $title = $langs->trans('Order');
 $object = new Commande($db);
 $soc = new Societe($db);
 if (!empty($id)) {
-    $object->fetch($id);
+    $object->load($id);
     $object->fetch_thirdparty();
-    $soc->fetch($object->client->id);
+    $soc->load($object->client->id);
     $object->getLinesArray();
 }
 
@@ -662,8 +662,6 @@ else if ($action == 'confirm_modif' && $user->rights->commande->creer) {
         $mesgs = $object->errors;
 }
 
-
-
 // Reopen a closed order
 else if ($action == 'reopen' && $user->rights->commande->creer) {
     if ($object->Status == "TO_BILL" || $object->Status == "PROCESSED") {
@@ -1136,93 +1134,8 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 
     print '</form>';
     print end_box();
-}
-
-
-/* Default View */ else {
-
-    /*
-     * Boutons actions
-     */
-    if ($action != 'presend') {
-        if ($user->societe_id == 0 && $action <> 'editline') {
-            print '<div class="tabsAction">';
-
-            // Ship
-            $numshipping = 0;
-            if (!empty($conf->expedition->enabled)) {
-                $numshipping = $object->nb_expedition();
-
-                if ($object->statut > 0 && $object->statut < 3 && $object->getNbOfProductsLines() > 0) {
-                    if (($conf->expedition_bon->enabled && $user->rights->expedition->creer)
-                            || ($conf->livraison_bon->enabled && $user->rights->expedition->livraison->creer)) {
-                        if ($user->rights->expedition->creer) {
-                            print '<a class="butAction" href="' . DOL_URL_ROOT . '/expedition/shipment.php?id=' . $object->id . '">' . $langs->trans('ShipProduct') . '</a>';
-                        } else {
-                            print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotAllowed")) . '">' . $langs->trans('ShipProduct') . '</a>';
-                        }
-                    } else {
-                        $langs->load("errors");
-                        print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("ErrorModuleSetupNotComplete")) . '">' . $langs->trans('ShipProduct') . '</a>';
-                    }
-                }
-            }
-
-            // Delete order
-            if ($user->rights->commande->supprimer) {
-                if ($numshipping == 0) {
-                    print '<p class="button-height right">';
-                    print '<a class="button icon-cross" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . '</a>';
-                    print "</p>";
-                } else {
-                    print '<a class="butActionRefused" href="#" title="' . $langs->trans("ShippingExist") . '">' . $langs->trans("Delete") . '</a>';
-                }
-            }
-
-            // Clone
-//            if ($user->rights->commande->creer) {
-//                print '<p class="button-height right">';
-//                print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("ToClone") . '</a>';
-//                print "</p>";
-//            }
-            // Classify billed
-//            if ($object->Status == "TO_BILL" && $user->rights->commande->cloturer) {
-//                print '<p class="button-height right">';
-//                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans('ClassifyBilled') . '</a>';
-//                print "</p>";                
-//            }
-            // Create bill and Classify billed
-            if (!empty($conf->facture->enabled) /* && !in_array($object->Status, array("DRAFT", "CANCELED", "PROCESSED")) */) {
-                if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
-                    print '<p class="button-height right">';
-                    print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->client->id . '">' . $langs->trans("CreateBill") . '</a>';
-                    print "</p>";
-                }
-                if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
-                    print '<p class="button-height right">';
-                    print '<a class="button icon-drawer" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans("ClassifyBilled") . '</a>';
-                    print "</p>";
-                }
-            }
-
-            // Send
-//            if ($object->Status != "DRAFT" && $object->Status != "CANCELED") {
-            if ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->commande->order_advance->send)) {
-                print '<p class="button-height right">';
-                print '<a class="button icon-mail" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
-                print "</p>";
-            } else {
-                print '<p class="button-height right">';
-                print '<a class="button icon-mail" href="#">' . $langs->trans('SendByMail') . '</a>';
-                print "</p>";
-            }
-//            }
-
-            print '</div>';
-        }
-        print '<br>';
-    }
-
+} else {
+    /* Default View */
     print start_box($title, "twelve", $object->fk_extrafields->ico, false);
 
     dol_fiche_head();
@@ -1360,9 +1273,97 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     print '</tr>';
 
     print '</table>';
+
+    /*
+     * Boutons actions
+     */
+    if ($action != 'presend') {
+        if ($user->societe_id == 0 && $action <> 'editline') {
+            print '<div class="tabsAction">';
+            print '<div class="button-height">';
+            print '<span class="button-group">';
+
+            if ($user->rights->commande->creer) {
+                print '<a class="button icon-pencil" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n";
+            }
+
+            // Ship
+            $numshipping = 0;
+            if (!empty($conf->expedition->enabled)) {
+                $numshipping = $object->nb_expedition();
+
+                if ($object->statut > 0 && $object->statut < 3 && $object->getNbOfProductsLines() > 0) {
+                    if (($conf->expedition_bon->enabled && $user->rights->expedition->creer)
+                            || ($conf->livraison_bon->enabled && $user->rights->expedition->livraison->creer)) {
+                        if ($user->rights->expedition->creer) {
+                            print '<a class="butAction" href="' . DOL_URL_ROOT . '/expedition/shipment.php?id=' . $object->id . '">' . $langs->trans('ShipProduct') . '</a>';
+                        } else {
+                            print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotAllowed")) . '">' . $langs->trans('ShipProduct') . '</a>';
+                        }
+                    } else {
+                        $langs->load("errors");
+                        print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("ErrorModuleSetupNotComplete")) . '">' . $langs->trans('ShipProduct') . '</a>';
+                    }
+                }
+            }
+
+            // Validate
+            if (($object->Status == "DRAFT" || $object->Status == "AUTO") && $user->rights->commande->valider) {
+                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
+            }
+
+            // Clone
+//            if ($user->rights->commande->creer) {
+//                print '<p class="button-height right">';
+//                print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("ToClone") . '</a>';
+//                print "</p>";
+//            }
+            // Classify billed
+            if ($object->Status == "TO_BILL" && $user->rights->commande->cloturer) {
+                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans('ClassifyBilled') . '</a>';
+            }
+            // Create bill and Classify billed
+            if (!empty($conf->facture->enabled) && $object->Status == "TO_BILL") {
+                if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
+                    print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/facture/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->client->id . '">' . $langs->trans("CreateBill") . '</a>';
+                }
+                if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
+                    print '<a class="button icon-drawer" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans("ClassifyBilled") . '</a>';
+                }
+            }
+
+            // Send
+            if ($object->Status != "DRAFT" && $object->Status != "CANCELED") {
+                if ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->commande->order_advance->send)) {
+                    print '<a class="button icon-mail" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
+                } else {
+                    print '<a class="button icon-mail" href="#">' . $langs->trans('SendByMail') . '</a>';
+                }
+            }
+            // Delete order
+            if ($user->rights->commande->supprimer) {
+                if ($numshipping == 0) {
+                    print '<a class="button icon-trash red-gradient" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . '</a>';
+                } else {
+                    print '<a class="butActionRefused" href="#" title="' . $langs->trans("ShippingExist") . '">' . $langs->trans("Delete") . '</a>';
+                }
+            }
+
+            print "</span>";
+            print "</div>";
+            print '</div>';
+        }
+        //print '<br>';
+    }
+
+
     dol_fiche_end();
 
     print end_box();
+
+    // Print Notes
+    print $object->show_notes();
+
 
     if (!empty($conf->global->MAIN_DISABLE_CONTACTS_TAB)) {
         $blocname = 'contacts';
@@ -1377,7 +1378,6 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     }
 
     // Lines
-
     print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
     print '<table id="tablelines" class="noborder" width="100%">';
 

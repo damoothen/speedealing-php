@@ -778,7 +778,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print $object->zip;
         if ($object->zip)
             print '&nbsp;';
-        print $object->touwn . '</td></tr>';
+        print $object->town . '</td></tr>';
 
         // Country
         print '<tr><td>' . $langs->trans("Country") . '</td><td colspan="3">';
