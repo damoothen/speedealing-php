@@ -1,6 +1,6 @@
 {
    "_id": "_design/Commande",
-   "_rev": "5-93b7f00bdc0b2abd371b22846c7e44b0",
+   "_rev": "4-4b100754ce1b71106a7d47deabfa4fed",
    "language": "javascript",
    "views": {
        "list": {
@@ -9,12 +9,6 @@
        "count": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\")\n  emit(doc.ref, 1);\n}",
            "reduce": "function(keys, values){\nreturn sum(values);\n}"
-       },
-       "lines": {
-           "map": "function(doc) {\nif (doc.class && doc.class == \"OrderLine\")\n  emit(doc._id, doc);\n}"
-       },
-       "linesPerCommande": {
-           "map": "function(doc) {\nif (doc.class && doc.class == \"OrderLine\")\n  emit(doc.fk_commande, doc);\n}"
        },
        "count_status": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\")\n  emit(doc.Status, 1);\n}",
