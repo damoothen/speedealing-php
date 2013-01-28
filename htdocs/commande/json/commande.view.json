@@ -1,5 +1,6 @@
 {
    "_id": "_design/Commande",
+   "_rev": "5-93b7f00bdc0b2abd371b22846c7e44b0",
    "language": "javascript",
    "views": {
        "list": {
@@ -36,6 +37,9 @@
        "averageByDate": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nemit(doc.date, doc.total_ttc);\n}\n}",
            "reduce": "function(keys, values){\n\treturn sum(values)/values.length;\n}"
+       },
+       "listBySociete": {
+           "map": "function(doc) {\nif (doc.class && doc.class == 'Commande')\n  emit(doc.client.id, doc);\n}"
        }
    },
    "updates": {

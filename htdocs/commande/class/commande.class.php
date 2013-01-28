@@ -3371,6 +3371,76 @@ class Commande extends nosqlDocument {
         
     }
     
+    
+    public function show($id) {
+
+        global $langs;
+
+        require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
+        $commande = new Commande($this->db);
+
+        print start_box($langs->trans("Orders"), "six", $this->fk_extrafields->ico, false);
+        print '<table class="display dt_act" id="listcommandes" >';
+        // Ligne des titres
+
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "_id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Ref");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "ref";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->fnRender = $commande->datatablesFnRender("ref", "url");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Date');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "date";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $commande->datatablesFnRender("date", "date");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('PriceHT');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "total_ht";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $commande->datatablesFnRender("total_ht", "price");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Status');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "Status";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $commande->datatablesFnRender("Status", "status");
+
+        $i++;
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        print'</tbody>';
+        print "</table>";
+
+        $obj->iDisplayLength = $max;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listBySociete&class=" . get_class($this) . "&key=" . id;
+        $this->datatablesCreate($obj, "listcommandes", true);
+        print end_box();
+    }
+    
 }
 
 /**

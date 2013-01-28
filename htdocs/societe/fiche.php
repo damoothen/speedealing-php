@@ -1801,15 +1801,23 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         // Projects list
         $result = show_projects($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 
-        if ($conf->propal->enabled)
-            $object->showPropals();
+        if ($conf->propal->enabled) {
+            require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');
+            $propal = new Propal($db);
+            $propal->show($object->id);
+        }
 
-        if ($conf->commande->enabled)
-            $object->showCommandes();
+        if ($conf->commande->enabled) {
+            require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
+            $commande = new Commande($db);
+            $commande->show($object->id);
+        }
 
-        if ($conf->facture->enabled)
-            $object->showFactures();
-
+        if ($conf->facture->enabled) {
+            require_once(DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php');
+            $facture = new Facture($db);
+            $facture->show($object->id);
+        }
 
         print '</div></div>';
     }
