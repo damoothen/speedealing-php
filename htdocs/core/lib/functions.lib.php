@@ -826,10 +826,12 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
+
         
 // If date undefined or "", we return ""
     if (dol_strlen($time) == 0)
         return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
+
 
 
 
@@ -2709,6 +2711,7 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
             $nbofdectoround = $rounding;  // For admin info page
 
 
+
             
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
         if (dol_strlen($nbofdectoround))
@@ -3094,6 +3097,7 @@ function dol_mkdir($dir, $dataroot = '') {
             $ccdir .= $cdir[$i];
         if (preg_match("/^.:$/", $ccdir, $regs))
             continue; // Si chemin Windows incomplet, on poursuit par rep suivant
+
 
 
 

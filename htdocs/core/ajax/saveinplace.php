@@ -32,7 +32,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/genericobject.class.php';
 $class = GETPOST('element_class', 'alpha');
 $key = GETPOST('key', 'alpha');
 $id = GETPOST('id', 'alpha');
-$value = GETPOST('value', 'alpha');
+$value = GETPOST('value');
 $type = GETPOST('type', 'alpha', 2);
 
 $field = GETPOST('field', 'alpha', 2);
@@ -84,7 +84,12 @@ if (!empty($key) && !empty($id) && !empty($class)) {
         $res = setlocale(LC_TIME, 'fr_FR.UTF8', 'fra');
         $value = str_replace("/", '-', $value); // 01/12/2012 -> 01-12-2012
         $value = strtotime($value);
-    }    
+    }
+    
+    if($type == "wysiwyg") { // HTML Code
+        $value = str_replace ("\n","",$value);
+        $value = str_replace ("\t","",$value);
+    }
 
     try {
 

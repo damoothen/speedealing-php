@@ -3,6 +3,7 @@
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2007 Regis Houssin        <regis.houssin@capnetworks.com>
  * Copyright (C) 2008      Raphael Bertrand (Resultic) <raphael.bertrand@resultic.fr>
+ * Copyright (C) 2013      Herve Prot           <herve.prot@symeos.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +19,6 @@
  * or see http://www.gnu.org/
  */
 
-/**
- *	\file       htdocs/core/modules/facture/mod_facture_mercure.php
- *	\ingroup    facture
- *	\brief      File containing class for numbering module Mercure
- */
 require_once DOL_DOCUMENT_ROOT .'/core/modules/facture/modules_facture.php';
 
 
