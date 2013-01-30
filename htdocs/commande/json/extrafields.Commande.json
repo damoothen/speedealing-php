@@ -1,5 +1,6 @@
 {
    "_id": "extrafields:Commande",
+   "_rev": "20-cc57facfdf3991aaa8a7a51fb57d7af4",
    "class": "extrafields",
    "ico": "16-Document.png",
    "langs": [
@@ -22,33 +23,7 @@
                "bSearchable": true,
                "bVisible": true
            },
-           "values": {
-               "DRAFT": {
-                   "enable": true,
-                   "label": "StatusOrderDraft",
-                   "cssClass": "grey-gradient"
-               },
-               "VALIDATED": {
-                   "enable": true,
-                   "label": "StatusOrderValidated",
-                   "cssClass": "red-gradient"
-               },
-               "TO_BILL": {
-                   "enable": true,
-                   "label": "StatusOrderToBill2",
-                   "cssClass": "orange-gradient"
-               },
-               "PROCESSED": {
-                   "enable": true,
-                   "label": "StatusOrderProcessed",
-                   "cssClass": "green-gradient"
-               },
-               "CANCELED": {
-                   "enable": true,
-                   "label": "StatusOrderCanceled",
-                   "cssClass": "black-gradient"
-               }
-           }
+           "dict": "dict:fk_order_status"
        },
        "cond_reglement_code": {
            "type": "select",
@@ -115,6 +90,12 @@
            "type": "date",
            "enable": true,
            "label": "DateEnd"
+       },
+       "societe": {
+           "enable": true
+       },
+       "notes": {
+           "enable": true
        }
    }
 }
