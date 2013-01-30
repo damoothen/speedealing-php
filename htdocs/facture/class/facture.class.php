@@ -3584,6 +3584,75 @@ class Facture extends nosqlDocument {
         $this->thirdparty = $thirdparty;
         
     }
+    
+    public function show($id) {
+
+        global $langs;
+
+        require_once(DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php');
+        $facture = new Facture($this->db);
+
+        print start_box($langs->trans("Bills"), "six", $this->fk_extrafields->ico, false);
+        print '<table class="display dt_act" id="listfactures" >';
+        // Ligne des titres
+
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "_id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Ref");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "ref";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->fnRender = $facture->datatablesFnRender("ref", "url");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Date');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "date";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $facture->datatablesFnRender("date", "date");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('PriceHT');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "total_ht";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $facture->datatablesFnRender("total_ht", "price");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Status');
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "Status";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $facture->datatablesFnRender("Status", "status");
+
+        $i++;
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        print'</tbody>';
+        print "</table>";
+
+        $obj->iDisplayLength = $max;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listBySociete&class=" . get_class($this) . "&key=" . $id;
+        $this->datatablesCreate($obj, "listfactures", true);
+        print end_box();
+    }
 
 
 }
