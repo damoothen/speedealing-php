@@ -164,7 +164,7 @@ function restrictedArea($user, $features, $objectid = 0, $dbtablename = '', $fea
     if ($user->admin)
         return 1;
     //print $readok;
-    
+
     if (!$readok)
         accessforbidden();
     //print "Read access is ok";

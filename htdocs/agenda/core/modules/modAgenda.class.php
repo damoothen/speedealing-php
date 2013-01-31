@@ -108,7 +108,7 @@ class modAgenda extends DolibarrModules {
         $this->rights[$r]->id = 2402;
         $this->rights[$r]->desc = 'Create/modify actions/tasks linked to his account';
         $this->rights[$r]->default = 0;
-        $this->rights[$r]->perm = array('myactions', 'create');
+        $this->rights[$r]->perm = array('myactions', 'write');
         $r++;
 
         $this->rights[$r]->id = 2403;
@@ -126,7 +126,7 @@ class modAgenda extends DolibarrModules {
         $this->rights[$r]->id = 2412;
         $this->rights[$r]->desc = 'Create/modify actions/tasks of others';
         $this->rights[$r]->default = 0;
-        $this->rights[$r]->perm = array('allactions', 'create');
+        $this->rights[$r]->perm = array('allactions', 'write');
         $r++;
 
         $this->rights[$r]->id = 2413;
@@ -389,8 +389,8 @@ class modAgenda extends DolibarrModules {
         $this->export[$r]->icon = 'action';
         $this->export[$r]->permission = '$user->rights->agenda->allactions->read';
         $r++;
-        
-         // Imports
+
+        // Imports
         //--------
         $r = 0;
         // Import list of third parties and attributes
@@ -398,7 +398,6 @@ class modAgenda extends DolibarrModules {
         $this->import[$r]->label = 'ImportDataset_agenda';
         $this->import[$r]->icon = 'action';
         $r++;
-        
     }
 
     /**
