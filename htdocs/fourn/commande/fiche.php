@@ -69,8 +69,6 @@ if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'commande_fournisseur', $id,'');
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-$hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('ordersuppliercard'));
 
 $mesg='';
@@ -1771,7 +1769,7 @@ if ($id > 0 || ! empty($ref))
                     $outputlangs->setDefaultLang($newlang);
                 }
 
-                $result=supplier_order_pdf_create($db, $object, GETPOST('model')?GETPOST('model'):$object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                $result=supplier_order_pdf_create($db, $object, GETPOST('model')?GETPOST('model'):$object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
                 if ($result <= 0)
                 {
                     dol_print_error($db,$result);

@@ -109,15 +109,6 @@ if (!empty($conf->memcached->host) && class_exists('Memcached')) {
 }
 
 /*
- * Creation objet $langs (must be before all other code)
- */
-if (!defined('NOREQUIRETRAN')) {
-    if (!class_exists('Translate'))
-        require DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
-    $langs = new Translate('', $conf); // A mettre apres lecture de la conf
-}
-
-/*
  * Object $db
  */
 if (!defined('NOREQUIREDB')) {
@@ -154,6 +145,20 @@ if (!defined('NOREQUIREDB')) {
 
     $couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
     $couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
+}
+
+// Creation objet $langs (must be before all other code)
+if (!defined('NOREQUIRETRAN')) {
+	if (!class_exists('Translate'))
+		require DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
+	$langs = new Translate('', $conf); // A mettre apres lecture de la conf
+}
+
+// Create the global $hookmanager object
+if (!defined('NOREQUIREHOOK')) {
+	if (!class_exists('HookManager'))
+		require DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
+	$hookmanager = new HookManager($db); // TODO remove $db object
 }
 
 // Now database connexion is known, so we can forget password

@@ -26,16 +26,20 @@
 /**
  * 		Class to manage translations
  */
-class Translate {
+class Translate extends nosqlDocument {
 
-    var $dir;      // Directories that contains /langs subdirectory
-    var $defaultlang;    // Current language for current user
-    var $direction = 'ltr';   // Left to right or Right to left
-    var $charset_inputfile = array(); // To store charset encoding used for language
-    var $charset_output = 'UTF-8'; // Codage used by "trans" method outputs
-    var $tab_translate = array();  // Array of all translations key=>value
-    private $_tab_loaded = array(); // Array to store result after loading each language file
-    var $cache_labels = array();  // Cache for labels return by getLabelFromKey method
+    var $dir;							// Directories that contains /langs subdirectory
+
+    var $defaultlang;					// Current language for current user
+    var $direction = 'ltr';				// Left to right or Right to left
+    var $charset_inputfile = array();	// To store charset encoding used for language
+    var $charset_output = 'UTF-8';		// Codage used by "trans" method outputs
+
+    var $tab_translate = array();		// Array of all translations key=>value
+    private $_tab_loaded = array();		// Array to store result after loading each language file
+
+    var $cache_labels = array();		// Cache for labels return by getLabelFromKey method
+    var $cache_currencies = array();	// Cache to store currency symbols
 
     /**
      * 	Constructor
@@ -45,6 +49,8 @@ class Translate {
      */
 
     function __construct($dir, $conf) {
+    	//parent::__construct($db); // TODO for avoid error, find another method
+
         if (!empty($conf->file->character_set_client))
             $this->charset_output = $conf->file->character_set_client; // If charset output is forced
         if ($dir)
@@ -611,6 +617,80 @@ class Translate {
             dol_syslog(get_class($this) . '::getLabelFromKey error=' . $this->error, LOG_ERR);
             return -1;
         }
+    }
+
+    /**
+     *	Return a currency code into its symbol
+     *
+     *  @param	string	$amount				If not '', show currency + amount according to langs ($10, 10€).
+     *  @return	string						Amount + Currency symbol encoded into UTF8
+     */
+    function getCurrencyAmount($currency_code, $amount)
+    {
+    	$symbol=$this->getCurrencSymbol($currency_code);
+
+    	if (in_array($currency_code, array('USD'))) return $symbol.$amount;
+    	else return $amount.$symbol;
+    }
+
+    /**
+     *	Return a currency code into its symbol
+     *
+     *  @param	string	$currency_code		Currency code
+     *  @return	string						Currency symbol encoded into UTF8
+     */
+    function getCurrencySymbol($currency_code)
+    {
+    	$currency_sign = '';	// By default return iso code
+
+    	if (function_exists("mb_convert_encoding"))
+    	{
+    		$this->load_cache_currencies();
+    		if (isset($this->cache_currencies[$currency_code]) && !empty($this->cache_currencies[$currency_code]['unicode']) && is_array($this->cache_currencies[$currency_code]['unicode']))
+    		{
+    			foreach($this->cache_currencies[$currency_code]['unicode'] as $unicode)
+    			{
+    				$currency_sign .= mb_convert_encoding("&#{$unicode};", "UTF-8", 'HTML-ENTITIES');
+    			}
+    		}
+    	}
+
+    	return (!empty($currency_sign) ? $currency_sign : $currency_code);
+    }
+
+    /**
+     *  Load into the cache, all currencies
+     *
+     *  @return	int		Nb of loaded lines, 0 if already loaded, <0 if KO
+     */
+    function load_cache_currencies()
+    {
+    	if (!empty($this->cache_currencies)) return 0;    // Value already into cache
+
+    	try {
+    		parent::__construct($db); // TODO for avoid error, find another method
+    		$currencies = $this->couchdb->getDoc('dict:fk_currencies'); // load currencies
+    		if (!empty($currencies)) {
+
+    			$this->load("dict");
+    			$label=array();
+
+    			foreach($currencies->values as $isocode => $obj) {
+    				if ($obj->enable) {
+    					// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
+    					$this->cache_currencies[$isocode]['label'] = ($this->trans("Currency".$isocode)!="Currency".$isocode?$this->trans("Currency".$isocode):($obj->label!='-'?$obj->label:''));
+    					$this->cache_currencies[$isocode]['unicode'] = $obj->unicode;
+    					$label[$isocode] = $this->cache_currencies[$isocode]['label'];
+    				}
+    			}
+    			array_multisort($label, SORT_ASC, $this->cache_currencies);
+    		}
+
+    	}catch (Exception $e) {
+    		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+    		print $error;
+    		exit;
+    	}
     }
 
 }

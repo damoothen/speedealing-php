@@ -96,7 +96,7 @@ class pdf_azur extends ModelePDFPropales {
         if (!$this->emetteur->country_code)
             $this->emetteur->country_code = substr($langs->defaultlang, -2);    // By default, if was not defined
 
-            
+
 // Defini position des colonnes
         $this->posxdesc = $this->marge_gauche + 1;
         $this->posxtva = 111;
@@ -121,11 +121,10 @@ class pdf_azur extends ModelePDFPropales {
      *  @param		int			$hidedetails		Do not show line details
      *  @param		int			$hidedesc			Do not show desc
      *  @param		int			$hideref			Do not show ref
-     *  @param		object		$hookmanager		Hookmanager object
      *  @return     int             				1=OK, 0=KO
      */
-    function write_file($object, $outputlangs, $srctemplatepath = '', $hidedetails = 0, $hidedesc = 0, $hideref = 0, $hookmanager = false) {
-        global $user, $langs, $conf;
+    function write_file($object, $outputlangs, $srctemplatepath = '', $hidedetails = 0, $hidedesc = 0, $hideref = 0) {
+        global $user, $langs, $conf, $hookmanager;
 
         if (!is_object($outputlangs))
             $outputlangs = $langs;
@@ -208,7 +207,7 @@ class pdf_azur extends ModelePDFPropales {
                 if (!empty($tplidx))
                     $pdf->useTemplate($tplidx);
                 $pagenb++;
-                $this->_pagehead($pdf, $object, 1, $outputlangs, $hookmanager);
+                $this->_pagehead($pdf, $object, 1, $outputlangs);
                 $pdf->SetFont('', '', $default_font_size - 1);
                 $pdf->MultiCell(0, 3, '');  // Set interline to 3
                 $pdf->SetTextColor(0, 0, 0);
@@ -255,7 +254,7 @@ class pdf_azur extends ModelePDFPropales {
 
                     // Description of product line
                     $curX = $this->posxdesc - 1;
-                    pdf_writelinedesc($pdf, $object, $i, $outputlangs, $this->posxtva - $curX, 4, $curX, $curY, $hideref, $hidedesc, 0, $hookmanager);
+                    pdf_writelinedesc($pdf, $object, $i, $outputlangs, $this->posxtva - $curX, 4, $curX, $curY, $hideref, $hidedesc);
 
                     $nexY = $pdf->GetY();
                     $pageposafter = $pdf->getPage();
@@ -271,30 +270,30 @@ class pdf_azur extends ModelePDFPropales {
                     $pdf->SetFont('', '', $default_font_size - 1);   // On repositionne la police par defaut
                     // VAT Rate
                     if (empty($conf->global->MAIN_GENERATE_DOCUMENTS_WITHOUT_VAT)) {
-                        $vat_rate = pdf_getlinevatrate($object, $i, $outputlangs, $hidedetails, $hookmanager);
+                        $vat_rate = pdf_getlinevatrate($object, $i, $outputlangs, $hidedetails);
                         $pdf->SetXY($this->posxtva, $curY);
                         $pdf->MultiCell($this->posxup - $this->posxtva - 1, 4, $vat_rate, 0, 'R');
                     }
 
                     // Unit price before discount
-                    $up_excl_tax = pdf_getlineupexcltax($object, $i, $outputlangs, $hidedetails, $hookmanager);
+                    $up_excl_tax = pdf_getlineupexcltax($object, $i, $outputlangs, $hidedetails);
                     $pdf->SetXY($this->posxup, $curY);
                     $pdf->MultiCell($this->posxqty - $this->posxup - 1, 4, $up_excl_tax, 0, 'R', 0);
 
                     // Quantity
-                    $qty = pdf_getlineqty($object, $i, $outputlangs, $hidedetails, $hookmanager);
+                    $qty = pdf_getlineqty($object, $i, $outputlangs, $hidedetails);
                     $pdf->SetXY($this->posxqty, $curY);
                     $pdf->MultiCell($this->posxdiscount - $this->posxqty - 1, 4, $qty, 0, 'R');
 
                     // Discount on line
                     $pdf->SetXY($this->posxdiscount, $curY);
                     if ($object->lines[$i]->remise_percent) {
-                        $remise_percent = pdf_getlineremisepercent($object, $i, $outputlangs, $hidedetails, $hookmanager);
+                        $remise_percent = pdf_getlineremisepercent($object, $i, $outputlangs, $hidedetails);
                         $pdf->MultiCell($this->postotalht - $this->posxdiscount - 1, 4, $remise_percent, 0, 'R');
                     }
 
                     // Total HT line
-                    $total_excl_tax = pdf_getlinetotalexcltax($object, $i, $outputlangs, $hidedetails, $hookmanager);
+                    $total_excl_tax = pdf_getlinetotalexcltax($object, $i, $outputlangs, $hidedetails);
                     $pdf->SetXY($this->postotalht, $curY);
                     $pdf->MultiCell($this->page_largeur - $this->marge_droite - $this->postotalht, 4, $total_excl_tax, 0, 'R', 0);
 
@@ -340,7 +339,7 @@ class pdf_azur extends ModelePDFPropales {
                         $pdf->setPage($pagenb);
                         $pdf->setPageOrientation('', 1, 0); // The only function to edit the bottom margin of current page to set it.
                         if (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD))
-                            $this->_pagehead($pdf, $object, 0, $outputlangs, $hookmanager);
+                            $this->_pagehead($pdf, $object, 0, $outputlangs);
                     }
                     if (isset($object->lines[$i + 1]->pagebreak) && $object->lines[$i + 1]->pagebreak) {
                         if ($pagenb == 1) {
@@ -355,7 +354,7 @@ class pdf_azur extends ModelePDFPropales {
                             $pdf->useTemplate($tplidx);
                         $pagenb++;
                         if (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD))
-                            $this->_pagehead($pdf, $object, 0, $outputlangs, $hookmanager);
+                            $this->_pagehead($pdf, $object, 0, $outputlangs);
                     }
                 }
 
@@ -392,10 +391,6 @@ class pdf_azur extends ModelePDFPropales {
                 $pdf->Output($file, 'F');
 
                 //Add pdfgeneration hook
-                if (!is_object($hookmanager)) {
-                    include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-                    $hookmanager = new HookManager($this->db);
-                }
                 $hookmanager->initHooks(array('pdfgeneration'));
                 $parameters = array('file' => $file, 'object' => $object, 'outputlangs' => $outputlangs);
                 global $action;
@@ -429,7 +424,7 @@ class pdf_azur extends ModelePDFPropales {
      *  @return int             			<0 if KO, >0 if OK
      */
     function _tableau_versements(&$pdf, $object, $posy, $outputlangs) {
-        
+
     }
 
     /**
@@ -574,7 +569,7 @@ class pdf_azur extends ModelePDFPropales {
 
                     $curx = $this->marge_gauche;
                     $cury = $posy;
-                    
+
                     $posy = pdf_bank($pdf, $outputlangs, $curx, $cury, $account, 0, $default_font_size);
 
                     $posy+=2;
@@ -875,10 +870,9 @@ class pdf_azur extends ModelePDFPropales {
      *  @param  Object		$object     	Object to show
      *  @param  int	    	$showaddress    0=no, 1=yes
      *  @param  Translate	$outputlangs	Object lang for output
-     *  @param	object		$hookmanager	Hookmanager object
      *  @return	void
      */
-    function _pagehead(&$pdf, $object, $showaddress, $outputlangs, $hookmanager) {
+    function _pagehead(&$pdf, $object, $showaddress, $outputlangs) {
         global $conf, $langs;
 
         $outputlangs->load("main");
@@ -963,7 +957,7 @@ class pdf_azur extends ModelePDFPropales {
         $posy+=2;
 
         // Show list of linked objects
-        $posy = pdf_writeLinkedObjects($pdf, $object, $outputlangs, $posx, $posy, 100, 3, 'R', $default_font_size, $hookmanager);
+        $posy = pdf_writeLinkedObjects($pdf, $object, $outputlangs, $posx, $posy, 100, 3, 'R', $default_font_size);
 
         if ($showaddress) {
             // Sender properties

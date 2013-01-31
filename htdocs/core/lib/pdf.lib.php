@@ -719,11 +719,10 @@ function pdf_pagefoot(&$pdf, $outputlangs, $paramfreetext, $fromcompany, $marge_
  * 	@param	float		$h					Cell minimum height. The cell extends automatically if needed.
  * 	@param	int			$align				Align
  * 	@param	string		$default_font_size	Font size
- * 	@param	HookManager	$hookmanager		Hook manager object
  * 	@return	void
  */
-function pdf_writeLinkedObjects(&$pdf, $object, $outputlangs, $posx, $posy, $w, $h, $align, $default_font_size, $hookmanager = false) {
-    $linkedobjects = pdf_getLinkedObjects($object, $outputlangs, $hookmanager);
+function pdf_writeLinkedObjects(&$pdf, $object, $outputlangs, $posx, $posy, $w, $h, $align, $default_font_size) {
+    $linkedobjects = pdf_getLinkedObjects($object, $outputlangs);
     if (!empty($linkedobjects)) {
         foreach ($linkedobjects as $linkedobject) {
             $posy+=3;
@@ -756,13 +755,12 @@ function pdf_writeLinkedObjects(&$pdf, $object, $outputlangs, $posx, $posy, $w, 
  *  @param  int				$hideref       		Hide reference
  *  @param  int				$hidedesc            Hide description
  * 	@param	int				$issupplierline		Is it a line for a supplier object ?
- * 	@param	HookManager		$hookmanager		Instance of HookManager
  * 	@return	void
  */
-function pdf_writelinedesc(&$pdf, $object, $i, $outputlangs, $w, $h, $posx, $posy, $hideref = 0, $hidedesc = 0, $issupplierline = 0, $hookmanager = false) {
-    global $db, $conf, $langs;
+function pdf_writelinedesc(&$pdf, $object, $i, $outputlangs, $w, $h, $posx, $posy, $hideref = 0, $hidedesc = 0, $issupplierline = 0) {
+    global $db, $conf, $langs, $hookmanager;
 
-    if (is_object($hookmanager) && ( ($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+    if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) || !empty($object->lines[$i]->fk_parent_line)) {
         $special_code = $object->lines[$i]->special_code;
         if (!empty($object->lines[$i]->fk_parent_line))
             $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -910,11 +908,12 @@ function pdf_getlinedesc($object, $i, $outputlangs, $hideref = 0, $hidedesc = 0,
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlinenum($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
-    if (!empty($object->hooks) && ( ($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+function pdf_getlinenum($object, $i, $outputlangs, $hidedetails = 0) {
+	global $hookmanager;
+
+    if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
         $special_code = $object->lines[$i]->special_code;
         if (!empty($object->lines[$i]->fk_parent_line))
             $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -932,11 +931,12 @@ function pdf_getlinenum($object, $i, $outputlangs, $hidedetails = 0, $hookmanage
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlineref($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
-    if (!empty($object->hooks) && ( ($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+function pdf_getlineref($object, $i, $outputlangs, $hidedetails = 0) {
+	global $hookmanager;
+
+    if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
         $special_code = $object->lines[$i]->special_code;
         if (!empty($object->lines[$i]->fk_parent_line))
             $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -954,11 +954,12 @@ function pdf_getlineref($object, $i, $outputlangs, $hidedetails = 0, $hookmanage
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlineref_supplier($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
-    if (!empty($object->hooks) && ( ($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+function pdf_getlineref_supplier($object, $i, $outputlangs, $hidedetails = 0) {
+	global $hookmanager;
+
+    if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
         $special_code = $object->lines[$i]->special_code;
         if (!empty($object->lines[$i]->fk_parent_line))
             $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -976,11 +977,12 @@ function pdf_getlineref_supplier($object, $i, $outputlangs, $hidedetails = 0, $h
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlinevatrate($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
-    if (is_object($hookmanager) && ( ($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+function pdf_getlinevatrate($object, $i, $outputlangs, $hidedetails = 0) {
+	global $hookmanager;
+
+    if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
         $special_code = $object->lines[$i]->special_code;
         if (!empty($object->lines[$i]->fk_parent_line))
             $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1001,17 +1003,16 @@ function pdf_getlinevatrate($object, $i, $outputlangs, $hidedetails = 0, $hookma
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlineupexcltax($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
-    global $conf;
+function pdf_getlineupexcltax($object, $i, $outputlangs, $hidedetails = 0) {
+    global $conf, $hookmanager;
 
     $sign = 1;
     if (isset($object->type) && $object->type == 2 && !empty($conf->global->INVOICE_POSITIVE_CREDIT_NOTE))
         $sign = -1;
 
-    if (is_object($hookmanager) && (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line))) {
+    if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
         $special_code = $object->lines[$i]->special_code;
         if (!empty($object->lines[$i]->fk_parent_line))
             $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1035,14 +1036,15 @@ function pdf_getlineupexcltax($object, $i, $outputlangs, $hidedetails = 0, $hook
  *  @return	void
  */
 function pdf_getlineupwithtax($object, $i, $outputlangs, $hidedetails = 0) {
-    if (!empty($object->hooks) && (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line))) {
+	global $hookmanager;
+
+    if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
         $special_code = $object->lines[$i]->special_code;
         if (!empty($object->lines[$i]->fk_parent_line))
             $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
-        foreach ($object->hooks as $modules) {
-            if (method_exists($modules[$special_code], 'pdf_getlineupwithtax'))
-                return $modules[$special_code]->pdf_getlineupwithtax($object, $i, $outputlangs, $hidedetails);
-        }
+        $parameters = array('i' => $i, 'outputlangs' => $outputlangs, 'hidedetails' => $hidedetails, 'special_code' => $special_code);
+        $action = '';
+        return $hookmanager->executeHooks('pdf_getlineupwithtax', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
     }
     else {
         if (empty($hidedetails) || $hidedetails > 1)
@@ -1057,12 +1059,13 @@ function pdf_getlineupwithtax($object, $i, $outputlangs, $hidedetails = 0) {
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  *  @return	void
  */
-function pdf_getlineqty($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
+function pdf_getlineqty($object, $i, $outputlangs, $hidedetails = 0) {
+	global $hookmanager;
+
     if ($object->lines[$i]->special_code != 3) {
-        if (is_object($hookmanager) && (( $object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+        if (( $object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
             $special_code = $object->lines[$i]->special_code;
             if (!empty($object->lines[$i]->fk_parent_line))
                 $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1084,12 +1087,13 @@ function pdf_getlineqty($object, $i, $outputlangs, $hidedetails = 0, $hookmanage
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlineqty_asked($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
+function pdf_getlineqty_asked($object, $i, $outputlangs, $hidedetails = 0) {
+	global $hookmanager;
+
     if ($object->lines[$i]->special_code != 3) {
-        if (is_object($hookmanager) && (( $object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+        if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
             $special_code = $object->lines[$i]->special_code;
             if (!empty($object->lines[$i]->fk_parent_line))
                 $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1111,12 +1115,13 @@ function pdf_getlineqty_asked($object, $i, $outputlangs, $hidedetails = 0, $hook
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlineqty_shipped($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
+function pdf_getlineqty_shipped($object, $i, $outputlangs, $hidedetails = 0) {
+	global $hookmanager;
+
     if ($object->lines[$i]->special_code != 3) {
-        if (is_object($hookmanager) && (( $object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+        if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
             $special_code = $object->lines[$i]->special_code;
             if (!empty($object->lines[$i]->fk_parent_line))
                 $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1138,12 +1143,13 @@ function pdf_getlineqty_shipped($object, $i, $outputlangs, $hidedetails = 0, $ho
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlineqty_keeptoship($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
+function pdf_getlineqty_keeptoship($object, $i, $outputlangs, $hidedetails = 0) {
+	global $hookmanager;
+
     if ($object->lines[$i]->special_code != 3) {
-        if (is_object($hookmanager) && (( $object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+        if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
             $special_code = $object->lines[$i]->special_code;
             if (!empty($object->lines[$i]->fk_parent_line))
                 $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1165,14 +1171,15 @@ function pdf_getlineqty_keeptoship($object, $i, $outputlangs, $hidedetails = 0, 
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlineremisepercent($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
+function pdf_getlineremisepercent($object, $i, $outputlangs, $hidedetails = 0) {
     include_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
 
+    global $hookmanager;
+
     if ($object->lines[$i]->special_code != 3) {
-        if (is_object($hookmanager) && ( ($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+        if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
             $special_code = $object->lines[$i]->special_code;
             if (!empty($object->lines[$i]->fk_parent_line))
                 $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1194,11 +1201,10 @@ function pdf_getlineremisepercent($object, $i, $outputlangs, $hidedetails = 0, $
  * 	@param	int			$i					Current line number
  *  @param  Translate	$outputlangs		Object langs for output
  *  @param	int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getlinetotalexcltax($object, $i, $outputlangs, $hidedetails = 0, $hookmanager = false) {
-    global $conf;
+function pdf_getlinetotalexcltax($object, $i, $outputlangs, $hidedetails = 0) {
+    global $conf, $hookmanager;
 
     $sign = 1;
     if (isset($object->type) && $object->type == 2 && !empty($conf->global->INVOICE_POSITIVE_CREDIT_NOTE))
@@ -1207,7 +1213,7 @@ function pdf_getlinetotalexcltax($object, $i, $outputlangs, $hidedetails = 0, $h
     if ($object->lines[$i]->special_code == 3) {
         return $outputlangs->transnoentities("Option");
     } else {
-        if (is_object($hookmanager) && (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line))) {
+        if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
             $special_code = $object->lines[$i]->special_code;
             if (!empty($object->lines[$i]->fk_parent_line))
                 $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1232,22 +1238,22 @@ function pdf_getlinetotalexcltax($object, $i, $outputlangs, $hidedetails = 0, $h
  *  @return	void
  */
 function pdf_getlinetotalwithtax($object, $i, $outputlangs, $hidedetails = 0) {
+	global $hookmanager;
+
     if ($object->lines[$i]->special_code == 3) {
         return $outputlangs->transnoentities("Option");
     } else {
-        if (!empty($object->hooks) && (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line))) {
+        if (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
             $special_code = $object->lines[$i]->special_code;
             if (!empty($object->lines[$i]->fk_parent_line))
                 $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
-            foreach ($object->hooks as $modules) {
-                if (method_exists($modules[$special_code], 'pdf_getlinetotalwithtax'))
-                    return $modules[$special_code]->pdf_getlinetotalwithtax($object, $i, $outputlangs, $hidedetails);
-            }
+            $parameters = array('i' => $i, 'outputlangs' => $outputlangs, 'hidedetails' => $hidedetails, 'special_code' => $special_code);
+            $action = '';
+            return $hookmanager->executeHooks('pdf_getlinetotalwithtax', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
         }
         else {
             if (empty($hidedetails) || $hidedetails > 1)
-                return
-                        price(($object->lines[$i]->total_ht) + ($object->lines[$i]->total_ht) * ($object->lines[$i]->tva_tx) / 100);
+                return price(($object->lines[$i]->total_ht) + ($object->lines[$i]->total_ht) * ($object->lines[$i]->tva_tx) / 100);
         }
     }
 }
@@ -1258,10 +1264,11 @@ function pdf_getlinetotalwithtax($object, $i, $outputlangs, $hidedetails = 0) {
  * 	@param	Object		$object				Object
  * 	@param	string		$type				Type
  *  @param  Translate	$outputlangs		Object langs for output
- *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getTotalQty($object, $type, $outputlangs, $hookmanager = false) {
+function pdf_getTotalQty($object, $type, $outputlangs) {
+	global $hookmanager;
+
     $total = 0;
     $nblignes = count($object->lines);
 
@@ -1270,7 +1277,7 @@ function pdf_getTotalQty($object, $type, $outputlangs, $hookmanager = false) {
         if ($object->lines[$i]->special_code != 3) {
             if ($type == 'all') {
                 $total += $object->lines[$i]->qty;
-            } else if ($type == 9 && !empty($object->hooks) && ( ($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || !empty($object->lines[$i]->fk_parent_line) )) {
+            } else if ($type == 9 && (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || !empty($object->lines[$i]->fk_parent_line)) {
                 $special_code = $object->lines[$i]->special_code;
                 if (!empty($object->lines[$i]->fk_parent_line))
                     $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1288,42 +1295,15 @@ function pdf_getTotalQty($object, $type, $outputlangs, $hookmanager = false) {
 }
 
 /**
- * 	Convert a currency code into its symbol
- *
- *  @param      PDF		&$pdf          		PDF object
- *  @param		string	$currency_code		Currency code
- *  @return		string						Currency symbol encoded into UTF8
- */
-function pdf_getCurrencySymbol(&$pdf, $currency_code) {
-    global $db, $form;
-
-    $currency_sign = '';
-
-    if (!is_object($form))
-        $form = new Form($db);
-
-    $form->load_cache_currencies();
-
-    if (is_array($form->cache_currencies[$currency_code]['unicode']) && !empty($form->cache_currencies[$currency_code]['unicode'])) {
-        foreach ($form->cache_currencies[$currency_code]['unicode'] as $unicode) {
-            $currency_sign.= $pdf->unichr($unicode);
-        }
-    } else {
-        $currency_sign = $currency_code;
-    }
-
-    return $currency_sign;
-}
-
-/**
  * 	Return linked objects
  *
  * 	@param	object		$object			Object
  * 	@param	Translate	$outputlangs	Object lang for output
- * 	@param	HookManager	$hookmanager	Hook manager instance
  * 	@return	void
  */
-function pdf_getLinkedObjects($object, $outputlangs, $hookmanager = false) {
+function pdf_getLinkedObjects($object, $outputlangs) {
+	global $hookmanager;
+
     $linkedobjects = array();
 
 //	$object->fetchObjectLinked();

@@ -96,8 +96,6 @@ $usehm=(! empty($conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE)?$conf->global->MA
 $object=new Facture($db);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-$hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('invoicecard'));
 
 $now=dol_now();
@@ -371,13 +369,13 @@ if ($resql)
             print $thirdparty->getNomUrl(1,'customer');
             print '</td>';
 
-            print '<td align="right">'.price($objp->total_ht).' '.getCurrencySymbol($conf->currency).'</td>';
+            print '<td align="right">'.price($objp->total_ht).' '.$langs->getCurrencySymbol($conf->currency).'</td>';
 
-            print '<td align="right">'.price($objp->total_tva).' '.getCurrencySymbol($conf->currency).'</td>';
+            print '<td align="right">'.price($objp->total_tva).' '.$langs->getCurrencySymbol($conf->currency).'</td>';
 
-            print '<td align="right">'.price($objp->total_ttc).' '.getCurrencySymbol($conf->currency).'</td>';
+            print '<td align="right">'.price($objp->total_ttc).' '.$langs->getCurrencySymbol($conf->currency).'</td>';
 
-            print '<td align="right">'.(! empty($paiement)?price($paiement).' '.getCurrencySymbol($conf->currency):'&nbsp;').'</td>';
+            print '<td align="right">'.(! empty($paiement)?price($paiement).' '.$langs->getCurrencySymbol($conf->currency):'&nbsp;').'</td>';
 
             // Affiche statut de la facture
             print '<td align="right" nowrap="nowrap">';
@@ -397,10 +395,10 @@ if ($resql)
             // Print total
             print '<tr class="liste_total">';
             print '<td class="liste_total" colspan="4" align="left">'.$langs->trans('Total').'</td>';
-            print '<td class="liste_total" align="right">'.price($total_ht).' '.getCurrencySymbol($conf->currency).'</td>';
-            print '<td class="liste_total" align="right">'.price($total_tva).' '.getCurrencySymbol($conf->currency).'</td>';
-            print '<td class="liste_total" align="right">'.price($total_ttc).' '.getCurrencySymbol($conf->currency).'</td>';
-            print '<td class="liste_total" align="right">'.price($totalrecu).' '.getCurrencySymbol($conf->currency).'</td>';
+            print '<td class="liste_total" align="right">'.price($total_ht).' '.$langs->getCurrencySymbol($conf->currency).'</td>';
+            print '<td class="liste_total" align="right">'.price($total_tva).' '.$langs->getCurrencySymbol($conf->currency).'</td>';
+            print '<td class="liste_total" align="right">'.price($total_ttc).' '.$langs->getCurrencySymbol($conf->currency).'</td>';
+            print '<td class="liste_total" align="right">'.price($totalrecu).' '.$langs->getCurrencySymbol($conf->currency).'</td>';
             print '<td class="liste_total" align="center">&nbsp;</td>';
             print '</tr>';
         }

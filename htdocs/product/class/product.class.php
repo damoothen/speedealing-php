@@ -315,7 +315,7 @@ class Product extends nosqlDocument {
      * 	@return int         		1 if OK, -1 if ref already exists, -2 if other error
      */
     function update($id, $user, $notrigger = false) {
-        global $langs, $conf;
+        global $langs, $conf, $hookmanager;
 
         $error = 0;
 
@@ -374,8 +374,6 @@ class Product extends nosqlDocument {
             }
 
             // Actions on extra fields (by external module or standard code)
-            include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-            $hookmanager = new HookManager($this->db);
             $hookmanager->initHooks(array('productdao'));
             $parameters = array('id' => $this->id);
             $reshook = $hookmanager->executeHooks('insertExtraFields', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks

@@ -146,10 +146,9 @@ abstract class ModeleContract extends CommonDocGenerator
  *  @param      int			$hidedetails    Hide details of lines
  *  @param      int			$hidedesc       Hide description
  *  @param      int			$hideref        Hide ref
- *  @param      HookManager	$hookmanager	Hook manager instance
  *	@return  	int        					<0 if KO, >0 if OK
  */
-function contrat_pdf_create($db, $object, $message, $modele, $outputlangs, $hidedetails=0, $hidedesc=0, $hideref=0, $hookmanager=false)
+function contrat_pdf_create($db, $object, $message, $modele, $outputlangs, $hidedetails=0, $hidedesc=0, $hideref=0)
 {
 	global $conf,$user,$langs;
 
@@ -177,10 +176,10 @@ function contrat_pdf_create($db, $object, $message, $modele, $outputlangs, $hide
 	foreach(array('doc','pdf') as $prefix)
 	{
         $file = $prefix."_".$modele.".modules.php";
-        
+
         // On verifie l'emplacement du modele
         $file = dol_buildpath($dir.'doc/'.$file);
-        
+
         if (file_exists($file))
 	    {
 	        $filefound=1;
@@ -200,7 +199,7 @@ function contrat_pdf_create($db, $object, $message, $modele, $outputlangs, $hide
 		// We save charset_output to restore it because write_file can change it if needed for
 		// output format that does not support UTF8.
 		$sav_charset_output=$outputlangs->charset_output;
-		if ($obj->write_file($object, $outputlangs, $srctemplatepath, $hidedetails, $hidedesc, $hideref, $hookmanager) > 0)
+		if ($obj->write_file($object, $outputlangs, $srctemplatepath, $hidedetails, $hidedesc, $hideref) > 0)
 		{
 			// Success in building document. We build meta file.
 			//facture_meta_create($db, $object->id);

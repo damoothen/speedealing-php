@@ -67,8 +67,6 @@ $pageprev = $page - 1;
 $pagenext = $page + 1;
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
-$hookmanager = new HookManager($db);
 $hookmanager->initHooks(array('admin'));
 
 // This page is a generic page to edit dictionnaries
@@ -994,7 +992,7 @@ if ($id) {
                             } else if ($fieldlist[$field] == 'region_id' || $fieldlist[$field] == 'pays_id') {
                                 $showfield = 0;
                             } else if ($fieldlist[$field] == 'unicode') {
-                                $valuetoshow = getCurrencySymbol($obj->code);
+                                $valuetoshow = $langs->getCurrencySymbol($obj->code);
                             }
                             if ($showfield)
                                 print '<td>' . $valuetoshow . '</td>';

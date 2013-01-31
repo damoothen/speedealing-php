@@ -59,8 +59,6 @@ $result=restrictedArea($user,'contrat',$id);
 $usehm=(! empty($conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE)?$conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE:0);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-$hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('contractcard'));
 
 $object = new Contrat($db);
@@ -618,7 +616,7 @@ if (GETPOST('action') == 'builddoc')	// En get ou en post
         $outputlangs = new Translate("",$conf);
         $outputlangs->setDefaultLang($newlang);
     }
-    $result=contrat_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+    $result=contrat_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'));
     if ($result <= 0)
     {
         dol_print_error($db,$result);
@@ -1569,7 +1567,7 @@ else
         $genallowed=$user->rights->contrat->creer;
         $delallowed=$user->rights->contrat->supprimer;
 
-        $somethingshown=$formfile->show_documents('contract',$filename,$filedir,$urlsource,$genallowed,$delallowed,$object->modelpdf,1,0,0,28,0,'','','',$soc->default_lang,$hookmanager);
+        $somethingshown=$formfile->show_documents('contract',$filename,$filedir,$urlsource,$genallowed,$delallowed,$object->modelpdf,1,0,0,28,0,'','','',$soc->default_lang);
 
         /*
          * Linked object block

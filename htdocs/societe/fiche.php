@@ -71,8 +71,6 @@ if (!empty($canvas)) {
 $result = restrictedArea($user, 'societe', $socid, '&societe', '', 'fk_soc', 'rowid', $objcanvas);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-$hookmanager = new HookManager($db);
 $hookmanager->initHooks(array('thirdpartycard'));
 
 
@@ -1762,13 +1760,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print $object->show_notes();
 
         if ($conf->ecm->enabled) {
-
-            //print '<table width="100%"><tr><td valign="top" width="50%">';
-            //print '<a name="builddoc"></a>'; // ancre
-
-            /*
-             * Documents generes
-             */
+            // Generated documents
             $filedir = $conf->societe->multidir_output[$object->entity] . '/' . $object->id;
             $urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
             $genallowed = $user->rights->societe->creer;
@@ -1776,12 +1768,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             $var = true;
 
-            $somethingshown = $formfile->show_documents('company', $object->id, $filedir, $urlsource, $genallowed, $delallowed, '', 0, 0, 0, 28, 0, '', 0, '', $object->default_lang, $hookmanager);
-
-            //print '</td>';
-            //print '<td></td>';
-            //print '</tr>';
-            //print '</table>';
+            $somethingshown = $formfile->show_documents('company', $object->id, $filedir, $urlsource, $genallowed, $delallowed, '', 0, 0, 0, 28, 0, '', 0, '', $object->default_lang);
         }
 
         // Subsidiaries list
@@ -1791,15 +1778,25 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         //$result = show_contacts($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
         // Show actions
 
+        // TODO use hookmanager for show box of anothers modules for avoid multiple declarations
+
+        // Other attributes
+        $parameters = array();
+        $reshook = $hookmanager->executeHooks('show', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
+
+
         if ($conf->agenda->enabled) {
             $cal = new Agenda($db);
-            $cal->show(25, $object->id);
+            $cal->show($object->id, 25);
         }
 
         // Addresses list
+        // TODO replace with show method
         //$result = show_addresses($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+
         // Projects list
-        $result = show_projects($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+        // TODO replace with show method
+        //$result = show_projects($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 
         if ($conf->propal->enabled) {
             require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');

@@ -573,10 +573,10 @@ class Form {
      */
     function select_remises($selected, $htmlname, $filter, $socid, $maxvalue = 0) {
         global $langs, $conf,$db;
-      
+
         $discount = new DiscountAbsolute($db);
         $result = $discount->getView('listAvailableDiscountsPerSociete', array('key' => $socid));
-        
+
         // On recherche les remises
 //        $sql = "SELECT re.rowid, re.amount_ht, re.amount_tva, re.amount_ttc,";
 //        $sql.= " re.description, re.fk_facture_source";
@@ -1042,8 +1042,8 @@ class Form {
             dol_print_error($db);
         }
     }
-    
-    
+
+
     /**
      * 	Return list of products for a customer
      *
@@ -1064,7 +1064,7 @@ class Form {
         require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
         $object = new Product($db);
         $result = $object->getView('list', array('startkey' => $filterkey, 'endkey' => $filterkey . 'Z'));
-        
+
 //        $sql = "SELECT ";
 //        $sql.= " p.rowid, p.label, p.ref, p.description, p.fk_product_type, p.price, p.price_ttc, p.price_base_type, p.tva_tx, p.duration, p.stock";
 //        // Multilang : we add translation
@@ -2425,7 +2425,7 @@ class Form {
 
         $langs->load("dict");
 
-        $this->load_cache_currencies();
+        $langs->load_cache_currencies();
 
         $out = '';
 
@@ -2433,14 +2433,14 @@ class Form {
             $selected = 'EUR';   // Pour compatibilite
 
         $out.= '<select class="flat" name="' . $htmlname . '">';
-        foreach ($this->cache_currencies as $code_iso => $currency) {
+        foreach ($langs->cache_currencies as $code_iso => $currency) {
             if ($selected && $selected == $code_iso) {
                 $out.= '<option value="' . $code_iso . '" selected="selected">';
             } else {
                 $out.= '<option value="' . $code_iso . '">';
             }
             $out.= $currency['label'];
-            $out.= ' (' . getCurrencySymbol($code_iso) . ')';
+            $out.= ' (' . $langs->getCurrencySymbol($code_iso) . ')';
             $out.= '</option>';
         }
         $out.= '</select>';

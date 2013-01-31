@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2010-2011 Laurent Destailleur <ely@users.sourceforge.net>
  * Copyright (C) 2010-2011 Herve Prot          <herve.prot@symeos.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -163,7 +163,7 @@ class doc_generic_contract_odt extends ModeleContract
 	 */
 	function write_file($object,$outputlangs,$srctemplatepath)
 	{
-		global $user,$langs,$conf,$mysoc;
+		global $user, $langs, $conf, $mysoc, $hookmanager;
 
 		if (empty($srctemplatepath))
 		{
@@ -184,7 +184,7 @@ class doc_generic_contract_odt extends ModeleContract
 		{
                         $soc = new Societe($this->db);
 			$soc->fetch($object->socid);
-                    
+
 			$dir = $conf->contrat->dir_output;
 			$objectref = dol_sanitizeFileName($object->ref);
 			if (! preg_match('/specimen/i',$objectref)) $dir.= "/" . $objectref;
@@ -212,7 +212,7 @@ class doc_generic_contract_odt extends ModeleContract
 				//print "conf->societe->dir_temp=".$conf->societe->dir_temp;
 
 				create_exdir($conf->contrat->dir_temp);
-                                
+
                                 // If BILLING contact defined on invoice, we use it
                 $usecontact=false;
                 $arrayidcontact=$object->getIdContact('external','SALESREPSIGN');
@@ -233,7 +233,7 @@ class doc_generic_contract_odt extends ModeleContract
                 {
                     $socobject=$soc->client;
                 }
-                
+
                 // Make substitution
                 $substitutionarray=array(
                     '__FROM_NAME__' => $this->emetteur->nom,
@@ -244,8 +244,8 @@ class doc_generic_contract_odt extends ModeleContract
                     'date' => dol_print_date($object->date_contrat,"%d %b %Y")
                 );
                 complete_substitutions_array($substitutionarray, $langs, $object);
-                
-                	
+
+
 
 				// Open and load template
 				require_once(ODTPHP_PATH.'odf.php');
@@ -255,10 +255,10 @@ class doc_generic_contract_odt extends ModeleContract
 						'DELIMITER_LEFT'  => '{',
 						'DELIMITER_RIGHT' => '}')
 				);
-                                
+
 				//print $odfHandler->__toString()."\n";
                                 //
-                             
+
                 foreach($substitutionarray as $key=>$value)
                 {
                     try {
@@ -343,8 +343,6 @@ class doc_generic_contract_odt extends ModeleContract
 					}
 				}
                                  // Get extra fields for contractid
-                                include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-                                $hookmanager=new HookManager($this->db);
                                 $hookmanager->callHooks(array('contrat_extrafields'));
                                 $parameters=array('id'=>$object->id);
                                 $values=$hookmanager->executeHooks('getFields',$parameters,$object,GETPOST('action'));    // Note that $action and $object may have been modified by hook
@@ -365,8 +363,6 @@ class doc_generic_contract_odt extends ModeleContract
                                     }
                                 }
                                 // Get extra fields for socid
-                                include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-                                $hookmanager=new HookManager($this->db);
                                 $hookmanager->callHooks(array('thirdparty_extrafields'));
                                 $parameters=array('id'=>$soc->id);
                                 $values=$hookmanager->executeHooks('getFields',$parameters,$soc,GETPOST('action'));    // Note that $action and $object may have been modified by hook

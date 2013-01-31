@@ -135,7 +135,7 @@ class Contact extends nosqlDocument {
      *      @return     int      			   	<0 if KO, >0 if OK
      */
     function update($id, $user = 0, $notrigger = 0) {
-        global $conf, $langs;
+        global $conf, $langs, $hookmanager;
 
         $error = 0;
 
@@ -170,8 +170,7 @@ class Contact extends nosqlDocument {
         $this->record();
 
         // Actions on extra fields (by external module or standard code)
-        include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-        $hookmanager = new HookManager($this->db);
+        // TODO deprecated, replace with card builder
         $hookmanager->initHooks(array('contactdao'));
         $parameters = array('socid' => $this->id);
         $reshook = $hookmanager->executeHooks('insertExtraFields', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
