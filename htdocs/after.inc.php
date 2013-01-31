@@ -82,13 +82,6 @@ if (!defined('NOREQUIRETRAN')) {
     $langs->setDefaultLang($conf->global->MAIN_LANG_DEFAULT);
 }
 
-// Create the global $hookmanager object
-if (!defined('NOREQUIREHOOK')) {
-	if (!class_exists('HookManager'))
-		require DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-	$hookmanager = new HookManager($db); // TODO remove $db object
-}
-
 /*
  * Create object $mysoc (A thirdparty object that contains properties of companies managed by Speedealing.
  */
