@@ -187,7 +187,8 @@ class ExtraFields extends nosqlDocument {
                 }
             }
 
-        if (count($this->langs))
+
+        if (count($this->langs) && !empty($langs->defaultlang))
             foreach ($this->langs as $aRow) {
                 $langs->load($aRow);
             }

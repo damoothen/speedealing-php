@@ -39,6 +39,7 @@ if (!$user->admin)
 
 $message = '';
 
+$mysoc->load("societe:mysoc"); // Refresh load
 
 /*
  * Actions
@@ -48,7 +49,7 @@ if (($action == 'update' && empty($_POST["cancel"]))
         || ($action == 'updateedit')) {
     require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 
-    $object = new Societe($db);
+    $object = $mysoc;
 
     $object->_id = "societe:mysoc";
     $object->_rev = $mysoc->_rev;
@@ -65,57 +66,6 @@ if (($action == 'update' && empty($_POST["cancel"]))
     $object->url = $_POST["web"];
     $object->notes = $_POST["note"];
     $object->barcode = $_POST["barcode"];
-    if ($_FILES["logo"]["tmp_name"]) {
-        if (preg_match('/([^\\/:]+)$/i', $_FILES["logo"]["name"], $reg)) {
-            $original_file = $reg[1];
-
-            $isimage = image_format_supported($original_file);
-            if ($isimage >= 0) {
-                dol_syslog("Move file " . $_FILES["logo"]["tmp_name"] . " to " . $conf->mycompany->dir_output . '/logos/' . $original_file);
-                if (!is_dir($conf->mycompany->dir_output . '/logos/')) {
-                    dol_mkdir($conf->mycompany->dir_output . '/logos/');
-                }
-                $result = dol_move_uploaded_file($_FILES["logo"]["tmp_name"], $conf->mycompany->dir_output . '/logos/' . $original_file, 1, 0, $_FILES['logo']['error']);
-                if ($result > 0) {
-                    $object->logo = $original_file;
-
-                    // Create thumbs of logo (Note that PDF use original file and not thumbs)
-                    if ($isimage > 0) {
-                        // Create small thumbs for company (Ratio is near 16/9)
-                        // Used on logon for example
-                        $imgThumbSmall = vignette($conf->mycompany->dir_output . '/logos/' . $original_file, $maxwidthsmall, $maxheightsmall, '_small', $quality);
-                        if (preg_match('/([^\\/:]+)$/i', $imgThumbSmall, $reg)) {
-                            $imgThumbSmall = $reg[1];
-                            $object->logo_small = $imgThumbSmall;
-                        }
-                        else
-                            dol_syslog($imgThumbSmall);
-
-                        // Create mini thumbs for company (Ratio is near 16/9)
-                        // Used on menu or for setup page for example
-                        $imgThumbMini = vignette($conf->mycompany->dir_output . '/logos/' . $original_file, $maxwidthmini, $maxheightmini, '_mini', $quality);
-                        if (preg_match('/([^\\/:]+)$/i', $imgThumbMini, $reg)) {
-                            $imgThumbMini = $reg[1];
-                            $object->logo_mini = $imgThumbMini;
-                        }
-                        else
-                            dol_syslog($imgThumbMini);
-                    }
-                    else
-                        dol_syslog($langs->trans("ErrorImageFormatNotSupported"), LOG_WARNING);
-                }
-                else if (preg_match('/^ErrorFileIsInfectedWithAVirus/', $result)) {
-                    $langs->load("errors");
-                    $tmparray = explode(':', $result);
-                    $message .= '<div class="error">' . $langs->trans('ErrorFileIsInfectedWithAVirus', $tmparray[1]) . '</div>';
-                } else {
-                    $message .= '<div class="error">' . $langs->trans("ErrorFailedToSaveFile") . '</div>';
-                }
-            } else {
-                $message .= '<div class="error">' . $langs->trans("ErrorOnlyPngJpgSupported") . '</div>';
-            }
-        }
-    }
 
     $object->capital = $_POST["capital"];
     $object->forme_juridique_code = $_POST["forme_juridique_code"];
@@ -136,7 +86,67 @@ if (($action == 'update' && empty($_POST["cancel"]))
     $object->localtax1 = $_POST["optionlocaltax1"];
     $object->localtax2 = $_POST["optionlocaltax2"];
 
-    $object->record(true);
+    /*
+      } elseif (!empty($_FILES['photo']['name']))
+      $edituser->Photo = dol_sanitizeFileName($_FILES['photo']['name']);
+      $id = $edituser->update($user, 0, $action);
+
+      print $id;
+
+      if ($id == $edituser->id) {
+      $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
+
+      if ($file_OK) {
+      if (image_format_supported($_FILES['photo']['name']) > 0) {
+      $edituser->storeFile('photo');
+      } else {
+      $errmsgs[] = "ErrorBadImageFormat";
+      }
+      } */
+
+
+    if ($_FILES["logo"]["tmp_name"]) {
+        if (preg_match('/([^\\/:]+)$/i', $_FILES["logo"]["name"], $reg)) {
+            $original_file = $reg[1];
+
+            $isimage = image_format_supported($original_file);
+            if ($isimage >= 0) {
+                dol_syslog("Move file " . $_FILES["logo"]["tmp_name"] . " to " . $conf->mycompany->dir_output . '/logos/' . $original_file);
+
+                $result = is_uploaded_file($_FILES['logo']['tmp_name']);
+                //$result = dol_move_uploaded_file($_FILES["logo"]["tmp_name"], $conf->mycompany->dir_output . '/logos/' . $original_file, 1, 0, $_FILES['logo']['error']);
+                if ($result > 0) {
+                    $object->logo = $original_file;
+                    $object->record(true);
+                    $object->storeFile('logo', true);
+
+                    // Create thumbs of logo (Note that PDF use original file and not thumbs)
+                    /* if ($isimage > 0) {
+                      // Create small thumbs for company (Ratio is near 16/9)
+                      // Used on logon for example
+                      $imgThumbSmall = vignette($conf->mycompany->dir_output . '/logos/' . $original_file, $maxwidthsmall, $maxheightsmall, '_small', $quality);
+                      if (preg_match('/([^\\/:]+)$/i', $imgThumbSmall, $reg)) {
+                      $imgThumbSmall = $reg[1];
+                      $object->logo_small = $imgThumbSmall;
+                      }
+                      else
+                      dol_syslog($imgThumbSmall); */
+                }
+                else
+                    dol_syslog($langs->trans("ErrorImageFormatNotSupported"), LOG_WARNING);
+            }
+            else if (preg_match('/^ErrorFileIsInfectedWithAVirus/', $result)) {
+                $langs->load("errors");
+                $tmparray = explode(':', $result);
+                $message .= '<div class="error">' . $langs->trans('ErrorFileIsInfectedWithAVirus', $tmparray[1]) . '</div>';
+            } else {
+                $message .= '<div class="error">' . $langs->trans("ErrorFailedToSaveFile") . '</div>';
+            }
+        } else {
+            $message .= '<div class="error">' . $langs->trans("ErrorOnlyPngJpgSupported") . '</div>';
+        }
+    } else
+        $object->record(true);
 
     if ($action != 'updateedit' && !$message) {
         header("Location: " . $_SERVER["PHP_SELF"]);
@@ -144,62 +154,56 @@ if (($action == 'update' && empty($_POST["cancel"]))
     }
 }
 
-if ($action == 'addthumb') {
-    if (file_exists($conf->mycompany->dir_output . '/logos/' . $_GET["file"])) {
-        $isimage = image_format_supported($_GET["file"]);
+/*
+  if ($action == 'addthumb') {
+  $isimage = image_format_supported($_GET["file"]);
 
-        // Create thumbs of logo
-        if ($isimage > 0) {
-            // Create small thumbs for company (Ratio is near 16/9)
-            // Used on logon for example
-            $imgThumbSmall = vignette($conf->mycompany->dir_output . '/logos/' . $_GET["file"], $maxwidthsmall, $maxheightsmall, '_small', $quality);
-            if (image_format_supported($imgThumbSmall) >= 0 && preg_match('/([^\\/:]+)$/i', $imgThumbSmall, $reg)) {
-                $imgThumbSmall = $reg[1];
-                dolibarr_set_const($db, "MAIN_INFO_SOCIETE_LOGO_SMALL", $imgThumbSmall, 'chaine', 0, '', $conf->entity);
-            }
-            else
-                dol_syslog($imgThumbSmall);
+  // Create thumbs of logo
+  if ($isimage > 0) {
+  // Create small thumbs for company (Ratio is near 16/9)
+  // Used on logon for example
+  $imgThumbSmall = vignette($conf->mycompany->dir_output . '/logos/' . $_GET["file"], $maxwidthsmall, $maxheightsmall, '_small', $quality);
+  if (image_format_supported($imgThumbSmall) >= 0 && preg_match('/([^\\/:]+)$/i', $imgThumbSmall, $reg)) {
+  $imgThumbSmall = $reg[1];
+  dolibarr_set_const($db, "MAIN_INFO_SOCIETE_LOGO_SMALL", $imgThumbSmall, 'chaine', 0, '', $conf->entity);
+  }
+  else
+  dol_syslog($imgThumbSmall);
 
-            // Create mini thumbs for company (Ratio is near 16/9)
-            // Used on menu or for setup page for example
-            $imgThumbMini = vignette($conf->mycompany->dir_output . '/logos/' . $_GET["file"], $maxwidthmini, $maxheightmini, '_mini', $quality);
-            if (image_format_supported($imgThumbSmall) >= 0 && preg_match('/([^\\/:]+)$/i', $imgThumbMini, $reg)) {
-                $imgThumbMini = $reg[1];
-                dolibarr_set_const($db, "MAIN_INFO_SOCIETE_LOGO_MINI", $imgThumbMini, 'chaine', 0, '', $conf->entity);
-            }
-            else
-                dol_syslog($imgThumbMini);
+  // Create mini thumbs for company (Ratio is near 16/9)
+  // Used on menu or for setup page for example
+  $imgThumbMini = vignette($conf->mycompany->dir_output . '/logos/' . $_GET["file"], $maxwidthmini, $maxheightmini, '_mini', $quality);
+  if (image_format_supported($imgThumbSmall) >= 0 && preg_match('/([^\\/:]+)$/i', $imgThumbMini, $reg)) {
+  $imgThumbMini = $reg[1];
+  dolibarr_set_const($db, "MAIN_INFO_SOCIETE_LOGO_MINI", $imgThumbMini, 'chaine', 0, '', $conf->entity);
+  }
+  else
+  dol_syslog($imgThumbMini);
 
-            header("Location: " . $_SERVER["PHP_SELF"]);
-            exit;
-        }
-        else {
-            $message .= '<div class="error">' . $langs->trans("ErrorImageFormatNotSupported") . '</div>';
-            dol_syslog($langs->transnoentities("ErrorImageFormatNotSupported"), LOG_WARNING);
-        }
-    } else {
-        $message .= '<div class="error">' . $langs->trans("ErrorFileDoesNotExists", $_GET["file"]) . '</div>';
-        dol_syslog($langs->transnoentities("ErrorFileDoesNotExists", $_GET["file"]), LOG_WARNING);
-    }
-}
+  header("Location: " . $_SERVER["PHP_SELF"]);
+  exit;
+  }
+  else {
+  $message .= '<div class="error">' . $langs->trans("ErrorImageFormatNotSupported") . '</div>';
+  dol_syslog($langs->transnoentities("ErrorImageFormatNotSupported"), LOG_WARNING);
+  }
+  } */
 
 if ($action == 'removelogo') {
-    require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 
-    $logofile = $conf->mycompany->dir_output . '/logos/' . $mysoc->logo;
-    dol_delete_file($logofile);
-    dolibarr_del_const($db, "MAIN_INFO_SOCIETE_LOGO", $conf->entity);
-    $mysoc->logo = '';
 
-    $logosmallfile = $conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_small;
-    dol_delete_file($logosmallfile);
-    dolibarr_del_const($db, "MAIN_INFO_SOCIETE_LOGO_SMALL", $conf->entity);
-    $mysoc->logo_small = '';
+    $del_photo = $mysoc->logo;
+    unset($mysoc->logo);
+    $mysoc->record(true);
+    if (!empty($del_photo))
+        $mysoc->deleteFile($del_photo, true);
 
-    $logominifile = $conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini;
-    dol_delete_file($logominifile);
-    dolibarr_del_const($db, "MAIN_INFO_SOCIETE_LOGO_MINI", $conf->entity);
-    $mysoc->logo_mini = '';
+
+    /*
+      $del_photo = $mysoc->logo_small;
+      if (!empty($del_photo))
+      $mysoc->deleteFile($del_photo);
+      unset($mysoc->logo_small); */
 }
 
 
@@ -319,15 +323,9 @@ if ($action == 'edit' || $action == 'updateedit') {
     print '<table width="100%" class="nocellnopadd"><tr class="nocellnopadd"><td valign="middle" class="nocellnopadd">';
     print '<input type="file" class="flat" name="logo" size="50">';
     print '</td><td valign="middle" align="right">';
-    if (!empty($mysoc->logo_mini)) {
+    if (!empty($mysoc->logo))
         print '<a href="' . $_SERVER["PHP_SELF"] . '?action=removelogo">' . img_delete($langs->trans("Delete")) . '</a>';
-        if (file_exists($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini)) {
-            print ' &nbsp; ';
-            print '<img src="' . DOL_URL_ROOT . '/viewimage.php?modulepart=companylogo&amp;file=' . urlencode('/thumbs/' . $mysoc->logo_mini) . '">';
-        }
-    } else {
-        print '<img height="30" src="' . DOL_URL_ROOT . '/theme/common/nophoto.jpg">';
-    }
+    print $mysoc->print_fk_extrafields('logo');
     print '</td></tr></table>';
     print '</td></tr>';
 
@@ -644,15 +642,7 @@ if ($action == 'edit' || $action == 'updateedit') {
     print '<table width="100%" class="nocellnopadd"><tr class="nocellnopadd"><td valign="middle" class="nocellnopadd">';
     print $mysoc->logo;
     print '</td><td valign="center" align="right">';
-
-    // On propose la generation de la vignette si elle n'existe pas
-    if (!is_file($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini) && preg_match('/(\.jpg|\.jpeg|\.png)$/i', $mysoc->logo)) {
-        print '<a href="' . $_SERVER["PHP_SELF"] . '?action=addthumb&amp;file=' . urlencode($mysoc->logo) . '">' . img_picto($langs->trans('GenerateThumb'), 'refresh') . '&nbsp;&nbsp;</a>';
-    } else if ($mysoc->logo_mini && is_file($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini)) {
-        print '<img src="' . DOL_URL_ROOT . '/viewimage.php?modulepart=companylogo&amp;file=' . urlencode('/thumbs/' . $mysoc->logo_mini) . '">';
-    } else {
-        print '<img height="30" src="' . DOL_URL_ROOT . '/theme/common/nophoto.jpg">';
-    }
+    print $mysoc->print_fk_extrafields('logo');
     print '</td></tr></table>';
 
     print '</td></tr>';

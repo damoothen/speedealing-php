@@ -283,10 +283,16 @@ abstract class nosqlDocument extends CommonObject {
      *  @param	$name		Name of the variable
      *  @return value of storeAttachment
      */
-    public function storeFile($name = 'addedfile') {
+    public function storeFile($name = 'addedfile', $cache = false) {
         global $_FILES;
 
-        return $this->couchdb->storeAttachment($this, $_FILES[$name]['tmp_name'], $_FILES[$name]['type'], $_FILES[$name]['name']);
+        $result = $this->couchdb->storeAttachment($this, $_FILES[$name]['tmp_name'], $_FILES[$name]['type'], $_FILES[$name]['name']);
+        $this->_rev = $result->rev;
+
+        if ($cache)
+            dol_delcache($this->id);
+
+        return 1;
     }
 
     /**
@@ -313,8 +319,13 @@ abstract class nosqlDocument extends CommonObject {
      *  @param	$filename		name of the file
      *  @return value of storeAttachment
      */
-    public function deleteFile($filename) {
-        return $this->couchdb->deleteAttachment($this, $filename);
+    public function deleteFile($filename, $cache = false) {
+        $result = $this->couchdb->deleteAttachment($this, $filename);
+        $this->_rev = $result->rev;
+        if ($cache)
+            dol_delcache($this->id);
+
+        return 1;
     }
 
     /**
@@ -518,9 +529,9 @@ abstract class nosqlDocument extends CommonObject {
 
         $class = strtolower(get_class($this));
         ?><script type="text/javascript" charset="utf-8">
-            $(document).ready(function() {
-                var oTable = $('#<?php echo $ref_css ?>').dataTable( {
-                    "aoColumns" : [
+                    $(document).ready(function() {
+                        var oTable = $('#<?php echo $ref_css ?>').dataTable( {
+                            "aoColumns" : [
         <?php
         $nb = count($obj->aoColumns);
         foreach ($obj->aoColumns as $i => $aRow):
@@ -1404,8 +1415,8 @@ abstract class nosqlDocument extends CommonObject {
                 $rtr .= '<input type="text" class="input ' . $cssClass . " " . $aRow->validate->cssclass . '" name="' . $htmlname . '" id="' . $htmlname . '" value="' . $this->print_fk_extrafields($key) . '" placeholder="' . $title . '"/>';
                 $rtr .= '<script>$("input#' . $htmlname . '").datepicker();</script>';
                 break;
-            
-             case "datetime":
+
+            case "datetime":
                 $rtr .= '<input type="text" class="input ' . $cssClass . " " . $aRow->validate->cssclass . '" name="' . $htmlname . '" id="' . $htmlname . '" value="' . $this->print_fk_extrafields($key) . '" placeholder="' . $title . '"/>';
                 $rtr .= '<script>$("input#' . $htmlname . '").datetimepicker();</script>';
                 break;
@@ -1457,10 +1468,16 @@ abstract class nosqlDocument extends CommonObject {
                 $out.= $value;
                 break;
             case "date":
-                $out .= dol_print_date($value,"%d/%m/%Y");
+                $out .= dol_print_date($value, "%d/%m/%Y");
                 break;
-             case "datetime":
-                $out .= dol_print_date($value,"%d/%m/%Y");
+            case "datetime":
+                $out .= dol_print_date($value, "%d/%m/%Y");
+                break;
+            case "image":
+                if (!empty($value))
+                    $out.='<img alt="' . $aRow->alt . '" border="0" width="' . $aRow->width . '" src="' . $this->getFile($value) . '">';
+                else
+                    $out.='<img alt="No photo" border="0" width="' . $aRow->width . '" src="' . DOL_URL_ROOT . '/theme/common/nophoto.jpg">';
                 break;
         }
 

@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "108-a1b78c6c88e5d3000c6daed2b0303b86",
+   "_rev": "115-642a3d31d5d82cb9c5bec9823400b54b",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -133,7 +133,9 @@
            "dict": null
        },
        "logo": {
-           "type": "uploadfile",
+           "type": "image",
+           "width": "130px",
+           "alt": "Logo",
            "enable": true
        },
        "phone": {

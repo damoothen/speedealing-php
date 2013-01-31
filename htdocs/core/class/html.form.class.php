@@ -3191,8 +3191,8 @@ class Form {
                 $file = $object->id . '/logos/thumbs/' . $smallfile;
         }
         else if ($modulepart == 'userphoto') {
-            if ($object->values->Photo)
-                $file = $object->values->Photo;
+            if ($object->Photo)
+                $file = $object->Photo;
             $email = $object->email;
         }
         else if ($modulepart == 'memberphoto') {
