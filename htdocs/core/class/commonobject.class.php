@@ -45,9 +45,9 @@ abstract class CommonObject
     function __construct($db)
     {
     	global $conf;
-    	
+
     	$this->db = $db;
-		
+
 		return 1;
     }
 
@@ -2164,7 +2164,7 @@ abstract class CommonObject
 
     /**
      * Function that returns the total amount of discounts applied.
-     * 
+     *
      * @return false|float False is returned if the discount couldn't be retrieved
      */
     function getTotalDiscount()
@@ -2172,7 +2172,7 @@ abstract class CommonObject
         $sql = 'SELECT (SUM(`subprice`) - SUM(`total_ht`)) as `discount` FROM '.MAIN_DB_PREFIX.$this->table_element.'det WHERE `'.$this->fk_element.'` = '.$this->id;
 
         $query = $this->db->query($sql);
-        
+
         if ($query)
         {
             $result = $this->db->fetch_object($query);
@@ -2350,21 +2350,16 @@ abstract class CommonObject
      *  TODO Move this into html.class.php
      *  But for the moment we don't know if it's possible as we keep a method available on overloaded objects.
      *
-     *	@param	HookManager		$hookmanager		Hook manager instance
      *  @return	void
      */
-    function showLinkedObjectBlock($hookmanager=false)
+    function showLinkedObjectBlock()
     {
-        global $conf,$langs,$bc;
+        global $conf, $langs, $hookmanager;
+        global $bc;
 
         $this->fetchObjectLinked();
 
         // Bypass the default method
-        if (! is_object($hookmanager))
-        {
-        	include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-        	$hookmanager=new HookManager($this->db);
-        }
         $hookmanager->initHooks(array('commonobject'));
         $parameters=array();
         $reshook=$hookmanager->executeHooks('showLinkedObjectBlock',$parameters,$this,$action);    // Note that $action and $object may have been modified by hook
@@ -2434,14 +2429,13 @@ abstract class CommonObject
      *  @param  int	    		$dateSelector       1=Show also date range input fields
      *  @param	Societe			$seller				Object thirdparty who sell
      *  @param	Societe			$buyer				Object thirdparty who buy
-     *	@param	HookManager		$hookmanager		Hook manager instance
      *	@return	void
      *	@deprecated
      */
-    function formAddPredefinedProduct($dateSelector,$seller,$buyer,$hookmanager=false)
+    function formAddPredefinedProduct($dateSelector, $seller, $buyer)
     {
-    	global $conf,$langs,$object;
-    	global $form,$bcnd,$var;
+    	global $conf, $langs, $object, $hookmanager;
+    	global $form, $bcnd, $var;
 
     	// Use global variables + $dateSelector + $seller and $buyer
     	include(DOL_DOCUMENT_ROOT.'/core/tpl/predefinedproductline_create.tpl.php');
@@ -2455,14 +2449,13 @@ abstract class CommonObject
      *  @param	int		        $dateSelector       1=Show also date range input fields
      *  @param	Societe			$seller				Object thirdparty who sell
      *  @param	Societe			$buyer				Object thirdparty who buy
-     *	@param	HookManager		$hookmanager		Hook manager instance
      *	@return	void
      *	@deprecated
      */
-    function formAddFreeProduct($dateSelector,$seller,$buyer,$hookmanager=false)
+    function formAddFreeProduct($dateSelector, $seller, $buyer)
     {
-    	global $conf,$langs,$object;
-    	global $form,$bcnd,$var;
+    	global $conf, $langs, $object, $hookmanager;
+    	global $form, $bcnd, $var;
 
     	// Use global variables + $dateSelector + $seller and $buyer
     	include(DOL_DOCUMENT_ROOT.'/core/tpl/freeproductline_create.tpl.php');
@@ -2477,13 +2470,12 @@ abstract class CommonObject
      *  @param	int		        $dateSelector       1=Show also date range input fields
      *  @param	Societe			$seller				Object thirdparty who sell
      *  @param	Societe			$buyer				Object thirdparty who buy
-     *	@param	HookManager		$hookmanager		Hook manager instance
      *	@return	void
      */
-	function formAddObjectLine($dateSelector,$seller,$buyer,$hookmanager=false)
+	function formAddObjectLine($dateSelector, $seller, $buyer)
 	{
-		global $conf,$user,$langs,$object;
-		global $form,$bcnd,$var;
+		global $conf, $user, $langs, $object, $hookmanager;
+		global $form, $bcnd, $var;
 
 		// Output template part (modules that overwrite templates must declare this into descriptor)
         // Use global variables + $dateSelector + $seller and $buyer
@@ -2516,12 +2508,11 @@ abstract class CommonObject
 	 *	@param  string  	$buyer             	Object of buyer third party
 	 *	@param	string		$selected		   	Object line selected
 	 *	@param  int	    	$dateSelector      	1=Show also date range input fields
-	 *	@param	HookManager	$hookmanager		Hookmanager
 	 *	@return	void
 	 */
-	function printObjectLines($action, $seller, $buyer, $selected=0, $dateSelector=0, $hookmanager=false)
+	function printObjectLines($action, $seller, $buyer, $selected=0, $dateSelector=0)
 	{
-		global $conf,$langs;
+		global $conf, $langs, $hookmanager;
 
 		print '<tr class="liste_titre nodrag nodrop">';
 		if (! empty($conf->global->MAIN_VIEW_LINE_NUMBER))
@@ -2559,7 +2550,7 @@ abstract class CommonObject
 		{
 			$var=!$var;
 
-			if (is_object($hookmanager) && (($line->product_type == 9 && ! empty($line->special_code)) || ! empty($line->fk_parent_line)))
+			if (($line->product_type == 9 && ! empty($line->special_code)) || ! empty($line->fk_parent_line))
 			{
 				if (empty($line->fk_parent_line))
 				{
@@ -2569,7 +2560,7 @@ abstract class CommonObject
 			}
 			else
 			{
-				$this->printObjectLine($action,$line,$var,$num,$i,$dateSelector,$seller,$buyer,$selected,$hookmanager);
+				$this->printObjectLine($action,$line,$var,$num,$i,$dateSelector,$seller,$buyer,$selected);
 			}
 
 			$i++;
@@ -2589,13 +2580,12 @@ abstract class CommonObject
 	 *	@param  string	    $seller            	Object of seller third party
 	 *	@param  string	    $buyer             	Object of buyer third party
 	 *	@param	string		$selected		   	Object line selected
-	 *	@param	HookManager	$hookmanager		Hook manager
 	 *	@return	void
 	 */
-	function printObjectLine($action,$line,$var,$num,$i,$dateSelector,$seller,$buyer,$selected=0,$hookmanager=false)
+	function printObjectLine($action, $line, $var, $num, $i, $dateSelector, $seller, $buyer, $selected=0)
 	{
-		global $conf,$langs,$user;
-		global $form,$bc,$bcdd;
+		global $conf, $langs, $user, $hookmanager;
+		global $form, $bc, $bcdd;
 
 		$element=$this->element;
 		$text='';
@@ -2609,7 +2599,7 @@ abstract class CommonObject
 		if (!empty($line->fk_product))
 		{
 			$product_static = new Product($this->db);
-                        $product_static->fetch($line->fk_product);
+            $product_static->fetch($line->fk_product);
 
 //			$product_static->type=$line->product_type;
 //			$product_static->id=$line->fk_product;
@@ -2701,12 +2691,11 @@ abstract class CommonObject
      *  If lines are into a template, title must also be into a template
      *  But for the moment we don't know if it's possible as we keep a method available on overloaded objects.
      *
-     *  @param	HookManager	$hookmanager		Hook manager
      *  @return	void
      */
-    function printOriginLinesList($hookmanager=false)
+    function printOriginLinesList()
     {
-        global $langs;
+        global $langs, $hookmanager;
 
         print '<tr class="liste_titre">';
         print '<td>'.$langs->trans('Ref').'</td>';
@@ -2724,7 +2713,7 @@ abstract class CommonObject
         {
             $var=!$var;
 
-            if (is_object($hookmanager) && (($line->product_type == 9 && ! empty($line->special_code)) || ! empty($line->fk_parent_line)))
+            if (($line->product_type == 9 && ! empty($line->special_code)) || ! empty($line->fk_parent_line))
             {
                 if (empty($line->fk_parent_line))
                 {

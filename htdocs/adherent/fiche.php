@@ -81,8 +81,6 @@ if ($rowid) {
 }
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
-$hookmanager = new HookManager($db);
 $hookmanager->initHooks(array('membercard'));
 
 /*
@@ -999,7 +997,7 @@ if ($action == 'edit') {
         dol_print_error($db, $object->error);
         exit;
     }
-    
+
     if (isset($_POST["pays"]) || $object->country_id) {
         $sql = "SELECT rowid, code, libelle as label from " . MAIN_DB_PREFIX . "c_pays where rowid = " . (isset($_POST["pays"]) ? $_POST["pays"] : $object->country_id);
         $resql = $db->query($sql);
@@ -1883,7 +1881,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
     $i = 0;
     $obj = new stdClass();
     print '<table class="display dt_act" id="subscription_datatable" >';
-    // Ligne des titres 
+    // Ligne des titres
     print'<thead>';
     print'<th class="essential">';
     print $langs->trans("Ref");
@@ -1973,7 +1971,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
     $obj = new stdClass();
     $mips = new Mips($db);
     print '<table class="display dt_act" id="mail_datatable" >';
-    // Ligne des titres 
+    // Ligne des titres
     print'<thead>';
     print'<th class="essential">';
     print $langs->trans("Ref");

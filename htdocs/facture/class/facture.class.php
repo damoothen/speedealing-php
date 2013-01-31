@@ -116,7 +116,7 @@ class Facture extends nosqlDocument {
 
         $this->fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields->fetch(get_class($this));
-        
+
         $this->no_save[] = 'thirdparty';
         $this->no_save[] = 'line';
         $this->no_save[] = 'lines';
@@ -450,7 +450,7 @@ class Facture extends nosqlDocument {
         $facture->remise_percent = $this->remise_percent;
         $facture->Status = "NOT_PAID";
         $facture->ref = $this->getNextNumRef($this->socid);
-        
+
 //        $facture->lines = $this->lines; // Tableau des lignes de factures
 //        $facture->products = $this->lines; // Tant que products encore utilise
 //        // Loop on each line of new invoice
@@ -468,7 +468,7 @@ class Facture extends nosqlDocument {
         dol_syslog(get_class($this) . "::createFromCurrent invertdetail=" . $invertdetail . " socid=" . $this->socid . " nboflines=" . count($facture->lines));
 
         $facid = $facture->create($user);
-        
+
         // Copier les lignes de la facture
         $this->getLinesArray();
         foreach ($this->lines as $line) {
@@ -479,7 +479,7 @@ class Facture extends nosqlDocument {
             $line->record();
         }
         $facture->update_price();
-        
+
 //        if ($facid <= 0) {
 //            $this->error = $facture->error;
 //            $this->errors = $facture->errors;
@@ -492,11 +492,10 @@ class Facture extends nosqlDocument {
      * 		Load an object from its id and create a new one in database
      *
      * 		@param		int				$socid			Id of thirdparty
-     * 		@param		HookManager		$hookmanager	Hook manager instance
      * 	 	@return		int								New id of clone
      */
-    function createFromClone($socid = 0, $hookmanager = false) {
-        global $conf, $user, $langs;
+    function createFromClone($socid = 0) {
+        global $conf, $user, $langs, $hookmanager;
 
         $error = 0;
 
@@ -584,7 +583,7 @@ class Facture extends nosqlDocument {
      *  @return     int             					<0 if KO, 0 if nothing done, 1 if OK
      */
     function createFromOrder($object) {
-        global $conf, $user, $langs;
+        global $conf, $user, $langs, $hookmanager;
 
         $error = 0;
 
@@ -645,10 +644,7 @@ class Facture extends nosqlDocument {
 
         if ($ret > 0) {
             // Actions hooked (by external module)
-            include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-            $hookmanager = new HookManager($this->db);
             $hookmanager->initHooks(array('invoicedao'));
-
             $parameters = array('objFrom' => $object);
             $action = '';
             $reshook = $hookmanager->executeHooks('createFrom', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
@@ -730,7 +726,7 @@ class Facture extends nosqlDocument {
      */
     function fetch($rowid, $ref = '', $ref_ext = '', $ref_int = '') {
         global $conf;
-        
+
         $res = parent::fetch($rowid);
         $this->getLinesArray();
         return $res;
@@ -962,7 +958,7 @@ class Facture extends nosqlDocument {
             $this->client->id = $soc->id;
             $this->client->name = $soc->name;
         }
-        
+
         $this->record();
         if (!$notrigger) {
             // Call triggers
@@ -1156,13 +1152,13 @@ class Facture extends nosqlDocument {
         // TODO Test if there is at least on payment. If yes, refuse to delete.
 
         $error = 0;
-        
+
         // Supprimer les lignes de la facture
         $this->getLinesArray();
         foreach ($this->lines as $line) {
             $line->delete();
         }
-        
+
         $this->deleteDoc();
 
         if (!$error && !$notrigger) {
@@ -1176,7 +1172,7 @@ class Facture extends nosqlDocument {
             }
             // Fin appel triggers
         }
-        
+
         return 1;
 
         if (!$error) {
@@ -1274,10 +1270,10 @@ class Facture extends nosqlDocument {
      * 	@return     date     			       	Date limite de reglement si ok, <0 si ko
      */
     function calculate_date_lim_reglement($cond_reglement = 0) {
-        
+
         if (empty($cond_reglement))
             $cond_reglement = $this->cond_reglement_code;
-       
+
         $data = $this->fk_extrafields->fields->cond_reglement_code->values->{$cond_reglement};
 
         $cdr_nbjour = $data->nbjour;
@@ -1390,7 +1386,7 @@ class Facture extends nosqlDocument {
     function set_unpaid($user) {
         global $conf, $langs;
         $error = 0;
-        if ($this->getSommePaiement() > 0) 
+        if ($this->getSommePaiement() > 0)
             $this->Status = "STARTED";
         else
             $this->Status = "NOT_PAID";
@@ -1543,9 +1539,9 @@ class Facture extends nosqlDocument {
 
         $this->Status = "NOT_PAID";
         $this->date_validation = $now;
-        
+
         $this->record();
-        
+
         // Si facture de remplacement, abandonner la facture remplacée
         if ($this->type == "INVOICE_REPLACEMENT") {
             $replacedInvoice = new Facture($this->db);
@@ -1553,7 +1549,7 @@ class Facture extends nosqlDocument {
             $replacedInvoice->Status = "CANCELED";
             $replacedInvoice->record();
         }
-        
+
         // Appel des triggers
         include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
         $interface = new Interfaces($this->db);
@@ -1563,7 +1559,7 @@ class Facture extends nosqlDocument {
             $this->errors = $interface->errors;
         }
         // Fin appel triggers
-        
+
         return 1;
 
         $this->fetch_thirdparty();
@@ -1827,7 +1823,7 @@ class Facture extends nosqlDocument {
     function addline($facid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1 = 0, $txlocaltax2 = 0, $fk_product = 0, $remise_percent = 0, $date_start = '', $date_end = '', $ventil = 0, $info_bits = 0, $fk_remise_except = '', $price_base_type = 'HT', $pu_ttc = 0, $type = 0, $rang = -1, $special_code = 0, $origin = '', $origin_id = 0, $fk_parent_line = 0, $fk_fournprice = null, $pa_ht = 0, $label = '') {
         dol_syslog(get_class($this) . "::Addline facid=$facid,desc=$desc,pu_ht=$pu_ht,qty=$qty,txtva=$txtva, txlocaltax1=$txlocaltax1, txlocaltax2=$txlocaltax2, fk_product=$fk_product,remise_percent=$remise_percent,date_start=$date_start,date_end=$date_end,ventil=$ventil,info_bits=$info_bits,fk_remise_except=$fk_remise_except,price_base_type=$price_base_type,pu_ttc=$pu_ttc,type=$type", LOG_DEBUG);
         include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
-        
+
         // Clean parameters
         if (empty($remise_percent))
             $remise_percent = 0;
@@ -1862,7 +1858,7 @@ class Facture extends nosqlDocument {
         } else {
             $pu = $pu_ttc;
         }
-        
+
         // Si avoir, quantité négatitve
         if ($this->type == 'INVOICE_AVOIR')
             $qty = -$qty;
@@ -1929,9 +1925,9 @@ class Facture extends nosqlDocument {
 
             $line->record();
             $this->update_price();
-            
+
             return 1;
-            
+
             if ($result > 0) {
                 // Reorder if child line
                 if (!empty($fk_parent_line))
@@ -2070,10 +2066,10 @@ class Facture extends nosqlDocument {
             // A ne plus utiliser
             //$this->line->price=$price;
             //$this->line->remise=$remise;
-            
+
             $line->record();
             $this->update_price();
-            
+
             return 1;
 
             if ($result > 0) {
@@ -2111,14 +2107,14 @@ class Facture extends nosqlDocument {
             $this->error = 'ErrorBadStatus';
             return -1;
         }
-        
+
         $line = new FactureLigne($this->db);
         $line->fetch($rowid);
         $line->delete();
         $this->update_price();
-        
+
         return 1;
-        
+
         $this->db->begin();
 
         // Libere remise liee a ligne de facture
@@ -2303,12 +2299,12 @@ class Facture extends nosqlDocument {
             return -1;
         }
     }
-    
+
     function getSommePaiement(){
         $res = $this->getView("sumPaymentsPerFacture", array("key" => $this->id));
         return (float)$res->rows[0]->value;
     }
-    
+
     function getPaymentsList(){
         $res = $this->getView("paymentsPerFacture", array("key" => $this->id));
         $payments = array();
@@ -2317,7 +2313,7 @@ class Facture extends nosqlDocument {
         }
         return $payments;
     }
-    
+
     function addPayment(){
         $amountPaid = $this->getSommePaiement();
         if ($amountPaid > 0) {
@@ -2325,7 +2321,7 @@ class Facture extends nosqlDocument {
                 $this->Status = "STARTED";
             else if (($this->type == "INVOICE_STANDARD" || $this->type == "INVOICE_REPLACEMENT") && $amountPaid < $this->total_ttc)
                 $this->Status = "STARTED";
-            else if (($this->type == "INVOICE_STANDARD" || $this->type == "INVOICE_REPLACEMENT") && $amountPaid == $this->total_ttc) 
+            else if (($this->type == "INVOICE_STANDARD" || $this->type == "INVOICE_REPLACEMENT") && $amountPaid == $this->total_ttc)
                 $this->Status = "PAID";
         } else {
             if ($this->type == "INVOICE_AVOIR" && $amountPaid == $this->total_ttc) {
@@ -2875,14 +2871,14 @@ class Facture extends nosqlDocument {
             return -1;
         }
     }
-    
+
     /**
      * 	Create an array of invoice lines
      *
      * 	@return int		>0 if OK, <0 if KO
      */
     function getLinesArray() {
-        
+
         $this->lines = array();
         $result = $this->getView("linesPerFacture", array("key" => $this->id));
         foreach ($result->rows as $res) {
@@ -2891,7 +2887,7 @@ class Facture extends nosqlDocument {
             $this->lines[] = $l;
         }
         return 1;
-        
+
         $sql = 'SELECT l.rowid, l.label as custom_label, l.description, l.fk_product, l.product_type, l.qty, l.tva_tx,';
         $sql.= ' l.fk_remise_except, l.localtax1_tx, l.localtax2_tx,';
         $sql.= ' l.remise_percent, l.subprice, l.info_bits, l.rang, l.special_code, l.fk_parent_line,';
@@ -2952,7 +2948,7 @@ class Facture extends nosqlDocument {
             return -1;
         }
     }
-    
+
     /**
      * 	Create standard invoice in database
      *  Note: this->ref can be set or empty. If empty, we will use "(PROV)"
@@ -2983,9 +2979,9 @@ class Facture extends nosqlDocument {
             dol_syslog(get_class($this) . "::create Try to create an invoice with an empty parameter (user, date, ...)", LOG_ERR);
             return -3;
         }
-        
+
         $this->date_lim_reglement = $this->calculate_date_lim_reglement();
-        
+
         $soc = new Societe($this->db);
         $result = $soc->fetch($this->socid);
         unset($this->socid);
@@ -2997,7 +2993,7 @@ class Facture extends nosqlDocument {
         $this->client = new stdClass();
         $this->client->id = $soc->id;
         $this->client->name = $soc->name;
-        
+
         // Author
         $this->author = new stdClass();
         $this->author->id = $user->id;
@@ -3017,14 +3013,14 @@ class Facture extends nosqlDocument {
         }
         // Fin appel triggers
         return $this->id;
-        
+
     }
-    
+
     public function getExtraFieldLabel($field) {
         global $langs;
         return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
     }
-    
+
     function update_price($exclspec = 0, $roundingadjust = -1, $nodatabaseupdate = 0) {
 
         include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
@@ -3036,7 +3032,7 @@ class Facture extends nosqlDocument {
         $this->total_ttc = 0;
 
        $this->getLinesArray();
-        
+
         foreach ($this->lines as $line) {
             $this->total_ht += $line->total_ht;
             $this->total_localtax1 += $line->total_localtax1;
@@ -3049,8 +3045,8 @@ class Facture extends nosqlDocument {
 
         return 1;
     }
-    
-    
+
+
         /*
      * Graph comptes by status
      *
@@ -3117,7 +3113,7 @@ class Facture extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                                                
+
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: "pie-status",
@@ -3258,7 +3254,7 @@ class Facture extends nosqlDocument {
                             // create the chart when all data is loaded
                             function createChart() {
                                 var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                                                
+
                                 chart = new Highcharts.Chart({
                                     chart: {
                                         renderTo: 'bar-status',
@@ -3327,7 +3323,7 @@ class Facture extends nosqlDocument {
             <?php
         }
     }
-    
+
     public function selectReplaceableInvoiceOptions($socid){
         $options = '';
         $result = $this->getView('listNotPaidPerSociete', array('key' => $socid));
@@ -3338,7 +3334,7 @@ class Facture extends nosqlDocument {
         }
         return $options;
     }
-    
+
     public function selectAvoirableInvoiceOptions($socid){
         $options = '';
         $result = $this->getView('listAvoirableInvoicesPerSociete', array('key' => $socid));
@@ -3351,26 +3347,26 @@ class Facture extends nosqlDocument {
         }
         return $options;
     }
-    
+
     public function getReplacingInvoice(){
-        
+
         $result = $this->getView('listReplacedInvoices', array('key' => $this->id));
         if (empty($result->rows)) return null;
         $facture = new Facture($this->db);
         $facture->fetch($result->rows[0]->value);
         return $facture;
-        
+
     }
-    
-    
+
+
         public function getLinkedObject(){
-        
+
         $objects = array();
-        
+
         // Object stored in $this->linked_objects;
         foreach ($this->linked_objects as $obj) {
             switch ($obj->type) {
-                case 'commande': 
+                case 'commande':
                     $classname = 'Commande';
                     require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
                     break;
@@ -3379,32 +3375,32 @@ class Facture extends nosqlDocument {
             $tmp->fetch($obj->id);
             $objects[$obj->type][] = $tmp;
         }
-        
+
         return $objects;
-        
+
     }
-    
+
     public function printLinkedObjects(){
-        
+
         global $langs;
-        
+
         $objects = $this->getLinkedObject();
-       
+
         // Displaying linked propals
         if (isset($objects['commande'])) {
             $this->printLinkedObjectsType('commande', $objects['commande']);
         }
-        
+
     }
-    
+
     public function printLinkedObjectsType($type, $data){
-        
-        global $langs; 
-        
+
+        global $langs;
+
         $title = 'LinkedObjects';
         if ($type == 'commande')
             $title = 'LinkedOrders';
-        
+
             print start_box($langs->trans($title), "six", $this->fk_extrafields->ico, false);
             print '<table id="tablelines" class="noborder" width="100%">';
             print '<tr>';
@@ -3425,10 +3421,10 @@ class Facture extends nosqlDocument {
             print end_box();
 
     }
-    
+
     public function showLinkedObjects() {
-        global $langs; 
-                
+        global $langs;
+
          print start_box($langs->trans("LinkedObjects"), "six", $this->fk_extrafields->ico, false);
            print '<table class="display dt_act" id="listlinkedobjects" >';
         // Ligne des titres
@@ -3489,12 +3485,12 @@ class Facture extends nosqlDocument {
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listLinkedObjects&class=" . get_class($this) . "&key=" . $this->id;
         $this->datatablesCreate($obj, "listlinkedobjects", true);
         print end_box();
-        
+
 }
 
     public function showPayments(){
         global $conf, $langs;
-        
+
         print start_box($langs->trans("Payments"), "six", $this->fk_extrafields->ico, false);
         print '<table class="display dt_act" id="listpayments" >';
         // Ligne des titres
@@ -3537,54 +3533,54 @@ class Facture extends nosqlDocument {
         $obj->iDisplayLength = $max;
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=paymentsPerFacture&class=" . get_class($this) . "&key=" . $this->id;
         $this->datatablesCreate($obj, "listpayments", true);
-        
+
         print '<br />';
         $amountPaid = $this->getSommePaiement();
         print $langs->trans("AlreadyPaid") . ': ' . price($amountPaid) . $langs->trans('Currency' . $conf->currency) . '<br />';
         print $langs->trans("RemainderToPay") . ': ' . price($this->total_ttc - $amountPaid) . $langs->trans('Currency' . $conf->currency) . '<br />';
 
         print end_box();
-        
+
     }
-    
+
     public function addInPlace($obj){
-        
+
         global $user;
-        
+
         // Converting date to timestamp
         $date = explode('/', $this->date);
         $this->date = $obj->date = dol_mktime(0, 0, 0, $date[1], $date[0], $date[2]);
-        
+
         // Generating next ref
         $this->ref = $obj->ref = $this->getNextNumRef();
-        
+
         // Setting author of propal
         $this->author = new stdClass();
         $this->author->id = $user->id;
         $this->author->name = $user->login;
-        
+
     }
-    
+
     public function deleteInPlace($obj){
-        
+
         global $user;
-        
+
         // Delete lines of Facture
         $lines = $this->getView('linesPerFacture', array('key' => $this->id));
         foreach ($lines->rows as $l) {
             $this->deleteline($l->value->_id);
-        }      
-        
+        }
+
     }
-    
+
     public function fetch_thirdparty(){
-        
+
         $thirdparty = new Societe($this->db);
         $thirdparty->fetch($this->client->id);
         $this->thirdparty = $thirdparty;
-        
+
     }
-    
+
     public function show($id) {
 
         global $langs;
@@ -3847,9 +3843,9 @@ class FactureLigne extends nosqlDocument {
         // Check parameters
         if ($this->product_type < 0)
             return -1;
-        
+
         $this->record();
-        
+
         if (!$notrigger) {
                 // Appel des triggers
                 include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
@@ -3861,7 +3857,7 @@ class FactureLigne extends nosqlDocument {
                 }
                 // Fin appel triggers
             }
-            
+
             return $this->id;
 
         $this->db->begin();
@@ -4082,7 +4078,7 @@ class FactureLigne extends nosqlDocument {
         global $conf, $langs, $user;
 
         $error = 0;
-        
+
         // Si la ligne correspond à une remise, réactiver celle-ci
         if (isset($this->fk_remise_except) && !empty($this->fk_remise_except)) {
             $discount = new DiscountAbsolute($this->db);
@@ -4090,9 +4086,9 @@ class FactureLigne extends nosqlDocument {
             $discount->fk_facture_line = null;
             $discount->record();
         }
-        
+
         $this->deleteDoc();
-        
+
         return 1;
 
         $this->db->begin();

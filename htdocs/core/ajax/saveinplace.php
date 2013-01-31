@@ -81,11 +81,11 @@ if (!empty($key) && !empty($id) && !empty($class)) {
     }
 
     if ($type == "date" || $type == "datepicker") {
-        $res = setlocale(LC_TIME, 'fr_FR.UTF8', 'fra');
+        $res = setlocale(LC_TIME, 'fr_FR.UTF8', 'fra'); // FIXME this is too restrictive !
         $value = str_replace("/", '-', $value); // 01/12/2012 -> 01-12-2012
         $value = strtotime($value);
     }
-    
+
     if($type == "wysiwyg") { // HTML Code
         $value = str_replace ("\n","",$value);
         $value = str_replace ("\t","",$value);

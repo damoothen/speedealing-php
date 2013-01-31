@@ -26,9 +26,7 @@ require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php");
 // If not defined, we select menu "home"
 $action = GETPOST('action');
 
-
-include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
-$hookmanager = new HookManager($db);
+// Add index hook
 $hookmanager->initHooks(array('index'));
 
 
@@ -615,18 +613,18 @@ print '</div></div>';
                                 color: 'silver'
                             }]
                     },
-		    
+
                     plotOptions: {
                         series: {
                             compare: 'percent'
                         }
                     },
-		    
+
                     tooltip: {
                         pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
                         valueDecimals: 2
                     },
-		    
+
                     series: seriesOptions
                 });
             }

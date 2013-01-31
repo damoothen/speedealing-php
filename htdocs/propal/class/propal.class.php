@@ -113,7 +113,7 @@ class Propal extends nosqlDocument {
 
         $this->fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields->fetch(get_class($this));
-        
+
         $this->no_save[] = 'thirdparty';
         $this->no_save[] = 'line';
         $this->no_save[] = 'lines';
@@ -597,7 +597,7 @@ class Propal extends nosqlDocument {
         $this->client = new stdClass();
         $this->client->id = $soc->id;
         $this->client->name = $soc->name;
-        
+
         // Author
         $this->author = new stdClass();
         $this->author->id = $user->id;
@@ -799,11 +799,10 @@ class Propal extends nosqlDocument {
      * 		Load an object from its id and create a new one in database
      *
      * 		@param		int				$socid			Id of thirdparty
-     * 		@param		HookManager		$hookmanager	Hook manager instance
      * 	 	@return		int								New id of clone
      */
-    function createFromClone($socid = 0, $hookmanager = false) {
-        global $user, $langs, $conf;
+    function createFromClone($socid = 0) {
+        global $user, $langs, $conf, $hookmanager;
 
         $error = 0;
         $now = dol_now();
@@ -1085,7 +1084,7 @@ class Propal extends nosqlDocument {
 //            return -1;
 //        }
     }
-    
+
         /**
      * 	Update propal
      *
@@ -1096,9 +1095,9 @@ class Propal extends nosqlDocument {
     function update($user, $notrigger = 0) {
         global $conf, $langs, $mysoc;
         $error = 0;
-        
+
         dol_syslog("Propal::update user=" . $user->id);
-        
+
         // Clean parameters
         if (empty($this->date))
             $this->date = $this->datep;
@@ -1438,7 +1437,7 @@ class Propal extends nosqlDocument {
 
         $resql = $this->db->query($sql);
         if ($resql) {
-            
+
         }
     }
 
@@ -1452,14 +1451,14 @@ class Propal extends nosqlDocument {
      */
     function cloture($user, $statut, $note) {
         global $langs, $conf;
-        
+
         $error = 0;
         $now = dol_now();
-        
+
         $this->Status = $statut;
         $this->note = $note;
         $this->record();
-        
+
         if ($this->Status == "SIGNED") {
              $soc = new Societe($this->db);
                 $soc->id = $this->socid;
@@ -1915,7 +1914,7 @@ class Propal extends nosqlDocument {
             return -2;
         }
     }
-    
+
         /**
      * 	Change payment terms
      *
@@ -2463,24 +2462,24 @@ class Propal extends nosqlDocument {
         $this->record();
         return 1;
     }
-    
+
     function setStatut($status) {
         $this->Status = $status;
         $this->record();
         return 1;
     }
-    
+
     public function getLinkedObject(){
-        
+
         $objects = array();
-        
+
         /* No variable $linked_objects ?
-         * 
-         * 
+         *
+         *
         // Object stored in $this->linked_objects;
         foreach ($this->linked_objects as $obj) {
             switch ($obj->type) {
-                case 'commande': 
+                case 'commande':
                     $classname = 'Commande';
                     dol_include_once('commande/class/commande.class.php');
                     break;
@@ -2489,9 +2488,9 @@ class Propal extends nosqlDocument {
             $tmp->fetch($obj->id);
             $objects[$obj->type][] = $tmp;
         }
-         * 
+         *
          */
-        
+
         // Objects that refer current propal in their $linked_objects variable.
         $res = $this->getView('listLinkedObjects', array('key' => $this->id));
         if (count($res->rows) > 0) {
@@ -2504,32 +2503,32 @@ class Propal extends nosqlDocument {
                 $objects[strtolower($classname)][] = $obj;
             }
         }
-        
+
         return $objects;
-        
+
     }
-    
+
     public function printLinkedObjects(){
-        
+
         global $langs;
-        
+
         $objects = $this->getLinkedObject();
-       
+
         // Displaying linked orders
         if (isset($objects['commande'])) {
             $this->printLinkedObjectsType('commande', $objects['commande']);
         }
-        
+
     }
-    
+
     public function printLinkedObjectsType($type, $data){
-        
-        global $langs; 
-        
+
+        global $langs;
+
         $title = 'LinkedObjects';
         if ($type == 'commande')
             $title = 'LinkedOrders';
-        
+
         print start_box($langs->trans($title), "six", $this->fk_extrafields->ico, false);
         print '<table id="tablelines" class="noborder" width="100%">';
         print '<tr>';
@@ -2550,10 +2549,10 @@ class Propal extends nosqlDocument {
         print end_box();
 
     }
-    
+
     public function showLinkedObjects() {
-        global $langs; 
-                
+        global $langs;
+
          print start_box($langs->trans("LinkedObjects"), "six", $this->fk_extrafields->ico, false);
            print '<table class="display dt_act" id="listlinkedobjects" >';
         // Ligne des titres
@@ -2614,52 +2613,53 @@ class Propal extends nosqlDocument {
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listLinkedObjects&class=" . get_class($this) . "&key=" . $this->id;
         $this->datatablesCreate($obj, "listlinkedobjects", true);
         print end_box();
-        
+
 }
-    
+
     public function addInPlace($obj){
-        
+
         global $user;
-        
+
         // Generating next ref
         $this->ref = $obj->ref = $this->getNextNumRef();
-        
+
         // Converting date to timestamp
         $date = explode('/', $this->date);
         $this->date = $obj->date = dol_mktime(0, 0, 0, $date[1], $date[0], $date[2]);
-        
+
         // Setting author of propal
         $this->author = new stdClass();
         $this->author->id = $user->id;
         $this->author->name = $user->login;
-        
+
     }
-    
+
     public function deleteInPlace($obj){
-        
+
         global $user;
-        
+
         // Delete lines of Propal
         $lines = $this->getView('linesPerPropal', array('key' => $this->id));
         foreach ($lines->rows as $l) {
             $this->deleteline($l->value->_id);
-        }      
-        
+        }
+
     }
-    
+
     public function fetch_thirdparty(){
-        
+
         $thirdparty = new Societe($this->db);
         $thirdparty->fetch($this->client->id);
         $this->thirdparty = $thirdparty;
-        
+
     }
-    
+
      /**
      *  Show actions
      *
      *  @param	int		$max		Max nb of records
      *  @return	void
+     *  FIXME use $id in first parameter with no default value
      */
     function showPropals($max = 5, $id = 0) {
         global $langs, $conf, $user, $db, $bc;
@@ -2780,7 +2780,7 @@ class Propal extends nosqlDocument {
         }
         print end_box();
     }
-    
+
     public function show($id) {
 
         global $langs;
@@ -2849,7 +2849,7 @@ class Propal extends nosqlDocument {
         $this->datatablesCreate($obj, "listpropals", true);
         print end_box();
     }
-    
+
 }
 
 /**

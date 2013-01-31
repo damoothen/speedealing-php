@@ -275,7 +275,7 @@ class Societe extends nosqlDocument {
 
     /**
      *  Update GPS coordonnate
-     * 
+     *
      */
     function updateGPS() {
         global $conf;
@@ -322,7 +322,8 @@ class Societe extends nosqlDocument {
      *      @return int 		           			<0 if KO, >=0 if OK
      */
     function update($id, $user = '', $call_trigger = 1, $allowmodcodeclient = 0, $allowmodcodefournisseur = 0, $action = 'update') {
-        global $langs, $conf;
+        global $langs, $conf, $hookmanager;
+
         require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
 
         $error = 0;
@@ -383,7 +384,7 @@ class Societe extends nosqlDocument {
             $this->get_codeclient($this->prefix_comm, 0);
         if ($this->code_fournisseur == -1)
             $this->get_codefournisseur($this->prefix_comm, 1);
-        
+
         $this->code_compta = trim($this->code_compta);
         $this->code_compta_fournisseur = trim($this->code_compta_fournisseur);
 
@@ -422,7 +423,7 @@ class Societe extends nosqlDocument {
 
             $supplier = true;
         }
-        
+
         // Calcul des coordonnées GPS
         $this->updateGPS();
 
@@ -445,8 +446,6 @@ class Societe extends nosqlDocument {
                 $this->AddFournisseurInCategory($this->fournisseur_categorie);
 
                 // Actions on extra fields (by external module or standard code)
-                include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-                $hookmanager = new HookManager($this->db);
                 $hookmanager->initHooks(array('thirdpartydao'));
                 $parameters = array('socid' => $this->id);
                 $reshook = $hookmanager->executeHooks('insertExtraFields', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
@@ -502,7 +501,8 @@ class Societe extends nosqlDocument {
      *    @return	int				<0 if KO, 0 if nothing done, >0 if OK
      */
     function delete($id) {
-        global $user, $langs, $conf;
+        global $user, $langs, $conf, $hookmanager;
+
         require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 
         dol_syslog(get_class($this) . "::delete", LOG_DEBUG);
@@ -576,8 +576,6 @@ class Societe extends nosqlDocument {
 
             if (!$error) {
                 // Additionnal action by hooks
-                include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-                $hookmanager = new HookManager($this->db);
                 $hookmanager->initHooks(array('thirdpartydao'));
                 $parameters = array();
                 $action = 'delete';
@@ -2181,7 +2179,7 @@ class Societe extends nosqlDocument {
         }
     }
 
-    
+
 
 }
 ?>

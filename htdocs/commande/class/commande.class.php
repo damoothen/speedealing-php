@@ -170,7 +170,7 @@ class Commande extends AbstractInvoice {
         // Definition du nom de module de numerotation de commande
         $soc = new Societe($this->db);
         $soc->load($this->client->id);
-        
+
         $this->ref = $this->getNextNumRef($soc);
         $this->Status = "VALIDATED";
         $this->record();
@@ -925,11 +925,10 @@ class Commande extends AbstractInvoice {
      * 	Load an object from its id and create a new one in database
      *
      * 	@param		int			$socid			Id of thirdparty
-     * 	@param		HookManager	$hookmanager	Hook manager instance
      * 	@return		int							New id of clone
      */
-    function createFromClone($socid = 0, $hookmanager = false) {
-        global $conf, $user, $langs;
+    function createFromClone($socid = 0) {
+        global $conf, $user, $langs, $hookmanager;
 
         $error = 0;
 
@@ -1006,8 +1005,7 @@ class Commande extends AbstractInvoice {
      *  @return     int             					<0 if KO, 0 if nothing done, 1 if OK
      */
     function createFromProposal($object) {
-        global $conf, $user, $langs;
-        global $hookmanager;
+        global $conf, $user, $langs, $hookmanager;
 
         $error = 0;
 
@@ -1067,12 +1065,7 @@ class Commande extends AbstractInvoice {
 
             if ($ret > 0) {
                 // Actions hooked (by external module)
-                if (!is_object($hookmanager)) {
-                    include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-                    $hookmanager = new HookManager($this->db);
-                }
                 $hookmanager->initHooks(array('orderdao'));
-
                 $parameters = array('objFrom' => $object);
                 $action = '';
                 $reshook = $hookmanager->executeHooks('createFrom', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
@@ -1097,7 +1090,7 @@ class Commande extends AbstractInvoice {
             return 0;
     }
 
-    
+
 
     /**
      * 	Add line into array
@@ -1391,7 +1384,7 @@ class Commande extends AbstractInvoice {
      * 	@return		int						<0 if KO, >0 if OK
      */
     function fetch_lines($only_product = 0) {
-        
+
         return $this->lines;
 //        $sql = 'SELECT l.rowid, l.fk_product, l.fk_parent_line, l.product_type, l.fk_commande, l.label as custom_label, l.description, l.price, l.qty, l.tva_tx,';
 //        $sql.= ' l.localtax1_tx, l.localtax2_tx, l.fk_remise_except, l.remise_percent, l.subprice, l.fk_product_fournisseur_price as fk_fournprice, l.buy_price_ht as pa_ht, l.rang, l.info_bits, l.special_code,';
@@ -2902,8 +2895,8 @@ class Commande extends AbstractInvoice {
         $thirdparty->fetch($this->client->id);
         $this->thirdparty = $thirdparty;
     }
-    
-    
+
+
     public function show($id) {
 
         global $langs;
@@ -2972,7 +2965,7 @@ class Commande extends AbstractInvoice {
         $this->datatablesCreate($obj, "listcommandes", true);
         print end_box();
     }
-    
+
 }
 
 /**

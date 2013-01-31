@@ -65,16 +65,7 @@ function dol_dir_list($path, $types="all", $recursive=0, $filter="", $excludefil
 	$newpath=dol_osencode($path);
 
 	if (! $nohook) {
-		if (! is_object($hookmanager))
-		{
-			if (! class_exists('HookManager')) {
-				// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-				require DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-				$hookmanager=new HookManager($db);
-			}
-		}
 		$hookmanager->initHooks(array('fileslib'));
-
 		$parameters=array(
 				'path' => $newpath,
 				'types'=> $types,
@@ -652,16 +643,8 @@ function dol_move_uploaded_file($src_file, $dest_file, $allowoverwrite, $disable
 			return -2;
 		}
 
-		if (! is_object($hookmanager))
-		{
-			if (! class_exists('HookManager')) {
-				// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-				require DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-				$hookmanager=new HookManager($db);
-			}
-		}
+		// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 		$hookmanager->initHooks(array('fileslib'));
-
 		$parameters=array('filename' => $file_name, 'varfiles' => $varfiles, 'allowoverwrite' => $allowoverwrite);
 		$reshook=$hookmanager->executeHooks('moveUploadedFile', $parameters, $object);
 	}
@@ -713,24 +696,15 @@ function dol_move_uploaded_file($src_file, $dest_file, $allowoverwrite, $disable
  */
 function dol_delete_file($file,$disableglob=0,$nophperrors=0,$nohook=0,$object=null)
 {
-	global $db, $conf, $user, $langs;
-	global $hookmanager;
+	global $db, $conf, $user, $langs, $hookmanager;
 
 	$langs->load("other");
 	$langs->load("errors");
 
 	if (empty($nohook))
 	{
-		if (! is_object($hookmanager))
-		{
-			if (! class_exists('HookManager')) {
-				// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-				require DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-				$hookmanager=new HookManager($db);
-			}
-		}
+		// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 		$hookmanager->initHooks(array('fileslib'));
-
 		$parameters=array(
 				'GET' => $_GET,
 				'file' => $file,

@@ -93,8 +93,6 @@ if (!empty($id)) {
 }
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-$hookmanager = new HookManager($db);
 $hookmanager->initHooks(array('invoicecard'));
 
 /* Actions ****************************************************************** */
@@ -529,7 +527,7 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
                     }
 
                     $ret = $object->fetch($id);    // Reload to get new records
-                    facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                    facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
                 }
 
                 unset($_POST['qty']);
@@ -633,7 +631,7 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
                 }
 
                 $ret = $object->fetch($id);    // Reload to get new records
-                facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
             }
 
             unset($_POST['qty']);
@@ -682,7 +680,7 @@ else if ($action == 'confirm_deleteline' && $confirm == 'yes' && $user->rights->
         }
         if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
             $ret = $object->fetch($id);    // Reload to get new records
-            $result = facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+            $result = facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
         }
         if ($result >= 0) {
             header('Location: ' . $_SERVER["PHP_SELF"] . '?id=' . $id);
@@ -727,7 +725,7 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->factu
             }
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
                 $ret = $object->fetch($id);    // Reload to get new records
-                facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
             }
         } else {
             $mesgs[] = '<div class="error">' . $object->error . '</div>';
@@ -756,7 +754,7 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->factu
         $outputlangs = new Translate("", $conf);
         $outputlangs->setDefaultLang($newlang);
     }
-    $result = facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+    $result = facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
     if ($result <= 0) {
         dol_print_error($db, $result);
         exit;
@@ -800,7 +798,7 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->factu
             }
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
                 $ret = $object->fetch($id);    // Reload to get new records
-                facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
             }
         }
     }
@@ -1367,7 +1365,7 @@ if ($action == 'create' && $user->rights->facture->creer) {
     print $form->select_company($socid, "socid");
     print '</td>';
     print '</tr>' . "\n";
-    
+
     // Reference client
     print '<tr><td>' . $langs->trans('RefCustomer') . '</td><td colspan="2">';
     print '<input type="text" name="ref_client" value="' . $ref_client . '"></td>';
@@ -1757,7 +1755,7 @@ else {
         print ' (' . $langs->transnoentities("ReplacedByInvoice", $replacingInvoice->getNomUrl(1)) . ')';
     }
     print '</td></tr>';
-    
+
 
     // Relative and absolute discounts
 //    $addrelativediscount = '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditRelativeDiscounts") . '</a>';
@@ -1844,7 +1842,7 @@ print '<td td colspan="5">';
 print $form->editfieldval("RefCustomer", 'ref_client', $object->ref_client, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "text");
 print '</td>';
 print '</tr>';
-    
+
     // Date invoice
 //    print '<tr><td width="20%">' . $langs->trans('Date') . '</td>';
 //    print '<td>';
@@ -1858,7 +1856,7 @@ print '</tr>';
     print $form->editfieldval("Date", 'date', $object->date, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "datepicker");
     print '</td>';
     print '</tr>';
-    
+
 
     // Date payment term
 //    print '<tr><td width="20%">' . $langs->trans('DateMaxPayment') . '</td>';
@@ -1876,7 +1874,7 @@ print '</tr>';
     print $form->editfieldval("DateMaxPayment", 'date_lim_reglement', $object->date_lim_reglement, $object, $user->rights->facture->creer && $object->Status == "DRAFT", "datepicker");
     print '</td>';
     print '</tr>';
-    
+
     // Payment terms
 //    print '<tr><td width="20%">' . $langs->trans('PaymentConditions') . '</td>';
 //    print '<td>';
@@ -1960,7 +1958,7 @@ print '</tr>';
 
     // Show object lines
     if (!empty($object->lines))
-        $ret = $object->printObjectLines($action, $mysoc, $soc, $lineid, 1, $hookmanager);
+        $ret = $object->printObjectLines($action, $mysoc, $soc, $lineid, 1);
 
     // Form to add new line
 
@@ -1970,15 +1968,15 @@ print '</tr>';
 
             if ($conf->global->MAIN_FEATURES_LEVEL > 1) {
                 // Add free or predefined products/services
-                $object->formAddObjectLine(1, $mysoc, $soc, $hookmanager);
+                $object->formAddObjectLine(1, $mysoc, $soc);
             } else {
                 // Add free products/services
-                $object->formAddFreeProduct(1, $mysoc, $soc, $hookmanager);
+                $object->formAddFreeProduct(1, $mysoc, $soc);
 
                 // Add predefined products/services
                 if (!empty($conf->product->enabled) || !empty($conf->service->enabled)) {
                     $var = !$var;
-                    $object->formAddPredefinedProduct(1, $mysoc, $soc, $hookmanager);
+                    $object->formAddPredefinedProduct(1, $mysoc, $soc);
                 }
             }
 
@@ -1992,7 +1990,7 @@ print '</tr>';
 
     // Show list of paymenys
     $object->showPayments();
-    
+
     // List of linked objects
 //    $object->printLinkedObjects();
     $object->showLinkedObjects();
@@ -2009,7 +2007,7 @@ print '</tr>';
     $delallowed = $user->rights->facture->supprimer;
 
     print '<br>';
-    print $formfile->showdocuments('facture', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $soc->default_lang, $hookmanager);
+    print $formfile->showdocuments('facture', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $soc->default_lang);
     $somethingshown = $formfile->numoffiles;
     print end_box();
 
@@ -2051,7 +2049,7 @@ print '</tr>';
                 $outputlangs->setDefaultLang($newlang);
             }
 
-            $result = facture_pdf_create($db, $object, GETPOST('model') ? GETPOST('model') : $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+            $result = facture_pdf_create($db, $object, GETPOST('model') ? GETPOST('model') : $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
             if ($result <= 0) {
                 dol_print_error($db, $result);
                 exit;

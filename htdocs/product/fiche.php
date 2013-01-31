@@ -75,10 +75,7 @@ $fieldtype = (!empty($ref) ? 'ref' : 'rowid');
 $result = restrictedArea($user, 'produit|service', $fieldvalue, 'product&product', '', '', $fieldtype, $objcanvas);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-$hookmanager = new HookManager($db);
 $hookmanager->initHooks(array('productcard'));
-
 
 
 /*
@@ -683,7 +680,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             if ($user->admin)
                 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
             print '</td></tr>';
-            
+
             //Tag list
             print '<tr><td>' . $langs->trans("Categories") . '</td><td colspan="3">';
             print '<ul id="array_tag_handler"></ul>';
@@ -924,7 +921,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                 print ($img ? $img . ' ' : '') . $object->print_fk_extrafields("country_id");
             }
             print '</td>';
-            
+
             //Tag list
             print '<tr><td>' . $form->editfieldkey("Categories", 'Tag', $object->Tag, $object, $user->rights->produit->creer || $user->rights->service->creer, "tag") . '</td><td colspan="2">';
             print $form->editfieldval("Categories", 'Tag', $object->Tag, $object, $user->rights->produit->creer || $user->rights->service->creer, "tag");

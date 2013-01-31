@@ -909,10 +909,11 @@ class Agenda extends nosqlDocument {
     /**
      *  Show actions
      *
+     *	@param	int		$id			Object id
      *  @param	int		$max		Max nb of records
      *  @return	void
      */
-    function show($max = 5, $id = 0) {
+    function show($id, $max = 5) {
         global $langs, $conf, $user, $db, $bc;
 
         $h = 0;

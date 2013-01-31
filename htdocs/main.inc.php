@@ -281,7 +281,7 @@ if (!defined('NOLOGIN')) {
         dol_print_error('', $langs->trans("ErrorConfigParameterNotDefined", 'dolibarr_main_authentication'));
         exit;
     }
-    
+
     // If requested by the login has already occurred, it is retrieved from the session
     // Call module if not realized that his request.
     // At the end of this phase, the variable $login is defined.
@@ -390,16 +390,6 @@ if (!defined('NOLOGIN')) {
             $db->commit();
         }
 
-        // Hooks on successfull login
-        $action = '';
-        include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
-        $hookmanager = new HookManager($db);
-        $hookmanager->initHooks(array('login'));
-        $parameters = array('dol_authmode' => $dol_authmode);
-        $reshook = $hookmanager->executeHooks('afterLogin', $parameters, $user, $action); // Note that $action and $object may have been modified by some hooks
-        if ($reshook < 0)
-            $error++;
-
         //header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
         //exit;
     }
@@ -425,7 +415,7 @@ if (!defined('NOLOGIN')) {
 
 // Init the 4 global objects
 // This include will set: $conf, $db, $langs, $user objects
-require_once("after.inc.php");
+require 'after.inc.php';
 
 if (!defined('NOREQUIRETRAN')) {
     if (!GETPOST('lang')) { // If language was not forced on URL
@@ -1076,10 +1066,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         $bookmarks = '';
 
         // Instantiate hooks of thirdparty module
-        if (!is_object($hookmanager)) {
-            include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
-            $hookmanager = new HookManager($db);
-        }
         $hookmanager->initHooks(array('searchform', 'leftblock'));
 
         print "\n";

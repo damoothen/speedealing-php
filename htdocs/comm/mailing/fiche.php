@@ -46,8 +46,6 @@ $result=$object->fetch($id);
 $extrafields = new ExtraFields($db);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-$hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('mailingcard'));
 
 // Tableau des substitutions possibles
@@ -843,7 +841,7 @@ else
                             dol_include_once("/mailjet/class/mailjet.class.php");
                             $langs->load("mailjet@mailjet");
                             $mailjet=new Mailjet($db);
-                            
+
                             print $mailjet->statistic($mil->id);
                         }
 

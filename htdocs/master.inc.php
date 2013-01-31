@@ -108,9 +108,8 @@ if (!empty($conf->memcached->host) && class_exists('Memcached')) {
         $conf->memcached->enabled = true;
 }
 
-/*
- * Creation objet $langs (must be before all other code)
- */
+
+// Creation objet $langs (must be before all other code)
 if (!defined('NOREQUIRETRAN')) {
     if (!class_exists('Translate'))
         require DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
