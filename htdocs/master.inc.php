@@ -142,6 +142,7 @@ if (!defined('NOREQUIREDB')) {
 
     if (empty($conf->Couchdb->name))
         $conf->Couchdb->name = "_users"; // login phase
+    //$conf->Couchdb->name = "demo"; // for test
 
     $couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
     $couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);

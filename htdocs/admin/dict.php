@@ -992,7 +992,7 @@ if ($id) {
                             } else if ($fieldlist[$field] == 'region_id' || $fieldlist[$field] == 'pays_id') {
                                 $showfield = 0;
                             } else if ($fieldlist[$field] == 'unicode') {
-                                $valuetoshow = getCurrencySymbol($obj->code);
+                                $valuetoshow = $langs->getCurrencySymbol($obj->code);
                             }
                             if ($showfield)
                                 print '<td>' . $valuetoshow . '</td>';

@@ -60,7 +60,7 @@ if (! empty($idprod))
 //
 //	dol_syslog("Ajax::getSupplierPrices sql=".$sql, LOG_DEBUG);
 //	$result=$db->query($sql);
-    
+
     $product = new Product($db);
     $result = $product->getView('list', array('startkey' => $idprod, 'endkey' => $idprod . 'Z'));
 
@@ -81,10 +81,10 @@ if (! empty($idprod))
 
 				if ($objp->quantity == 1)
 				{
-					$label.= price($objp->fprice).getCurrencySymbol($conf->currency)."/".strtolower($langs->trans("Unit"));
+					$label.= price($objp->fprice).$langs->getCurrencySymbol($conf->currency)."/".strtolower($langs->trans("Unit"));
 
 					$title.= price($objp->fprice);
-					$title.= getCurrencySymbol($conf->currency)."/";
+					$title.= $langs->getCurrencySymbol($conf->currency)."/";
 
 					$price = $objp->fprice;
 				}
@@ -102,15 +102,15 @@ if (! empty($idprod))
 				if ($objp->quantity > 1)
 				{
 					$title.=" - ";
-					$title.= price($objp->unitprice).getCurrencySymbol($conf->currency)."/".strtolower($langs->trans("Unit"));
+					$title.= price($objp->unitprice).$langs->getCurrencySymbol($conf->currency)."/".strtolower($langs->trans("Unit"));
 
-					$label.= price($objp->unitprice).getCurrencySymbol($conf->currency)."/".strtolower($langs->trans("Unit"));
+					$label.= price($objp->unitprice).$langs->getCurrencySymbol($conf->currency)."/".strtolower($langs->trans("Unit"));
 
 					$price = $objp->unitprice;
 				}
 				if ($objp->unitcharges > 0 && ($conf->global->MARGIN_TYPE == "2")) {
 					$title.=" + ";
-					$title.= price($objp->unitcharges).getCurrencySymbol($conf->currency);
+					$title.= price($objp->unitcharges).$langs->getCurrencySymbol($conf->currency);
 					$price += $objp->unitcharges;
 				}
 				if ($objp->duration) $label .= " - ".$objp->duration;
