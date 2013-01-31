@@ -48,7 +48,7 @@ class Translate extends nosqlDocument {
      */
 
     function __construct($dir, $conf) {
-    	parent::__construct($db);
+    	//parent::__construct($db); // TODO for avoid error, find another method
 
         if (!empty($conf->file->character_set_client))
             $this->charset_output = $conf->file->character_set_client; // If charset output is forced
@@ -673,6 +673,7 @@ class Translate extends nosqlDocument {
     	if (!empty($this->cache_currencies)) return 0;    // Value already into cache
 
     	try {
+    		parent::__construct($db); // TODO for avoid error, find another method
     		$currencies = $this->couchdb->getDoc('dict:fk_currencies'); // load currencies
     		if (!empty($currencies)) {
 
