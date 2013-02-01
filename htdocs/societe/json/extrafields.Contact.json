@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Contact",
-   "_rev": "16-723847674a04e34510b0dde67536f1cd",
+   "_rev": "22-df23a424fa3ae1d00d0338f4375371b3",
    "class": "extrafields",
    "ico": "16-User.png",
    "langs": [
@@ -32,9 +32,12 @@
            "enable": true
        },
        "societe": {
+           "type": "select",
            "enable": true,
            "class": "Societe",
-           "view": "list"
+           "view": "list",
+           "params": {
+           }
        },
        "Status": {
            "type": "select",
