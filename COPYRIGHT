@@ -2,20 +2,22 @@
 License
 -------
 
-SpeeDealing is released under the terms of the Apache v2 License.
-However it uses some external libraries under different licences. This is compatibility summary:
+Speedealing is released under the terms of the GNU General Public License as 
+published by the Free Software Foundation; either version 3 of the License,
+or (at your option) any later version (GPL-3+).
+More information: http://www.gnu.org/licenses/gpl-3.0.txt
 
 Composant         Version  License                     Compatible		Usage
 ----------------------------------------------------------------------------
 PHP libraries:
 AdoDb-Date        0.21		Modified BSD License		Yes				Date convertion (not into rpm package)
-CKEditor		  3.6.4		GPL or LGPL 2.1 or MPL 1.1	Yes				Editor WYSIWYG
+CKEditor		  3.6.4		LGPL-2.1+					Yes				Editor WYSIWYG
 FPDI              1.4.2		Apache Software License 2.0	Yes				PDF templates management (with FPDF_TPL 1.2)
-GeoIP			  2004      LGPL 2.1                    Yes             Sample code to make geoip convert (not into deb package)
-NuSoap            0.9.5		LGPL 2.1					Yes				Library to develop SOAP Web services (not into rpm and deb package)
-OdtPHP            1.0.1		GPL 2.0						No				Library to build/edit ODT files
-PHPExcel		  1.7.6		LGPL 2.1					Yes				Read/Write XLS files, read ODS files
-TCPDF             5.9.180	LGPL 3.0					Yes				PDF generation
+GeoIP			  2004      LGPL-2.1+                   Yes             Sample code to make geoip convert (not into deb package)
+NuSoap            0.9.5		LGPL 2.1+					Yes				Library to develop SOAP Web services (not into rpm and deb package)
+OdtPHP            1.0.1		GPL-2+						Yes				Library to build/edit ODT files
+PHPExcel		  1.7.6		LGPL-2.1+					Yes				Read/Write XLS files, read ODS files
+TCPDF             5.9.180	LGPL-3+						Yes				PDF generation
 
 JS libraries:
 jQuery            1.7.2		GPL and MIT Licence			Yes				JS library
