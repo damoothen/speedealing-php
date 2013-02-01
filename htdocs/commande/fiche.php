@@ -1412,7 +1412,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 
     // Lines
     
-//    $object->showLines();
+    $object->showLines();
     
     print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
     print '<table id="tablelines" class="noborder" width="100%">';
