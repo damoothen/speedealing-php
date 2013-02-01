@@ -941,7 +941,7 @@ class Agenda extends nosqlDocument {
 
         //print $this->datatablesEdit("actions_datatable", $langs->trans("NewAction"));
 
-        if ($user->rights->agenda->myactions->create || $user->rights->agenda->allactions->create) {
+        if ($user->rights->agenda->myactions->write || $user->rights->agenda->allactions->write) {
             print '<p class="button-height right">';
             print '<span class="button-group">';
             print '<a class="button compact icon-star" href="agenda/fiche.php?action=create&socid='.$id.'">' . $langs->trans("NewAction") . '</a>';
