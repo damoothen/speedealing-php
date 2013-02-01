@@ -1,10 +1,11 @@
 {
    "_id": "dict:fk_departements",
-   "_rev": "2-4a037e1e3197a5e22856c31a621c10bd",
+   "_rev": "3-12ab0d6b55bba846fc6cd5c82effc388",
    "values": {
        "0": {
            "enable": true,
-           "label": "-"
+           "label": "-",
+           "default": true
        },
        "10": {
            "enable": true,

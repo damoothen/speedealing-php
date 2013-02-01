@@ -529,9 +529,9 @@ abstract class nosqlDocument extends CommonObject {
 
         $class = strtolower(get_class($this));
         ?><script type="text/javascript" charset="utf-8">
-                    $(document).ready(function() {
-                        var oTable = $('#<?php echo $ref_css ?>').dataTable( {
-                            "aoColumns" : [
+            $(document).ready(function() {
+                var oTable = $('#<?php echo $ref_css ?>').dataTable( {
+                    "aoColumns" : [
         <?php
         $nb = count($obj->aoColumns);
         foreach ($obj->aoColumns as $i => $aRow):
@@ -1374,31 +1374,51 @@ abstract class nosqlDocument extends CommonObject {
                 }
 
 
-                if (count($aRow->values))
+                if (count($aRow->values)) {
                     foreach ($aRow->values as $idx => $row) {
-                        if ($row->enable) {
-                            if ($returnIndex)
-                                $rtr.= '<option value="' . $idx . '"';
-                            else
-                                $rtr.= '<option value="' . $row->label . '"';
+                        $enable = $row->enable;
 
-                            if ($returnIndex) {
-                                if ($selected == $idx)
-                                    $rtr.= ' selected="selected"';
-                            } else {
-                                if ($selected == $row->label)
-                                    $rtr.= ' selected="selected"';
+                        // Apply filter
+                        if ($enable && !$row->default && count($aRow->filters)) {
+                            foreach ($aRow->filters as $keyf => $rowf) {
+                                if ($this->$rowf != $row->$keyf)
+                                    $enable = false;
                             }
-
-                            $rtr.= '>';
-
-                            if (isset($row->label))
-                                $rtr.= dol_trunc($langs->trans($row->label), $lengh);
+                        }
+                        if ($enable) {
+                            if (!empty($row->label))
+                                $tab_result[$idx] = dol_trunc($langs->trans($row->label), $lengh);
                             else
-                                $rtr.= dol_trunc($langs->trans($idx), $lengh);
-                            $rtr.='</option>';
+                                $tab_result[$idx] = dol_trunc($langs->trans($idx), $lengh);
                         }
                     }
+
+                    // Tri
+                    if ($aRow->sort) {
+                        asort($tab_result);
+                    }
+
+                    foreach ($tab_result as $idx => $row) {
+
+                        if ($returnIndex)
+                            $rtr.= '<option value="' . $idx . '"';
+                        else
+                            $rtr.= '<option value="' . $row . '"';
+
+                        if ($returnIndex) {
+                            if ($selected == $idx)
+                                $rtr.= ' selected="selected"';
+                        } else {
+                            if ($selected == $row)
+                                $rtr.= ' selected="selected"';
+                        }
+
+                        $rtr.= '>';
+
+                        $rtr.= $row;
+                        $rtr.='</option>';
+                    }
+                }
                 $rtr.= '</select>';
 
                 break;

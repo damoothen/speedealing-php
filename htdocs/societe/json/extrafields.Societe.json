@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "115-642a3d31d5d82cb9c5bec9823400b54b",
+   "_rev": "120-0916a72ac0e7bcf992d433d56c05278c",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -119,13 +119,18 @@
            "type": "select",
            "enable": true,
            "dict": "dict:fk_country",
-           "default": "substr($langs->defaultlang,3,5)"
+           "default": "substr($langs->defaultlang,3,5)",
+           "sort": true
        },
        "state_id": {
            "type": "select",
            "enable": true,
            "settype": "int",
-           "dict": "dict:fk_departements"
+           "dict": "dict:fk_departements",
+           "filters": {
+               "pays_code": "country_id"
+           },
+           "sort": true
        },
        "DefaultLang": {
            "type": "select",
