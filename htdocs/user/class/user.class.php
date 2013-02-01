@@ -22,11 +22,6 @@
  * limitations under the License.
  */
 
-/**
- *  \file       htdocs/user/class/user.class.php
- * 	\brief      File of class to manage users
- *  \ingroup	core
- */
 require_once DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchAdmin.php';
@@ -491,7 +486,7 @@ class User extends nosqlDocument {
         		$this->rights->contact = new stdClass(); // For avoid error
             $this->rights->contact->delete = true;
         }
-        if (! empty($this->rights->agenda->myactions->create))
+        if (! empty($this->rights->agenda->myactions->write))
             $this->rights->agenda->edit = true;
         if (! empty($this->rights->agenda->myactions->delete))
             $this->rights->agenda->delete = true;

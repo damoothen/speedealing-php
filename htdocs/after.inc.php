@@ -25,12 +25,6 @@
  * limitations under the License.
  */
 
-/**
- * 	\file       htdocs/after.inc.php
- * 	\ingroup	core
- *  \brief      File that defines environment for all Speedealing process (pages or scripts)
- * 				This script reads the conf file, init $lang, $db and and empty $user
- */
 /*
  * Load object $conf
  * After this, all parameters conf->global->CONSTANTS are loaded

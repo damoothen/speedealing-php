@@ -332,29 +332,29 @@ if (($action == 'create') || ($action == 'adduserldap')) {
         print '<td>';
         print $form->selectyesno('admin', $_POST["admin"], 1);
         ?><script type="text/javascript">
-                    $(function() {
-                        $("select[name=admin]").change(function() {
-                            if ( $(this).val() == 0 ) {
-                                $("input[name=superadmin]")
-                                .attr("disabled", true)
-                                .attr("checked", false);
-                                $("select[name=entity]")
-                                .attr("disabled", false);
-                            } else {
-                                $("input[name=superadmin]")
-                                .attr("disabled", false);
-                            }
-                        });
-                        $("input[name=superadmin]").change(function() {
-                            if ( $(this).attr("checked") == "checked" ) {
-                                $("select[name=entity]")
-                                .attr("disabled", true);
-                            } else {
-                                $("select[name=entity]")
-                                .attr("disabled", false);
-                            }
-                        });
-                    });
+            $(function() {
+                $("select[name=admin]").change(function() {
+                    if ( $(this).val() == 0 ) {
+                        $("input[name=superadmin]")
+                        .attr("disabled", true)
+                        .attr("checked", false);
+                        $("select[name=entity]")
+                        .attr("disabled", false);
+                    } else {
+                        $("input[name=superadmin]")
+                        .attr("disabled", false);
+                    }
+                });
+                $("input[name=superadmin]").change(function() {
+                    if ( $(this).attr("checked") == "checked" ) {
+                        $("select[name=entity]")
+                        .attr("disabled", true);
+                    } else {
+                        $("select[name=entity]")
+                        .attr("disabled", false);
+                    }
+                });
+            });
         </script><?php
         $checked = ($_POST["superadmin"] ? ' checked' : '');
         $disabled = ($_POST["superadmin"] ? '' : ' disabled');
@@ -429,6 +429,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
     if ($id) {
         $fuser = new User($db);
         $fuser->fetch($id);
+        $fuser->getrights();
 
         // Show tabs
         $head = user_prepare_head($fuser);
@@ -860,19 +861,28 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                         print '<td>';
 
                         $perm = $aRow->value->id;
+                        $perm0 = (string)$object->perm[0];
+                        $perm1 = $object->perm[1];
+                        $right_class = $object->rights_class;
 
+                        /* if ($caneditperms) { */
+                        if ($aRow->value->Status)
+                            print $object->getLibStatus(); // Enable by default
+                        elseif (count($object->perm) == 1 && $fuser->rights->$right_class->$perm0) {
+                            $object->Status = "true";
+                            print $object->getLibStatus();
+                        } elseif (count($object->perm) == 2 && $fuser->rights->$right_class->$perm0->$perm1) {
+                            $object->Status = "true";
+                            print $object->getLibStatus();
+                        }
 
-                        /* if ($caneditperms) {
-                          if ($aRow->value->Status)
-                          print $object->getLibStatus(); // Enable by default
-                          elseif ($fuser->rights->$perm)
-                          print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=remove_right#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
-                          else
-                          print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=add_right#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
-                          }
-                          else { */
-                        print $object->getLibStatus();
+                        //print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=remove_right#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
+                        //else
+                        //print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=add_right#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
                         //}
+                        else {
+                            print $object->getLibStatus();
+                        }
                         print '</td>';
 
                         print'</tr>';

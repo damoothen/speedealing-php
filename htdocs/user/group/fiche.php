@@ -103,8 +103,8 @@ if ($action == 'add_right' && $caneditperms) {
         $editgroup->load($id);
 
         // For avoid error in strict mode
-        if (! is_object($editgroup->rights))
-        	$editgroup->rights = new stdClass();
+        if (!is_object($editgroup->rights))
+            $editgroup->rights = new stdClass();
 
         $editgroup->rights->$_GET['pid'] = true;
         $editgroup->record();
@@ -155,8 +155,8 @@ if ($action == 'create') {
     print '<td class="valeur"><input size="30" type="text" name="nom" value=""></td></tr>';
 
     print "<tr>" . '<td valign="top">' . $langs->trans("Note") . '</td><td>';
-    if (! class_exists('DolEditor'))
-    	require DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php';
+    if (!class_exists('DolEditor'))
+        require DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php';
     $doleditor = new DolEditor('note', '', '', 240, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_8, 90);
     $doleditor->Create();
     print "</td></tr>\n";
@@ -419,12 +419,16 @@ if ($action == 'create') {
                     if ($caneditperms) {
                         if ($aRow->value->Status)
                             print $objectM->getLibStatus(); // Enable by default
-                        elseif ($object->rights->$perm)
-                            print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&pid=' . $aRow->value->id . '&amp;action=remove_right#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
-                        else
-                            print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&pid=' . $aRow->value->id . '&amp;action=add_right#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
-                    }
-                    else {
+                        elseif ($object->rights->$perm) {
+                            print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&pid=' . $aRow->value->id . '&amp;action=remove_right#' . $aRow->value->id . '">';
+                            print img_picto($langs->trans("Activated"), 'switch_on');
+                            print '</a>';
+                        } else {
+                            print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&pid=' . $aRow->value->id . '&amp;action=add_right#' . $aRow->value->id . '">';
+                            print img_picto($langs->trans("Disabled"), 'switch_off');
+                            print '</a>';
+                        }
+                    } else {
                         print $objectM->getLibStatus();
                     }
                     print '</td>';
@@ -460,8 +464,8 @@ if ($action == 'create') {
 
             print '<tr><td width="25%" valign="top">' . $langs->trans("Note") . '</td>';
             print '<td class="valeur">';
-            if (! class_exists('DolEditor'))
-            	require DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php';
+            if (!class_exists('DolEditor'))
+                require DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php';
             $doleditor = new DolEditor('note', $object->note, '', 240, 'dolibarr_notes', '', true, false, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_8, 90);
             $doleditor->Create();
             print '</td>';

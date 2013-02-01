@@ -1,5 +1,6 @@
 {
    "_id": "extrafields:DolibarrModules",
+   "_rev": "5-662b477be1fde6ef45d2162d80fc3cf5",
    "class": "extrafields",
    "ico": "/img/ico/icSw2/16-Cog-4.png",
    "fields": {
@@ -7,6 +8,7 @@
            "type": "select",
            "enable": true,
            "default": false,
+           "status": true,
            "aoColumns": {
                "sClass": "center",
                "bSearchable": true,
@@ -16,12 +18,12 @@
                "false": {
                    "label": "Disabled",
                    "enable": true,
-                   "cssClass": "error_bg"
+                   "cssClass": "grey-gradient"
                },
                "true": {
                    "label": "Enabled",
                    "enable": true,
-                   "cssClass": "ok_bg"
+                   "cssClass": "green-gradient"
                }
            }
        }
