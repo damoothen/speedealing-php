@@ -984,7 +984,7 @@ class pdf_crabe extends ModelePDFFactures {
      *  @return	void
      */
     function _pagehead(&$pdf, $object, $showaddress, $outputlangs) {
-        global $conf, $langs;
+        global $conf, $langs, $mysoc;
 
         $outputlangs->load("main");
         $outputlangs->load("bills");
@@ -1008,12 +1008,12 @@ class pdf_crabe extends ModelePDFFactures {
 
         $pdf->SetXY($this->marge_gauche, $posy);
 
-        // Logo
-        $logo = $conf->mycompany->dir_output . '/logos/' . $this->emetteur->logo;
-        if ($this->emetteur->logo) {
-            if (is_readable($logo)) {
+        // Logo        
+        if ($this->emetteur->logo && !empty($mysoc->logo)) {
+            $logo = base64_decode($mysoc->getFileBase64($mysoc->logo));
+            if (strlen($logo)>1) {
                 $height = pdf_getHeightForLogo($logo);
-                $pdf->Image($logo, $this->marge_gauche, $posy, 0, $height); // width=0 (auto)
+                $pdf->Image('@'.$logo, $this->marge_gauche, $posy, 0, $height); // width=0 (auto)
             } else {
                 $pdf->SetTextColor(200, 0, 0);
                 $pdf->SetFont('', 'B', $default_font_size - 2);
