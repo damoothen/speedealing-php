@@ -1356,7 +1356,7 @@ abstract class nosqlDocument extends CommonObject {
                     }
 
                     $aRow->values[0] = new stdClass();
-                    $aRow->values[0]->label = "";
+                    $aRow->values[0]->label = "-";
                     $aRow->values[0]->enable = true;
 
                     foreach ($result->rows as $row) {
