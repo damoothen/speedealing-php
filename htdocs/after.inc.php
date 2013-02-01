@@ -79,6 +79,7 @@ if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) {
 
 // Set default language (must be after the setValues of $conf)
 if (!defined('NOREQUIRETRAN')) {
+	$langs = new Translate('', $conf); // TODO rebuild $langs object after login, try to find another solution
     $langs->setDefaultLang($conf->global->MAIN_LANG_DEFAULT);
 }
 
