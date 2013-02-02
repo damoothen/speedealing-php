@@ -63,7 +63,7 @@ class FormAdmin
 
 		$out='';
 
-		$out.= '<select class="select auto-open" id="'.$htmlname.'" name="'.$htmlname.'">';
+		$out.= '<select class="select" id="'.$htmlname.'" name="'.$htmlname.'">';
 		if ($showempty)
 		{
 			$out.= '<option value=""';

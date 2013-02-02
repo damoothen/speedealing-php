@@ -30,10 +30,12 @@
 		<p>Please fill this form to complete your registration:</p>
 	</div>
 
-	<div class="field-block button-height">
-		<label for="selectlang" class="label"><b><?php echo $langs->trans("DefaultLanguage"); ?></b></label>
-		<?php echo $formadmin->select_language('auto', 'selectlang', 1, 0, 0, 1); ?>
-	</div>
+</fieldset>
+
+<fieldset class="wizard-fieldset fields-list">
+
+	<legend class="legend"><?php echo $langs->trans("Prerequisite"); ?></legend>
+
 
 </fieldset>
 
@@ -42,26 +44,46 @@
 	<legend class="legend"><?php echo $langs->trans("Configuration"); ?></legend>
 
 	<div class="field-block button-height">
-		<small class="input-info">This is the name that will be displayed on profile page</small>
-		<label for="login" class="label"><b>User login</b></label>
-		<input type="text" name="login" id="login" value="" class="input validate[required,custom[onlyLetterNumber]]">
+		<label for="selectlang" class="label"><b><?php echo $langs->trans("DefaultLanguage"); ?></b></label>
+		<?php echo $formadmin->select_language('auto', 'selectlang', 1, 0, 0, 1); ?>
 	</div>
 
 	<div class="field-block button-height">
-		<label for="file" class="label"><b>Avatar</b> (*.jpg)</label>
-		<span class="input file"><span class="file-text"></span><span class="button compact">Select file</span><input type="file" name="file-input" id="file-input" value="" class="file withClearFunctions"></span>
-		<small class="input-info">Max file size: 2MB</small>
+		<label for="main_dir" class="label"><b><?php echo $langs->trans("WebPagesDirectory"); ?></b></label>
+		<input type="text" class="input full-width" name="main_dir" id="main_dir" value="<?php echo $dolibarr_main_document_root; ?>" class="input validate[required,custom[onlyLetterNumber]]">
 	</div>
 
-	<div class="field-drop button-height black-inputs">
-		<label for="resize_height" class="label"><b>Resize height</b> (in px)</label>
-		<span class="number input margin-right">
-			<button type="button" class="button number-down">-</button>
-			<input type="text" name="resize_height" id="resize_height" value="320" class="input-unstyled" data-number-options='{"min":100,"max":400}'>
-			<button type="button" class="button number-up">+</button>
-		</span>
+	<div class="field-block button-height">
+		<label for="main_data_dir" class="label"><b><?php echo $langs->trans("DocumentsDirectory"); ?></b></label>
+		<input type="text" class="input full-width" name="main_data_dir" id="main_data_dir" value="<?php echo $dolibarr_main_data_root; ?>" class="input validate[required,custom[onlyLetterNumber]]">
+	</div>
 
-		<input type="checkbox" name="crop" id="crop" class="switch medium" checked="checked"> &nbsp; <label for="crop">Enable crop</label>
+	<div class="field-block button-height">
+		<label for="main_url" class="label"><b><?php echo $langs->trans("URLRoot"); ?></b></label>
+		<input type="text" class="input full-width" name="main_url" id="main_url" value="<?php echo $dolibarr_main_url_root; ?>" class="input validate[required,custom[onlyLetterNumber]]">
+	</div>
+
+</fieldset>
+
+<fieldset class="wizard-fieldset fields-list">
+
+	<legend class="legend"><?php echo $langs->trans("Database"); ?></legend>
+
+	<div class="field-block button-height">
+
+	</div>
+
+	<div class="field-block button-height">
+
+	</div>
+
+	<div class="field-block button-height wizard-controls align-right">
+
+		<button type="submit" class="button glossy mid-margin-right">
+			<span class="button-icon"><span class="icon-tick"></span></span>
+			<?php echo $langs->trans("Save"); ?>
+		</button>
+
 	</div>
 
 </fieldset>
