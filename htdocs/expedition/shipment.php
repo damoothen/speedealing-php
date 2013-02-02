@@ -430,7 +430,7 @@ if ($id > 0 || ! empty($ref))
 						if (empty($newlang)) $newlang=$commande->client->default_lang;
 						if (! empty($newlang))
 						{
-							$outputlangs = new Translate("",$conf);
+							$outputlangs = new Translate();
 							$outputlangs->setDefaultLang($newlang);
 						}
 

@@ -2,7 +2,7 @@
 
 /* Copyright (C) 2001      Eric Seigne         <erics@rycks.com>
  * Copyright (C) 2004-2012 Destailleur Laurent <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin       <regis.houssin@capnetworks.com>
+ * Copyright (C) 2005-2013 Regis Houssin       <regis.houssin@capnetworks.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,15 @@
  */
 
 /**
- *   	\file       htdocs/core/class/translate.class.php
+ *   	\file       htdocs/core/class/translatestandalone.class.php
  *      \ingroup    core
- * 		\brief      File for Tanslate class
+ * 		\brief      File for TanslateStandalone class
  */
 
 /**
- * 		Class to manage translations
+ * 		Class to manage standalone translations
  */
-class Translate extends nosqlDocument {
+class TranslateStandalone {
 
     var $dir;							// Directories that contains /langs subdirectory
 
@@ -39,20 +39,13 @@ class Translate extends nosqlDocument {
     var $tab_translate = array();		// Array of all translations key=>value
     private $_tab_loaded = array();		// Array to store result after loading each language file
 
-    var $cache_labels = array();		// Cache for labels return by getLabelFromKey method
-    var $cache_currencies = array();	// Cache to store currency symbols
-
     /**
      * 	Constructor
      *
      *  @param	string	$install	Install mode.
      */
-
     function __construct($install = false) {
     	global $conf;
-
-    	if (empty($install))
-    		parent::__construct($db);
 
         if (!empty($conf->file->character_set_client))
             $this->charset_output = $conf->file->character_set_client; // If charset output is forced
@@ -169,11 +162,7 @@ class Translate extends nosqlDocument {
         if ($this->defaultlang == 'none_NONE')
             return;    // Special language code to not translate keys
 
-
-
-
-
-//dol_syslog("Translate::Load Start domain=".$domain." alt=".$alt." forcelangdir=".$forcelangdir." this->defaultlang=".$this->defaultlang);
+        //dol_syslog("Translate::Load Start domain=".$domain." alt=".$alt." forcelangdir=".$forcelangdir." this->defaultlang=".$this->defaultlang);
 
         $newdomain = $domain;
         $modulename = '';
@@ -218,15 +207,17 @@ class Translate extends nosqlDocument {
                 // Using cache with shmop. Speed gain: 40ms - Memory overusage: 200ko (Size of session cache file)
                 //dol_syslog('Translate::Load we will cache result into usecachekey '.$usecachekey);
 
-                require_once DOL_DOCUMENT_ROOT . '/core/lib/memory.lib.php';
-                $tmparray = dol_getcache($usecachekey);
-                if (is_array($tmparray) && count($tmparray)) {
-                    $this->tab_translate = array_merge($tmparray, $this->tab_translate); // Already found values tab_translate overwrites duplicates
-                    //print $newdomain."\n";
-                    //var_dump($this->tab_translate);
-                    if ($alt == 2)
-                        $fileread = 1;
-                    $found = true;      // Found in dolibarr PHP cache
+                if (!empty($conf->Couchdb->name)) {
+                	require_once DOL_DOCUMENT_ROOT . '/core/lib/memory.lib.php';
+                	$tmparray = dol_getcache($usecachekey);
+                	if (is_array($tmparray) && count($tmparray)) {
+                		$this->tab_translate = array_merge($tmparray, $this->tab_translate); // Already found values tab_translate overwrites duplicates
+                		//print $newdomain."\n";
+                		//var_dump($this->tab_translate);
+                		if ($alt == 2)
+                			$fileread = 1;
+                		$found = true;      // Found in dolibarr PHP cache
+                	}
                 }
 
                 if (!$found) {
@@ -260,7 +251,7 @@ class Translate extends nosqlDocument {
 
                     // TODO Move cache write out of loop on dirs
                     // To save lang content for usecachekey into cache
-                    if (!empty($usecachekey) && count($tabtranslatedomain)) {
+                    if (!empty($conf->Couchdb->name) && !empty($usecachekey) && count($tabtranslatedomain)) {
                         $ressetcache = dol_setcache($usecachekey, $tabtranslatedomain);
                         if ($ressetcache < 0) {
                             $error = 'Failed to set cache for usecachekey=' . $usecachekey . ' result=' . $ressetcache;
@@ -311,36 +302,6 @@ class Translate extends nosqlDocument {
     }
 
     /**
-     * Return translated value of key. Search in lang file, then into database.
-     * Key must be any complete entry into lang file: CurrencyEUR, ...
-     * If not found, return key.
-     * WARNING: To avoid infinite loop (getLabelFromKey->transnoentities->getTradFromKey), getLabelFromKey must
-     * not be called with same value than input.
-     *
-     * @param	string		$key		Key to translate
-     * @return 	string					Translated string
-     */
-    private function getTradFromKey($key) {
-        global $db;
-
-        //print 'xx'.$key;
-        $newstr = $key;
-        if (preg_match('/^Currency([A-Z][A-Z][A-Z])$/i', $key, $reg)) {
-            $newstr = $this->getLabelFromKey($db, $reg[1], 'c_currencies', 'code_iso', 'label');
-        } else if (preg_match('/^SendingMethod([0-9A-Z]+)$/i', $key, $reg)) {
-            $newstr = $this->getLabelFromKey($db, $reg[1], 'c_shipment_mode', 'code', 'libelle');
-        } else if (preg_match('/^PaymentTypeShort([0-9A-Z]+)$/i', $key, $reg)) {
-            $newstr = $this->getLabelFromKey($db, $reg[1], 'c_paiement', 'code', 'libelle');
-        } else if (preg_match('/^Civility([0-9A-Z]+)$/i', $key, $reg)) {
-            $newstr = $this->getLabelFromKey($db, $reg[1], 'c_civilite', 'code', 'civilite');
-        } else if (preg_match('/^OrderSource([0-9A-Z]+)$/i', $key, $reg)) {
-            // TODO Add a table for OrderSourceX
-            //$newstr=$this->getLabelFromKey($db,$reg[1],'c_ordersource','code','label');
-        }
-        return $newstr;
-    }
-
-    /**
      *  Return text translated of text received as parameter (and encode it into HTML)
      *              Si il n'y a pas de correspondance pour ce texte, on cherche dans fichier alternatif
      *              et si toujours pas trouve, il est retourne tel quel
@@ -388,9 +349,7 @@ class Translate extends nosqlDocument {
 
             return $str;
         } else {        // Translation is not available
-            //$str=$this->getTradFromKey($key);
-            //return $this->convToOutputCharset($str);
-            return $this->getTradFromKey($key);
+            return $key;
         }
     }
 
@@ -433,7 +392,7 @@ class Translate extends nosqlDocument {
                 $str = sprintf($str, $param1, $param2, $param3, $param4); // Replace %s and %d except for FormatXXX strings.
         }
         else {
-            $str = $this->getTradFromKey($key);
+            $str = $key;
         }
         return $str;
     }
@@ -534,165 +493,6 @@ class Translate extends nosqlDocument {
         }
 
         return false;
-    }
-
-    /**
-     *      Return full text translated to language label for a key. Store key-label in a cache.
-     *      This function need module "numberwords" to be installed. If not it will return
-     *      same number (this module is not provided by default as it use non GPL source code).
-     *
-     * 		@param	int		$number		Number to encode in full text
-     * 		@param	int		$isamount	1=It's an amount, 0=it's just a number
-     *      @return string				Label translated in UTF8 (but without entities)
-     * 									10 if setDefaultLang was en_US => ten
-     * 									123 if setDefaultLang was fr_FR => cent vingt trois
-     */
-    function getLabelFromNumber($number, $isamount = 0) {
-        global $conf;
-
-        $newnumber = $number;
-
-        $dirsubstitutions = array_merge(array(), $conf->modules_parts['substitutions']);
-        foreach ($dirsubstitutions as $reldir) {
-            $dir = dol_buildpath($reldir, 0);
-            $newdir = dol_osencode($dir);
-
-            // Check if directory exists
-            if (!dol_is_dir($dir))
-                continue;
-
-            $fonc = 'numberwords';
-            if (file_exists($newdir . '/functions_' . $fonc . '.lib.php')) {
-                include_once $newdir . '/functions_' . $fonc . '.lib.php';
-                $newnumber = numberwords_getLabelFromNumber($this, $number, $isamount);
-                break;
-            }
-        }
-
-        return $newnumber;
-    }
-
-    /**
-     *      Return a label for a key.
-     *      Search into translation array, then into cache, then if still not found, search into database.
-     *      Store key-label found into cache variable $this->cache_labels to save SQL requests to get labels.
-     *
-     * 		@param	DoliBD	$db				Database handler
-     * 		@param	string	$key			Key to get label (key in language file)
-     * 		@param	string	$tablename		Table name without prefix
-     * 		@param	string	$fieldkey		Field for key
-     * 		@param	string	$fieldlabel		Field for label
-     *      @return string					Label in UTF8 (but without entities)
-     */
-    function getLabelFromKey($db, $key, $tablename, $fieldkey, $fieldlabel) {
-        // If key empty
-        if ($key == '')
-            return '';
-
-        //print 'param: '.$key.'-'.$keydatabase.'-'.$this->trans($key); exit;
-        // Check if in language array (this can call getTradFromKey)
-        if ($this->transnoentitiesnoconv($key) != $key) {
-            return $this->transnoentitiesnoconv($key);    // Found in language array
-        }
-
-        // Check in cache
-        if (isset($this->cache_labels[$tablename][$key])) { // Can be defined to 0 or ''
-            return $this->cache_labels[$tablename][$key];   // Found in cache
-        }
-
-        $sql = "SELECT " . $fieldlabel . " as label";
-        $sql.= " FROM " . MAIN_DB_PREFIX . $tablename;
-        $sql.= " WHERE " . $fieldkey . " = '" . $key . "'";
-        dol_syslog(get_class($this) . '::getLabelFromKey sql=' . $sql, LOG_DEBUG);
-        $resql = $db->query($sql);
-        if ($resql) {
-            $obj = $db->fetch_object($resql);
-            if ($obj)
-                $this->cache_labels[$tablename][$key] = $obj->label;
-            else
-                $this->cache_labels[$tablename][$key] = $key;
-
-            $db->free($resql);
-            return $this->cache_labels[$tablename][$key];
-        }
-        else {
-            $this->error = $db->lasterror();
-            dol_syslog(get_class($this) . '::getLabelFromKey error=' . $this->error, LOG_ERR);
-            return -1;
-        }
-    }
-
-    /**
-     *	Return a currency code into its symbol
-     *
-     *  @param	string	$amount				If not '', show currency + amount according to langs ($10, 10€).
-     *  @return	string						Amount + Currency symbol encoded into UTF8
-     */
-    function getCurrencyAmount($currency_code, $amount)
-    {
-    	$symbol=$this->getCurrencSymbol($currency_code);
-
-    	if (in_array($currency_code, array('USD'))) return $symbol.$amount;
-    	else return $amount.$symbol;
-    }
-
-    /**
-     *	Return a currency code into its symbol
-     *
-     *  @param	string	$currency_code		Currency code
-     *  @return	string						Currency symbol encoded into UTF8
-     */
-    function getCurrencySymbol($currency_code)
-    {
-    	$currency_sign = '';	// By default return iso code
-
-    	if (function_exists("mb_convert_encoding"))
-    	{
-    		$this->load_cache_currencies();
-    		if (isset($this->cache_currencies[$currency_code]) && !empty($this->cache_currencies[$currency_code]['unicode']) && is_array($this->cache_currencies[$currency_code]['unicode']))
-    		{
-    			foreach($this->cache_currencies[$currency_code]['unicode'] as $unicode)
-    			{
-    				$currency_sign .= mb_convert_encoding("&#{$unicode};", "UTF-8", 'HTML-ENTITIES');
-    			}
-    		}
-    	}
-
-    	return (!empty($currency_sign) ? $currency_sign : $currency_code);
-    }
-
-    /**
-     *  Load into the cache, all currencies
-     *
-     *  @return	int		Nb of loaded lines, 0 if already loaded, <0 if KO
-     */
-    function load_cache_currencies()
-    {
-    	if (!empty($this->cache_currencies)) return 0;    // Value already into cache
-
-    	try {
-    		$currencies = $this->couchdb->getDoc('dict:fk_currencies'); // load currencies
-    		if (!empty($currencies)) {
-
-    			$this->load("dict");
-    			$label=array();
-
-    			foreach($currencies->values as $isocode => $obj) {
-    				if ($obj->enable) {
-    					// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
-    					$this->cache_currencies[$isocode]['label'] = ($this->trans("Currency".$isocode)!="Currency".$isocode?$this->trans("Currency".$isocode):($obj->label!='-'?$obj->label:''));
-    					$this->cache_currencies[$isocode]['unicode'] = $obj->unicode;
-    					$label[$isocode] = $this->cache_currencies[$isocode]['label'];
-    				}
-    			}
-    			array_multisort($label, SORT_ASC, $this->cache_currencies);
-    		}
-
-    	}catch (Exception $e) {
-    		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-    		print $error;
-    		exit;
-    	}
     }
 
 }

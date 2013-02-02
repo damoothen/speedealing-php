@@ -2111,7 +2111,7 @@ function dol_print_error($db = '', $error = '') {
     // Si erreur intervenue avant chargement langue
     if (!$langs) {
         require_once DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
-        $langs = new Translate('', $conf);
+        $langs = new Translate();
         $langs->load("main");
     }
     $langs->load("main");

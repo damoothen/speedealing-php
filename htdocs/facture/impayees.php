@@ -75,7 +75,7 @@ if ($action == "builddoc" && $user->rights->facture->lire)
         if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
         if (! empty($newlang))
         {
-            $outputlangs = new Translate("",$conf);
+            $outputlangs = new Translate();
             $outputlangs->setDefaultLang($newlang);
         }
 

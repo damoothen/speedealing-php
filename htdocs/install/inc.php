@@ -37,17 +37,19 @@ if (!defined('ADODB_PATH')) {
     define('ADODB_PATH', $foundpath);
 }
 
-require_once DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/translatestandalone.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/functions.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 require_once ADODB_PATH . 'adodb-time.inc.php';
 
 // For couchdb
-
-require_once DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couch.php";
-require_once DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchClient.php";
-require_once DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php";
+if (!class_exists('couch'))
+	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couch.php';
+if (!class_exists('couchClient'))
+	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
+if (!class_exists('nosqlDocument'))
+	require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
 
 
 // Avoid warnings with strict mode E_STRICT
@@ -86,14 +88,7 @@ if (!defined('DONOTLOADCONF') && file_exists($conffile)) {
         if (empty($dolibarr_main_db_type))
             $dolibarr_main_db_type = 'mysql'; // For backward compatibility
 
-
-
-
-
-
-
-
-// Clean parameters
+		// Clean parameters
         $dolibarr_main_data_root = isset($dolibarr_main_data_root) ? trim($dolibarr_main_data_root) : '';
         $dolibarr_main_url_root = isset($dolibarr_main_url_root) ? trim($dolibarr_main_url_root) : '';
         $dolibarr_main_url_root_alt = isset($dolibarr_main_url_root_alt) ? trim($dolibarr_main_url_root_alt) : '';
@@ -219,12 +214,6 @@ if (!defined('SYSLOG_FILE')) { // To avoid warning on systems with constant alre
     else if (@is_writable('../../'))
         define('SYSLOG_FILE', '../../dolibarr_install.log');    // For others
 
-
-
-
-
-
-
 //print 'SYSLOG_FILE='.SYSLOG_FILE;exit;
 }
 if (!defined('SYSLOG_FILE_NO_ERROR'))
@@ -251,7 +240,7 @@ if (function_exists('get_magic_quotes_gpc')) { // magic_quotes_* removed in PHP 
 }
 
 // Defini objet langs
-$langs = new Translate('..', $conf);
+$langs = new TranslateStandalone(true);
 if (GETPOST('lang'))
     $langs->setDefaultLang(GETPOST('lang'));
 else
@@ -359,8 +348,7 @@ function conf($dolibarr_main_document_root) {
  * @return	void
  */
 function pHeader($subtitle, $next, $action = 'set', $param = '', $forcejqueryurl = '') {
-    global $conf;
-    global $langs;
+    global $conf, $langs;
     $langs->load("main");
     $langs->load("admin");
 
@@ -395,6 +383,7 @@ function pHeader($subtitle, $next, $action = 'set', $param = '', $forcejqueryurl
     print '<title>' . $langs->trans("SpeedealingSetup") . '</title>' . "\n";
     print '<!-- Google fonts -->';
     //print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
+    // FIXME use an alternative for offline mode
     print '<style type="text/css" media="screen, print">
 		@font-face {
 		font-family: "Open Sans Condensed";
@@ -404,6 +393,7 @@ function pHeader($subtitle, $next, $action = 'set', $param = '', $forcejqueryurl
 			url("http://themes.googleusercontent.com/static/fonts/opensanscondensed/v6/gk5FxslNkTTHtojXrkp-xF1YPouZEKgzpqZW9wN-3Ek.woff") format("woff");
 		}
 		</style>';
+    // FIXME use an alternative for offline mode
     print '<style type="text/css" media="screen, print">
 		@font-face {
 		font-family: "Terminal Dosis";

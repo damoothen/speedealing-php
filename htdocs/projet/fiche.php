@@ -231,7 +231,7 @@ if ($action == 'builddoc' && $user->rights->projet->creer)
     $outputlangs = $langs;
     if (GETPOST('lang_id'))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang(GETPOST('lang_id'));
     }
     $result=project_pdf_create($db, $object, $object->modelpdf, $outputlangs);

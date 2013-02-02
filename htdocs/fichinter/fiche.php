@@ -84,7 +84,7 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $user->rights->fichein
         if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
         if (! empty($newlang))
         {
-            $outputlangs = new Translate("",$conf);
+            $outputlangs = new Translate();
             $outputlangs->setDefaultLang($newlang);
         }
         $result=fichinter_create($db, $object, GETPOST('model','alpha'), $outputlangs);
@@ -112,7 +112,7 @@ else if ($action == 'confirm_modify' && $confirm == 'yes' && $user->rights->fich
         if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
         if (! empty($newlang))
         {
-            $outputlangs = new Translate("",$conf);
+            $outputlangs = new Translate();
             $outputlangs->setDefaultLang($newlang);
         }
         $result=fichinter_create($db, $object, (!GETPOST('model','alpha'))?$object->model:GETPOST('model','apha'), $outputlangs);
@@ -192,7 +192,7 @@ else if ($action == 'builddoc' && $user->rights->ficheinter->creer)	// En get ou
     if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
     if (! empty($newlang))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
     $result=fichinter_create($db, $object, GETPOST('model','alpha'), $outputlangs);
@@ -296,7 +296,7 @@ else if ($action == "addline" && $user->rights->ficheinter->creer)
         if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
         if (! empty($newlang))
         {
-            $outputlangs = new Translate("",$conf);
+            $outputlangs = new Translate();
             $outputlangs->setDefaultLang($newlang);
         }
 
@@ -372,7 +372,7 @@ else if ($action == 'updateline' && $user->rights->ficheinter->creer && GETPOST(
     if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
     if (! empty($newlang))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
     fichinter_create($db, $object, $object->modelpdf, $outputlangs);
@@ -407,7 +407,7 @@ else if ($action == 'confirm_deleteline' && $confirm == 'yes' && $user->rights->
 	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 	if (! empty($newlang))
 	{
-		$outputlangs = new Translate("",$conf);
+		$outputlangs = new Translate();
 		$outputlangs->setDefaultLang($newlang);
 	}
 	fichinter_create($db, $object, $object->modelpdf, $outputlangs);
@@ -430,7 +430,7 @@ else if ($action == 'up' && $user->rights->ficheinter->creer)
     if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
     if (! empty($newlang))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
     fichinter_create($db, $object, $object->modelpdf, $outputlangs);
@@ -451,7 +451,7 @@ else if ($action == 'down' && $user->rights->ficheinter->creer)
     if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
     if (! empty($newlang))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
     fichinter_create($db, $object, $object->modelpdf, $outputlangs);
@@ -1280,7 +1280,7 @@ else if ($id > 0 || ! empty($ref))
             if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
             if (! empty($newlang))
             {
-                $outputlangs = new Translate("",$conf);
+                $outputlangs = new Translate();
                 $outputlangs->setDefaultLang($newlang);
             }
 

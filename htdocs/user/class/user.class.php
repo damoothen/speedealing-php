@@ -981,7 +981,7 @@ class User extends nosqlDocument {
         // Define $msg
         $mesg = '';
 
-        $outputlangs = new Translate("", $conf);
+        $outputlangs = new Translate();
         if (isset($this->conf->MAIN_LANG_DEFAULT)
                 && $this->conf->MAIN_LANG_DEFAULT != 'auto') { // If user has defined its own language (rare because in most cases, auto is used)
             $outputlangs->getDefaultLang($this->conf->MAIN_LANG_DEFAULT);

@@ -679,7 +679,7 @@ abstract class nosqlDocument extends CommonObject {
                             print "type: 'select',";
                             print "loadurl : urlLoadInPlace,";
                             ?>loaddata: function ( value, settings ) {
-                                                                    return { 
+                                                                    return {
                                                                         "id": oTable.fnGetData( this.parentNode, 0),
                                                                         "element_class" : "<?php echo get_class($this); ?>",
                                                                         "type":"select",
@@ -736,7 +736,7 @@ abstract class nosqlDocument extends CommonObject {
                             oTable.fnDraw(false);
                             return true;
                         },
-                        oAddNewRowButtonOptions: { 
+                        oAddNewRowButtonOptions: {
                             icons: { primary: 'ui-icon-plus' }
                         },
                         oDeleteRowButtonOptions: {
@@ -748,7 +748,7 @@ abstract class nosqlDocument extends CommonObject {
                             name: "action",
                             value: "add-new"
                         },
-                        oAddNewRowCancelButtonOptions: { 
+                        oAddNewRowCancelButtonOptions: {
                             label: "<?php echo $langs->trans("Undo"); ?>",
                             class: "back-class",
                             name: "action",
@@ -758,7 +758,7 @@ abstract class nosqlDocument extends CommonObject {
                         oAddNewRowFormOptions: {
                             show: "blind",
                             hide: "blind"
-                        },                                                                                                   
+                        },
                         sAddNewRowFormId: "<?php echo $ref_css ?>_formAddNewRow",
                         sAddNewRowButtonId: "<?php echo $ref_css ?>_btnAddNewRow",
                         sAddNewRowOkButtonId: "<?php echo $ref_css ?>_btnAddNewRowOk",

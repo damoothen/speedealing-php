@@ -303,7 +303,7 @@ if (!defined('NOLOGIN')) {
         // We show login page
         if (!is_object($langs)) { // This can occurs when calling page with NOREQUIRETRAN defined
             include_once(DOL_DOCUMENT_ROOT . "/core/class/translate.class.php");
-            $langs = new Translate("", $conf);
+            $langs = new Translate();
         }
         dol_loginfunction($langs, $conf, $mysoc);
         exit;

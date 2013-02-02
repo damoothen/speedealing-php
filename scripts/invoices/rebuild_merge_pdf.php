@@ -278,7 +278,7 @@ if ( $resql=$db->query($sql) )
 				{
 					if ($outputlangs->defaultlang != $newlangid)
 					{
-						$outputlangs = new Translate("",$conf);
+						$outputlangs = new Translate();
 						$outputlangs->setDefaultLang($newlangid);
 					}
 				}

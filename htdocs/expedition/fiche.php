@@ -199,7 +199,7 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->exped
     if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
     if (! empty($newlang))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
     if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
@@ -309,7 +309,7 @@ else if ($action == 'builddoc')	// En get ou en post
     if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$shipment->client->default_lang;
     if (! empty($newlang))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
     $result=expedition_pdf_create($db,$shipment,GETPOST('model','alpha'),$outputlangs);
@@ -1182,7 +1182,7 @@ else
                 if (empty($newlang)) $newlang=$object->client->default_lang;
                 if (! empty($newlang))
                 {
-                    $outputlangs = new Translate("",$conf);
+                    $outputlangs = new Translate();
                     $outputlangs->setDefaultLang($newlang);
                 }
             }
@@ -1413,7 +1413,7 @@ else
                 if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
                 if (! empty($newlang))
                 {
-                    $outputlangs = new Translate("",$conf);
+                    $outputlangs = new Translate();
                     $outputlangs->setDefaultLang($newlang);
                 }
 

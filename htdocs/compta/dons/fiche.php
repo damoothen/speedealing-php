@@ -231,7 +231,7 @@ if ($action == 'builddoc')
 	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$donation->client->default_lang;
 	if (! empty($newlang))
 	{
-		$outputlangs = new Translate("",$conf);
+		$outputlangs = new Translate();
 		$outputlangs->setDefaultLang($newlang);
 	}
 	$result=don_create($db, $donation->id, '', $donation->modelpdf, $outputlangs);

@@ -381,7 +381,7 @@ else if ($action == 'addline' && $user->rights->contrat->creer)
              if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
              if (! empty($newlang))
              {
-             $outputlangs = new Translate("",$conf);
+             $outputlangs = new Translate();
              $outputlangs->setDefaultLang($newlang);
              }
              if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
@@ -614,7 +614,7 @@ if (GETPOST('action') == 'builddoc')	// En get ou en post
     if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
     if (! empty($newlang))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
     $result=contrat_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'));

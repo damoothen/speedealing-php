@@ -457,7 +457,7 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
                     if (empty($newlang))
                         $newlang = $object->client->default_lang;
                     if (!empty($newlang)) {
-                        $outputlangs = new Translate("", $conf);
+                        $outputlangs = new Translate();
                         $outputlangs->setDefaultLang($newlang);
                     }
 
@@ -522,7 +522,7 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
                     if (!empty($conf->global->MAIN_MULTILANGS) && empty($newlang))
                         $newlang = $object->client->default_lang;
                     if (!empty($newlang)) {
-                        $outputlangs = new Translate("", $conf);
+                        $outputlangs = new Translate();
                         $outputlangs->setDefaultLang($newlang);
                     }
 
@@ -626,7 +626,7 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
                 if ($conf->global->MAIN_MULTILANGS && empty($newlang))
                     $newlang = $object->client->default_lang;
                 if (!empty($newlang)) {
-                    $outputlangs = new Translate("", $conf);
+                    $outputlangs = new Translate();
                     $outputlangs->setDefaultLang($newlang);
                 }
 
@@ -675,7 +675,7 @@ else if ($action == 'confirm_deleteline' && $confirm == 'yes' && $user->rights->
         if ($conf->global->MAIN_MULTILANGS && empty($newlang))
             $newlang = $object->client->default_lang;
         if (!empty($newlang)) {
-            $outputlangs = new Translate("", $conf);
+            $outputlangs = new Translate();
             $outputlangs->setDefaultLang($newlang);
         }
         if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
@@ -720,7 +720,7 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->factu
             if ($conf->global->MAIN_MULTILANGS && empty($newlang))
                 $newlang = $object->client->default_lang;
             if (!empty($newlang)) {
-                $outputlangs = new Translate("", $conf);
+                $outputlangs = new Translate();
                 $outputlangs->setDefaultLang($newlang);
             }
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
@@ -751,7 +751,7 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->factu
     if ($conf->global->MAIN_MULTILANGS && empty($newlang))
         $newlang = $object->client->default_lang;
     if (!empty($newlang)) {
-        $outputlangs = new Translate("", $conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
     $result = facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
@@ -793,7 +793,7 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->factu
             if ($conf->global->MAIN_MULTILANGS && empty($newlang))
                 $newlang = $object->client->default_lang;
             if (!empty($newlang)) {
-                $outputlangs = new Translate("", $conf);
+                $outputlangs = new Translate();
                 $outputlangs->setDefaultLang($newlang);
             }
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
@@ -2045,7 +2045,7 @@ print '</tr>';
             if ($conf->global->MAIN_MULTILANGS && empty($newlang))
                 $newlang = $object->client->default_lang;
             if (!empty($newlang)) {
-                $outputlangs = new Translate("", $conf);
+                $outputlangs = new Translate();
                 $outputlangs->setDefaultLang($newlang);
             }
 

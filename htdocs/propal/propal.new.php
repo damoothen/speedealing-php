@@ -189,7 +189,7 @@ if ($action == 'add' && $user->rights->propal->creer) {
                     // Define output language
                     $outputlangs = $langs;
                     if (!empty($conf->global->MAIN_MULTILANGS)) {
-                        $outputlangs = new Translate("", $conf);
+                        $outputlangs = new Translate();
                         $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
                         $outputlangs->setDefaultLang($newlang);
                     }
@@ -251,7 +251,7 @@ else if ($action == 'update' && $user->rights->propal->creer) {
             // Define output language
             $outputlangs = $langs;
             if (!empty($conf->global->MAIN_MULTILANGS)) {
-                $outputlangs = new Translate("", $conf);
+                $outputlangs = new Translate();
                 $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
                 $outputlangs->setDefaultLang($newlang);
             }
@@ -363,7 +363,7 @@ else if ($action == 'update' && $user->rights->propal->creer) {
                     if (empty($newlang))
                         $newlang = $object->client->default_lang;
                     if (!empty($newlang)) {
-                        $outputlangs = new Translate("", $conf);
+                        $outputlangs = new Translate();
                         $outputlangs->setDefaultLang($newlang);
                     }
 
@@ -417,7 +417,7 @@ else if ($action == 'update' && $user->rights->propal->creer) {
                     if (!empty($conf->global->MAIN_MULTILANGS) && empty($newlang))
                         $newlang = $object->client->default_lang;
                     if (!empty($newlang)) {
-                        $outputlangs = new Translate("", $conf);
+                        $outputlangs = new Translate();
                         $outputlangs->setDefaultLang($newlang);
                     }
 
@@ -514,7 +514,7 @@ else if ($action == 'update' && $user->rights->propal->creer) {
                 if ($conf->global->MAIN_MULTILANGS && empty($newlang))
                     $newlang = $object->client->default_lang;
                 if (!empty($newlang)) {
-                    $outputlangs = new Translate("", $conf);
+                    $outputlangs = new Translate();
                     $outputlangs->setDefaultLang($newlang);
                 }
 
@@ -549,7 +549,7 @@ else if ($action == 'update' && $user->rights->propal->creer) {
         if ($conf->global->MAIN_MULTILANGS && empty($newlang))
             $newlang = $object->client->default_lang;
         if (!empty($newlang)) {
-            $outputlangs = new Translate("", $conf);
+            $outputlangs = new Translate();
             $outputlangs->setDefaultLang($newlang);
         }
         if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
@@ -581,7 +581,7 @@ else if ($action == 'update' && $user->rights->propal->creer) {
     if ($conf->global->MAIN_MULTILANGS && empty($newlang))
         $newlang = $object->client->default_lang;
     if (!empty($newlang)) {
-        $outputlangs = new Translate("", $conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
     $result = propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
@@ -616,7 +616,7 @@ else if ($action == 'update' && $user->rights->propal->creer) {
             if ($conf->global->MAIN_MULTILANGS && empty($newlang))
                 $newlang = $object->client->default_lang;
             if (!empty($newlang)) {
-                $outputlangs = new Translate("", $conf);
+                $outputlangs = new Translate();
                 $outputlangs->setDefaultLang($newlang);
             }
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
@@ -649,7 +649,7 @@ else if ($action == 'confirm_modif' && $user->rights->propal->creer) {
             if ($conf->global->MAIN_MULTILANGS && empty($newlang))
                 $newlang = $object->client->default_lang;
             if (!empty($newlang)) {
-                $outputlangs = new Translate("", $conf);
+                $outputlangs = new Translate();
                 $outputlangs->setDefaultLang($newlang);
             }
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {

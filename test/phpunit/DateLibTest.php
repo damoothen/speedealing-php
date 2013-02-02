@@ -218,7 +218,7 @@ class DateLibTest extends PHPUnit_Framework_TestCase
     	$this->assertEquals('1970-01-01 00:00:00',$result);
 
     	// Check dayhour format for fr_FR
-    	$outputlangs=new Translate('',$conf);
+    	$outputlangs=new Translate();
     	$outputlangs->setDefaultLang('fr_FR');
     	$outputlangs->load("main");
 
@@ -227,7 +227,7 @@ class DateLibTest extends PHPUnit_Framework_TestCase
     	$this->assertEquals('02/01/1970 00:00',$result);
 
     	// Check day format for en_US
-    	$outputlangs=new Translate('',$conf);
+    	$outputlangs=new Translate();
     	$outputlangs->setDefaultLang('en_US');
     	$outputlangs->load("main");
 
@@ -257,7 +257,7 @@ class DateLibTest extends PHPUnit_Framework_TestCase
         $db=$this->savdb;
 
         // Check dayhour format for fr_FR
-        $outputlangs=new Translate('',$conf);
+        $outputlangs=new Translate();
         $outputlangs->setDefaultLang('fr_FR');
         $outputlangs->load("main");
 

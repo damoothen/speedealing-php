@@ -160,7 +160,7 @@ else if ($action == 'confirm_deleteline' && $confirm == 'yes' && $user->rights->
 		if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 		if (! empty($newlang))
 		{
-			$outputlangs = new Translate("",$conf);
+			$outputlangs = new Translate();
 			$outputlangs->setDefaultLang($newlang);
 		}
 		if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
@@ -471,7 +471,7 @@ else if ($action == 'setmode' && $user->rights->commande->creer)
 			if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 			if (! empty($newlang))
 			{
-				$outputlangs = new Translate("",$conf);
+				$outputlangs = new Translate();
 				$outputlangs->setDefaultLang($newlang);
 			}
 
@@ -616,7 +616,7 @@ else if ($action == 'addline' && $user->rights->commande->creer)
 					if (empty($newlang)) $newlang=$object->client->default_lang;
 					if (! empty($newlang))
 					{
-						$outputlangs = new Translate("",$conf);
+						$outputlangs = new Translate();
 						$outputlangs->setDefaultLang($newlang);
 					}
 
@@ -699,7 +699,7 @@ else if ($action == 'addline' && $user->rights->commande->creer)
 					if (! empty($conf->global->MAIN_MULTILANGS) && empty($newlang)) $newlang=$object->client->default_lang;
 					if (! empty($newlang))
 					{
-						$outputlangs = new Translate("",$conf);
+						$outputlangs = new Translate();
 						$outputlangs->setDefaultLang($newlang);
 					}
 
@@ -826,7 +826,7 @@ else if ($action == 'updateligne' && $user->rights->commande->creer && GETPOST('
 				if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 				if (! empty($newlang))
 				{
-					$outputlangs = new Translate("",$conf);
+					$outputlangs = new Translate();
 					$outputlangs->setDefaultLang($newlang);
 				}
 
@@ -887,7 +887,7 @@ else if ($action == 'confirm_validate' && $confirm == 'yes' && $user->rights->co
 			if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 			if (! empty($newlang))
 			{
-				$outputlangs = new Translate("",$conf);
+				$outputlangs = new Translate();
 				$outputlangs->setDefaultLang($newlang);
 			}
 			if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
@@ -923,7 +923,7 @@ else if ($action == 'confirm_modif' && $user->rights->commande->creer)
 			if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 			if (! empty($newlang))
 			{
-				$outputlangs = new Translate("",$conf);
+				$outputlangs = new Translate();
 				$outputlangs->setDefaultLang($newlang);
 			}
 			if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
@@ -978,7 +978,7 @@ else if ($action == 'up' && $user->rights->commande->creer)
 	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 	if (! empty($newlang))
 	{
-		$outputlangs = new Translate("",$conf);
+		$outputlangs = new Translate();
 		$outputlangs->setDefaultLang($newlang);
 	}
 
@@ -999,7 +999,7 @@ else if ($action == 'down' && $user->rights->commande->creer)
 	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 	if (! empty($newlang))
 	{
-		$outputlangs = new Translate("",$conf);
+		$outputlangs = new Translate();
 		$outputlangs->setDefaultLang($newlang);
 	}
 	if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
@@ -1028,7 +1028,7 @@ else if ($action == 'builddoc')	// In get or post
 	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 	if (! empty($newlang))
 	{
-		$outputlangs = new Translate("",$conf);
+		$outputlangs = new Translate();
 		$outputlangs->setDefaultLang($newlang);
 	}
 	$result=commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
@@ -2360,7 +2360,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 					if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 					if (! empty($newlang))
 					{
-						$outputlangs = new Translate("",$conf);
+						$outputlangs = new Translate();
 						$outputlangs->setDefaultLang($newlang);
 					}
 

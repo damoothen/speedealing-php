@@ -105,7 +105,7 @@ if ($action == 'create' && $_POST["accountid"] > 0 && $user->rights->banque->che
 	            //if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 	            if (! empty($newlang))
 	            {
-	                $outputlangs = new Translate("",$conf);
+	                $outputlangs = new Translate();
 	                $outputlangs->setDefaultLang($newlang);
 	            }
 	            $result = $object->generatePdf($_POST["model"], $outputlangs);
@@ -169,7 +169,7 @@ if ($action == 'confirm_valide' && $confirm == 'yes' && $user->rights->banque->c
         //if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
         if (! empty($newlang))
         {
-            $outputlangs = new Translate("",$conf);
+            $outputlangs = new Translate();
             $outputlangs->setDefaultLang($newlang);
         }
         $result = $object->generatePdf(GETPOST('model'), $outputlangs);
@@ -198,7 +198,7 @@ if ($action == 'builddoc' && $user->rights->banque->cheque)
     //if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
     if (! empty($newlang))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($newlang);
     }
 	$result = $object->generatePdf($_POST["model"], $outputlangs);

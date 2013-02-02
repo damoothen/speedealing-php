@@ -57,7 +57,7 @@ if ($action == 'builddoc')
     $outputlangs = $langs;
     if (! empty($_REQUEST['lang_id']))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($_REQUEST['lang_id']);
     }
 

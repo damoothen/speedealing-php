@@ -533,7 +533,7 @@ elseif ($action == 'addline')
         if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
     	if (! empty($newlang))
     	{
-    		$outputlangs = new Translate("",$conf);
+    		$outputlangs = new Translate();
     		$outputlangs->setDefaultLang($newlang);
     	}
         //if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) supplier_invoice_pdf_create($db, $object->id, $object->modelpdf, $outputlangs);
@@ -584,7 +584,7 @@ elseif ($action == 'edit' && $user->rights->fournisseur->facture->creer)
         $outputlangs = $langs;
         if (! empty($_REQUEST['lang_id']))
         {
-            $outputlangs = new Translate("",$conf);
+            $outputlangs = new Translate();
             $outputlangs->setDefaultLang($_REQUEST['lang_id']);
         }
         //if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) supplier_invoice_pdf_create($db, $object->id, $object->modelpdf, $outputlangs);
@@ -808,7 +808,7 @@ elseif ($action	== 'builddoc')
     $outputlangs = $langs;
     if (! empty($_REQUEST['lang_id']))
     {
-        $outputlangs = new Translate("",$conf);
+        $outputlangs = new Translate();
         $outputlangs->setDefaultLang($_REQUEST['lang_id']);
     }
     $result=supplier_invoice_pdf_create($db,$object,$object->modelpdf,$outputlangs);
@@ -1982,7 +1982,7 @@ else
                 if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
                 if (! empty($newlang))
                 {
-                    $outputlangs = new Translate("",$conf);
+                    $outputlangs = new Translate();
                     $outputlangs->setDefaultLang($newlang);
                 }
 

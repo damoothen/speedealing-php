@@ -152,7 +152,7 @@ if (!defined('NOREQUIREDB')) {
 if (!defined('NOREQUIRETRAN')) {
 	if (!class_exists('Translate'))
 		require DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
-	$langs = new Translate('', $conf); // A mettre apres lecture de la conf
+	$langs = new TranslateStandalone(); // Use translations files
 }
 
 // Create the global $hookmanager object

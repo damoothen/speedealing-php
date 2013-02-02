@@ -109,7 +109,7 @@ if ($action == 'confirm_valide' && $confirm == 'yes' && $user->rights->facture->
 			$outputlangs = $langs;
 			if (! empty($_REQUEST['lang_id']))
 			{
-				$outputlangs = new Translate("",$conf);
+				$outputlangs = new Translate();
 				$outputlangs->setDefaultLang($_REQUEST['lang_id']);
 			}
 			if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $fac, $fac->modelpdf, $outputlangs);

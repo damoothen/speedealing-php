@@ -499,7 +499,7 @@ if (empty($reshook)) {
 			if ($conf->global->MAIN_MULTILANGS && empty($newlang))
 				$newlang = $fac->client->default_lang;
 			if (!empty($newlang)) {
-				$outputlangs = new Translate("", $conf);
+				$outputlangs = new Translate();
 				$outputlangs->setDefaultLang($newlang);
 			}
 			$result = thirdparty_doc_create($db, $object->id, '', $_REQUEST['model'], $outputlangs);

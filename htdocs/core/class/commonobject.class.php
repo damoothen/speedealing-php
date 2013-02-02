@@ -2420,7 +2420,7 @@ abstract class CommonObject {
                     if (empty($newlang))
                         $newlang = $this->client->default_lang;
                     if (!empty($newlang)) {
-                        $outputlangs = new Translate("", $conf);
+                        $outputlangs = new Translate();
                         $outputlangs->setDefaultLang($newlang);
                     }
 

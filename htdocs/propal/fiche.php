@@ -146,7 +146,7 @@ else if ($action == 'confirm_deleteline' && $confirm == 'yes' && $user->rights->
         // Define output language
         $outputlangs = $langs;
         if (!empty($conf->global->MAIN_MULTILANGS)) {
-            $outputlangs = new Translate("", $conf);
+            $outputlangs = new Translate();
             $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
             $outputlangs->setDefaultLang($newlang);
         }
@@ -166,7 +166,7 @@ else if ($action == 'confirm_validate' && $confirm == 'yes' && $user->rights->pr
             // Define output language
             $outputlangs = $langs;
             if (!empty($conf->global->MAIN_MULTILANGS)) {
-                $outputlangs = new Translate("", $conf);
+                $outputlangs = new Translate();
                 $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
                 $outputlangs->setDefaultLang($newlang);
             }
@@ -317,7 +317,7 @@ else if ($action == 'add' && $user->rights->propal->creer) {
                     // Define output language
                     $outputlangs = $langs;
                     if (!empty($conf->global->MAIN_MULTILANGS)) {
-                        $outputlangs = new Translate("", $conf);
+                        $outputlangs = new Translate();
                         $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
                         $outputlangs->setDefaultLang($newlang);
                     }
@@ -515,7 +515,7 @@ if ($action == 'modif' && $user->rights->propal->creer) {
         // Define output language
         $outputlangs = $langs;
         if (!empty($conf->global->MAIN_MULTILANGS)) {
-            $outputlangs = new Translate("", $conf);
+            $outputlangs = new Translate();
             $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
             $outputlangs->setDefaultLang($newlang);
         }
@@ -613,7 +613,7 @@ else if ($action == "addline" && $user->rights->propal->creer) {
                     if (empty($newlang))
                         $newlang = $object->client->default_lang;
                     if (!empty($newlang)) {
-                        $outputlangs = new Translate("", $conf);
+                        $outputlangs = new Translate();
                         $outputlangs->setDefaultLang($newlang);
                     }
 
@@ -662,7 +662,7 @@ else if ($action == "addline" && $user->rights->propal->creer) {
                     // Define output language
                     $outputlangs = $langs;
                     if (!empty($conf->global->MAIN_MULTILANGS)) {
-                        $outputlangs = new Translate("", $conf);
+                        $outputlangs = new Translate();
                         $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
                         $outputlangs->setDefaultLang($newlang);
                     }
@@ -758,7 +758,7 @@ else if ($action == 'updateligne' && $user->rights->propal->creer && GETPOST('sa
                 // Define output language
                 $outputlangs = $langs;
                 if (!empty($conf->global->MAIN_MULTILANGS)) {
-                    $outputlangs = new Translate("", $conf);
+                    $outputlangs = new Translate();
                     $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
                     $outputlangs->setDefaultLang($newlang);
                 }
@@ -796,7 +796,7 @@ else if ($action == 'builddoc' && $user->rights->propal->creer) {
     // Define output language
     $outputlangs = $langs;
     if (!empty($conf->global->MAIN_MULTILANGS)) {
-        $outputlangs = new Translate("", $conf);
+        $outputlangs = new Translate();
         $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
         $outputlangs->setDefaultLang($newlang);
     }
@@ -867,7 +867,7 @@ else if ($action == 'setmode' && $user->rights->propal->creer) {
         // Define output language
         $outputlangs = $langs;
         if (!empty($conf->global->MAIN_MULTILANGS)) {
-            $outputlangs = new Translate("", $conf);
+            $outputlangs = new Translate();
             $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
             $outputlangs->setDefaultLang($newlang);
         }
@@ -884,7 +884,7 @@ else if ($action == 'setmode' && $user->rights->propal->creer) {
         // Define output language
         $outputlangs = $langs;
         if (!empty($conf->global->MAIN_MULTILANGS)) {
-            $outputlangs = new Translate("", $conf);
+            $outputlangs = new Translate();
             $newlang = (GETPOST('lang_id') ? GETPOST('lang_id') : $object->client->default_lang);
             $outputlangs->setDefaultLang($newlang);
         }
@@ -1608,7 +1608,7 @@ if ($action == 'presend') {
         if ($conf->global->MAIN_MULTILANGS && empty($newlang))
             $newlang = $object->client->default_lang;
         if (!empty($newlang)) {
-            $outputlangs = new Translate("", $conf);
+            $outputlangs = new Translate();
             $outputlangs->setDefaultLang($newlang);
         }
 

@@ -267,7 +267,7 @@ if (!defined('ADODB_DATE_VERSION'))
 
 if (!file_exists(DOL_DOCUMENT_ROOT . "/core/lib/functions.lib.php")) {
     print "Error: Speedealing config file content seems to be not correctly defined.<br>\n";
-    print "Please run dolibarr setup by calling page <b>/install</b>.<br>\n";
+    print "Please run speedealing setup by calling page <b>/install</b>.<br>\n";
     exit;
 }
 

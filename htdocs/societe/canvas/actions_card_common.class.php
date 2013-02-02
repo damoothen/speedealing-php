@@ -339,7 +339,7 @@ abstract class ActionsCardCommon
                 if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$this->object->default_lang;
                 if (! empty($newlang))
                 {
-                    $outputlangs = new Translate("",$conf);
+                    $outputlangs = new Translate();
                     $outputlangs->setDefaultLang($newlang);
                 }
                 $result=thirdparty_doc_create($this->db, $this->object->id, '', GETPOST('model'), $outputlangs);
