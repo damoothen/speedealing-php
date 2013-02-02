@@ -340,162 +340,24 @@ function conf($dolibarr_main_document_root) {
 /**
  * Show HTML header of install pages
  *
- * @param	string		$subtitle			Title
- * @param 	string		$next				Next
- * @param 	string		$action    			Action code ('set' or 'upgrade')
- * @param 	string		$param				Param
- * @param	string		$forcejqueryurl		Set jquery relative URL (must end with / if defined)
  * @return	void
  */
-function pHeader($subtitle, $next, $action = 'set', $param = '', $forcejqueryurl = '') {
+function pHeader() {
     global $conf, $langs;
+
     $langs->load("main");
     $langs->load("admin");
 
-    if ($forcejqueryurl) {
-        $jQueryCustomPath = $forcejqueryurl;
-        $jQueryUiCustomPath = $forcejqueryurl;
-    } else {
-        $jQueryCustomPath = (defined('JS_JQUERY') && constant('JS_JQUERY')) ? JS_JQUERY : false;
-        $jQueryUiCustomPath = (defined('JS_JQUERY_UI') && constant('JS_JQUERY_UI')) ? JS_JQUERY_UI : false;
-    }
-
-    print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">' . "\n";
-    print '<html>' . "\n";
-    print '<head>' . "\n";
-    print '<meta http-equiv="content-type" content="text/html; charset=' . $conf->file->character_set_client . '">' . "\n";
-    print'<!-- Foundation framework -->';
-    print '<link rel="stylesheet" href="../theme/pertho_sample/foundation/stylesheets/foundation.css">';
-    print '<!-- jquery UI -->';
-    print '<link rel="stylesheet" href="../theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
-    print '<!-- fancybox -->';
-    print '<link rel="stylesheet" href="../theme/pertho_sample/lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />';
-    print '<!-- tooltips -->';
-    print '<link rel="stylesheet" href="../theme/pertho_sample/lib/qtip2/jquery.qtip.min.css" />';
-    print '<!-- main styles -->';
-    print '<link rel="stylesheet" href="../theme/eldy/style.css" />';
-    print '<!-- datatables -->';
-    print '<link rel="stylesheet" href="../theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
-    //print '<link rel="stylesheet" type="text/css" href="default.css">'."\n";
-    //print '<link rel="stylesheet" type="text/css" href="../includes/jquery/css/smoothness/jquery-ui-latest.custom.css" type="text/css">'."\n";
-    print '<script type="text/javascript" src="../includes/jquery/js/jquery-latest.min.js"></script>' . "\n";
-    print '<script type="text/javascript" src="../includes/jquery/js/jquery-ui-latest.custom.min.js"></script>' . "\n";
-    print '<title>' . $langs->trans("SpeedealingSetup") . '</title>' . "\n";
-    print '<!-- Google fonts -->';
-    //print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
-    // FIXME use an alternative for offline mode
-    print '<style type="text/css" media="screen, print">
-		@font-face {
-		font-family: "Open Sans Condensed";
-		font-style: normal;
-		font-weight: 300;
-		src: url("../theme/pertho_sample/lib/google/OpenSans-CondensedLight.woff") format("woff"),
-			url("http://themes.googleusercontent.com/static/fonts/opensanscondensed/v6/gk5FxslNkTTHtojXrkp-xF1YPouZEKgzpqZW9wN-3Ek.woff") format("woff");
-		}
-		</style>';
-    // FIXME use an alternative for offline mode
-    print '<style type="text/css" media="screen, print">
-		@font-face {
-		font-family: "Terminal Dosis";
-		font-style: normal;
-		font-weight: 400;
-		src: url("../theme/pertho_sample/lib/google/Dosis-Regular.woff") format("woff"),
-			url("http://themes.googleusercontent.com/static/fonts/terminaldosis/v5/_IcvjW_kWHsIHjjUsLbdpFGxLvFzKVP0OsRYGzgS_zk.woff") format("woff");
-		}
-		</style>';
-    print '<script type="text/javascript" src="../includes/lib/stepy/js/jquery.stepy.min.js"></script>';
-    print '<script type="text/javascript" src="../includes/lib/validate/jquery.validate.min.js"></script>';
-
-    print '<script type="text/javascript" src="../includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
-    //print '<script type="text/javascript" src="../includes/js/pertho.js"></script>';
-
-    print '</head>' . "\n";
-    print '<header>';
-    print '<div class="container head_s_a">';
-
-    // HEADER
-    print '<div class="row sepH_b">
-        <div class="six columns">
-        <div class="row">
-        <div class="five phone-two columns">
-        <div id="logo">';
-    $urllogo = '../theme/speedealing_logo.png';
-    $title = (!empty($conf->global->MAIN_INFO_SOCIETE_NOM)?$conf->global->MAIN_INFO_SOCIETE_NOM:'Speedealing');
-    print '<center><img src="' . $urllogo . '" alt="' . $title . '" title="' . $title . '"/>';
-    print DOL_VERSION . '</center>';
-    print '</div></div>';
-    print '</div>';
-    print '</div></div>';
-    print '</div>';
-    print '</header>';
-    print '<body class="ptrn_a grdnt_b mhover_c">' . "\n";
-    print '<div class="container">';
-
-    print '<div class="row">';
-
-    if (!empty($soutitre))
-        print start_box($langs->trans("SpeedealingSetup") . ' - ' . $soutitre, "twelve", "16-Settings.png");
-    else
-        print start_box($langs->trans("SpeedealingSetup"), "twelve", "16-Settings.png");
-
-    print '<form name="forminstall" id="validate_wizard" class="stepy-wizzard nice" action="' . $next . '.php' . ($param ? '?' . $param : '') . '" method="POST">' . "\n";
-    print '<input type="hidden" name="testpost" value="ok">' . "\n";
-    print '<input type="hidden" name="action" value="' . $action . '">' . "\n";
-
-    //print '<table class="main" width="100%"><tr><td>' . "\n";
-    //print '<table class="main-inside" width="100%"><tr><td>' . "\n";
+    include 'tpl/header.tpl.php';
 }
 
 /**
  * Print HTML footer of install pages
  *
- * @param 	string	$nonext				No button "Next step"
- * @param	string	$setuplang			Language code
- * @param	string	$jscheckfunction	Add a javascript check function
- * @param	string	$withpleasewait		Add also please wait tags
  * @return	void
  */
-function pFooter($nonext = 0, $setuplang = '', $jscheckfunction = '', $withpleasewait = 0) {
-    global $conf, $langs;
-
-    $langs->load("main");
-    $langs->load("admin");
-
-    //print '</td></tr></table>' . "\n";
-    //print '</td></tr></table>' . "\n";
-
-    if (!$nonext) {
-        print '<div class="nextbutton" id="nextbutton"><input type="submit" value="' . $langs->trans("NextStep") . ' ->"';
-        if ($jscheckfunction)
-            print ' onClick="return ' . $jscheckfunction . '();"';
-        print '></div>';
-        print '<div style="visibility: hidden;" class="pleasewait" id="pleasewait">' . $langs->trans("NextStepMightLastALongTime") . '<br><br><div class="blinkwait">' . $langs->trans("PleaseBePatient") . '</div></div>';
-    }
-    if ($setuplang) {
-        print '<input type="hidden" name="selectlang" value="' . $setuplang . '">';
-    }
-
-    print '</form>' . "\n";
-
-    // If there is some logs in buffer to show
-    if (isset($conf->logbuffer) && count($conf->logbuffer)) {
-        print "\n";
-        print "<!-- Start of log output\n";
-        //print '<div class="hidden">'."\n";
-        foreach ($conf->logbuffer as $logline) {
-            print $logline . "\n";
-        }
-        //print '</div>'."\n";
-        print "End of log output -->\n";
-        print "\n";
-    }
-
-    print end_box();
-
-    print '</div>';
-    print '</div>';
-    print '</body>' . "\n";
-    print '</html>' . "\n";
+function pFooter() {
+	include 'tpl/footer.tpl.php';
 }
 
 /**
