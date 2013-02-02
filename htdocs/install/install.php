@@ -24,7 +24,7 @@ include 'inc.php';
 include '../core/class/html.form.class.php';
 include '../core/class/html.formadmin.class.php';
 
-$langs->load("admin");
+$langs->load("install");
 
 $formadmin=new FormAdmin('');
 
@@ -33,7 +33,7 @@ $formadmin=new FormAdmin('');
  * View
  */
 
-pHeader("", "check");   // Etape suivante = check
+pHeader();
 
 include 'tpl/install.tpl.php';
 

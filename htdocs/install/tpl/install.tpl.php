@@ -20,7 +20,7 @@
 <!-- BEGIN PHP TEMPLATE FOR INSTALL WIZARD -->
 <form class="block wizard same-height">
 
-<h3 class="block-title"><?php echo $langs->trans("SpeedealingFirstInstall"); ?></h3>
+<h3 class="block-title"><?php echo $langs->trans("SpeedealingWelcome"); ?></h3>
 <fieldset class="wizard-fieldset fields-list">
 
 <legend class="legend"><?php echo $langs->trans("Welcome"); ?></legend>
@@ -35,22 +35,11 @@
 		<?php echo $formadmin->select_language('auto', 'selectlang', 1, 0, 0, 1); ?>
 	</div>
 
-	<div class="field-block button-height">
-		<label for="last_name" class="label"><b>Last name</b></label>
-		<input type="text" name="last_name" id="last_name" value="" class="input validate[required]">
-	</div>
-
-	<div class="field-block button-height">
-		<span class="label"><b>Gender</b></span>
-		<input type="radio" name="gender" id="gender_male" value="male" class="radio"> <label for="gender_male">Male</label><br>
-		<input type="radio" name="gender" id="gender_female" value="female" class="radio"> <label for="gender_female">Female</label>
-	</div>
-
 </fieldset>
 
 <fieldset class="wizard-fieldset fields-list">
 
-	<legend class="legend">Profile</legend>
+	<legend class="legend"><?php echo $langs->trans("Configuration"); ?></legend>
 
 	<div class="field-block button-height">
 		<small class="input-info">This is the name that will be displayed on profile page</small>
