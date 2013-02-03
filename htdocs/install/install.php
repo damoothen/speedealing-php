@@ -24,6 +24,9 @@ include 'inc.php';
 include '../core/class/html.form.class.php';
 include '../core/class/html.formadmin.class.php';
 
+$setuplang=GETPOST("selectlang",'',3)?GETPOST("selectlang",'',3):'auto';
+$langs->setDefaultLang($setuplang);
+
 $langs->load("install");
 
 $formadmin=new FormAdmin('');

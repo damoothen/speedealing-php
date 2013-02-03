@@ -52,6 +52,7 @@
 	<!-- Additional styles -->
 	<link rel="stylesheet" href="<?php echo DOL_URL_ROOT; ?>/theme/symeos/css/styles/form.css?v=1">
 	<link rel="stylesheet" href="<?php echo DOL_URL_ROOT; ?>/theme/symeos/css/styles/switches.css?v=1">
+	<link rel="stylesheet" href="<?php echo DOL_URL_ROOT; ?>/theme/symeos/css/styles/progress-slider.css?v=1">
 
 	<!-- JavaScript at bottom except for Modernizr -->
 	<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/libs/modernizr.custom.js"></script>

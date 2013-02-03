@@ -27,6 +27,7 @@
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.input.js"></script>
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.message.js"></script>
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.notify.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.progress-slider.js"></script>
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.scroll.js"></script>
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.tooltip.js"></script>
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.wizard.js"></script>
@@ -66,6 +67,27 @@ $(document).ready(function() {
 	if ($.validationEngine) {
 		form.validationEngine();
 	}
+
+	$('#selectlang').change(function() {
+		var lang = $(this).val();
+		window.location.replace('<?php echo DOL_URL_ROOT; ?>/install/install.php?selectlang=' + lang);
+	});
+
+	$('.wizard fieldset').on('wizardleave', function() {
+		// Called everytime a step (fieldset) becomes the active one
+		//alert($(this).attr('id'));
+	});
+
+	$('.wizard fieldset').on('wizardenter', function() {
+		// Called everytime a step (fieldset) becomes the active one
+		var step = $(this).attr('id');
+		if (step == 'install') {
+			$('#add_superadmin').progress({style: 'large'}).showProgressStripes();
+			//$('#add_syncuser').progress({style: 'large'}).showProgressStripes();
+			$('#add_database').progress({style: 'large'}).showProgressStripes();
+			//$('#sync_database').progress({style: 'large'}).showProgressStripes();
+		}
+	});
 });
 </script>
 
