@@ -74,6 +74,8 @@ if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) {
 
 // Set default language (must be after the setValues of $conf)
 if (!defined('NOREQUIRETRAN')) {
+	if (!class_exists('Translate'))
+		require DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
 	$langs = new Translate(); // Use database translation
     $langs->setDefaultLang($conf->global->MAIN_LANG_DEFAULT);
 }
