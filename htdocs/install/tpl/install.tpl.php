@@ -134,12 +134,12 @@
 
 	<div class="field-block button-height">
 		<label for="main_dir" class="label"><b><?php echo $langs->trans("WebPagesDirectory"); ?></b></label>
-		<input type="text" name="main_dir" id="main_dir" value="<?php echo $dolibarr_main_document_root; ?>" class="input full-width validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="main_dir" id="main_dir" value="<?php echo $dolibarr_main_document_root; ?>" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height">
 		<label for="main_url" class="label"><b><?php echo $langs->trans("URLRoot"); ?></b></label>
-		<input type="text" name="main_url" id="main_url" value="<?php echo $dolibarr_main_url_root; ?>" class="input full-width validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="main_url" id="main_url" value="<?php echo $dolibarr_main_url_root; ?>" class="input full-width validate[required,custom[url]]">
 	</div>
 
 	<?php if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') { ?>

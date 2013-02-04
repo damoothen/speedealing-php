@@ -32,6 +32,11 @@
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.tooltip.js"></script>
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.wizard.js"></script>
 
+<!-- jQuery Form Validation -->
+<!-- <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/libs/formValidator/jquery.validationEngine.js"></script> -->
+<!-- TODO replace by $langs translation -->
+<script src="<?php echo DOL_URL_ROOT; ?>/install/js/jquery.validationEngine-rules.js"></script>
+
 <!-- Wizard process -->
 <script src="<?php echo DOL_URL_ROOT; ?>/install/js/install.wizard.js"></script>
 
@@ -40,6 +45,10 @@ $(document).ready(function() {
 	$('#selectlang').change(function() {
 		var lang = $(this).val();
 		window.location.replace('<?php echo DOL_URL_ROOT; ?>/install/install.php?selectlang=' + lang);
+	});
+	$('.wizard').wizard({
+		controlPrev: '<button type="button" class="button glossy mid-margin-right wizard-prev float-left"><span class="button-icon anthracite-gradient"><span class="icon-backward"></span></span><?php echo $langs->trans("Previous"); ?></button>',
+		controlNext: '<button type="button" class="button glossy mid-margin-right wizard-next float-right"><?php echo $langs->trans("Next"); ?><span class="button-icon right-side"><span class="icon-forward"></span></span></button>'
 	});
 });
 </script>
