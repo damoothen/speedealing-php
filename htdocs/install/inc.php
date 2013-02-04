@@ -1,11 +1,12 @@
 <?php
 
-/* Copyright (C) 2004		Rodolphe Quiedeville            <rodolphe@quiedeville.org>
+/* Copyright (C) 2004		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
  * Copyright (C) 2004		Benoit Mortier			<benoit.mortier@opensides.be>
  * Copyright (C) 2004		Sebastien DiCintio		<sdicintio@ressource-toi.org>
  * Copyright (C) 2007-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
- * Copyright (C) 2012		Herve Prot                      <herve.prot@symeos.com>
- * Copyright (C) 2012           Marcos García
+ * Copyright (C) 2007-2013	Regis Houssin			<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012		Herve Prot				<herve.prot@symeos.com>
+ * Copyright (C) 2012		Marcos García
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +25,12 @@
 // Just to define version DOL_VERSION
 if (!defined('DOL_INC_FOR_VERSION_ERROR'))
     define('DOL_INC_FOR_VERSION_ERROR', '1');
-require_once '../filefunc.inc.php';
+require_once realpath(dirname(__FILE__)) . '/../filefunc.inc.php';
 
 
 // Define DOL_DOCUMENT_ROOT and ADODB_PATH used for install/upgrade process
 if (!defined('DOL_DOCUMENT_ROOT'))
-    define('DOL_DOCUMENT_ROOT', '..');
+    define('DOL_DOCUMENT_ROOT', realpath(dirname(__FILE__)) . '/..');
 if (!defined('ADODB_PATH')) {
     $foundpath = DOL_DOCUMENT_ROOT . '/includes/adodbtime/';
     if (!is_dir($foundpath))

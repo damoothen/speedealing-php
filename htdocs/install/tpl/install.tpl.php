@@ -78,6 +78,44 @@
 		<p><?php echo $langs->trans("PrerequisiteDesc"); ?></p>
 	</div>
 
+	<div class="field-block">
+		<label for="php_version" class="label"><b><?php echo $langs->trans("PHPVersion"); ?></b></label>
+		<div id="php_version">&nbsp;</div>
+	</div>
+
+	<div class="field-block">
+		<label for="php_memory" class="label"><b><?php echo $langs->trans("PHPMemoryLimit"); ?></b></label>
+		<div id="php_memory"></div>
+	</div>
+
+	<div class="field-block">
+		<label for="php_gd" class="label"><b><?php echo $langs->trans("PHPGD"); ?></b></label>
+		<div id="php_gd"></div>
+	</div>
+
+	<div class="field-block">
+		<label for="php_curl" class="label"><b><?php echo $langs->trans("PHPCurl"); ?></b></label>
+		<div id="php_curl"></div>
+	</div>
+
+	<div class="field-block">
+		<label for="php_memcached" class="label"><b><?php echo $langs->trans("PHPMemcached"); ?></b></label>
+		<div id="php_memcached"></div>
+	</div>
+
+	<div class="field-block">
+		<label for="conf_file" class="label"><b><?php echo $langs->trans("ConfigFileStatus"); ?></b></label>
+		<div id="conf_file"></div>
+	</div>
+
+	<div class="field-block button-height wizard-controls align-right">
+		<button id="reload_button" type="button" class="button glossy mid-margin-right">
+			<span class="button-icon">
+				<span class="icon-redo"></span>
+			</span>
+			<?php echo $langs->trans("Reload"); ?>
+		</button>
+	</div>
 
 </fieldset>
 
@@ -93,11 +131,6 @@
 	<div class="field-block button-height">
 		<label for="main_dir" class="label"><b><?php echo $langs->trans("WebPagesDirectory"); ?></b></label>
 		<input type="text" class="input full-width" name="main_dir" id="main_dir" value="<?php echo $dolibarr_main_document_root; ?>" class="input validate[required,custom[onlyLetterNumber]]">
-	</div>
-
-	<div class="field-block button-height">
-		<label for="main_data_dir" class="label"><b><?php echo $langs->trans("DocumentsDirectory"); ?></b></label>
-		<input type="text" class="input full-width" name="main_data_dir" id="main_data_dir" value="<?php echo $dolibarr_main_data_root; ?>" class="input validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-block button-height">
@@ -118,12 +151,12 @@
 
 	<div class="field-block button-height">
 		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
-		<input type="text" class="input full-width" name="memcached_host" id="memcached_host" value="localhost" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" class="input full-width disabled" name="memcached_host" id="memcached_host" value="localhost" class="input validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-block button-height">
 		<label for="memcached_port" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
-		<input type="text" class="input" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" class="input disabled" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 </fieldset>
@@ -184,6 +217,11 @@
 	<div class="field-block">
 		<h4><?php echo $langs->trans("InstallTitle"); ?></h4>
 		<p><?php echo $langs->trans("InstallDesc"); ?></p>
+	</div>
+
+	<div class="field-block">
+		<label for="add_conf" class="label"><b><?php echo $langs->trans("AddConfigFile"); ?></b></label>
+		<span id="add_conf"></span>
 	</div>
 
 	<div class="field-block">

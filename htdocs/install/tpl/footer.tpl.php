@@ -75,19 +75,53 @@ $(document).ready(function() {
 
 	$('.wizard fieldset').on('wizardleave', function() {
 		// Called everytime a step (fieldset) becomes the active one
-		//alert($(this).attr('id'));
+		var step = $(this).attr('id');
 	});
 
 	$('.wizard fieldset').on('wizardenter', function() {
 		// Called everytime a step (fieldset) becomes the active one
 		var step = $(this).attr('id');
-		if (step == 'install') {
+		if (step == 'welcome') {
+			$('.wizard-next').show();
+		} else if (step == 'prerequisite') {
+			$('.wizard-next').hide();
+			$('#reload_button').hide();
+			// Check prerequisites
+			ckeckPrerequisite();
+		} else if (step == 'install') {
+			$('#add_conf').progress({style: 'large'}).showProgressStripes();
 			$('#add_superadmin').progress({style: 'large'}).showProgressStripes();
 			//$('#add_syncuser').progress({style: 'large'}).showProgressStripes();
 			$('#add_database').progress({style: 'large'}).showProgressStripes();
 			//$('#sync_database').progress({style: 'large'}).showProgressStripes();
 		}
 	});
+
+	$('#reload_button').click(function() {
+		ckeckPrerequisite();
+	});
+
+	function ckeckPrerequisite() {
+		// Add loader
+		$('#php_version, #php_memory, #php_utf8, #php_gd, #php_curl, #php_memcached, #conf_file').html('<span class="loader"></span>');
+		// Check prerequisites
+		$.getJSON('ajax/prerequisite.php', { action: 'check_prerequisite' }, function(data) {
+			if (data) {
+				$.each(data, function(key, value) {
+					if (key == 'continue') {
+						if (value == true) {
+							$('#reload_button').hide();
+							$('.wizard-next').show();
+						}
+						else
+							$('#reload_button').show();
+					} else {
+						$('#' + key).html(value);
+					}
+				});
+			}
+		});
+	}
 });
 </script>
 
