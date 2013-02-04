@@ -21,13 +21,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 	\defgroup   produit     Module products
- * 	\brief      Module to manage catalog of predefined products
- * 	\file       htdocs/core/modules/modProduct.class.php
- * 	\ingroup    produit
- * 	\brief      File to describe module to manage catalog of predefined products
- */
 include_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 
 /**
@@ -180,15 +173,6 @@ class modProduct extends DolibarrModules {
             $this->export_entities_array[$r] = array_merge($this->export_entities_array[$r], array('p.barcode' => 'product'));
         // Add extra fields
         $sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'product'";
-        $resql = $this->db->query($sql);
-        if ($resql) {    // This can fail when class is used on old database (during migration for example)
-            while ($obj = $this->db->fetch_object($resql)) {
-                $fieldname = 'extra.' . $obj->name;
-                $fieldlabel = ucfirst($obj->label);
-                $this->export_fields_array[$r][$fieldname] = $fieldlabel;
-                $this->export_entities_array[$r][$fieldname] = 'product';
-            }
-        }
         // End add axtra fields
 
         $this->export_sql_start[$r] = 'SELECT DISTINCT ';
@@ -211,14 +195,6 @@ class modProduct extends DolibarrModules {
         $this->import_fields_array[$r] = array('p.ref' => "Ref*", 'p.label' => "Label*", 'p.description' => "Description", 'p.accountancy_code_sell' => "ProductAccountancySellCode", 'p.accountancy_code_buy' => "ProductAccountancyBuyCode", 'p.note' => "Note", 'p.length' => "Length", 'p.surface' => "Surface", 'p.volume' => "Volume", 'p.weight' => "Weight", 'p.duration' => "Duration", 'p.customcode' => 'CustomCode', 'p.price' => "SellingPriceHT", 'p.price_ttc' => "SellingPriceTTC", 'p.tva_tx' => 'VAT', 'p.tosell' => "OnSell*", 'p.tobuy' => "OnBuy*", 'p.fk_product_type' => "Type*", 'p.finished' => 'Nature', 'p.datec' => 'DateCreation*');
         // Add extra fields
         $sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'product'";
-        $resql = $this->db->query($sql);
-        if ($resql) {    // This can fail when class is used on old database (during migration for example)
-            while ($obj = $this->db->fetch_object($resql)) {
-                $fieldname = 'extra.' . $obj->name;
-                $fieldlabel = ucfirst($obj->label);
-                $this->import_fields_array[$r][$fieldname] = $fieldlabel;
-            }
-        }
         // End add extra fields
         $this->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-' . MAIN_DB_PREFIX . 'product');    // aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
         $this->import_regex_array[$r] = array('p.ref' => '[^ ]', 'p.tosell' => '^[0|1]$', 'p.tobuy' => '^[0|1]$', 'p.fk_product_type' => '^[0|1]$', 'p.datec' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$');

@@ -1,8 +1,5 @@
 <?php
-/* Copyright (C) 2004-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010	Laurent Destailleur		<eldy@users.sourceforge.net>
- * Copyright (C) 2005-2013	Regis Houssin			<regis.houssin@capnetworks.com>
- * Copyright (C) 2012		Herve Prot				<herve.prot@symeos.com>
+/* Copyright (C) 2013	Regis Houssin	<regis.houssin@capnetworks.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,22 +16,91 @@
  */
 
 /**
- *       \file       htdocs/install/index.php
+ *       \file       htdocs/install/install.php
  *       \ingroup    install
- *       \brief      This page redirect to page install.php or update.php
+ *       \brief      Install process
+ */
+include 'inc.php';
+include '../core/class/html.form.class.php';
+include '../core/class/html.formadmin.class.php';
+
+$setuplang=GETPOST("selectlang",'',3)?GETPOST("selectlang",'',3):'auto';
+$langs->setDefaultLang($setuplang);
+
+$langs->load("install");
+
+$formadmin=new FormAdmin('');
+
+// MAIN_DOCUMENT_ROOT
+if (!isset($dolibarr_main_url_root) || dol_strlen($dolibarr_main_url_root) == 0) {
+	//print "x".$_SERVER["SCRIPT_FILENAME"]." y".$_SERVER["DOCUMENT_ROOT"];
+	// Si le php fonctionne en CGI, alors SCRIPT_FILENAME vaut le path du php et
+	// ce n'est pas ce qu'on veut. Dans ce cas, on propose $_SERVER["DOCUMENT_ROOT"]
+	if (preg_match('/^php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/[\\/]php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/php\.exe$/i', $_SERVER["SCRIPT_FILENAME"])) {
+		$dolibarr_main_document_root = $_SERVER["DOCUMENT_ROOT"];
+
+		if (!preg_match('/[\\/]speedealing[\\/]htdocs$/i', $dolibarr_main_document_root)) {
+			$dolibarr_main_document_root.="/speedealing/htdocs";
+		}
+	} else {
+		$dolibarr_main_document_root = dirname(dirname($_SERVER["SCRIPT_FILENAME"]));
+		// Nettoyage du path propose
+		// Gere les chemins windows avec double "\"
+		$dolibarr_main_document_root = str_replace('\\\\', '/', $dolibarr_main_document_root);
+
+		// Supprime les slash ou antislash de fins
+		$dolibarr_main_document_root = preg_replace('/[\\/]+$/', '', $dolibarr_main_document_root);
+	}
+}
+
+// MAIN_DATA_ROOT
+if (empty($dolibarr_main_data_root)) {
+	// Si le repertoire documents non defini, on en propose un par defaut
+	if (empty($force_install_main_data_root)) {
+		$dolibarr_main_data_root = preg_replace("/\/htdocs$/", "", $dolibarr_main_document_root);
+		$dolibarr_main_data_root.="/documents";
+	} else {
+		$dolibarr_main_data_root = $force_install_main_data_root;
+	}
+}
+
+// MAIN_URL_ROOT
+if (!empty($main_url))
+	$dolibarr_main_url_root = $main_url;
+if (empty($dolibarr_main_url_root)) {
+	// If defined (Ie: Apache with Linux)
+	if (isset($_SERVER["SCRIPT_URI"])) {
+		$dolibarr_main_url_root = $_SERVER["SCRIPT_URI"];
+	}
+	// If defined (Ie: Apache with Caudium)
+	elseif (isset($_SERVER["SERVER_URL"]) && isset($_SERVER["DOCUMENT_URI"])) {
+		$dolibarr_main_url_root = $_SERVER["SERVER_URL"] . $_SERVER["DOCUMENT_URI"];
+	}
+	// If SCRIPT_URI, SERVER_URL, DOCUMENT_URI not defined (Ie: Apache 2.0.44 for Windows)
+	else {
+		$proto = 'http';
+		if (!empty($_SERVER["HTTP_HOST"]))
+			$serverport = $_SERVER["HTTP_HOST"];
+		else
+			$serverport = $_SERVER["SERVER_NAME"];
+		$dolibarr_main_url_root = $proto . "://" . $serverport . $_SERVER["SCRIPT_NAME"];
+	}
+	// Clean proposed URL
+	$dolibarr_main_url_root = preg_replace('/\/install\.php$/', '', $dolibarr_main_url_root); // Remove the /fileconf.php
+	$dolibarr_main_url_root = preg_replace('/\/$/', '', $dolibarr_main_url_root);     // Remove the /
+	$dolibarr_main_url_root = preg_replace('/\/index\.php$/', '', $dolibarr_main_url_root);  // Remove the /index.php
+	$dolibarr_main_url_root = preg_replace('/\/install$/', '', $dolibarr_main_url_root);   // Remove the /install
+}
+
+
+/*
+ * View
  */
 
-// Si fichier conf existe deja et rempli, on est pas sur une premiere install,
-// on ne passe donc pas par la page de choix de langue
-if (1==2 && file_exists($conffile) && isset($dolibarr_main_url_root))
-{
-    header("Location: update.php");
-    exit;
-}
-else
-{
-	header("Location: install.php");
-	exit;
-}
+pHeader();
+
+include 'tpl/install.tpl.php';
+
+pFooter();
 
 ?>

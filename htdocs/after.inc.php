@@ -91,4 +91,12 @@ if (!defined('NOREQUIREDB') && !defined('NOREQUIRESOC')) {
     if ($mysoc->country_id == 'DE' && !isset($conf->global->MAIN_INVERT_SENDER_RECIPIENT))
         $conf->global->MAIN_INVERT_SENDER_RECIPIENT = 1;
 }
+
+/**
+ * Initialise  messages notifications
+ */
+dol_setcache("errors", array());
+dol_setcache("warnings", array());
+dol_setcache("mesgs", array());
+
 ?>

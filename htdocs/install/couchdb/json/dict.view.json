@@ -1,9 +1,10 @@
 {
-   "_id": "_design/dict",
+   "_id": "_design/Dict",
+   "_rev": "1-0badace7f4aac39314439fa6c87718ec",
    "language": "javascript",
    "views": {
        "list": {
-           "map": "function(doc) {\n  if(doc.class==\"dict\" && doc.values) {\n    doc.values.forEach(function(tag) {\n      if(tag.enable==true)\n      emit(doc._id, tag._id);\n    });\n  }\n}"
+           "map": "function(doc) {\n  if(doc.class==\"Dict\") {\n      emit(doc._id, {_id:doc._id,_rev:doc._rev});\n  }\n}"
        }
    }
 }
