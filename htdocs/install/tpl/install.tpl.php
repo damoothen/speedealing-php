@@ -80,7 +80,7 @@
 
 	<div class="field-block">
 		<label for="php_version" class="label"><b><?php echo $langs->trans("PHPVersion"); ?></b></label>
-		<div id="php_version">&nbsp;</div>
+		<div id="php_version"></div>
 	</div>
 
 	<div class="field-block">
@@ -134,12 +134,12 @@
 
 	<div class="field-block button-height">
 		<label for="main_dir" class="label"><b><?php echo $langs->trans("WebPagesDirectory"); ?></b></label>
-		<input type="text" class="input full-width" name="main_dir" id="main_dir" value="<?php echo $dolibarr_main_document_root; ?>" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="main_dir" id="main_dir" value="<?php echo $dolibarr_main_document_root; ?>" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height">
 		<label for="main_url" class="label"><b><?php echo $langs->trans("URLRoot"); ?></b></label>
-		<input type="text" class="input full-width" name="main_url" id="main_url" value="<?php echo $dolibarr_main_url_root; ?>" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="main_url" id="main_url" value="<?php echo $dolibarr_main_url_root; ?>" class="input full-width validate[required,custom[url]]">
 	</div>
 
 	<?php if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') { ?>
@@ -155,12 +155,12 @@
 
 	<div class="field-block button-height">
 		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
-		<input type="text" class="input full-width disabled" name="memcached_host" id="memcached_host" value="localhost" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width disabled validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-block button-height">
 		<label for="memcached_port" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
-		<input type="text" class="input disabled" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="memcached_port" id="memcached_port" value="11211" class="input disabled validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 </fieldset>
@@ -176,12 +176,12 @@
 
 	<div class="field-block button-height">
 		<label for="couchdb_user_root" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
-		<input type="text" class="input full-width" name="couchdb_user_root" id="couchdb_user_root" value="" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="couchdb_user_root" id="couchdb_user_root" value="" class="input full-width validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-block button-height">
 		<label for="couchdb_pass_root" class="label"><b><?php echo $langs->trans("Password"); ?></b></label>
-		<input type="text" class="input full-width" name="couchdb_pass_root" id="couchdb_pass_root" value="" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="couchdb_pass_root" id="couchdb_pass_root" value="" class="input full-width validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-drop button-height black-inputs">
@@ -195,17 +195,17 @@
 
 	<div class="field-block button-height">
 		<label for="couchdb_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
-		<input type="text" class="input full-width" name="couchdb_host" id="couchdb_host" value="http://localhost" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="couchdb_host" id="couchdb_host" value="http://localhost" class="input full-width validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-block button-height">
 		<label for="couchdb_name" class="label"><b><?php echo $langs->trans("DatabaseName"); ?></b></label>
-		<input type="text" class="input full-width" name="couchdb_name" id="couchdb_name" value="" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="couchdb_name" id="couchdb_name" value="" class="input full-width validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-block button-height">
 		<label for="couchdb_port" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
-		<input type="text" class="input" name="couchdb_port" id="couchdb_port" value="5984" class="input validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="couchdb_port" id="couchdb_port" value="5984" class="input validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-drop button-height black-inputs">

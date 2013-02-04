@@ -358,6 +358,7 @@ function pHeader() {
  * @return	void
  */
 function pFooter() {
+	global $langs;
 	include 'tpl/footer.tpl.php';
 }
 
