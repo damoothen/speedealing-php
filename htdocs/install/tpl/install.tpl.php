@@ -108,9 +108,13 @@
 		<div id="conf_file"></div>
 	</div>
 
+	<div id="reload_required" class="field-block">
+		<p class="red"><?php echo $langs->trans("ReloadIsRequired"); ?></p>
+	</div>
+
 	<div class="field-block button-height wizard-controls align-right">
 		<button id="reload_button" type="button" class="button glossy mid-margin-right">
-			<span class="button-icon">
+			<span class="button-icon red-gradient">
 				<span class="icon-redo"></span>
 			</span>
 			<?php echo $langs->trans("Reload"); ?>

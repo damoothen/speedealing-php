@@ -85,6 +85,7 @@ $(document).ready(function() {
 			$('.wizard-next').show();
 		} else if (step == 'prerequisite') {
 			$('.wizard-next').hide();
+			$('#reload_required').hide();
 			$('#reload_button').hide();
 			// Check prerequisites
 			ckeckPrerequisite();
@@ -111,10 +112,13 @@ $(document).ready(function() {
 					if (key == 'continue') {
 						if (value == true) {
 							$('#reload_button').hide();
+							$('#reload_required').hide();
 							$('.wizard-next').show();
 						}
-						else
+						else {
+							$('#reload_required').show();
 							$('#reload_button').show();
+						}
 					} else {
 						$('#' + key).html(value);
 					}
