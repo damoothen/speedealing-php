@@ -112,7 +112,10 @@ function dol_getcache($memoryid) {
     }
     // Using SESSION
     else {
-        return $_SESSION[$memoryid];
+        if(isset($_SESSION[$memoryid]))
+            return $_SESSION[$memoryid];
+        else
+            return -1;
     }
 
     return 0;
