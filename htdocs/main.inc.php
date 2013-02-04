@@ -209,25 +209,14 @@ if (!defined('NOREQUIREAJAX'))
     require DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'; // Need 22ko memory
 
 
+
+
+    
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
     dol_syslog("main.inc: A previous install or upgrade was not complete. Redirect to install page.", LOG_WARNING);
     Header("Location: " . DOL_URL_ROOT . "/install/index.php");
     exit;
-}
-// If an upgrade process is required, we call the install page.
-if ((!empty($conf->global->MAIN_VERSION_LAST_UPGRADE) && ($conf->global->MAIN_VERSION_LAST_UPGRADE != DOL_VERSION))
-        || (empty($conf->global->MAIN_VERSION_LAST_UPGRADE) && !empty($conf->global->MAIN_VERSION_LAST_INSTALL) && ($conf->global->MAIN_VERSION_LAST_INSTALL != DOL_VERSION))) {
-    $versiontocompare = empty($conf->global->MAIN_VERSION_LAST_UPGRADE) ? $conf->global->MAIN_VERSION_LAST_INSTALL : $conf->global->MAIN_VERSION_LAST_UPGRADE;
-    require_once(DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php");
-    $dolibarrversionlastupgrade = preg_split('/[.-]/', $versiontocompare);
-    $dolibarrversionprogram = preg_split('/[.-]/', DOL_VERSION);
-    $rescomp = versioncompare($dolibarrversionprogram, $dolibarrversionlastupgrade);
-    if ($rescomp > 0) {   // Programs have a version higher than database. We did not add "&& $rescomp < 3" because we want upgrade process for build upgrades
-        dol_syslog("main.inc: database version " . $versiontocompare . " is lower than programs version " . DOL_VERSION . ". Redirect to install page.", LOG_WARNING);
-        Header("Location: " . DOL_URL_ROOT . "/install/index.php");
-        exit;
-    }
 }
 
 // Creation of a token against CSRF vulnerabilities
@@ -562,6 +551,32 @@ if (!function_exists("llxHeader")) {
         else
             print '<body class="fullW" style="background: white;">';
 
+        // If an upgrade process is required, we call the install page.
+        if (empty($conf->global->MAIN_VERSION) || ($conf->global->MAIN_VERSION != DOL_VERSION)) {
+
+            // if (empty($conf->global->MAIN_VERSION) || DOL_VERSION > $conf->global->MAIN_VERSION)
+            //     $needUprgadeDB = true;
+            // else { // Need Speedealing code upgrade
+            
+            $log = dol_getcache("warnings");
+            if(!is_array($log))
+                $log = array();
+            $error->title = "NeedUpgrade";
+            $error->message = "Installed version is xx.xx.xx, you must upgrade to yy.yy.yy";
+            $log[] = clone $error;
+            dol_setcache("warnings", $log);
+            
+            //  }
+
+
+            /* if ($user->admin) { // Is an administrator
+              if ($rescomp > 0) {   // Programs have a version higher than database. We did not add "&& $rescomp < 3" because we want upgrade process for build upgrades
+              dol_syslog("after.inc: database version " . $versiontocompare . " is lower than programs version " . DOL_VERSION . ". Redirect to install page.", LOG_WARNING);
+              Header("Location: " . DOL_URL_ROOT . "/install/index.php");
+              exit;
+              }
+              } */
+        }
 
         // Displays title
         if (empty($mysoc->name))
@@ -778,7 +793,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 //if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
 //else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/tipTip.css" />'."\n";                           // Tooltip
-                print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />' . "\n"; // JNotify
+                //print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />' . "\n"; // JNotify
 //print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/css/jquery.lightbox-0.5.css" media="screen" />'."\n";       // Lightbox
 // jQuery fileupload
                 print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
@@ -850,8 +865,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 // jQuery Layout
                 print '<script type="text/javascript" src="includes/jquery/plugins/layout/jquery.layout-latest' . $ext . '"></script>' . "\n";
                 // jQuery jnotify
-                print '<script type="text/javascript" src="includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>' . "\n";
-                print '<script type="text/javascript" src="core/js/jnotify.js"></script>' . "\n";
+                //print '<script type="text/javascript" src="includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>' . "\n";
+                //print '<script type="text/javascript" src="core/js/jnotify.js"></script>' . "\n";
 
                 if (!defined('NOLOGIN')) {
                     // Flot
@@ -1480,7 +1495,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Global html output events ($mesgs, $errors, $warnings)
             dol_htmloutput_events();
-
             ?>
         </section>
 
@@ -1491,9 +1505,9 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         left_menu(); // print the right menu
 
         if ($conf->memcached->enabled && get_class($memcache) == 'Memcache')
-        	$memcache->close();
+            $memcache->close();
 
-		// Core error message
+        // Core error message
         if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
             $title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');
             print ajax_dialog($title, $langs->trans('CoreErrorMessage'));

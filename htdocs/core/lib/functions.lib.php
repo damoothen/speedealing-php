@@ -828,10 +828,18 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
+
+
+
+
         
 // If date undefined or "", we return ""
     if (dol_strlen($time) == 0)
         return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
+
+
+
+
 
 
 
@@ -2713,6 +2721,10 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
 
 
 
+
+
+
+
             
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
         if (dol_strlen($nbofdectoround))
@@ -3098,6 +3110,10 @@ function dol_mkdir($dir, $dataroot = '') {
             $ccdir .= $cdir[$i];
         if (preg_match("/^.:$/", $ccdir, $regs))
             continue; // Si chemin Windows incomplet, on poursuit par rep suivant
+
+
+
+
 
 
 
@@ -3617,6 +3633,48 @@ function dol_htmloutput_events() {
     if (isset($_SESSION['dol_events']['warnings'])) {
         dol_htmloutput_mesg('', $_SESSION['dol_events']['warnings'], 'warning');
         unset($_SESSION['dol_events']['warnings']);
+    }
+
+    // Log in memcached
+    $type = array("errors", "warnings", "mesgs");
+    foreach ($type as $aRow) {
+        $logs = dol_getcache($aRow);
+        if (is_array($logs)) {
+            switch ($aRow) {
+                case "errors":
+                    $color = "red-gradient";
+                    $icon = 'theme/common/emotes/face-sad.png';
+                    $closeDelay = 8000;
+                    break;
+                case "warnings":
+                    $color = "orange-gradient";
+                    $icon = 'theme/common/emotes/face-uncertain.png';
+                    $closeDelay = 8000;
+                    break;
+                case "mesgs":
+                    $color = "green-gradient";
+                    $icon = 'theme/common/emotes/face-smile.png';
+                    $closeDelay = 2000;
+                    break;
+            }
+
+            foreach ($logs as $row) {
+                ?>
+                <script>
+                    $(document).ready(function() {
+                        notify('<? echo $row->title; ?>', '<? echo $row->message; ?>', {
+                            autoClose: true,
+                            delay: 2500,
+                            closeDelay: <?php echo $closeDelay;?>,
+                            classes : ["<?php echo $color;?>"],
+                            icon: '<?php echo $icon;?>'
+                        });
+                    });
+                </script>
+                <?php
+            }
+            dol_delcache($aRow);
+        }
     }
 }
 

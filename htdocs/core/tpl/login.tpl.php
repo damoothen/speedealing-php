@@ -395,7 +395,7 @@ if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_G
 
             // What about a notification?
             notify('Bienvenue sur Speedealing', 'Votre CRM/ERP.', {
-                autoClose: false,
+                autoClose: true,
                 delay: 2500,
                 icon: 'theme/common/emotes/face-smile.png'
             });
