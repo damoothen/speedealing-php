@@ -22,6 +22,9 @@
 
 require '../inc.php';
 
+$default_lang = GETPOST('lang','alpha');
+$langs->setDefaultLang($default_lang);
+
 $langs->load("install");
 $langs->load("errors");
 

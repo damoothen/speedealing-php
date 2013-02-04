@@ -105,7 +105,7 @@ $(document).ready(function() {
 		// Add loader
 		$('#php_version, #php_memory, #php_utf8, #php_gd, #php_curl, #php_memcached, #conf_file').html('<span class="loader"></span>');
 		// Check prerequisites
-		$.getJSON('ajax/prerequisite.php', { action: 'check_prerequisite' }, function(data) {
+		$.getJSON('ajax/prerequisite.php', { action: 'check_prerequisite', lang: $('#selectlang').val() }, function(data) {
 			if (data) {
 				$.each(data, function(key, value) {
 					if (key == 'continue') {

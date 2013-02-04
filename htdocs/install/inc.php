@@ -241,7 +241,7 @@ if (function_exists('get_magic_quotes_gpc')) { // magic_quotes_* removed in PHP 
 }
 
 // Defini objet langs
-$langs = new TranslateStandalone(true);
+$langs = new TranslateStandalone(realpath(dirname(__FILE__)) . '/..');
 if (GETPOST('lang'))
     $langs->setDefaultLang(GETPOST('lang'));
 else

@@ -42,15 +42,15 @@ class TranslateStandalone {
     /**
      * 	Constructor
      *
-     *  @param	string	$install	Install mode.
+     *  @param	string	$dir	Force language directory.
      */
-    function __construct($install = false) {
+    function __construct($dir = null) {
     	global $conf;
 
         if (!empty($conf->file->character_set_client))
             $this->charset_output = $conf->file->character_set_client; // If charset output is forced
-        if ($install)
-            $this->dir = array('..');
+        if (!empty($dir))
+            $this->dir = array($dir);
         else
             $this->dir = $conf->file->dol_document_root;
     }
