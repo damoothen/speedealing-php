@@ -150,8 +150,8 @@ if (!defined('NOREQUIREDB')) {
 
 // Creation objet $langs (must be before all other code)
 if (!defined('NOREQUIRETRAN')) {
-	if (!class_exists('Translate'))
-		require DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
+	if (!class_exists('TranslateStandalone'))
+		require DOL_DOCUMENT_ROOT . '/core/class/translatestandalone.class.php';
 	$langs = new TranslateStandalone(); // Use translations files
 }
 
