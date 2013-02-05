@@ -68,7 +68,6 @@ $(document).ready(function() {
 			ckeckPrerequisite();
 		} else if (step == 'install') {
 			$('#add_conf').progress({style: 'large'}).showProgressStripes();
-			$('#add_superadmin').progress({style: 'large'}).showProgressStripes();
 			//$('#add_syncuser').progress({style: 'large'}).showProgressStripes();
 			$('#add_database').progress({style: 'large'}).showProgressStripes();
 			//$('#sync_database').progress({style: 'large'}).showProgressStripes();

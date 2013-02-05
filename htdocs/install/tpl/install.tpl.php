@@ -20,13 +20,18 @@
 <!-- BEGIN PHP TEMPLATE FOR INSTALL WIZARD -->
 <form class="block wizard">
 
-<h3 class="block-title"><?php echo $langs->trans("SpeedealingWelcome"); ?></h3>
+<!-- <h3 class="block-title"><?php echo $langs->trans("SpeedealingInstallTitle"); ?></h3> -->
+<div class="block-title"><img src="<?php echo DOL_URL_ROOT; ?>/logo.png"></div>
+<span class="ribbon">
+	<span class="ribbon-inner green-gradient glossy"><?php echo constant('DOL_VERSION'); ?></span>
+</span>
 <fieldset id="welcome" class="wizard-fieldset fields-list">
 
 <legend class="legend"><?php echo $langs->trans("Welcome"); ?></legend>
 
 	<div class="field-block">
-		<h4><?php echo $langs->trans("WelcomeTitle"); ?></h4>
+		<h4 class="blue"><?php echo $langs->trans("WelcomeTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/welcome.png"></div>
 		<p><?php echo $langs->trans("WelcomeDesc"); ?></p>
 	</div>
 
@@ -35,8 +40,13 @@
 		<?php echo $formadmin->select_language($setuplang, 'selectlang', 1, 0, 0, 1); ?>
 	</div>
 
+	<div class="field-drop button-height black-inputs">
+		<p><?php echo $langs->trans("LanguageDesc"); ?></p>
+	</div>
+
 	<div class="field-block">
-		<h4><?php echo $langs->trans("InstallTypeTitle"); ?></h4>
+		<h4 class="blue"><?php echo $langs->trans("InstallTypeTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installtype.png"></div>
 		<p><?php echo $langs->trans("InstallTypeDesc"); ?></p>
 	</div>
 
@@ -74,7 +84,8 @@
 	<legend class="legend"><?php echo $langs->trans("Prerequisite"); ?></legend>
 
 	<div class="field-block">
-		<h4><?php echo $langs->trans("PrerequisiteTitle"); ?></h4>
+		<h4 class="blue"><?php echo $langs->trans("PrerequisiteTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/prerequisite.png"></div>
 		<p><?php echo $langs->trans("PrerequisiteDesc"); ?></p>
 	</div>
 
@@ -128,7 +139,8 @@
 	<legend class="legend"><?php echo $langs->trans("Configuration"); ?></legend>
 
 	<div class="field-block">
-		<h4><?php echo $langs->trans("ConfigurationTitle"); ?></h4>
+		<h4 class="blue"><?php echo $langs->trans("ConfigurationTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/configuration.png"></div>
 		<p><?php echo $langs->trans("ConfigurationDesc"); ?></p>
 	</div>
 
@@ -142,14 +154,13 @@
 		<input type="text" name="main_url" id="main_url" value="<?php echo $dolibarr_main_url_root; ?>" class="input full-width validate[required,custom[urlMini],custom[noTrailingSlash]]">
 	</div>
 
-	<?php if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') { ?>
 	<div class="field-drop button-height black-inputs">
 		<input type="checkbox" name="main_force_https" id="main_force_https" class="switch medium"> &nbsp; <label for="main_force_https"><?php echo $langs->trans("ForceHttps"); ?></label>
 	</div>
-	<?php } ?>
 
 	<div class="field-block">
-		<h4><?php echo $langs->trans("MemcachedTitle"); ?></h4>
+		<h4 class="blue"><?php echo $langs->trans("MemcachedTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png"></div>
 		<p><?php echo $langs->trans("MemcachedDesc"); ?></p>
 	</div>
 
@@ -170,7 +181,8 @@
 	<legend class="legend"><?php echo $langs->trans("Database"); ?></legend>
 
 	<div class="field-block">
-		<h4><?php echo $langs->trans("SuperadminTitle"); ?></h4>
+		<h4 class="blue"><?php echo $langs->trans("SuperadminTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/superadmin.png"></div>
 		<p><?php echo $langs->trans("SuperadminDesc"); ?></p>
 	</div>
 
@@ -189,7 +201,8 @@
 	</div>
 
 	<div class="field-block">
-		<h4><?php echo $langs->trans("DatabaseTitle"); ?></h4>
+		<h4 class="blue"><?php echo $langs->trans("DatabaseTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb.png"></div>
 		<p><?php echo $langs->trans("DatabaseDesc"); ?></p>
 	</div>
 
@@ -219,18 +232,14 @@
 	<legend class="legend"><?php echo $langs->trans("Install"); ?></legend>
 
 	<div class="field-block">
-		<h4><?php echo $langs->trans("InstallTitle"); ?></h4>
+		<h4 class="blue"><?php echo $langs->trans("InstallTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installation.png"></div>
 		<p><?php echo $langs->trans("InstallDesc"); ?></p>
 	</div>
 
 	<div class="field-block">
-		<label for="add_conf" class="label"><b><?php echo $langs->trans("AddConfigFile"); ?></b></label>
+		<label for="add_conf" class="label"><b><?php echo $langs->trans("SystemSetup"); ?></b></label>
 		<span id="add_conf"></span>
-	</div>
-
-	<div class="field-block">
-		<label for="add_superadmin" class="label"><b><?php echo $langs->trans("AddSuperAdmin"); ?></b></label>
-		<span id="add_superadmin"></span>
 	</div>
 
 	<div class="field-block hidden">
@@ -246,6 +255,10 @@
 	<div class="field-block hidden">
 		<label for="sync_database" class="label"><b><?php echo $langs->trans("SynchronizingDatabase"); ?></b></label>
 		<span id="sync_database"></span>
+	</div>
+
+	<div class="field-drop button-height black-inputs">
+		<input type="checkbox" name="remove_install" id="remove_install" class="switch medium" checked="checked"> &nbsp; <label for="remove_install"><?php echo $langs->trans("RemoveInstallDirectory"); ?></label>
 	</div>
 
 </fieldset>
