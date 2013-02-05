@@ -20,18 +20,19 @@
 <!-- BEGIN PHP TEMPLATE FOR INSTALL WIZARD -->
 <form class="block wizard">
 
-<!-- <h3 class="block-title"><?php echo $langs->trans("SpeedealingInstallTitle"); ?></h3> -->
-<div class="block-title"><img src="<?php echo DOL_URL_ROOT; ?>/logo.png"></div>
+<div class="block-title"><img src="<?php echo DOL_URL_ROOT; ?>/logo.png" alt="<?php echo $langs->trans("Speedealing"); ?>"></div>
 <span class="ribbon">
 	<span class="ribbon-inner green-gradient glossy"><?php echo constant('DOL_VERSION'); ?></span>
 </span>
 <fieldset id="welcome" class="wizard-fieldset fields-list">
 
+<!-- Welcome section -->
+
 <legend class="legend"><?php echo $langs->trans("Welcome"); ?></legend>
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("WelcomeTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/welcome.png"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/welcome.png" alt="Welcome"></div>
 		<p><?php echo $langs->trans("WelcomeDesc"); ?></p>
 	</div>
 
@@ -46,7 +47,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("InstallTypeTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installtype.png"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installtype.png" alt="Install"></div>
 		<p><?php echo $langs->trans("InstallTypeDesc"); ?></p>
 	</div>
 
@@ -79,13 +80,15 @@
 
 </fieldset>
 
+<!-- Prerequisite section -->
+
 <fieldset id="prerequisite" class="wizard-fieldset fields-list">
 
 	<legend class="legend"><?php echo $langs->trans("Prerequisite"); ?></legend>
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("PrerequisiteTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/prerequisite.png"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/prerequisite.png" alt="Prerequisite"></div>
 		<p><?php echo $langs->trans("PrerequisiteDesc"); ?></p>
 	</div>
 
@@ -134,13 +137,15 @@
 
 </fieldset>
 
+<!-- Configuration section -->
+
 <fieldset id="configuration" class="wizard-fieldset fields-list">
 
 	<legend class="legend"><?php echo $langs->trans("Configuration"); ?></legend>
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("ConfigurationTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/configuration.png"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/configuration.png" alt="Configuration"></div>
 		<p><?php echo $langs->trans("ConfigurationDesc"); ?></p>
 	</div>
 
@@ -160,7 +165,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("MemcachedTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png" alt="Memcached"></div>
 		<p><?php echo $langs->trans("MemcachedDesc"); ?></p>
 	</div>
 
@@ -176,13 +181,17 @@
 
 </fieldset>
 
+<!-- Database section -->
+
 <fieldset id="database" class="wizard-fieldset fields-list">
 
 	<legend class="legend"><?php echo $langs->trans("Database"); ?></legend>
 
+	<!-- Local Superadmin -->
+
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("SuperadminTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/superadmin.png"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/superadmin.png" alt="Superadmin"></div>
 		<p><?php echo $langs->trans("SuperadminDesc"); ?></p>
 	</div>
 
@@ -193,16 +202,18 @@
 
 	<div class="field-block button-height">
 		<label for="couchdb_pass_root" class="label"><b><?php echo $langs->trans("Password"); ?></b></label>
-		<input type="text" name="couchdb_pass_root" id="couchdb_pass_root" value="" class="input full-width validate[required]">
+		<input type="password" name="couchdb_pass_root" id="couchdb_pass_root" value="" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-drop button-height black-inputs">
 		<input type="checkbox" name="couchdb_create_admin" id="couchdb_create_admin" class="switch medium" checked="checked"> &nbsp; <label for="couchdb_create_admin"><?php echo $langs->trans("CreateAdminUser"); ?></label>
 	</div>
 
+	<!-- Local database -->
+
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("DatabaseTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb.png"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb.png" alt="CouchDB"></div>
 		<p><?php echo $langs->trans("DatabaseDesc"); ?></p>
 	</div>
 
@@ -225,7 +236,64 @@
 		<input type="checkbox" name="couchdb_create_database" id="couchdb_create_database" class="switch medium" checked="checked"> &nbsp; <label for="couchdb_create_database"><?php echo $langs->trans("CheckToCreateCouchdbDatabase"); ?></label>
 	</div>
 
+	<!-- Local Sync User -->
+
+	<div class="field-block syncuser">
+		<h4 class="blue"><?php echo $langs->trans("SyncUserTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/superadmin.png" alt="Syncuser"></div>
+		<p><?php echo $langs->trans("SyncUserDesc"); ?></p>
+	</div>
+
+	<div class="field-block button-height syncuser">
+		<label for="couchdb_user_sync" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
+		<input type="text" name="couchdb_user_sync" id="couchdb_user_sync" value="" class="input full-width validate[required]">
+	</div>
+
+	<div class="field-block button-height syncuser">
+		<label for="couchdb_pass_sync" class="label"><b><?php echo $langs->trans("Password"); ?></b></label>
+		<input type="password" name="couchdb_pass_sync" id="couchdb_pass_sync" value="" class="input full-width validate[required]">
+	</div>
+
+	<div class="field-drop button-height black-inputs syncuser">
+		<input type="checkbox" name="couchdb_create_syncuser" id="couchdb_create_syncuser" class="switch medium" checked="checked"> &nbsp; <label for="couchdb_create_syncuser"><?php echo $langs->trans("CreateSyncUser"); ?></label>
+	</div>
+
+	<!-- Remote database -->
+
+	<div class="field-block remotebase">
+		<h4 class="blue"><?php echo $langs->trans("RemoteDatabaseTitle"); ?></h4>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb.png" alt="CouchDB"></div>
+		<p><?php echo $langs->trans("RemoteDatabaseDesc"); ?></p>
+	</div>
+
+	<div class="field-block button-height remotebase">
+		<label for="couchdb_user_sync_remote" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
+		<input type="text" name="couchdb_user_sync_remote" id="couchdb_user_sync_remote" value="" class="input full-width validate[required]">
+	</div>
+
+	<div class="field-block button-height remotebase">
+		<label for="couchdb_pass_sync_remote" class="label"><b><?php echo $langs->trans("Password"); ?></b></label>
+		<input type="password" name="couchdb_pass_sync_remote" id="couchdb_pass_sync_remote" value="" class="input full-width validate[required]">
+	</div>
+
+	<div class="field-block button-height remotebase">
+		<label for="couchdb_host_remote" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
+		<input type="text" name="couchdb_host_remote" id="couchdb_host_remote" value="http://localhost" class="input full-width validate[required,custom[urlMini],custom[noTrailingSlash]]">
+	</div>
+
+	<div class="field-block button-height remotebase">
+		<label for="couchdb_name_remote" class="label"><b><?php echo $langs->trans("DatabaseName"); ?></b></label>
+		<input type="text" name="couchdb_name_remote" id="couchdb_name_remote" value="" class="input full-width validate[required,custom[onlyLetterNumber]]">
+	</div>
+
+	<div class="field-block button-height remotebase">
+		<label for="couchdb_port_remote" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
+		<input type="text" name="couchdb_port_remote" id="couchdb_port_remote" value="5984" class="input validate[required,custom[onlyNumberSp]]">
+	</div>
+
 </fieldset>
+
+<!-- Install section -->
 
 <fieldset id="install" class="wizard-fieldset fields-list">
 
@@ -233,7 +301,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("InstallTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installation.png"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installation.png" alt="Installation"></div>
 		<p><?php echo $langs->trans("InstallDesc"); ?></p>
 	</div>
 

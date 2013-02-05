@@ -66,6 +66,21 @@ $(document).ready(function() {
 			$('#reload_button').hide();
 			// Check prerequisites
 			ckeckPrerequisite();
+		} else if (step == 'database') {
+			var install_type = $('input[name=install_type]:checked').val();
+			if (install_type == 'fullweb') {
+				$('.syncuser').hide();
+				$('.remotebase').hide();
+			} else if (install_type == 'primary_server') {
+				$('.syncuser').show();
+				$('.remotebase').hide();
+			} else if (install_type == 'secondary_server') {
+				$('.syncuser').show();
+				$('.remotebase').show();
+			} else if (install_type == 'client') {
+				$('.syncuser').hide();
+				$('.remotebase').show();
+			}
 		} else if (step == 'install') {
 			$('#add_conf').progress({style: 'large'}).showProgressStripes();
 			//$('#add_syncuser').progress({style: 'large'}).showProgressStripes();
