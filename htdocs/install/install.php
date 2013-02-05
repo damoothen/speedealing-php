@@ -21,7 +21,6 @@
  *       \brief      Install process
  */
 include 'inc.php';
-include '../core/class/html.form.class.php';
 include '../core/class/html.formadmin.class.php';
 
 $setuplang=GETPOST("selectlang",'',3)?GETPOST("selectlang",'',3):'auto';
@@ -90,6 +89,39 @@ if (empty($dolibarr_main_url_root)) {
 	$dolibarr_main_url_root = preg_replace('/\/$/', '', $dolibarr_main_url_root);     // Remove the /
 	$dolibarr_main_url_root = preg_replace('/\/index\.php$/', '', $dolibarr_main_url_root);  // Remove the /index.php
 	$dolibarr_main_url_root = preg_replace('/\/install$/', '', $dolibarr_main_url_root);   // Remove the /install
+}
+
+// Create matrice conf file
+if (is_readable($conffile) && filesize($conffile) > 8)
+{
+	dolibarr_install_syslog("conf file '$conffile' already defined");
+}
+else
+{
+	// If not, we create it
+	dolibarr_install_syslog("we try to create conf file '$conffile'");
+
+	// First we try by copying example
+	if (@copy($conffile.".example", $conffile))
+	{
+		// Success
+		dolibarr_install_syslog("copied file ".$conffile.".example into ".$conffile." done successfully.");
+	}
+	else
+	{
+		// If failed, we try to create an empty file
+		dolibarr_install_syslog("failed to copy file ".$conffile.".example into ".$conffile.". We try to create it.", LOG_WARNING);
+
+		$fp = @fopen($conffile, "w");
+		if ($fp)
+		{
+			@fwrite($fp, '<?php');
+			@fputs($fp,"\n");
+			@fputs($fp,"?>");
+			fclose($fp);
+		}
+		else dolibarr_install_syslog("failed to create a new file ".$conffile." into current dir ".getcwd().". Check permission.", LOG_ERR);
+	}
 }
 
 

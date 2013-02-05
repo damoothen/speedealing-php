@@ -60,8 +60,6 @@ $conf->file = new stdClass();
 $conf->db = new stdClass();
 $conf->syslog = new stdClass();
 
-// Force $_REQUEST["logtohtml"]
-$_REQUEST["logtohtml"] = 1;
 
 // Correction PHP_SELF (ex pour apache via caudium) car PHP_SELF doit valoir URL relative
 // et non path absolu.
@@ -76,69 +74,15 @@ $includeconferror = '';
 // Define vars
 $conffiletoshowshort = "conf.php";
 // Define localization of conf file
-$conffile = "../conf/conf.php";
+$conffile = realpath(dirname(__FILE__)) . '/../conf/conf.php';
 $conffiletoshow = "htdocs/conf/conf.php";
 // For debian/redhat like systems
 //$conffile = "/etc/dolibarr/conf.php";
 //$conffiletoshow = "/etc/dolibarr/conf.php";
 
 
-if (!defined('DONOTLOADCONF') && file_exists($conffile)) {
-    $result = include_once $conffile; // Load conf file
-    if ($result) {
-        if (empty($dolibarr_main_db_type))
-            $dolibarr_main_db_type = 'mysql'; // For backward compatibility
-
-		// Clean parameters
-        $dolibarr_main_data_root = isset($dolibarr_main_data_root) ? trim($dolibarr_main_data_root) : '';
-        $dolibarr_main_url_root = isset($dolibarr_main_url_root) ? trim($dolibarr_main_url_root) : '';
-        $dolibarr_main_url_root_alt = isset($dolibarr_main_url_root_alt) ? trim($dolibarr_main_url_root_alt) : '';
-        $dolibarr_main_document_root = isset($dolibarr_main_document_root) ? trim($dolibarr_main_document_root) : '';
-        $dolibarr_main_document_root_alt = isset($dolibarr_main_document_root_alt) ? trim($dolibarr_main_document_root_alt) : '';
-
-        // Remove last / or \ on directories or url value
-        if (!empty($dolibarr_main_document_root) && !preg_match('/^[\\/]+$/', $dolibarr_main_document_root))
-            $dolibarr_main_document_root = preg_replace('/[\\/]+$/', '', $dolibarr_main_document_root);
-        if (!empty($dolibarr_main_url_root) && !preg_match('/^[\\/]+$/', $dolibarr_main_url_root))
-            $dolibarr_main_url_root = preg_replace('/[\\/]+$/', '', $dolibarr_main_url_root);
-        if (!empty($dolibarr_main_data_root) && !preg_match('/^[\\/]+$/', $dolibarr_main_data_root))
-            $dolibarr_main_data_root = preg_replace('/[\\/]+$/', '', $dolibarr_main_data_root);
-        if (!empty($dolibarr_main_document_root_alt) && !preg_match('/^[\\/]+$/', $dolibarr_main_document_root_alt))
-            $dolibarr_main_document_root_alt = preg_replace('/[\\/]+$/', '', $dolibarr_main_document_root_alt);
-        if (!empty($dolibarr_main_url_root_alt) && !preg_match('/^[\\/]+$/', $dolibarr_main_url_root_alt))
-            $dolibarr_main_url_root_alt = preg_replace('/[\\/]+$/', '', $dolibarr_main_url_root_alt);
-
-        // Create conf object
-        if (!empty($dolibarr_main_document_root)) {
-            $result = conf($dolibarr_main_document_root);
-        }
-        // Load database driver
-        if ($result) {
-            if (!empty($dolibarr_main_document_root) && !empty($dolibarr_main_db_type)) {
-                $result = include_once $dolibarr_main_document_root . "/core/db/" . $dolibarr_main_db_type . '.class.php';
-                if (!$result) {
-                    $includeconferror = 'ErrorBadValueForDolibarrMainDBType';
-                }
-            }
-        } else {
-            $includeconferror = 'ErrorBadValueForDolibarrMainDocumentRoot';
-        }
-    } else {
-        $includeconferror = 'ErrorBadFormatForConfFile';
-    }
-}
-$conf->global->MAIN_LOGTOHTML = 1;
-
-// Define prefix
-if (!isset($dolibarr_main_db_prefix) || !$dolibarr_main_db_prefix)
-    $dolibarr_main_db_prefix = 'llx_';
-define('MAIN_DB_PREFIX', (isset($dolibarr_main_db_prefix) ? $dolibarr_main_db_prefix : ''));
-
 define('DOL_CLASS_PATH', 'class/');                             // Filsystem path to class dir
 define('DOL_DATA_ROOT', (isset($dolibarr_main_data_root) ? $dolibarr_main_data_root : ''));
-if (!empty($dolibarr_main_document_root_alt)) {
-    define('DOL_DOCUMENT_ROOT_ALT', $dolibarr_main_document_root_alt); // Filesystem paths to alternate core php (alternate htdocs)
-}
 define('DOL_MAIN_URL_ROOT', (isset($dolibarr_main_url_root) ? $dolibarr_main_url_root : ''));           // URL relative root
 $uri = preg_replace('/^http(s?):\/\//i', '', constant('DOL_MAIN_URL_ROOT'));  // $uri contains url without http*
 $suburi = strstr($uri, '/');       // $suburi contains url without domain
@@ -151,8 +95,6 @@ if (empty($conf->file->character_set_client))
     $conf->file->character_set_client = "UTF-8";
 if (empty($conf->db->character_set))
     $conf->db->character_set = 'utf8';
-if (empty($conf->db->dolibarr_main_db_collation))
-    $conf->db->dolibarr_main_db_collation = 'utf8_general_ci';
 if (empty($conf->db->dolibarr_main_db_encryption))
     $conf->db->dolibarr_main_db_encryption = 0;
 if (empty($conf->db->dolibarr_main_db_cryptkey))
@@ -162,14 +104,6 @@ if (empty($conf->db->user))
 
 // Define array of document root directories
 $conf->file->dol_document_root = array(DOL_DOCUMENT_ROOT);
-if (!empty($dolibarr_main_document_root_alt)) {
-    // dolibarr_main_document_root_alt contains several directories
-    $values = preg_split('/[;,]/', $dolibarr_main_document_root_alt);
-    foreach ($values as $value) {
-        $conf->file->dol_document_root[] = $value;
-    }
-}
-
 
 // Security check
 if (preg_match('/install.lock/i', $_SERVER["SCRIPT_FILENAME"])) {
@@ -220,26 +154,6 @@ if (!defined('SYSLOG_FILE')) { // To avoid warning on systems with constant alre
 if (!defined('SYSLOG_FILE_NO_ERROR'))
     define('SYSLOG_FILE_NO_ERROR', 1);
 
-// Removed magic_quotes
-if (function_exists('get_magic_quotes_gpc')) { // magic_quotes_* removed in PHP 5.4
-    if (get_magic_quotes_gpc()) {
-
-        // Forcing parameter setting magic_quotes_gpc and cleaning parameters
-        // (Otherwise he would have for each position, condition
-        // Reading stripslashes variable according to state get_magic_quotes_gpc).
-        // Off mode (recommended, you just do $db->escape when an insert / update.
-        function stripslashes_deep($value) {
-            return (is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value));
-        }
-
-        $_GET = array_map('stripslashes_deep', $_GET);
-        $_POST = array_map('stripslashes_deep', $_POST);
-        $_COOKIE = array_map('stripslashes_deep', $_COOKIE);
-        $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
-        @set_magic_quotes_runtime(0);
-    }
-}
-
 // Defini objet langs
 $langs = new TranslateStandalone(realpath(dirname(__FILE__)) . '/..');
 if (GETPOST('lang'))
@@ -247,96 +161,6 @@ if (GETPOST('lang'))
 else
     $langs->setDefaultLang('auto');
 
-$bc[false] = ' class="bg1"';
-$bc[true] = ' class="bg2"';
-
-/**
- * Load conf file (file must exists)
- *
- * @param	string		$dolibarr_main_document_root		Root directory of Dolibarr bin files
- * @return	int												<0 if KO, >0 if OK
- */
-function conf($dolibarr_main_document_root) {
-    global $conf, $couch;
-    global $dolibarr_main_db_type;
-    global $dolibarr_main_db_host;
-    global $dolibarr_main_db_port;
-    global $dolibarr_main_db_name;
-    global $dolibarr_main_db_user;
-    global $dolibarr_main_db_pass;
-    global $character_set_client;
-
-    global $dolibarr_main_couchdb_host;
-    global $dolibarr_main_couchdb_port;
-    global $dolibarr_main_couchdb_name;
-
-    $return = include_once $dolibarr_main_document_root . '/core/class/conf.class.php';
-    if (!$return)
-        return -1;
-
-    $conf = new Conf();
-    $conf->db->type = trim($dolibarr_main_db_type);
-    $conf->db->host = trim($dolibarr_main_db_host);
-    $conf->db->port = trim($dolibarr_main_db_port);
-    $conf->db->name = trim($dolibarr_main_db_name);
-    $conf->db->user = trim($dolibarr_main_db_user);
-    $conf->db->pass = trim($dolibarr_main_db_pass);
-
-    // CouchDB
-    $conf->Couchdb->host = trim($dolibarr_main_couchdb_host);
-    $conf->Couchdb->port = trim($dolibarr_main_couchdb_port);
-    $conf->Couchdb->name = trim($dolibarr_main_couchdb_name);
-
-    $couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
-    $couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
-
-    $conf->useDatabase();
-
-    if (empty($character_set_client))
-        $character_set_client = "UTF-8";
-    $conf->file->character_set_client = strtoupper($character_set_client);
-    if (empty($dolibarr_main_db_character_set))
-        $dolibarr_main_db_character_set = ($conf->db->type == 'mysql' ? 'latin1' : '');  // Old installation
-    $conf->db->character_set = $dolibarr_main_db_character_set;
-    if (empty($dolibarr_main_db_collation))
-        $dolibarr_main_db_collation = ($conf->db->type == 'mysql' ? 'latin1_swedish_ci' : '');  // Old installation
-    $conf->db->dolibarr_main_db_collation = $dolibarr_main_db_collation;
-    if (empty($dolibarr_main_db_encryption))
-        $dolibarr_main_db_encryption = 0;
-    $conf->db->dolibarr_main_db_encryption = $dolibarr_main_db_encryption;
-    if (empty($dolibarr_main_db_cryptkey))
-        $dolibarr_main_db_cryptkey = '';
-    $conf->db->dolibarr_main_db_cryptkey = $dolibarr_main_db_cryptkey;
-
-    // Force usage of log file for install and upgrades
-    $conf->syslog->enabled = 1;
-    $conf->global->SYSLOG_LEVEL = constant('LOG_DEBUG');
-    if (!defined('SYSLOG_FILE_ON'))
-        define('SYSLOG_FILE_ON', 1);
-    if (!defined('SYSLOG_FILE')) { // To avoid warning on systems with constant already defined
-        if (@is_writable('/tmp'))
-            define('SYSLOG_FILE', '/tmp/dolibarr_install.log');
-        else if (!empty($_ENV["TMP"]) && @is_writable($_ENV["TMP"]))
-            define('SYSLOG_FILE', $_ENV["TMP"] . '/dolibarr_install.log');
-        else if (!empty($_ENV["TEMP"]) && @is_writable($_ENV["TEMP"]))
-            define('SYSLOG_FILE', $_ENV["TEMP"] . '/dolibarr_install.log');
-        else if (@is_writable('../../../../') && @file_exists('../../../../startdoliwamp.bat'))
-            define('SYSLOG_FILE', '../../../../dolibarr_install.log'); // For DoliWamp
-        else if (@is_writable('../../'))
-            define('SYSLOG_FILE', '../../dolibarr_install.log');    // For others
-
-
-
-
-
-
-//print 'SYSLOG_FILE='.SYSLOG_FILE;exit;
-    }
-    if (!defined('SYSLOG_FILE_NO_ERROR'))
-        define('SYSLOG_FILE_NO_ERROR', 1);
-
-    return 1;
-}
 
 /**
  * Show HTML header of install pages
@@ -359,6 +183,7 @@ function pHeader() {
  */
 function pFooter() {
 	global $langs;
+
 	include 'tpl/footer.tpl.php';
 }
 
