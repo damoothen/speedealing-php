@@ -31,6 +31,7 @@ $langs->load("errors");
 $action	= GETPOST('action','alpha');
 $out = array();
 $continue = true;
+$memcached = false;
 
 /*
  * View
@@ -89,14 +90,18 @@ if ($action == 'check_prerequisite') {
 	// Check if memcache supported
 	if (!class_exists('Memcache'))
 		$out['php_memcached'] = '<span class="icon-cross icon-red">'.$langs->trans("ErrorPHPDoesNotSupportMemcache").'</span>';
-	else
+	else {
 		$out['php_memcached'] = '<span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcache").'</span>';
+		$memcached = true;
+	}
 
 	// Check if memcached supported
 	if (!class_exists('Memcached'))
 		$out['php_memcached'] .= '<br><span class="icon-cross icon-red">'.$langs->trans("ErrorPHPDoesNotSupportMemcached").'</span>';
-	else
+	else {
 		$out['php_memcached'] .= '<br><span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcached").'</span>';
+		$memcached = true;
+	}
 
 	// Check config file
 	if (!file_exists($conffile))
@@ -124,7 +129,9 @@ if ($action == 'check_prerequisite') {
 	}
 
 	// Check if all results are ok
-	//$continue = false; // for test
+	//$memcached = false; // for debug
+	$out['memcached'] = $memcached;
+	//$continue = false; // for debug
 	$out['continue'] = $continue;
 
 	echo json_encode($out);

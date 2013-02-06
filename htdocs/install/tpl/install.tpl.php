@@ -115,6 +115,7 @@
 	<div class="field-block">
 		<label for="php_memcached" class="label"><b><?php echo $langs->trans("PHPMemcached"); ?></b></label>
 		<div id="php_memcached"></div>
+		<input type="hidden" name="memcached_enabled" id="memcached_enabled" value="false">
 	</div>
 
 	<div class="field-block">
@@ -171,12 +172,12 @@
 
 	<div class="field-block button-height">
 		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
-		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width disabled validate[required]">
+		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height">
 		<label for="memcached_port" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
-		<input type="text" name="memcached_port" id="memcached_port" value="11211" class="input disabled validate[required,custom[onlyNumberSp]]">
+		<input type="text" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyNumberSp]]">
 	</div>
 
 </fieldset>
