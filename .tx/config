@@ -161,6 +161,11 @@ file_filter = htdocs/langs/<lang>/members.lang.php
 source_file = htdocs/langs/en_US/members.lang.php
 source_lang = en_US
 
+[speedealing.memcached]
+file_filter = htdocs/memcached/langs/<lang>/memcached.lang.php
+source_file = htdocs/memcached/langs/en_US/memcached.lang.php
+source_lang = en_US
+
 [speedealing.orders]
 file_filter = htdocs/langs/<lang>/orders.lang.php
 source_file = htdocs/langs/en_US/orders.lang.php
@@ -235,4 +240,3 @@ source_lang = en_US
 file_filter = htdocs/langs/<lang>/workflow.lang.php
 source_file = htdocs/langs/en_US/workflow.lang.php
 source_lang = en_US
-
