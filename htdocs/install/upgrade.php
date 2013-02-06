@@ -42,7 +42,7 @@ function upgrade() {
 	//Update extrafields && Update views
 	$result = $object->getView("list");
 	foreach ($result->rows as $aRow) {
-		if ($aRow->value->enabled) {
+		if (!empty($modules[$aRow->value->numero]) && $aRow->value->enabled) { // Test if module is present and enabled
 			if ($aRow->id == "module:User")
 				$aRow->value->numero = 0;
 

@@ -16,7 +16,7 @@
  */
 
 /**
- *       \file       htdocs/install/install.php
+ *       \file       htdocs/install/index.php
  *       \ingroup    install
  *       \brief      Install process
  */

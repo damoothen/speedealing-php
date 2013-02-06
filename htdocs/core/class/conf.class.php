@@ -248,7 +248,7 @@ class Conf extends nosqlDocument {
 
 
 
-            
+
 // Variable globales LDAP
         if (empty($this->global->LDAP_FIELD_FULLNAME))
             $this->global->LDAP_FIELD_FULLNAME = '';
@@ -351,7 +351,7 @@ class Conf extends nosqlDocument {
 
 
 
-            
+
 // conf->use_javascript_ajax
         $this->use_javascript_ajax = 1;
 
@@ -369,7 +369,7 @@ class Conf extends nosqlDocument {
 
 
 
-            
+
 // conf->liste_limit = constante de taille maximale des listes
         if (empty($this->global->MAIN_SIZE_LISTE_LIMIT))
             $this->global->MAIN_SIZE_LISTE_LIMIT = 25;
