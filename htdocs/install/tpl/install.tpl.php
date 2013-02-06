@@ -32,7 +32,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("WelcomeTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/welcome.png" alt="Welcome"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/welcome.png" alt="Welcome"></div>
 		<p><?php echo $langs->trans("WelcomeDesc"); ?></p>
 	</div>
 
@@ -47,7 +47,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("InstallTypeTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installtype.png" alt="Install"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installtype.png" alt="Install"></div>
 		<p><?php echo $langs->trans("InstallTypeDesc"); ?></p>
 	</div>
 
@@ -88,7 +88,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("PrerequisiteTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/prerequisite.png" alt="Prerequisite"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/prerequisite.png" alt="Prerequisite"></div>
 		<p><?php echo $langs->trans("PrerequisiteDesc"); ?></p>
 	</div>
 
@@ -146,7 +146,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("ConfigurationTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/configuration.png" alt="Configuration"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/configuration.png" alt="Configuration"></div>
 		<p><?php echo $langs->trans("ConfigurationDesc"); ?></p>
 	</div>
 
@@ -166,7 +166,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("MemcachedTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png" alt="Memcached"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png" alt="Memcached"></div>
 		<p><?php echo $langs->trans("MemcachedDesc"); ?></p>
 	</div>
 
@@ -192,7 +192,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("SuperadminTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/superadmin.png" alt="Superadmin"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/superadmin.png" alt="Superadmin"></div>
 		<p><?php echo $langs->trans("SuperadminDesc"); ?></p>
 	</div>
 
@@ -214,7 +214,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("DatabaseTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb.png" alt="CouchDB"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb.png" alt="CouchDB"></div>
 		<p><?php echo $langs->trans("DatabaseDesc"); ?></p>
 	</div>
 
@@ -241,7 +241,7 @@
 
 	<div class="field-block syncuser">
 		<h4 class="blue"><?php echo $langs->trans("SyncUserTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/usersync.png" alt="Syncuser"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/usersync.png" alt="Syncuser"></div>
 		<p><?php echo $langs->trans("SyncUserDesc"); ?></p>
 	</div>
 
@@ -263,7 +263,7 @@
 
 	<div class="field-block remotebase">
 		<h4 class="blue"><?php echo $langs->trans("RemoteDatabaseTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb-replication.png" alt="CouchDB"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb-replication.png" alt="CouchDB"></div>
 		<p><?php echo $langs->trans("RemoteDatabaseDesc"); ?></p>
 	</div>
 
@@ -302,7 +302,7 @@
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("InstallTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installation.png" alt="Installation"></div>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installation.png" alt="Installation"></div>
 		<p><?php echo $langs->trans("InstallDesc"); ?></p>
 	</div>
 

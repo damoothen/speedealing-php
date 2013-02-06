@@ -183,6 +183,11 @@ $install = array(
 		'LinkedElementsInvalidDeleted' => '<b>%s</b> liaisons invalides ont été supprimées',
 		'NothingToDelete' => 'Aucune liaison invalide trouvée',
 		'SourceType' => 'Source',
-		'TargetType' => 'Cible'
+		'TargetType' => 'Cible',
+                // Upgrade
+                'UpgradeOk' => 'Mise à jour effectuée !',
+                'NewInstalledVersion' => 'La nouvelle version Speedealing est %s',
+                'NeedUpgrade' => 'Nouvelle version Speedealing !',
+                'WarningUpgrade' => 'La version installée est %s, vous devez mettre à jour vers la version %s. <br>Merci de contacter votre administrateur.'
 );
 ?>

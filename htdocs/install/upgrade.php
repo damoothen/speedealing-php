@@ -17,7 +17,7 @@
  */
 
 function upgrade() {
-    global $user;
+    global $user, $conf, $langs;
 
     if (!$user->admin)
         accessforbidden();
@@ -27,10 +27,10 @@ function upgrade() {
     //Update modules configuration
     $object = new DolibarrModules($db);
     
-    //Upgrade specific file
-    $specific = array("DolibarrModules.view.json", "MenuAuguria.view.json", "dict.view.json", "extrafields.DolibarrModules.json");
-    // TODO UPGRADE
+    //Upgrade core files
+    $object->upgradeCore();
     
+    // Load Modules files
     $filename = array();
     $modules = array();
     $orders = array();
@@ -88,15 +88,19 @@ function upgrade() {
             $dict->record();
         }
     }
+    
+    // Put the new version in $conf
+    $conf->global->MAIN_VERSION = DOL_VERSION;
+    $conf->record(true);
 
     //Flush caches
     dol_flushcache();
 
 
     // All is ok;
-    $error->title = "Upgrade is Ok";
+    $error->title = $langs->trans("UpgradeOk");
 
-    $error->message = "Your new version is " . $conf->global->MAIN_VERSION;
+    $error->message = $langs->trans("NewInstalledVersion",$conf->global->MAIN_VERSION);
     $log[] = clone $error;
     dol_setcache("mesgs", $log);
 

@@ -216,6 +216,7 @@ if (!defined('NOREQUIREAJAX'))
 
 
 
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -547,7 +548,7 @@ if (!function_exists("llxHeader")) {
      * @return	void
      */
     function llxHeader($head = '', $title = '', $help_url = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '') {
-        global $mysoc, $user;
+        global $mysoc, $user, $conf, $langs;
 
         top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss); // Show html headers
 
@@ -558,18 +559,19 @@ if (!function_exists("llxHeader")) {
 
         // If an upgrade process is required, we call the install page.
         if (empty($conf->global->MAIN_VERSION) || ($conf->global->MAIN_VERSION != DOL_VERSION)) {
+            $langs->load("install");
             if ($user->admin && (empty($conf->global->MAIN_VERSION) || DOL_VERSION > $conf->global->MAIN_VERSION)) {
                 include_once DOL_DOCUMENT_ROOT . "/install/upgrade.php";
-                upgrade();
+                upgrade(); // Auto-upgrade
             } else { // Need manual upgrade source code Speedealing
                 $log = dol_getcache("warnings");
 
-                $error->title = "NeedUpgrade";
+                $error->title = $langs->trans("NeedUpgrade");
 
                 if (DOL_VERSION < $conf->global->MAIN_VERSION)
-                    $error->message = "Installed version is " . DOL_VERSION . ", you must upgrade to " . $conf->global->MAIN_VERSION . "<br>Please contact your administrator.";
+                    $error->message = $langs->trans("WarningUpgrade", DOL_VERSION, $conf->global->MAIN_VERSION);
                 else
-                    $error->message = "Installed version is " . $conf->global->MAIN_VERSION . ", you must upgrade to " . DOL_VERSION . "<br>Please contact your administrator.";
+                    $error->message = $langs->trans("WarningUpgrade", $conf->global->MAIN_VERSION, DOL_VERSION);
                 $log[] = clone $error;
                 dol_setcache("warnings", $log);
             }

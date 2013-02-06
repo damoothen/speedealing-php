@@ -1376,6 +1376,31 @@ class DolibarrModules extends nosqlDocument {
         return $mesg;
     }
 
+    /**
+     * Upgrade specific file for database not a a module : For the core
+     */
+    function upgradeCore() {
+        $files = array("DolibarrModules.view", "MenuAuguria.view", "dict.view", "extrafields.DolibarrModules");
+
+        $dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/";
+        foreach ($files as $row) {
+            $fp = fopen($dir . $row . ".json", "r");
+            if ($fp) {
+                $json = fread($fp, filesize($dir . $file));
+                $obj = json_decode($json);
+            }
+
+            try {
+                $result = $this->couchdb->getDoc($obj->_id);
+                $obj->_rev = $result->_rev;
+                $this->couchdb->storeDoc($obj);
+            } catch (Exception $e) {
+                print $e->getMessage();
+                exit;
+            }
+        }
+    }
+
 }
 
 ?>
