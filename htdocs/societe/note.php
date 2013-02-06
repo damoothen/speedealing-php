@@ -77,8 +77,8 @@ if ($conf->global->MAIN_DIRECTEDITMODE && $user->rights->societe->creer) $action
 
 $form = new Form($db);
 
-$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('',$langs->trans("ThirdParty").' - '.$langs->trans("Notes"),$help_url);
+
+llxHeader('',$langs->trans("ThirdParty").' - '.$langs->trans("Notes"));
 
 if ($socid > 0)
 {

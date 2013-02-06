@@ -123,8 +123,8 @@ if ($action=='delete_action')
  * View
  */
 
-$help_url='EN:Module_Agenda_En|FR:Module_Agenda|ES:M&oacute;dulo_Agenda';
-llxHeader('',$langs->trans("Agenda"),$help_url);
+
+llxHeader('',$langs->trans("Agenda"));
 
 $form=new Form($db);
 $companystatic=new Societe($db);

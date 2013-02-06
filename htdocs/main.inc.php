@@ -502,9 +502,6 @@ if (!function_exists("llxHeader")) {
      *
      * @param 	string 	$head				Optionnal head lines
      * @param 	string 	$title				HTML title
-     * @param	string	$help_url			Url links to help page
-     * 		                            	Syntax is: For a wiki page: EN:EnglishPage|FR:FrenchPage|ES:SpanishPage
-     *                                  	For other external page: http://server/url
      * @param	string	$target				Target to use on links
      * @param 	int    	$disablejs			More content into html header
      * @param 	int    	$disablehead		More content into html header
@@ -513,7 +510,7 @@ if (!function_exists("llxHeader")) {
      * @param	string	$morequerystring	Query string to add to the link "print" to get same parameters (use only if autodetect fails)
      * @return	void
      */
-    function llxHeader($head = '', $title = '', $help_url = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '') {
+    function llxHeader($head = '', $title = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '') {
         global $mysoc, $user, $conf, $langs;
 
         top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss); // Show html headers
@@ -1300,50 +1297,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
           print "<!-- End Bookmarks -->\n";
           }
 
-          // Link to Speedealing wiki pages
-          if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK)) {
-          $langs->load("help");
-
-          $helpbaseurl = '';
-          $helppage = '';
-          $mode = '';
-
-          // Get helpbaseurl, helppage and mode from helppagename and langs
-          $arrayres = getHelpParamFor($helppagename, $langs);
-          $helpbaseurl = $arrayres['helpbaseurl'];
-          $helppage = $arrayres['helppage'];
-          $mode = $arrayres['mode'];
-
-          // Link to help pages
-          if ($helpbaseurl && $helppage) {
-          print '<div id = "blockvmenuhelp" class = "blockvmenuhelp">';
-          print '<a class = "help" target = "_blank" title = "' . $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage');
-          if ($mode == 'wiki')
-          print ' - ' . $langs->trans("PageWiki") . ' &quot;' . dol_escape_htmltag(strtr($helppage, '_', ' ')) . '&quot;';
-          print '" href = "';
-          print sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
-          print '">';
-          print img_picto('', 'helpdoc') . ' ';
-          print $langs->trans($mode == 'wiki' ? 'OnlineHelp' : 'Help');
-          //if ($mode == 'wiki') print ' ('.dol_trunc(strtr($helppage,'_',' '),8).')';
-          print '</a>';
-          print '</div>';
-          }
-          }
-
-          // Link to bugtrack
-          if (!empty($conf->global->MAIN_SHOW_BUGTRACK_LINK)) {
-          $bugbaseurl = 'http://savannah.nongnu.org/bugs/?';
-          $bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
-          $bugbaseurl.="&details=";
-          $bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
-          $bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
-          $bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
-          $bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
-          print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
-          }
-          print "\n";
-
           print "</div>\n";
           print "<!-- End left vertical menu -->\n";
 
@@ -1377,41 +1330,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
         if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
             print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
-    }
-
-    /**
-     *  Return helpbaseurl, helppage and mode
-     *
-     *  @param	string		$helppagename		Page name (EN:xxx,ES:eee,FR:fff...)
-     *  @param  Translate	$langs				Language
-     *  @return	array		Array of help urls
-     */
-    function getHelpParamFor($helppagename, $langs) {
-        if (preg_match('/^http/i', $helppagename)) {
-            // If complete URL
-            $helpbaseurl = '%s';
-            $helppage = $helppagename;
-            $mode = 'local';
-        } else {
-            // If WIKI URL
-            if (preg_match('/^es/i', $langs->defaultlang)) {
-                $helpbaseurl = 'http://wiki.dolibarr.org/index.php/%s';
-                if (preg_match('/ES:([^|]+)/i', $helppagename, $reg))
-                    $helppage = $reg[1];
-            }
-            if (preg_match('/^fr/i', $langs->defaultlang)) {
-                $helpbaseurl = 'http://wiki.dolibarr.org/index.php/%s';
-                if (preg_match('/FR:([^|]+)/i', $helppagename, $reg))
-                    $helppage = $reg[1];
-            }
-            if (empty($helppage)) { // If help page not already found
-                $helpbaseurl = 'http://wiki.dolibarr.org/index.php/%s';
-                if (preg_match('/EN:([^|]+)/i', $helppagename, $reg))
-                    $helppage = $reg[1];
-            }
-            $mode = 'wiki';
-        }
-        return array('helpbaseurl' => $helpbaseurl, 'helppage' => $helppage, 'mode' => $mode);
     }
 
     /**

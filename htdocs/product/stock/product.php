@@ -195,8 +195,8 @@ if ($id > 0 || $ref)
 	if ($ref) $result = $product->fetch('',$ref);
 	if ($id > 0) $result = $product->fetch($id);
 
-	$help_url='EN:Module_Stocks_En|FR:Module_Stock|ES:M&oacute;dulo_Stocks';
-	llxHeader("",$langs->trans("CardProduct".$product->type),$help_url);
+	
+	llxHeader("",$langs->trans("CardProduct".$product->type));
 
 	if ($result > 0)
 	{

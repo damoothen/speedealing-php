@@ -127,8 +127,8 @@ $userstatic = new User($db);
 
 $now = dol_now();
 
-$help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&omodulodulo_Agenda';
-llxHeader('', $langs->trans("Proposals"), $help_url);
+
+llxHeader('', $langs->trans("Proposals"));
 
 $title = $langs->trans("DoneAndToDoActions");
 if ($type == 'DONE')

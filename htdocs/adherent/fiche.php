@@ -808,8 +808,8 @@ if ($user->rights->adherent->cotisation->creer && $action == 'cotisation' && !$_
 $form = new Form($db);
 $formcompany = new FormCompany($db);
 
-$help_url = 'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros';
-llxHeader('', $langs->trans("Member"), $help_url);
+
+llxHeader('', $langs->trans("Member"));
 
 $countrynotdefined = $langs->trans("ErrorSetACountryFirst") . ' (' . $langs->trans("SeeAbove") . ')';
 

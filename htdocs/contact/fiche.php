@@ -251,8 +251,8 @@ if (empty($reshook)) {
  * 	View
  */
 
-$help_url = 'EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('', $langs->trans("ContactsAddresses"), $help_url);
+
+llxHeader('', $langs->trans("ContactsAddresses"));
 
 $form = new Form($db);
 $formcompany = new FormCompany($db);

@@ -103,9 +103,9 @@ if ($action == 'unset')
  * View
  */
 
-$help_url='';
 
-llxHeader('',$langs->trans("MailmanSpipSetup"),$help_url);
+
+llxHeader('',$langs->trans("MailmanSpipSetup"));
 
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';

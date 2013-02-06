@@ -54,9 +54,9 @@ $limit = $conf->liste_limit;
 
 $tripandexpense_static=new Deplacement($db);
 
-//$help_url='EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Donaciones';
-$help_url='';
-llxHeader('',$langs->trans("ListOfFees"),$help_url);
+//
+
+llxHeader('',$langs->trans("ListOfFees"));
 
 
 

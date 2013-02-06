@@ -64,8 +64,8 @@ if (! $sortfield) $sortfield="nom";
 $htmlother=new FormOther($db);
 $thirdpartystatic=new Societe($db);
 
-$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('',$langs->trans("ThirdParty"),$help_url);
+
+llxHeader('',$langs->trans("ThirdParty"));
 
 $sql = "SELECT s.rowid as socid, s.nom, s.ville, s.datec, s.datea,  st.libelle as stcomm, s.prefix_comm, s.status as status, ";
 $sql.= "code_fournisseur, code_compta_fournisseur";

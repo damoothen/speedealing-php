@@ -88,8 +88,8 @@ if (!empty($MemoryLimit))
 $form=new Form($db);
 $formfile = new FormFile($db);
 
-$help_url='EN:Backups|FR:Sauvegardes|ES:Copias_de_seguridad';
-llxHeader('','',$help_url);
+
+llxHeader('','');
 
 print_fiche_titre($langs->trans("Backup"),'','setup');
 

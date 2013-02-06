@@ -48,9 +48,9 @@ $propalstatic=new Propal($db);
 $companystatic=new Societe($db);
 $form = new Form($db);
 $formfile = new FormFile($db);
-$help_url="EN:Module_Commercial_Proposals|FR:Module_Propositions_commerciales|ES:Módulo_Presupuestos";
 
-llxHeader("",$langs->trans("ProspectionArea"),$help_url);
+
+llxHeader("",$langs->trans("ProspectionArea"));
 
 print_fiche_titre($langs->trans("ProspectionArea"));
 

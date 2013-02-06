@@ -621,8 +621,8 @@ if (! empty($_POST["cancel"]))
 // fetch optionals attributes and labels
 $extralabels=$extrafields->fetch_name_optionals_label('mailing');
 
-$help_url='EN:Module_EMailing|FR:Module_Mailing|ES:M&oacute;dulo_Mailing';
-llxHeader('',$langs->trans("Mailing"),$help_url);
+
+llxHeader('',$langs->trans("Mailing"));
 
 $form = new Form($db);
 $htmlother = new FormOther($db);

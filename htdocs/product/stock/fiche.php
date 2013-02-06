@@ -157,8 +157,8 @@ $productstatic=new Product($db);
 $form=new Form($db);
 $formcompany=new FormCompany($db);
 
-$help_url='EN:Module_Stocks_En|FR:Module_Stock|ES:M&oacute;dulo_Stocks';
-llxHeader("",$langs->trans("WarehouseCard"),$help_url);
+
+llxHeader("",$langs->trans("WarehouseCard"));
 
 
 if ($action == 'create')

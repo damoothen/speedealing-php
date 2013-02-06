@@ -409,8 +409,8 @@ if ($action == 'update') {
  * View
  */
 
-$help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&omodulodulo_Agenda';
-llxHeader('', $langs->trans("Agenda"), $help_url);
+
+llxHeader('', $langs->trans("Agenda"));
 
 
 $form = new Form($db);

@@ -43,8 +43,8 @@ $statut=GETPOST('statut');
  * View
  */
 
-$help_url='EN:Module_Banks_and_Cash|FR:Module_Banques_et_Caisses|ES:M&oacute;dulo_Bancos_y_Cajas';
-llxHeader('',$langs->trans('AccountsArea'),$help_url);
+
+llxHeader('',$langs->trans('AccountsArea'));
 
 $link='';
 if ($statut == '') $link='<a href="'.$_SERVER["PHP_SELF"].'?statut=all">'.$langs->trans("IncludeClosedAccount").'</a>';

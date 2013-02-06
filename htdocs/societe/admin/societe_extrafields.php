@@ -202,8 +202,8 @@ if ($action == 'disable') {
 
 $textobject = $langs->transnoentitiesnoconv("ThirdParty");
 
-$help_url = 'EN:Module Third Parties setup|FR:Paramétrage_du_module_Tiers';
-llxHeader('', $langs->trans("CompanySetup"), $help_url);
+
+llxHeader('', $langs->trans("CompanySetup"));
 
 
 $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">' . $langs->trans("BackToModuleList") . '</a>';

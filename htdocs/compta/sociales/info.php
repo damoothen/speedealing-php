@@ -42,8 +42,8 @@ $result = restrictedArea($user, 'tax', $langs->trans("SocialContribution"), '', 
  * View
  */
 
-$help_url='EN:Module_Taxes_and_social_contributions|FR:Module Taxes et dividendes|ES:M&oacute;dulo Impuestos y cargas sociales (IVA, impuestos)';
-llxHeader("",$langs->trans("SocialContribution"),$help_url);
+
+llxHeader("",$langs->trans("SocialContribution"));
 
 $chargesociales = new ChargeSociales($db);
 $chargesociales->fetch($id);

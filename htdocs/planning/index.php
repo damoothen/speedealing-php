@@ -138,8 +138,8 @@ $object = new Agenda($db);
  * View
  */
 
-$help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&oacute;dulo_Agenda';
-llxHeader('', $langs->trans("Calendar"), $help_url);
+
+llxHeader('', $langs->trans("Calendar"));
 
 print_fiche_titre($langs->trans("Calendar"), true);
 print '<div class="with-padding">';

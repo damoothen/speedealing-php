@@ -38,7 +38,7 @@ $object = new Societe($db);
  * View
  */
 
-llxHeader('', $langs->trans("ThirdParty"), $help_url, '', '', '', '');
+llxHeader('', $langs->trans("ThirdParty"), '', '', '', '');
 
 if ($type != '') {
     if ($type == 0)

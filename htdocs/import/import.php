@@ -1204,17 +1204,6 @@ if ($step == 5 && $datatoimport) {
             if ($newval)
                 print ', ';
             $newval = $val;
-            // Link to Dolibarr wiki pages
-            /* $helppagename='EN:Table_'.$newval;
-              if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK))
-              {
-              // Get helpbaseurl, helppage and mode from helppagename and langs
-              $arrayres=getHelpParamFor($helppagename,$langs);
-              $helpbaseurl=$arrayres['helpbaseurl'];
-              $helppage=$arrayres['helppage'];
-              $mode=$arrayres['mode'];
-              $newval.=' <a href="'.sprintf($helpbaseurl,$helppage).'">'.img_picto($langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage': 'GoToHelpPage'),DOL_URL_ROOT.'/theme/common/helpdoc.png','',1).'</a>';
-              } */
             print $newval;
         }
     }
@@ -1571,17 +1560,6 @@ if ($step == 6 && $datatoimport) {
             if ($newval)
                 print ', ';
             $newval = $val;
-            // Link to Dolibarr wiki pages
-            /* $helppagename='EN:Table_'.$newval;
-              if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK))
-              {
-              // Get helpbaseurl, helppage and mode from helppagename and langs
-              $arrayres=getHelpParamFor($helppagename,$langs);
-              $helpbaseurl=$arrayres['helpbaseurl'];
-              $helppage=$arrayres['helppage'];
-              $mode=$arrayres['mode'];
-              $newval.=' <a href="'.sprintf($helpbaseurl,$helppage).'">'.img_picto($langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage': 'GoToHelpPage'),DOL_URL_ROOT.'/theme/common/helpdoc.png','',1).'</a>';
-              } */
             print $newval;
         }
     }

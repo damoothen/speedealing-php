@@ -79,8 +79,8 @@ if (! empty($conf->use_javascript_ajax))
 	);
 }
 
-$help_url="EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
-llxHeader("",$langs->trans("Tasks"),$help_url,'',0,0,$arrayofjs,$arrayofcss);
+
+llxHeader("",$langs->trans("Tasks"),'',0,0,$arrayofjs,$arrayofcss);
 
 if ($id > 0 || ! empty($ref))
 {

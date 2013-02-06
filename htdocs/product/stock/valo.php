@@ -81,8 +81,8 @@ if ($result)
 
     $i = 0;
 
-    $help_url='EN:Module_Stocks_En|FR:Module_Stock|ES:M&oacute;dulo_Stocks';
-    llxHeader("",$langs->trans("EnhancedValueOfWarehouses"),$help_url);
+    
+    llxHeader("",$langs->trans("EnhancedValueOfWarehouses"));
 
     print_barre_liste($langs->trans("EnhancedValueOfWarehouses"), $page, "valo.php", "", $sortfield, $sortorder,'',$num);
 

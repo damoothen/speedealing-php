@@ -336,8 +336,8 @@ $formfile = new FormFile($db);
 $userstatic = new User($db);
 
 
-$help_url="EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
-llxHeader("",$langs->trans("Projects"),$help_url);
+
+llxHeader("",$langs->trans("Projects"));
 
 
 if ($action == 'create' && $user->rights->projet->creer)

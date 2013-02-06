@@ -37,8 +37,8 @@ if (! $user->rights->mailing->lire || $user->societe_id > 0) accessforbidden();
  *	View
  */
 
-$help_url='EN:Module_EMailing|FR:Module_Mailing|ES:M&oacute;dulo_Mailing';
-llxHeader('','EMailing',$help_url);
+
+llxHeader('','EMailing');
 
 print_fiche_titre($langs->trans("MailingArea"));
 

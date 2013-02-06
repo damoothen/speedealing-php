@@ -622,8 +622,8 @@ $header = getHeader();
 
 $html = new Form($db);
 
-$help_url = "EN:Module_MemCached_En|FR:Module_MemCached|ES:M&oacute;dulo_MemCached";
-llxHeader($header, $langs->trans("MemcachedSetup"), $help_url);
+
+llxHeader($header, $langs->trans("MemcachedSetup"));
 
 $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">' . $langs->trans("BackToModuleList") . '</a>';
 print_fiche_titre($langs->trans('MemcachedSetup'));

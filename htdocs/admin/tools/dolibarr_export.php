@@ -67,8 +67,8 @@ $formfile = new FormFile($db);
 
 $label=getStaticMember($db, 'label');
 
-$help_url='EN:Backups|FR:Sauvegardes|ES:Copias_de_seguridad';
-llxHeader('','',$help_url);
+
+llxHeader('','');
 
 ?>
 <script type="text/javascript">

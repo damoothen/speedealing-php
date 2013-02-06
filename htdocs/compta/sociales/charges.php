@@ -173,8 +173,8 @@ if ($action == 'update' && ! $_POST["cancel"] && $user->rights->tax->charges->cr
 $form = new Form($db);
 $formsocialcontrib = new FormSocialContrib($db);
 
-$help_url='EN:Module_Taxes_and_social_contributions|FR:Module Taxes et dividendes|ES:M&oacute;dulo Impuestos y cargas sociales (IVA, impuestos)';
-llxHeader("",$langs->trans("SocialContribution"),$help_url);
+
+llxHeader("",$langs->trans("SocialContribution"));
 
 
 // Mode creation

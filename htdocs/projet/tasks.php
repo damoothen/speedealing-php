@@ -157,8 +157,8 @@ $formother=new FormOther($db);
 $taskstatic = new Task($db);
 $userstatic=new User($db);
 
-$help_url="EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
-llxHeader("",$langs->trans("Tasks"),$help_url);
+
+llxHeader("",$langs->trans("Tasks"));
 
 if ($id > 0 || ! empty($ref))
 {

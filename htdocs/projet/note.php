@@ -72,8 +72,8 @@ if ($action == 'setnote_private' && $user->rights->projet->creer)
  * View
  */
 
-$help_url="EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
-llxHeader("",$langs->trans("Project"),$help_url);
+
+llxHeader("",$langs->trans("Project"));
 
 $form = new Form($db);
 $userstatic=new User($db);

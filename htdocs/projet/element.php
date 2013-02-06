@@ -74,8 +74,8 @@ $result = restrictedArea($user, 'projet', $projectid);
  *	View
  */
 
-$help_url="EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
-llxHeader("",$langs->trans("Referers"),$help_url);
+
+llxHeader("",$langs->trans("Referers"));
 
 $form = new Form($db);
 

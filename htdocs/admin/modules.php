@@ -107,8 +107,8 @@ if ($action == 'reset' && $user->admin) {
  * View
  */
 
-$help_url = 'EN:First_setup|FR:Premiers_paramétrages|ES:Primeras_configuraciones';
-llxHeader('', $langs->trans("Setup"), $help_url);
+
+llxHeader('', $langs->trans("Setup"));
 
 print_fiche_titre($langs->trans("Setup"));
 

@@ -66,8 +66,8 @@ if ($result)
 
 	$i = 0;
 
-	$help_url='EN:Module_Stocks_En|FR:Module_Stock|ES:M&oacute;dulo_Stocks';
-	llxHeader("",$langs->trans("ListOfWarehouses"),$help_url);
+	
+	llxHeader("",$langs->trans("ListOfWarehouses"));
 
 	print_barre_liste($langs->trans("ListOfWarehouses"), $page, "liste.php", "", $sortfield, $sortorder,'',$num);
 

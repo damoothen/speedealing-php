@@ -62,8 +62,8 @@ require(DOL_DOCUMENT_ROOT."/core/admin_extrafields.inc.php");
 
 $textobject=$langs->transnoentitiesnoconv("ThirdParty");
 
-$help_url='EN:Module Contract setup|FR:Paramétrage_du_module_Contrat';
-llxHeader('',$langs->trans("CompanySetup"),$help_url);
+
+llxHeader('',$langs->trans("CompanySetup"));
 
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';

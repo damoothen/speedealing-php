@@ -40,8 +40,8 @@ $showpass=GETPOST('showpass');
 
 $label=getStaticMember($db, 'label');
 
-$help_url='EN:Restores|FR:Restaurations|ES:Restauraciones';
-llxHeader('','',$help_url);
+
+llxHeader('','');
 
 ?>
 <script type="text/javascript">

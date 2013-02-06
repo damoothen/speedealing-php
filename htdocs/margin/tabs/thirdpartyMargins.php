@@ -57,8 +57,8 @@ if (! $sortfield) $sortfield="f.datef";
 $invoicestatic=new Facture($db);
 $form = new Form($db);
 
-$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('',$langs->trans("ThirdParty").' - '.$langs->trans("Margins"),$help_url);
+
+llxHeader('',$langs->trans("ThirdParty").' - '.$langs->trans("Margins"));
 
 if ($socid > 0)
 {

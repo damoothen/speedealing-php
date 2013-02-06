@@ -58,8 +58,8 @@ require DOL_DOCUMENT_ROOT.'/core/admin_extrafields.inc.php';
 
 $textobject=$langs->transnoentitiesnoconv("ContactsAddresses");
 
-$help_url='EN:Module Third Parties setup|FR:Paramétrage_du_module_Tiers';
-llxHeader('',$langs->trans("CompanySetup"),$help_url);
+
+llxHeader('',$langs->trans("CompanySetup"));
 
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';

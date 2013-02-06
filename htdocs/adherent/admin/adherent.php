@@ -102,9 +102,9 @@ if ($action == 'unset')
  * View
  */
 
-$help_url='EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros';
 
-llxHeader('',$langs->trans("MembersSetup"),$help_url);
+
+llxHeader('',$langs->trans("MembersSetup"));
 
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';

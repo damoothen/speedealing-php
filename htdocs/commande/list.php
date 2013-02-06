@@ -78,9 +78,9 @@ $formother = new FormOther($db);
 $formfile = new FormFile($db);
 $companystatic = new Societe($db);
 
-$help_url = "EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
+
 $title = $langs->trans('Orders');
-llxHeader('', $title, $help_url);
+llxHeader('', $title);
 print_fiche_titre($title);
 ?>
 <div class="dashboard">

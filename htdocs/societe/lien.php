@@ -88,8 +88,8 @@ if ($socid && $_GET["delsocid"])
  * View
  */
 
-$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('',$langs->trans("ThirdParty"),$help_url);
+
+llxHeader('',$langs->trans("ThirdParty"));
 
 $form = new Form($db);
 $formcompany = new FormCompany($db);

@@ -44,8 +44,8 @@ if ($user->societe_id > 0)
  * View
  */
 
-$help_url='EN:Module_Agenda_En|FR:Module_Agenda|ES:M&omodulodulo_Agenda';
-llxHeader('',$langs->trans("Agenda"),$help_url);
+
+llxHeader('',$langs->trans("Agenda"));
 
 $act = new ActionComm($db);
 $act->fetch($_GET["id"]);

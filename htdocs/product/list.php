@@ -47,7 +47,7 @@ $object = new Product($db);
  * View
  */
 
-llxHeader('', $langs->trans("ProductsAndServices"), $help_url, '', '', '', '');
+llxHeader('', $langs->trans("ProductsAndServices"), '', '', '', '');
 
 $title = $langs->trans("ProductsAndServices");
 

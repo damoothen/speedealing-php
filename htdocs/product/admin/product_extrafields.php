@@ -73,7 +73,7 @@ else if (empty($conf->service->enabled))
 	$tab = $langs->trans('Products');
 }
 
-$help_url='EN:Module Third Parties setup|FR:Paramétrage_du_module_Tiers';
+
 llxHeader('',$title);
 
 

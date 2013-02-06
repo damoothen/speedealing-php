@@ -38,7 +38,7 @@ $object = new Planning($db);
  * View
  */
 
-llxHeader('', $langs->trans("Planning"), $help_url, '', '', '', '');
+llxHeader('', $langs->trans("Planning"), '', '', '', '');
 
 $titre = $langs->trans("ProdPlanning");
 
