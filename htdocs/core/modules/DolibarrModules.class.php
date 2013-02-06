@@ -1399,6 +1399,7 @@ class DolibarrModules extends nosqlDocument {
                 $obj->_rev = $result->_rev;
             } catch (Exception $e) {
             }
+            
             try{
                 $this->couchdb->storeDoc($obj);
             } catch (Exception $e) {

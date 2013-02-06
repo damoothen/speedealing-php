@@ -23,7 +23,6 @@ function upgrade() {
         accessforbidden();
 
     $log = dol_getcache("mesgs");
-    dol_flushcache();
 
     //Update modules configuration
     $object = new DolibarrModules($db);
