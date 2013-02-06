@@ -1,11 +1,10 @@
 <?php
-
 /* Copyright (C) 2002-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Xavier Dutoit        <doli@sydesy.com>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2011 Regis Houssin        <regis.houssin@capnetworks.com>
+ * Copyright (C) 2005-2013 Regis Houssin        <regis.houssin@capnetworks.com>
  * Copyright (C) 2005 	   Simon Tosser         <simon@kornog-computing.com>
  * Copyright (C) 2006 	   Andre Cianfarani     <andre.cianfarani@acdeveloppement.net>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
@@ -56,9 +55,6 @@ $conffiletoshowshort = "conf.php";
 // Define localization of conf file
 $conffile = "conf/conf.php";
 $conffiletoshow = "htdocs/conf/conf.php";
-// For debian/redhat like systems
-//$conffile = "/etc/dolibarr/conf.php";
-//$conffiletoshow = "/etc/dolibarr/conf.php";
 // Include configuration
 $result = @include_once $conffile;
 if (!$result && !empty($_SERVER["GATEWAY_INTERFACE"])) {    // If install not done and we are in a web session
@@ -251,12 +247,6 @@ if (!defined('DOL_DEFAULT_TTF')) {
 if (!defined('DOL_DEFAULT_TTF_BOLD')) {
     define('DOL_DEFAULT_TTF_BOLD', (!isset($dolibarr_font_DOL_DEFAULT_TTF_BOLD)) ? DOL_DOCUMENT_ROOT . '/includes/fonts/AerialBd.ttf' : (empty($dolibarr_font_DOL_DEFAULT_TTF_BOLD) ? '' : $dolibarr_font_DOL_DEFAULT_TTF_BOLD));
 }
-// Old path to root deprecated (no more used).
-//if (! defined('ARTICHOW_FONT'))        { define('ARTICHOW_FONT',        (!isset($dolibarr_font_DOL_DEFAULT_TTF_BOLD))?DOL_DOCUMENT_ROOT.'/includes/fonts':dirname($dolibarr_font_DOL_DEFAULT_TTF_BOLD)); }
-//if (! defined('ARTICHOW_FONT_NAMES'))  { define('ARTICHOW_FONT_NAMES',  (!isset($dolibarr_font_DOL_DEFAULT_TTF_BOLD))?'Aerial,AerialBd,AerialBdIt,AerialIt':'DejaVuSans,DejaVuSans-Bold,DejaVuSans-BoldOblique,DejaVuSans-Oblique'); }
-//if (! defined('ARTICHOW_PATH'))        { define('ARTICHOW_PATH',        (!isset($dolibarr_lib_ARTICHOW))?DOL_DOCUMENT_ROOT.'/includes/artichow/':(empty($dolibarr_lib_ARTICHOW)?'':$dolibarr_lib_ARTICHOW.'/')); }
-//if (! defined('FPDF_PATH'))            { define('FPDF_PATH',            DOL_DOCUMENT_ROOT .'/includes/fpdf/fpdf/'); }
-
 
 /*
  * Include functions

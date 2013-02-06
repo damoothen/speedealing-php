@@ -5,7 +5,7 @@
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@capnetworks.com>
+ * Copyright (C) 2005-2013 Regis Houssin        <regis.houssin@capnetworks.com>
  * Copyright (C) 2005 	   Simon Tosser         <simon@kornog-computing.com>
  * Copyright (C) 2006 	   Andre Cianfarani     <andre.cianfarani@acdeveloppement.net>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
@@ -77,9 +77,6 @@ if (!empty($dolibarr_main_document_root_alt)) {
         $conf->file->dol_document_root['alt'] = $value;
     }
 }
-// Force db type (for test purpose)
-if (defined('TEST_DB_FORCE_TYPE'))
-    $conf->db->type = constant('TEST_DB_FORCE_TYPE');
 
 // Chargement des includes principaux de librairies communes
 if (!defined('NOREQUIREUSER')) {
@@ -166,9 +163,11 @@ if (!defined('NOREQUIREHOOK')) {
 unset($dolibarr_main_db_pass);  // We comment this because this constant is used in a lot of pages
 unset($conf->db->pass);    // This is to avoid password to be shown in memory/swap dump
 
+// TODO move this parameter in database
 if (!defined('MAIN_LABEL_MENTION_NPR'))
     define('MAIN_LABEL_MENTION_NPR', 'NPR');
 
 // We force feature to help debug
-//$conf->global->MAIN_JS_ON_PAYMENT=0;    // We disable this. See bug #402 on doliforge
+// TODO move this parameter in database
+//$conf->global->MAIN_JS_ON_PAYMENT=0;
 ?>

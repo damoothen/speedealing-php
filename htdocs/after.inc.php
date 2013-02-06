@@ -88,6 +88,7 @@ if (!defined('NOREQUIREDB') && !defined('NOREQUIRESOC')) {
     $mysoc->load("societe:mysoc", true);
 
     // For some countries, we need to invert our address with customer address
+    // TODO move this specific settings in database
     if ($mysoc->country_id == 'DE' && !isset($conf->global->MAIN_INVERT_SENDER_RECIPIENT))
         $conf->global->MAIN_INVERT_SENDER_RECIPIENT = 1;
 }

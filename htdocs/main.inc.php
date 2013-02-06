@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@capnetworks.com>
+ * Copyright (C) 2005-2013 Regis Houssin        <regis.houssin@capnetworks.com>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2008      Matteli
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
@@ -24,7 +24,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-//@ini_set('memory_limit', '64M');	// This may be useless if memory is hard limited by your PHP
 // For optionnal tuning. Enabled if environment variable DOL_TUNING is defined.
 // A call first. Is the equivalent function dol_microtime_float not yet loaded.
 $micro_start_time = 0;
@@ -35,26 +34,6 @@ if (!empty($_SERVER['DOL_TUNING'])) {
     //define('XDEBUGCOVERAGE',1);
     if (defined('XDEBUGCOVERAGE')) {
         xdebug_start_code_coverage();
-    }
-}
-
-// Removed magic_quotes
-if (function_exists('get_magic_quotes_gpc')) { // magic_quotes_* removed in PHP6
-    if (get_magic_quotes_gpc()) {
-
-        // Forcing parameter setting magic_quotes_gpc and cleaning parameters
-        // (Otherwise he would have for each position, condition
-        // Reading stripslashes variable according to state get_magic_quotes_gpc).
-        // Off mode recommended (just do $db->escape for insert / update).
-        function stripslashes_deep($value) {
-            return (is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value));
-        }
-
-        $_GET = array_map('stripslashes_deep', $_GET);
-        $_POST = array_map('stripslashes_deep', $_POST);
-        $_FILES = array_map('stripslashes_deep', $_FILES);
-        //$_COOKIE  = array_map('stripslashes_deep', $_COOKIE); // Useless because a cookie should never be outputed on screen nor used into sql
-        @set_magic_quotes_runtime(0);
     }
 }
 
@@ -137,7 +116,7 @@ if (!empty($_SERVER['DOCUMENT_ROOT']))
     set_include_path($_SERVER['DOCUMENT_ROOT'] . '/htdocs');
 
 // Include the conf.php and functions.lib.php
-require_once("filefunc.inc.php");
+require 'filefunc.inc.php';
 
 // Init session. Name of session is specific to Speedealing instance.
 $prefix = dol_getprefix();
@@ -157,7 +136,7 @@ if (ini_get('register_globals')) { // To solve bug in using $_SESSION
 
 // Init the 5 global objects
 // This include will set: $conf, $db, $langs, $user, $mysoc objects
-require_once("master.inc.php");
+require 'master.inc.php';
 
 // Activate end of page function
 register_shutdown_function('dol_shutdown');
@@ -192,11 +171,8 @@ if (!empty($conf->file->main_force_https)) {
     }
     // Start redirect
     if ($newurl) {
-        dol_syslog("main.inc: dolibarr_main_force_https is on, we make a redirect to " . $newurl);
         header("Location: " . $newurl);
         exit;
-    } else {
-        dol_syslog("main.inc: dolibarr_main_force_https is on but we failed to forge new https url so no redirect is done", LOG_WARNING);
     }
 }
 
@@ -212,7 +188,6 @@ if (!defined('NOREQUIREAJAX'))
 
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
-    dol_syslog("main.inc: A previous install or upgrade was not complete. Redirect to install page.", LOG_WARNING);
     Header("Location: " . DOL_URL_ROOT . "/install/index.php");
     exit;
 }
@@ -229,12 +204,9 @@ if (!defined('NOTOKENRENEWAL')) {
 // Check validity of token, only if option enabled (this option breaks some features sometimes)
 if (isset($_POST['token']) && isset($_SESSION['token'])) {
     if (($_POST['token'] != $_SESSION['token'])) {
-        dol_syslog("Invalid token in " . $_SERVER['HTTP_REFERER'] . ", action=" . $_POST['action'] . ", _POST['token']=" . $_POST['token'] . ", _SESSION['token']=" . $_SESSION['token'], LOG_WARNING);
-        //print 'Unset POST by CSRF protection in main.inc.php.';	// Do not output anything because this create problems when using the BACK button on browsers.
         unset($_POST);
     }
 }
-
 
 // Disable modules (this must be after session_start and after conf has been loaded)
 if (GETPOST('disablemodules'))
@@ -285,12 +257,12 @@ if (!defined('NOLOGIN')) {
         }
 
         // It is not already authenticated and it requests the login / password
-        include_once(DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php');
+        include DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php';
 
         // We show login page
         if (!is_object($langs)) { // This can occurs when calling page with NOREQUIRETRAN defined
-            include_once(DOL_DOCUMENT_ROOT . "/core/class/translate.class.php");
-            $langs = new Translate();
+            include DOL_DOCUMENT_ROOT . '/core/class/translatestandalone.class.php'; // Use this class before authentication
+            $langs = new TranslateStandalone();
         }
         dol_loginfunction($langs, $conf, $mysoc);
         exit;
@@ -316,7 +288,8 @@ if (!defined('NOLOGIN')) {
             setcookie('AuthSession', '', 1, '/'); // Reset auth cookie
             //}
             // Call triggers
-            include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+            if (!class_exists('Interfaces'))
+            	include DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
             $interface = new Interfaces($db);
             $result = $interface->run_triggers('USER_LOGIN_FAILED', $user, $user, $langs, $conf, (isset($_POST["entity"]) ? $_POST["entity"] : 0));
             if ($result < 0) {
@@ -329,7 +302,8 @@ if (!defined('NOLOGIN')) {
         } else {
             if (!empty($conf->global->MAIN_ACTIVATE_UPDATESESSIONTRIGGER)) { // We do not execute such trigger at each page load by default
                 // Call triggers
-                include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+                if (!class_exists('Interfaces'))
+                	include DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
                 $interface = new Interfaces($db);
                 $result = $interface->run_triggers('USER_UPDATE_SESSION', $user, $user, $langs, $conf, $conf->entity);
                 if ($result < 0) {
@@ -361,7 +335,8 @@ if (!defined('NOLOGIN')) {
         dol_syslog("This is a new started user session. _SESSION['dol_login']=" . $_SESSION["dol_login"] . ' Session id=' . session_id());
 
         // Call triggers
-        include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+        if (!class_exists('Interfaces'))
+        	include DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
         $interface = new Interfaces($db);
         $result = $interface->run_triggers('USER_LOGIN', $user, $user, $langs, $conf, $_POST["entity"]);
         if ($result < 0) {
@@ -439,7 +414,6 @@ if (!defined('NOLOGIN')) {
     if ($user->Status != "ENABLE") {
         // If not active, we refuse the user
         $langs->load("other");
-        dol_syslog("Authentification ko as login is disabled");
         accessforbidden($langs->trans("ErrorLoginDisabled"));
         exit;
     }
@@ -1568,7 +1542,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             <footer id="footer">
                 <div class="with-mid-padding">
-                    <div>Copyright &copy; 2012
+                    <div>Copyright &copy; 2012-2013
                         speedealing.com - symeos.com - tzd-themes.com -
                         themeforest.net/user/displayinline
                     </div>
