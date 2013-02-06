@@ -3657,7 +3657,7 @@ function dol_htmloutput_events() {
                 case "mesgs":
                     $color = "green-gradient";
                     $icon = 'theme/common/emotes/face-smile.png';
-                    $closeDelay = 2000;
+                    $closeDelay = 5000;
                     break;
             }
 
