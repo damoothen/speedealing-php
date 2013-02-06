@@ -31,18 +31,20 @@ require_once realpath(dirname(__FILE__)) . '/../filefunc.inc.php';
 // Define DOL_DOCUMENT_ROOT and ADODB_PATH used for install/upgrade process
 if (!defined('DOL_DOCUMENT_ROOT'))
     define('DOL_DOCUMENT_ROOT', realpath(dirname(__FILE__)) . '/..');
+/*
 if (!defined('ADODB_PATH')) {
     $foundpath = DOL_DOCUMENT_ROOT . '/includes/adodbtime/';
     if (!is_dir($foundpath))
         $foundpath = '/usr/share/php/adodb/';
     define('ADODB_PATH', $foundpath);
 }
+*/
 
 require_once DOL_DOCUMENT_ROOT . '/core/class/translatestandalone.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/functions.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
-require_once ADODB_PATH . 'adodb-time.inc.php';
+//require_once ADODB_PATH . 'adodb-time.inc.php';
 
 // For couchdb
 if (!class_exists('couch'))
@@ -58,7 +60,6 @@ $conf = new stdClass(); // instantiate $conf explicitely
 $conf->global = new stdClass();
 $conf->file = new stdClass();
 $conf->db = new stdClass();
-$conf->syslog = new stdClass();
 
 
 // Correction PHP_SELF (ex pour apache via caudium) car PHP_SELF doit valoir URL relative
@@ -68,91 +69,49 @@ if (isset($_SERVER["DOCUMENT_URI"]) && $_SERVER["DOCUMENT_URI"]) {
 }
 
 
-$includeconferror = '';
-
-
 // Define vars
 $conffiletoshowshort = "conf.php";
 // Define localization of conf file
 $conffile = realpath(dirname(__FILE__)) . '/../conf/conf.php';
 $conffiletoshow = "htdocs/conf/conf.php";
-// For debian/redhat like systems
-//$conffile = "/etc/dolibarr/conf.php";
-//$conffiletoshow = "/etc/dolibarr/conf.php";
 
-
-define('DOL_CLASS_PATH', 'class/');                             // Filsystem path to class dir
-define('DOL_DATA_ROOT', (isset($dolibarr_main_data_root) ? $dolibarr_main_data_root : ''));
-define('DOL_MAIN_URL_ROOT', (isset($dolibarr_main_url_root) ? $dolibarr_main_url_root : ''));           // URL relative root
-$uri = preg_replace('/^http(s?):\/\//i', '', constant('DOL_MAIN_URL_ROOT'));  // $uri contains url without http*
+// Define DOL_URL_ROOT
+// If defined (Ie: Apache with Linux)
+if (isset($_SERVER["SCRIPT_URI"])) {
+	$dolibarr_main_url_root = $_SERVER["SCRIPT_URI"];
+}
+// If defined (Ie: Apache with Caudium)
+elseif (isset($_SERVER["SERVER_URL"]) && isset($_SERVER["DOCUMENT_URI"])) {
+	$dolibarr_main_url_root = $_SERVER["SERVER_URL"] . $_SERVER["DOCUMENT_URI"];
+}
+// If SCRIPT_URI, SERVER_URL, DOCUMENT_URI not defined (Ie: Apache 2.0.44 for Windows)
+else {
+	$proto = 'http';
+	if (!empty($_SERVER["HTTP_HOST"]))
+		$serverport = $_SERVER["HTTP_HOST"];
+	else
+		$serverport = $_SERVER["SERVER_NAME"];
+	$dolibarr_main_url_root = $proto . "://" . $serverport . $_SERVER["SCRIPT_NAME"];
+}
+// Clean proposed URL
+$dolibarr_main_url_root = preg_replace('/\/$/', '', $dolibarr_main_url_root);     // Remove the /
+$dolibarr_main_url_root = preg_replace('/\/index\.php$/', '', $dolibarr_main_url_root);  // Remove the /index.php
+$dolibarr_main_url_root = preg_replace('/\/install$/', '', $dolibarr_main_url_root);   // Remove the /install
+$uri = preg_replace('/^http(s?):\/\//i', '', $dolibarr_main_url_root);	// $uri contains url without http*
 $suburi = strstr($uri, '/');       // $suburi contains url without domain
 if ($suburi == '/')
     $suburi = '';   // If $suburi is /, it is now ''
 define('DOL_URL_ROOT', $suburi);    // URL relative root ('', '/dolibarr', ...)
 
-
-if (empty($conf->file->character_set_client))
-    $conf->file->character_set_client = "UTF-8";
-if (empty($conf->db->character_set))
-    $conf->db->character_set = 'utf8';
-if (empty($conf->db->dolibarr_main_db_encryption))
-    $conf->db->dolibarr_main_db_encryption = 0;
-if (empty($conf->db->dolibarr_main_db_cryptkey))
-    $conf->db->dolibarr_main_db_cryptkey = '';
-if (empty($conf->db->user))
-    $conf->db->user = '';
-
 // Define array of document root directories
 $conf->file->dol_document_root = array(DOL_DOCUMENT_ROOT);
 
 // Security check
-if (preg_match('/install.lock/i', $_SERVER["SCRIPT_FILENAME"])) {
-    print 'Install pages have been disabled for security reason (directory renamed with .lock suffix).';
-    if (!empty($dolibarr_main_url_root)) {
-        print 'Click on following link. ';
-        print '<a href="' . $dolibarr_main_url_root . '/admin/index.php?mainmenu=home&leftmenu=setup' . (isset($_POST["login"]) ? '&username=' . urlencode($_POST["login"]) : '') . '">';
-        print 'Click here to go to Dolibarr';
-        print '</a>';
-    }
+$lockfile = DOL_DOCUMENT_ROOT . '/install/install.lock';
+if (file_exists($lockfile)) {
+	header("Location: " . DOL_URL_ROOT . "/");
     exit;
 }
-$lockfile = DOL_DATA_ROOT . '/install.lock';
-if (constant('DOL_DATA_ROOT') && file_exists($lockfile)) {
-    print 'Install pages have been disabled for security reason (by lock file install.lock into dolibarr root directory).<br>';
-    if (!empty($dolibarr_main_url_root)) {
-        print 'Click on following link. ';
-        print 'If you always reach this page, you must remove install.lock file manually.<br>';
-        print '<a href="' . $dolibarr_main_url_root . '/admin/index.php?mainmenu=home&leftmenu=setup' . (isset($_POST["login"]) ? '&username=' . urlencode($_POST["login"]) : '') . '">';
-        print 'Click here to go to Dolibarr';
-        print '</a>';
-    } else {
-        print 'If you always reach this page, you must remove install.lock file manually.<br>';
-    }
-    exit;
-}
-
-
-// Force usage of log file for install and upgrades
-$conf->syslog->enabled = 1;
-$conf->global->SYSLOG_LEVEL = constant('LOG_DEBUG');
-if (!defined('SYSLOG_FILE_ON'))
-    define('SYSLOG_FILE_ON', 1);
-if (!defined('SYSLOG_FILE')) { // To avoid warning on systems with constant already defined
-    if (@is_writable('/tmp'))
-        define('SYSLOG_FILE', '/tmp/dolibarr_install.log');
-    else if (!empty($_ENV["TMP"]) && @is_writable($_ENV["TMP"]))
-        define('SYSLOG_FILE', $_ENV["TMP"] . '/dolibarr_install.log');
-    else if (!empty($_ENV["TEMP"]) && @is_writable($_ENV["TEMP"]))
-        define('SYSLOG_FILE', $_ENV["TEMP"] . '/dolibarr_install.log');
-    else if (@is_writable('../../../../') && @file_exists('../../../../startdoliwamp.bat'))
-        define('SYSLOG_FILE', '../../../../dolibarr_install.log'); // For DoliWamp
-    else if (@is_writable('../../'))
-        define('SYSLOG_FILE', '../../dolibarr_install.log');    // For others
-
-//print 'SYSLOG_FILE='.SYSLOG_FILE;exit;
-}
-if (!defined('SYSLOG_FILE_NO_ERROR'))
-    define('SYSLOG_FILE_NO_ERROR', 1);
 
 // Defini objet langs
 $langs = new TranslateStandalone(realpath(dirname(__FILE__)) . '/..');
@@ -185,19 +144,6 @@ function pFooter() {
 	global $langs;
 
 	include 'tpl/footer.tpl.php';
-}
-
-/**
- * Log function for install pages
- *
- * @param	string	$message	Message
- * @param 	int		$level		Level of log
- * @return	void
- */
-function dolibarr_install_syslog($message, $level = LOG_DEBUG) {
-    if (!defined('LOG_DEBUG'))
-        define('LOG_DEBUG', 6);
-    dol_syslog($message, $level);
 }
 
 ?>

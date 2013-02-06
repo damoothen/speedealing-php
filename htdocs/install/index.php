@@ -31,64 +31,22 @@ $langs->load("install");
 $formadmin=new FormAdmin('');
 
 // MAIN_DOCUMENT_ROOT
-if (!isset($dolibarr_main_url_root) || dol_strlen($dolibarr_main_url_root) == 0) {
-	//print "x".$_SERVER["SCRIPT_FILENAME"]." y".$_SERVER["DOCUMENT_ROOT"];
-	// Si le php fonctionne en CGI, alors SCRIPT_FILENAME vaut le path du php et
-	// ce n'est pas ce qu'on veut. Dans ce cas, on propose $_SERVER["DOCUMENT_ROOT"]
-	if (preg_match('/^php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/[\\/]php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/php\.exe$/i', $_SERVER["SCRIPT_FILENAME"])) {
-		$dolibarr_main_document_root = $_SERVER["DOCUMENT_ROOT"];
+// Si le php fonctionne en CGI, alors SCRIPT_FILENAME vaut le path du php et
+// ce n'est pas ce qu'on veut. Dans ce cas, on propose $_SERVER["DOCUMENT_ROOT"]
+if (preg_match('/^php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/[\\/]php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/php\.exe$/i', $_SERVER["SCRIPT_FILENAME"])) {
+	$dolibarr_main_document_root = $_SERVER["DOCUMENT_ROOT"];
 
-		if (!preg_match('/[\\/]speedealing[\\/]htdocs$/i', $dolibarr_main_document_root)) {
-			$dolibarr_main_document_root.="/speedealing/htdocs";
-		}
-	} else {
-		$dolibarr_main_document_root = dirname(dirname($_SERVER["SCRIPT_FILENAME"]));
-		// Nettoyage du path propose
-		// Gere les chemins windows avec double "\"
-		$dolibarr_main_document_root = str_replace('\\\\', '/', $dolibarr_main_document_root);
+	if (!preg_match('/[\\/]speedealing[\\/]htdocs$/i', $dolibarr_main_document_root)) {
+		$dolibarr_main_document_root.="/speedealing/htdocs";
+	}
+} else {
+	$dolibarr_main_document_root = dirname(dirname($_SERVER["SCRIPT_FILENAME"]));
+	// Nettoyage du path propose
+	// Gere les chemins windows avec double "\"
+	$dolibarr_main_document_root = str_replace('\\\\', '/', $dolibarr_main_document_root);
 
-		// Supprime les slash ou antislash de fins
-		$dolibarr_main_document_root = preg_replace('/[\\/]+$/', '', $dolibarr_main_document_root);
-	}
-}
-
-// MAIN_DATA_ROOT
-if (empty($dolibarr_main_data_root)) {
-	// Si le repertoire documents non defini, on en propose un par defaut
-	if (empty($force_install_main_data_root)) {
-		$dolibarr_main_data_root = preg_replace("/\/htdocs$/", "", $dolibarr_main_document_root);
-		$dolibarr_main_data_root.="/documents";
-	} else {
-		$dolibarr_main_data_root = $force_install_main_data_root;
-	}
-}
-
-// MAIN_URL_ROOT
-if (!empty($main_url))
-	$dolibarr_main_url_root = $main_url;
-if (empty($dolibarr_main_url_root)) {
-	// If defined (Ie: Apache with Linux)
-	if (isset($_SERVER["SCRIPT_URI"])) {
-		$dolibarr_main_url_root = $_SERVER["SCRIPT_URI"];
-	}
-	// If defined (Ie: Apache with Caudium)
-	elseif (isset($_SERVER["SERVER_URL"]) && isset($_SERVER["DOCUMENT_URI"])) {
-		$dolibarr_main_url_root = $_SERVER["SERVER_URL"] . $_SERVER["DOCUMENT_URI"];
-	}
-	// If SCRIPT_URI, SERVER_URL, DOCUMENT_URI not defined (Ie: Apache 2.0.44 for Windows)
-	else {
-		$proto = 'http';
-		if (!empty($_SERVER["HTTP_HOST"]))
-			$serverport = $_SERVER["HTTP_HOST"];
-		else
-			$serverport = $_SERVER["SERVER_NAME"];
-		$dolibarr_main_url_root = $proto . "://" . $serverport . $_SERVER["SCRIPT_NAME"];
-	}
-	// Clean proposed URL
-	$dolibarr_main_url_root = preg_replace('/\/install\.php$/', '', $dolibarr_main_url_root); // Remove the /fileconf.php
-	$dolibarr_main_url_root = preg_replace('/\/$/', '', $dolibarr_main_url_root);     // Remove the /
-	$dolibarr_main_url_root = preg_replace('/\/index\.php$/', '', $dolibarr_main_url_root);  // Remove the /index.php
-	$dolibarr_main_url_root = preg_replace('/\/install$/', '', $dolibarr_main_url_root);   // Remove the /install
+	// Supprime les slash ou antislash de fins
+	$dolibarr_main_document_root = preg_replace('/[\\/]+$/', '', $dolibarr_main_document_root);
 }
 
 // Force https by default
@@ -100,24 +58,17 @@ else
 // Create matrice conf file
 if (is_readable($conffile) && filesize($conffile) > 8)
 {
-	dolibarr_install_syslog("conf file '$conffile' already defined");
+	// Conf file already defined
 }
 else
 {
-	// If not, we create it
-	dolibarr_install_syslog("we try to create conf file '$conffile'");
-
 	// First we try by copying example
 	if (@copy($conffile.".example", $conffile))
 	{
 		// Success
-		dolibarr_install_syslog("copied file ".$conffile.".example into ".$conffile." done successfully.");
 	}
 	else
 	{
-		// If failed, we try to create an empty file
-		dolibarr_install_syslog("failed to copy file ".$conffile.".example into ".$conffile.". We try to create it.", LOG_WARNING);
-
 		$fp = @fopen($conffile, "w");
 		if ($fp)
 		{
@@ -126,7 +77,6 @@ else
 			@fputs($fp,"?>");
 			fclose($fp);
 		}
-		else dolibarr_install_syslog("failed to create a new file ".$conffile." into current dir ".getcwd().". Check permission.", LOG_ERR);
 	}
 }
 

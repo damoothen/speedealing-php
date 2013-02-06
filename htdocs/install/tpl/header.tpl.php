@@ -25,7 +25,7 @@
 <!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html class="no-js linen" lang="en"><!--<![endif]-->
 
 <head>
-	<meta http-equiv="content-type" content="text/html; charset='<?php echo $conf->file->character_set_client; ?>'">
+	<meta http-equiv="content-type" content="text/html; charset='UTF-8'">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="HandheldFriendly" content="True">
 	<meta name="MobileOptimized" content="320">
