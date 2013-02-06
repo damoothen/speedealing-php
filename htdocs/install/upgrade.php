@@ -17,94 +17,101 @@
  */
 
 function upgrade() {
-    global $user, $conf, $langs;
+	global $user, $conf, $langs;
 
-    if (!$user->admin)
-        accessforbidden();
+	if (!$user->admin)
+		accessforbidden();
 
-    $log = dol_getcache("mesgs");
+	$log = dol_getcache("mesgs");
 
-    //Update modules configuration
-    $object = new DolibarrModules($db);
+	//Update modules configuration
+	$object = new DolibarrModules($db);
 
-    //Upgrade core files
-    $object->upgradeCore();
+	//Upgrade core files
+	$object->upgradeCore();
 
-    // Load Modules files
-    $filename = array();
-    $modules = array();
-    $orders = array();
-    $categ = array();
-    $dirmod = array();
-    $modNameLoaded = array();
-    $mesg = $object->load_modules_files($filename, $modules, $orders, $categ, $dirmod, $modNameLoaded);
+	// Load Modules files
+	$filename = array();
+	$modules = array();
+	$orders = array();
+	$categ = array();
+	$dirmod = array();
+	$modNameLoaded = array();
+	$mesg = $object->load_modules_files($filename, $modules, $orders, $categ, $dirmod, $modNameLoaded);
 
-    //Update extrafields && Update views
-    $result = $object->getView("list");
-    foreach ($result->rows as $aRow) {
-    	if (!empty($modules[$aRow->value->numero]) && $aRow->value->enabled) { // Test if module is present and enabled
-    		if ($aRow->id == "module:User")
-    			$aRow->value->numero = 0;
+	//Update extrafields && Update views
+	$result = $object->getView("list");
+	foreach ($result->rows as $aRow) {
+		if (!empty($modules[$aRow->value->numero]) && $aRow->value->enabled) { // Test if module is present and enabled
+			if ($aRow->id == "module:User")
+				$aRow->value->numero = 0;
 
-    		$objMod = $modules[$aRow->value->numero];
+			$objMod = $modules[$aRow->value->numero];
 
-    		foreach ($objMod as $key => $row)
-    			$object->$key = $row;
+			foreach ($objMod as $key => $row)
+				$object->$key = $row;
 
-    		$object->_id = "module:" . $objMod->name;
-    		$object->_rev = $aRow->value->_rev;
-    		$object->enabled = true;
-    		$object->record();
-    		$object->_load_documents();
-    	}
-    }
+			$object->_id = "module:" . $objMod->name;
+			$object->_rev = $aRow->value->_rev;
+			$object->enabled = true;
+			$object->record();
+			$object->_load_documents();
+		}
+	}
 
-    //Upade dict
-    $dict = new Dict($db);
-    $result = $dict->getView("list");
+	//Upade dict
+	$dict = new Dict($db);
+	$result = $dict->getView("list");
 
-    $dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/";
-    foreach ($result->rows as $aRow) {
-        $dict->load($aRow->key);
-        $fp = fopen($dir . $aRow->key . ".json", "r");
-        if ($fp) {
-            $json = fread($fp, filesize($dir . $aRow->key . ".json"));
-            $obj = json_decode($json);
-            unset($obj->_rev);
-        }
+	$dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/";
+	foreach ($result->rows as $aRow) {
+		try {
+			$dict->load($aRow->key);
+		} catch (Exception $e) {
+			// Dict not in db
+		}
+		$fp = fopen($dir . $aRow->key . ".json", "r");
+		if ($fp) {
+			$json = fread($fp, filesize($dir . $aRow->key . ".json"));
+			$obj = json_decode($json);
+			unset($obj->_rev);
+		}
 
-        if (is_object($obj->values)) {
-            $found = false;
-            foreach ($obj->values as $key => $row) {
-                if (isset($dict->values->$key)) {
-                    $found = true;
-                    $enable = $dict->values->$key->enable;
-                }
-                $dict->values->$key = $row;
-                if ($found)
-                    $dict->values->$key->enable = $enable;
-                $found = false;
-            }
-            $dict->record();
-        }
-    }
+		if (is_object($obj->values)) {
+			$found = false;
+			$dict->_id = $obj->_id;
+			foreach ($obj->values as $key => $row) {
+				if (isset($dict->values->$key)) {
+					$found = true;
+					$enable = $dict->values->$key->enable;
+				}
+				$dict->values->$key = $row;
+				if ($found)
+					$dict->values->$key->enable = $enable;
+				$found = false;
+			}
+			$dict->record();
+		} else {
+			
+		}
+	}
 
-    // Put the new version in $conf
-    $conf->global->MAIN_VERSION = DOL_VERSION;
-    $conf->record(true);
+	// Put the new version in $conf
+	$conf->global->MAIN_VERSION = DOL_VERSION;
+	$conf->record(true);
 
-    //Flush caches
-    dol_flushcache();
+	//Flush caches
+	dol_flushcache();
 
 
-    // All is ok;
-    $error->title = $langs->trans("UpgradeOk");
+	// All is ok;
+	$error->title = $langs->trans("UpgradeOk");
 
-    $error->message = $langs->trans("NewInstalledVersion", $conf->global->MAIN_VERSION);
-    $log[] = clone $error;
-    dol_setcache("mesgs", $log);
+	$error->message = $langs->trans("NewInstalledVersion", $conf->global->MAIN_VERSION);
+	$log[] = clone $error;
+	dol_setcache("mesgs", $log);
 
-    return 1;
+	return 1;
 }
 
 ?>
