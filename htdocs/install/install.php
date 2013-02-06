@@ -91,6 +91,12 @@ if (empty($dolibarr_main_url_root)) {
 	$dolibarr_main_url_root = preg_replace('/\/install$/', '', $dolibarr_main_url_root);   // Remove the /install
 }
 
+// Force https by default
+if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on')
+	$https_enabled = true;
+else
+	$https_enabled = false;
+
 // Create matrice conf file
 if (is_readable($conffile) && filesize($conffile) > 8)
 {
