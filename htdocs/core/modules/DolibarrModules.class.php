@@ -1388,6 +1388,7 @@ class DolibarrModules extends nosqlDocument {
             if ($fp) {
                 $json = fread($fp, filesize($dir . $row . ".json"));
                 $obj = json_decode($json);
+                unset($obj->_rev);
             } else {
                 print "file not found : " . $dir . $row . ".json";
                 exit;
@@ -1396,6 +1397,9 @@ class DolibarrModules extends nosqlDocument {
             try {
                 $result = $this->couchdb->getDoc($obj->_id);
                 $obj->_rev = $result->_rev;
+            } catch (Exception $e) {
+            }
+            try{
                 $this->couchdb->storeDoc($obj);
             } catch (Exception $e) {
                 print $row;
