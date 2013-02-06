@@ -1380,7 +1380,7 @@ class DolibarrModules extends nosqlDocument {
      * Upgrade specific file for database not a a module : For the core
      */
     function upgradeCore() {
-        $files = array("DolibarrModules.view", "MenuAuguria.view", "dict.view", "extrafields.DolibarrModules");
+        $files = array("DolibarrModules.view", "MenuAuguria.view", "Dict.view", "extrafields.DolibarrModules");
 
         $dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/";
         foreach ($files as $row) {
@@ -1395,6 +1395,7 @@ class DolibarrModules extends nosqlDocument {
                 $obj->_rev = $result->_rev;
                 $this->couchdb->storeDoc($obj);
             } catch (Exception $e) {
+                print $row;
                 print $e->getMessage();
                 exit;
             }

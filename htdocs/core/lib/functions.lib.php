@@ -2326,6 +2326,9 @@ function start_box($title, $nbcolumn = 'twelve', $icon = '16-Abacus.png', $box_a
     $path = DOL_URL_ROOT;
     if (empty($path))
         $path = "..";
+    
+    if(empty($icon))
+        $icon = '16-Abacus.png';
 
     if (empty($conf->theme))
         $conf->theme = "eldy";
