@@ -210,14 +210,6 @@ if (!defined('NOREQUIREAJAX'))
 
 
 
-
-
-
-
-
-
-
-    
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
     dol_syslog("main.inc: A previous install or upgrade was not complete. Redirect to install page.", LOG_WARNING);

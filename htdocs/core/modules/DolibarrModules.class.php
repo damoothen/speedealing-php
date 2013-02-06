@@ -568,7 +568,7 @@ class DolibarrModules extends nosqlDocument {
                                     $result = $this->couchdb->getDoc($obj->_id);
                                     $obj->_rev = $result->_rev;
                                 } catch (Exception $e) {
-                                    
+
                                 }
 
                                 if (!empty($result)) {
@@ -1053,7 +1053,7 @@ class DolibarrModules extends nosqlDocument {
                 $obj = $this->couchdb->getDoc($id);
                 $menu[$id]->_rev = $obj->_rev;
             } catch (Exception $e) {
-                
+
             }
         }
 
@@ -1089,7 +1089,7 @@ class DolibarrModules extends nosqlDocument {
                 $menu->enabled = false;
                 $this->couchdb->storeDoc($menu);
             } catch (Exception $e) {
-                
+
             }
         }
 
