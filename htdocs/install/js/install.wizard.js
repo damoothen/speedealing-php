@@ -61,24 +61,42 @@ $(document).ready(function() {
 		if (step == 'welcome') {
 			$('.wizard-next').show();
 		} else if (step == 'prerequisite') {
-			$('.wizard-next').hide();
-			$('#reload_required').hide();
-			$('#reload_button').hide();
-			// Check prerequisites
+			$('.wizard-next, #reload_required, #reload_button').hide();
+			// Check pre-requisites
 			ckeckPrerequisite();
+		} else if (step == 'configuration') {
+			var memcached = $('#memcached_enabled').val();
+			if (memcached == 'true')
+				$('#memcached_host, #memcached_port').removeAttr('disabled');
+			else
+				$('#memcached_host, #memcached_port').attr('disabled', 'disabled');
+		} else if (step == 'database') {
+			var install_type = $('input[name=install_type]:checked').val();
+			if (install_type == 'fullweb') {
+				$('.syncuser, .remotebase').hide();
+			} else if (install_type == 'primary_server') {
+				$('.syncuser').show();
+				$('.remotebase').hide();
+			} else if (install_type == 'secondary_server') {
+				$('.syncuser, .remotebase').show();
+			} else if (install_type == 'client') {
+				$('.syncuser').hide();
+				$('.remotebase').show();
+			}
 		} else if (step == 'install') {
 			$('#add_conf').progress({style: 'large'}).showProgressStripes();
-			$('#add_superadmin').progress({style: 'large'}).showProgressStripes();
 			//$('#add_syncuser').progress({style: 'large'}).showProgressStripes();
 			$('#add_database').progress({style: 'large'}).showProgressStripes();
 			//$('#sync_database').progress({style: 'large'}).showProgressStripes();
 		}
 	});
-
+	
+	// Reload page
 	$('#reload_button').click(function() {
 		ckeckPrerequisite();
 	});
-
+	
+	// Check pre-requisites
 	function ckeckPrerequisite() {
 		// Add loader
 		$('#php_version, #php_memory, #php_utf8, #php_gd, #php_curl, #php_memcached, #conf_file').html('<span class="loader"></span>');
@@ -86,15 +104,18 @@ $(document).ready(function() {
 		$.getJSON('ajax/prerequisite.php', { action: 'check_prerequisite', lang: $('#selectlang').val() }, function(data) {
 			if (data) {
 				$.each(data, function(key, value) {
-					if (key == 'continue') {
+					if (key == 'memcached') {
+						if (value == true)
+							$('#memcached_enabled').val('true');
+						else
+							$('#memcached_enabled').val('false');
+					} else if (key == 'continue') {
 						if (value == true) {
-							$('#reload_button').hide();
-							$('#reload_required').hide();
+							$('#reload_button, #reload_required').hide();
 							$('.wizard-next').show();
 						}
 						else {
-							$('#reload_required').show();
-							$('#reload_button').show();
+							$('#reload_required, #reload_button').show();
 						}
 					} else {
 						$('#' + key).html(value);

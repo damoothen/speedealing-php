@@ -31,6 +31,7 @@ $langs->load("errors");
 $action	= GETPOST('action','alpha');
 $out = array();
 $continue = true;
+$memcached = false;
 
 /*
  * View
@@ -89,19 +90,48 @@ if ($action == 'check_prerequisite') {
 	// Check if memcache supported
 	if (!class_exists('Memcache'))
 		$out['php_memcached'] = '<span class="icon-cross icon-red">'.$langs->trans("ErrorPHPDoesNotSupportMemcache").'</span>';
-	else
+	else {
 		$out['php_memcached'] = '<span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcache").'</span>';
-	$out['php_memcached'] .= '<br>';
+		$memcached = true;
+	}
+
 	// Check if memcached supported
 	if (!class_exists('Memcached'))
-		$out['php_memcached'] .= '<span class="icon-cross icon-red">'.$langs->trans("ErrorPHPDoesNotSupportMemcached").'</span>';
-	else
-		$out['php_memcached'] .= '<span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcached").'</span>';
+		$out['php_memcached'] .= '<br><span class="icon-cross icon-red">'.$langs->trans("ErrorPHPDoesNotSupportMemcached").'</span>';
+	else {
+		$out['php_memcached'] .= '<br><span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcached").'</span>';
+		$memcached = true;
+	}
 
 	// Check config file
+	if (!file_exists($conffile))
+	{
+		$out['conf_file'] = '<span class="icon-warning icon-red">'.$langs->trans("ConfFileDoesNotExistsAndCouldNotBeCreated", $conffiletoshow);
+		$out['conf_file'].= '<br>'.$langs->trans("YouMustCreateWithPermission", $conffiletoshow).'</span>';
+		$continue = false;
+	}
+	else
+	{
+		// File exists
+		$out['conf_file'] = '<span class="icon-tick icon-green">'.$langs->trans("ConfFileExists", $conffiletoshow).'</span>';
+
+		// File is not editable
+		if (!is_writable($conffile))
+		{
+			$out['conf_file'].= '<br><span class="icon-warning icon-red">'.$langs->trans("ConfFileIsNotWritable", $conffiletoshow).'</span>';
+			$continue = false;
+		}
+		// File is editable
+		else
+		{
+			$out['conf_file'].= '<br><span class="icon-tick icon-green">'.$langs->trans("ConfFileIsWritable",$conffiletoshow).'</span>';
+		}
+	}
 
 	// Check if all results are ok
-	//$continue = false; // for test
+	//$memcached = false; // for debug
+	$out['memcached'] = $memcached;
+	//$continue = false; // for debug
 	$out['continue'] = $continue;
 
 	echo json_encode($out);

@@ -33,9 +33,8 @@
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.wizard.js"></script>
 
 <!-- jQuery Form Validation -->
-<!-- <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/libs/formValidator/jquery.validationEngine.js"></script> -->
-<!-- TODO replace by $langs translation -->
-<script src="<?php echo DOL_URL_ROOT; ?>/install/js/jquery.validationEngine-rules.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/libs/formValidator/jquery.validationEngine.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/install/js/install.validation.js.php"></script>
 
 <!-- Wizard process -->
 <script src="<?php echo DOL_URL_ROOT; ?>/install/js/install.wizard.js"></script>
