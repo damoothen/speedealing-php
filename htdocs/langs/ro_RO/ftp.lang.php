@@ -17,9 +17,9 @@
 
 $ftp = array(
 		'CHARSET' => 'UTF-8',
-		'FTPClientSetup' => 'Un client FTP modul de configurare',
+		'FTPClientSetup' => 'Configurare modul  client FTP',
 		'NewFTPClient' => 'Noua conexiune FTP setup',
-		'FTPArea' => 'Spaţiul FTP',
+		'FTPArea' => 'Zona FTP',
 		'FTPAreaDesc' => 'Acest ecran vă arate conţinutul în vederea server FTP',
 		'SetupOfFTPClientModuleNotComplete' => 'Setup de modul client FTP pare a fi nu este completă',
 		'FTPFeatureNotSupportedByYourPHP' => 'PHP nu are suport pentru funcţii FTP',
