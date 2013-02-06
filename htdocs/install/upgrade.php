@@ -23,7 +23,7 @@ function upgrade() {
         accessforbidden();
 
     $log = dol_getcache("mesgs");
-    dol_flushcache();
+    //dol_flushcache();
 
     //Update modules configuration
     $object = new DolibarrModules($db);
@@ -43,21 +43,21 @@ function upgrade() {
     //Update extrafields && Update views
     $result = $object->getView("list");
     foreach ($result->rows as $aRow) {
-        if ($aRow->value->enabled) {
-            if ($aRow->id == "module:User")
-                $aRow->value->numero = 0;
+    	if (!empty($modules[$aRow->value->numero]) && $aRow->value->enabled) { // Test if module is present and enabled
+    		if ($aRow->id == "module:User")
+    			$aRow->value->numero = 0;
 
-            $objMod = $modules[$aRow->value->numero];
+    		$objMod = $modules[$aRow->value->numero];
 
-            foreach ($objMod as $key => $row)
-                $object->$key = $row;
+    		foreach ($objMod as $key => $row)
+    			$object->$key = $row;
 
-            $object->_id = "module:" . $objMod->name;
-            $object->_rev = $aRow->value->_rev;
-            $object->enabled = true;
-            $object->record();
-            $object->_load_documents();
-        }
+    		$object->_id = "module:" . $objMod->name;
+    		$object->_rev = $aRow->value->_rev;
+    		$object->enabled = true;
+    		$object->record();
+    		$object->_load_documents();
+    	}
     }
 
     //Upade dict
