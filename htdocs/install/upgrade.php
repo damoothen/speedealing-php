@@ -26,10 +26,10 @@ function upgrade() {
 
     //Update modules configuration
     $object = new DolibarrModules($db);
-    
+
     //Upgrade core files
     $object->upgradeCore();
-    
+
     // Load Modules files
     $filename = array();
     $modules = array();
@@ -43,9 +43,9 @@ function upgrade() {
     $result = $object->getView("list");
     foreach ($result->rows as $aRow) {
         if ($aRow->value->enabled) {
-            if($aRow->id == "module:User")
+            if ($aRow->id == "module:User")
                 $aRow->value->numero = 0;
-            
+
             $objMod = $modules[$aRow->value->numero];
 
             foreach ($objMod as $key => $row)
@@ -68,7 +68,7 @@ function upgrade() {
         $dict->load($aRow->key);
         $fp = fopen($dir . $aRow->key . ".json", "r");
         if ($fp) {
-            $json = fread($fp, filesize($dir . $file));
+            $json = fread($fp, filesize($dir . $aRow->key . ".json"));
             $obj = json_decode($json);
             unset($obj->_rev);
         }
@@ -88,7 +88,7 @@ function upgrade() {
             $dict->record();
         }
     }
-    
+
     // Put the new version in $conf
     $conf->global->MAIN_VERSION = DOL_VERSION;
     $conf->record(true);
@@ -100,7 +100,7 @@ function upgrade() {
     // All is ok;
     $error->title = $langs->trans("UpgradeOk");
 
-    $error->message = $langs->trans("NewInstalledVersion",$conf->global->MAIN_VERSION);
+    $error->message = $langs->trans("NewInstalledVersion", $conf->global->MAIN_VERSION);
     $log[] = clone $error;
     dol_setcache("mesgs", $log);
 

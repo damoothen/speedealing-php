@@ -1386,7 +1386,7 @@ class DolibarrModules extends nosqlDocument {
         foreach ($files as $row) {
             $fp = fopen($dir . $row . ".json", "r");
             if ($fp) {
-                $json = fread($fp, filesize($dir . $file));
+                $json = fread($fp, filesize($dir . $row . ".json"));
                 $obj = json_decode($json);
             } else {
                 print "file not found : " . $dir . $row . ".json";
