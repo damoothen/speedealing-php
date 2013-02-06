@@ -62,7 +62,7 @@ $(document).ready(function() {
 			$('.wizard-next').show();
 		} else if (step == 'prerequisite') {
 			$('.wizard-next, #reload_required, #reload_button').hide();
-			// Check prerequisites
+			// Check pre-requisites
 			ckeckPrerequisite();
 		} else if (step == 'configuration') {
 			var memcached = $('#memcached_enabled').val();
@@ -75,11 +75,13 @@ $(document).ready(function() {
 			if (install_type == 'fullweb') {
 				$('.syncuser, .remotebase').hide();
 			} else if (install_type == 'primary_server') {
-				$('.syncuser, .remotebase').show();
+				$('.syncuser').show();
+				$('.remotebase').hide();
 			} else if (install_type == 'secondary_server') {
 				$('.syncuser, .remotebase').show();
 			} else if (install_type == 'client') {
-				$('.syncuser, .remotebase').hide();
+				$('.syncuser').hide();
+				$('.remotebase').show();
 			}
 		} else if (step == 'install') {
 			$('#add_conf').progress({style: 'large'}).showProgressStripes();
@@ -88,11 +90,13 @@ $(document).ready(function() {
 			//$('#sync_database').progress({style: 'large'}).showProgressStripes();
 		}
 	});
-
+	
+	// Reload page
 	$('#reload_button').click(function() {
 		ckeckPrerequisite();
 	});
-
+	
+	// Check pre-requisites
 	function ckeckPrerequisite() {
 		// Add loader
 		$('#php_version, #php_memory, #php_utf8, #php_gd, #php_curl, #php_memcached, #conf_file').html('<span class="loader"></span>');
