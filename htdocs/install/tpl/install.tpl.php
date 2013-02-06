@@ -161,7 +161,7 @@
 	</div>
 
 	<div class="field-drop button-height black-inputs">
-		<input type="checkbox" name="main_force_https" id="main_force_https" class="switch medium"> &nbsp; <label for="main_force_https"><?php echo $langs->trans("ForceHttps"); ?></label>
+		<input type="checkbox" name="main_force_https" id="main_force_https" class="switch medium" <?php echo ($https_enabled?' checked="checked"':''); ?>> &nbsp; <label for="main_force_https"><?php echo $langs->trans("ForceHttps"); ?></label>
 	</div>
 
 	<div class="field-block">
