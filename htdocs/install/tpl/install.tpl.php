@@ -65,13 +65,13 @@
 			<span class="info-bubble"><?php echo $langs->trans("InstallTypePrimaryServerDesc"); ?></span>
 		</span>
 		<br>
-		<input type="radio" name="install_type" id="install_type_secondary_server" value="secondary_server" class="radio disabled"> <label for="install_type_secondary_server"><?php echo $langs->trans("InstallTypeSecondaryServer"); ?></label>
+		<input type="radio" name="install_type" id="install_type_secondary_server" value="secondary_server" class="radio"> <label for="install_type_secondary_server"><?php echo $langs->trans("InstallTypeSecondaryServer"); ?></label>
 		<span class="info-spot on-top">
 			<span class="icon-info-round"></span>
 			<span class="info-bubble"><?php echo $langs->trans("InstallTypeSecondaryServerDesc"); ?></span>
 		</span>
 		<br>
-		<input type="radio" name="install_type" id="install_type_client" value="client" class="radio disabled"> <label for="install_type_client"><?php echo $langs->trans("InstallTypeClient"); ?></label>
+		<input type="radio" name="install_type" id="install_type_client" value="client" class="radio"> <label for="install_type_client"><?php echo $langs->trans("InstallTypeClient"); ?></label>
 		<span class="info-spot on-top">
 			<span class="icon-info-round"></span>
 			<span class="info-bubble"><?php echo $langs->trans("InstallTypeClientDesc"); ?></span>
@@ -240,7 +240,7 @@
 
 	<div class="field-block syncuser">
 		<h4 class="blue"><?php echo $langs->trans("SyncUserTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/superadmin.png" alt="Syncuser"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/usersync.png" alt="Syncuser"></div>
 		<p><?php echo $langs->trans("SyncUserDesc"); ?></p>
 	</div>
 
@@ -262,7 +262,7 @@
 
 	<div class="field-block remotebase">
 		<h4 class="blue"><?php echo $langs->trans("RemoteDatabaseTitle"); ?></h4>
-		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb.png" alt="CouchDB"></div>
+		<div class="image"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/couchdb-replication.png" alt="CouchDB"></div>
 		<p><?php echo $langs->trans("RemoteDatabaseDesc"); ?></p>
 	</div>
 
