@@ -979,8 +979,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 // For new theme TODO script init A revoir
                 print '<script>
                 $(document).ready(function() {
-                prth_common.init();
-				  });
+                    prth_common.init();
+                });
                 </script>';
 
                 // Output module javascript
