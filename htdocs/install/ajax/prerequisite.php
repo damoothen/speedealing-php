@@ -88,7 +88,7 @@ if ($action == 'check_prerequisite') {
 		$out['php_curl'] = '<span class="icon-tick icon-green">'.$langs->trans("PHPSupportCurl").'</span>';
 
 	// Check if memcache or memcached supported
-	if (!class_exists('Memcache') && class_exists('Memcached')) {
+	if (!class_exists('Memcache') && !class_exists('Memcached')) {
 		$out['php_memcached'] = $langs->trans("ErrorPHPDoesNotSupportMemcached");
 		$out['php_memcached'].= ' <span class="info-spot on-top"><span class="icon-info-round"></span><span class="info-bubble blue-bg">'.$langs->trans("MemcachedDesc").'</span></span>';
 	} else {
