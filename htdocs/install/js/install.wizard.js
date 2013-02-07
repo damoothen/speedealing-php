@@ -64,7 +64,7 @@ $(document).ready(function() {
 			$('.wizard-next, #reload_required, #reload_button').hide();
 			// Check pre-requisites
 			ckeckPrerequisite();
-		} else if (step == 'configuration') {
+		} else if (step == 'users') {
 			// nothing
 		} else if (step == 'database') {
 			// Server or Client
@@ -87,6 +87,20 @@ $(document).ready(function() {
 					$('.syncuser').show();
 				} else {
 					$('.syncuser').hide();
+				}
+			});
+			// First check for replication
+			if ($('#couchdb_replication').prop('checked')) {
+				$('.remotebase').show();
+			} else {
+				$('.remotebase').hide();
+			}
+			// Check change for replication
+			$('#couchdb_replication').change(function() {
+				if ($(this).prop('checked')) {
+					$('.remotebase').show();
+				} else {
+					$('.remotebase').hide();
 				}
 			});
 			// Memcached

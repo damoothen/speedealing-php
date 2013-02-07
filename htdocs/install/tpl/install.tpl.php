@@ -26,7 +26,7 @@
 </span>
 <fieldset id="welcome" class="wizard-fieldset fields-list">
 
-<!-- Welcome section -->
+<!-- Welcome step -->
 
 <legend class="legend"><?php echo $langs->trans("Welcome"); ?></legend>
 
@@ -55,20 +55,20 @@
 		<span class="label"><b><?php echo $langs->trans("InstallType"); ?></b></span>
 		<input type="radio" name="install_type" id="install_type_server" value="server" class="radio" selected> <label for="install_type_server"><?php echo $langs->trans("InstallTypeServer"); ?></label>
 		<span class="info-spot on-top">
-			<span class="icon-info-round icon-blue"></span>
+			<span class="icon-info-round"></span>
 			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeServerDesc"); ?></span>
 		</span>
 		<br>
 		<input type="radio" name="install_type" id="install_type_client" value="client" class="radio" disabled> <label for="install_type_client"><?php echo $langs->trans("InstallTypeClient"); ?></label>
 		<span class="info-spot on-top">
-			<span class="icon-info-round icon-blue"></span>
+			<span class="icon-info-round"></span>
 			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeClientDesc"); ?></span>
 		</span>
 	</div>
 
 </fieldset>
 
-<!-- Prerequisite section -->
+<!-- Prerequisite step -->
 
 <fieldset id="prerequisite" class="wizard-fieldset fields-list">
 
@@ -126,11 +126,11 @@
 
 </fieldset>
 
-<!-- Configuration section -->
+<!-- Users step -->
 
-<fieldset id="configuration" class="wizard-fieldset fields-list">
+<fieldset id="users" class="wizard-fieldset fields-list">
 
-	<legend class="legend"><?php echo $langs->trans("Configuration"); ?></legend>
+	<legend class="legend"><?php echo $langs->trans("Users"); ?></legend>
 
 	<!-- Local Superadmin -->
 
@@ -159,18 +159,33 @@
 	</div>
 
 	<div class="field-block button-height">
+		<label for="couchdb_user_firstname" class="label"><b><?php echo $langs->trans("FirstName"); ?></b></label>
+		<input type="text" name="couchdb_user_firstname" id="couchdb_user_firstname" value="Demo" class="input full-width validate[required]">
+	</div>
+
+	<div class="field-block button-height">
+		<label for="couchdb_user_lastname" class="label"><b><?php echo $langs->trans("LastName"); ?></b></label>
+		<input type="text" name="couchdb_user_lastname" id="couchdb_user_lastname" value="Demo" class="input full-width validate[required]">
+	</div>
+
+	<div class="field-block button-height">
+		<label for="couchdb_user_pseudo" class="label"><b><?php echo $langs->trans("Pseudo"); ?></b></label>
+		<input type="text" name="couchdb_user_pseudo" id="couchdb_user_pseudo" value="demo" class="input full-width validate[required]">
+	</div>
+
+	<div class="field-block button-height">
 		<label for="couchdb_user_email" class="label"><b><?php echo $langs->trans("EmailAddress"); ?></b></label>
 		<input type="text" name="couchdb_user_email" id="couchdb_user_email" value="demo@demo.org" class="input full-width validate[required,custom[email]]">
 	</div>
 
 	<div class="field-block button-height">
 		<label for="couchdb_user_pass" class="label"><b><?php echo $langs->trans("Password"); ?></b></label>
-		<input type="password" name="couchdb_user_pass" id="couchdb_user_pass" value="" class="input full-width validate[required]">
+		<input type="password" name="couchdb_user_pass" id="couchdb_user_pass" value="demo" class="input full-width validate[required]">
 	</div>
 
 </fieldset>
 
-<!-- Database section -->
+<!-- Database step -->
 
 <fieldset id="database" class="wizard-fieldset fields-list">
 
@@ -185,13 +200,13 @@
 	</div>
 
 	<div class="field-block button-height">
-		<label for="couchdb_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
-		<input type="text" name="couchdb_host" id="couchdb_host" value="http://localhost" class="input full-width validate[required,custom[urlMini],custom[noTrailingSlash]]">
+		<label for="couchdb_name" class="label"><b><?php echo $langs->trans("Database"); ?></b></label>
+		<input type="text" name="couchdb_name" id="couchdb_name" value="speedealing" class="input full-width validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-block button-height">
-		<label for="couchdb_name" class="label"><b><?php echo $langs->trans("DatabaseName"); ?></b></label>
-		<input type="text" name="couchdb_name" id="couchdb_name" value="speedealing" class="input full-width validate[required,custom[onlyLetterNumber]]">
+		<label for="couchdb_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
+		<input type="text" name="couchdb_host" id="couchdb_host" value="http://localhost" class="input full-width validate[required,custom[urlMini],custom[noTrailingSlash]]">
 	</div>
 
 	<div class="field-block button-height">
@@ -217,28 +232,6 @@
 		<input type="password" name="couchdb_pass_sync" id="couchdb_pass_sync" value="" class="input full-width validate[required]">
 	</div>
 
-	<div class="field-drop button-height black-inputs">
-		<input type="checkbox" name="couchdb_create_usersync" id="couchdb_create_usersync" class="switch mini"> &nbsp; <label for="couchdb_create_usersync"><?php echo $langs->trans("CheckToCreateCouchdbUserSync"); ?></label>
-	</div>
-
-	<!-- Memcached -->
-
-	<div class="field-block">
-		<h4 class="blue"><?php echo $langs->trans("MemcachedTitle"); ?></h4>
-		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png" alt="Memcached"></div>
-		<p><?php echo $langs->trans("MemcachedDesc"); ?></p>
-	</div>
-
-	<div class="field-block button-height">
-		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
-		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width validate[required]">
-	</div>
-
-	<div class="field-block button-height">
-		<label for="memcached_port" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
-		<input type="text" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyNumberSp]]">
-	</div>
-
 	<!-- Remote database -->
 
 	<div class="field-block remotebase">
@@ -262,9 +255,32 @@
 		<input type="text" name="couchdb_host_remote" id="couchdb_host_remote" value="http://localhost" class="input full-width validate[required,custom[urlMini],custom[noTrailingSlash]]">
 	</div>
 
+	<div class="field-drop button-height black-inputs">
+		<input type="checkbox" name="couchdb_create_usersync" id="couchdb_create_usersync" class="switch mini"> &nbsp; <label for="couchdb_create_usersync"><?php echo $langs->trans("CheckToCreateCouchdbUserSync"); ?></label><br>
+		<input type="checkbox" name="couchdb_replication" id="couchdb_replication" class="switch mini"> &nbsp; <label for="couchdb_replication"><?php echo $langs->trans("CheckToReplicateRemoteDatabase"); ?></label>
+	</div>
+
+	<!-- Memcached -->
+
+	<div class="field-block">
+		<h4 class="blue"><?php echo $langs->trans("MemcachedTitle"); ?></h4>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png" alt="Memcached"></div>
+		<p><?php echo $langs->trans("MemcachedDesc"); ?></p>
+	</div>
+
+	<div class="field-block button-height">
+		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
+		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width validate[required]">
+	</div>
+
+	<div class="field-block button-height">
+		<label for="memcached_port" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
+		<input type="text" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyNumberSp]]">
+	</div>
+
 </fieldset>
 
-<!-- Install section -->
+<!-- Install step -->
 
 <fieldset id="install" class="wizard-fieldset fields-list">
 
