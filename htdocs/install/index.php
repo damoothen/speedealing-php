@@ -1,5 +1,7 @@
 <?php
+
 /* Copyright (C) 2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,20 +17,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/install/index.php
- *       \ingroup    install
- *       \brief      Install process
- */
 include 'inc.php';
 include '../core/class/html.formadmin.class.php';
 
-$setuplang=GETPOST("selectlang",'',3)?GETPOST("selectlang",'',3):'auto';
+$setuplang = GETPOST("selectlang", '', 3) ? GETPOST("selectlang", '', 3) : 'auto';
 $langs->setDefaultLang($setuplang);
 
 $langs->load("install");
 
-$formadmin=new FormAdmin('');
+$formadmin = new FormAdmin('');
 
 // MAIN_DOCUMENT_ROOT
 // Si le php fonctionne en CGI, alors SCRIPT_FILENAME vaut le path du php et
@@ -56,25 +53,18 @@ else
 	$https_enabled = false;
 
 // Create matrice conf file
-if (is_readable($conffile) && filesize($conffile) > 8)
-{
+if (is_readable($conffile) && filesize($conffile) > 8) {
 	// Conf file already defined
-}
-else
-{
+} else {
 	// First we try by copying example
-	if (@copy($conffile.".example", $conffile))
-	{
+	if (@copy($conffile . ".example", $conffile)) {
 		// Success
-	}
-	else
-	{
+	} else {
 		$fp = @fopen($conffile, "w");
-		if ($fp)
-		{
+		if ($fp) {
 			@fwrite($fp, '<?php');
-			@fputs($fp,"\n");
-			@fputs($fp,"?>");
+			@fputs($fp, "\n");
+			@fputs($fp, "?>");
 			fclose($fp);
 		}
 	}
@@ -90,5 +80,4 @@ pHeader();
 include 'tpl/install.tpl.php';
 
 pFooter();
-
 ?>

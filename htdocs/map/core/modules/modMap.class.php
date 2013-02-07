@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2011-2012 Herve Prot	<herve.prot@symeos.com>
  *
  *
@@ -25,100 +26,101 @@ include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
  */
 class modMap extends DolibarrModules {
 
-    /**
-     *   \brief      Constructeur. Definit les noms, constantes et boites
-     *   \param      DB      Database handler
-     */
-    function modMap($DB) {
-        parent::__construct($DB);
-        $this->numero = 450;
+	/**
+	 *   \brief      Constructeur. Definit les noms, constantes et boites
+	 *   \param      DB      Database handler
+	 */
+	function modMap($DB) {
+		parent::__construct($DB);
+		$this->numero = 450;
 
-        $this->family = "technic";
-        // Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-        $this->name = preg_replace('/^mod/i', '', get_class($this));
-        $this->description = "Carthographie";
-        $this->version = 'speedealing';      // 'experimental' or 'dolibarr' or version
-        $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
-        $this->special = 0;
-        $this->picto = 'globe';
-        $this->moddir = "map"; //directory for module in htdocs : test index.php presence
-        // Data directories to create when module is enabled
-        $this->dirs = array();
+		$this->family = "technic";
+		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Carthographie";
+		$this->version = 'speedealing';	  // 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = 'globe';
+		$this->moddir = "map"; //directory for module in htdocs : test index.php presence
+		// Data directories to create when module is enabled
+		$this->dirs = array();
 
-        // Config pages
-        //-------------
-        $this->config_page_url = array("map.php@map");
+		// Config pages
+		//-------------
+		$this->config_page_url = array("map.php@map");
 
-        // Dependances
-        //------------
-        $this->depends = array();
-        $this->requiredby = array();
-        $this->langfiles = array("map@map", "companies");
+		// Dependances
+		//------------
+		$this->depends = array();
+		$this->requiredby = array();
+		$this->langfiles = array("map@map", "companies");
 
-        // Constantes
-        //-----------
-        $this->const = array();
-        $this->const[0] = array("MAP_SYSTEM", "texte", "openlayers");
+		// Constantes
+		//-----------
+		$this->const = array();
+		$this->const[0] = array("MAP_SYSTEM", "texte", "openlayers");
 
-        // Boites
-        //-------
-        $this->boxes = array();
+		// Boites
+		//-------
+		$this->boxes = array();
 
 
-        // Menu
-        //------------
-        // None
-        // Permissions
-        //------------
-        $this->rights = array();
-        $this->rights_class = 'map';
-        $r = 0;
+		// Menu
+		//------------
+		$this->menus = array();
 
-        // $this->rights[$r][0]     Id permission (unique tous modules confondus)
-        // $this->rights[$r][1]     Libelle par defaut si traduction de cle "PermissionXXX" non trouvee (XXX = Id permission)
-        // $this->rights[$r][2]     Non utilise
-        // $this->rights[$r][3]     1=Permis par defaut, 0=Non permis par defaut
-        // $this->rights[$r][4]     Niveau 1 pour nommer permission dans code
-        // $this->rights[$r][5]     Niveau 2 pour nommer permission dans code
+		// Permissions
+		//------------
+		$this->rights = array();
+		$this->rights_class = 'map';
+		$r = 0;
 
-        $this->rights[$r]->id = 451;
-        $this->rights[$r]->desc = 'See map';
-        $this->rights[$r]->default = true;
-        $this->rights[$r]->perm = array('read');
-    }
+		// $this->rights[$r][0]     Id permission (unique tous modules confondus)
+		// $this->rights[$r][1]     Libelle par defaut si traduction de cle "PermissionXXX" non trouvee (XXX = Id permission)
+		// $this->rights[$r][2]     Non utilise
+		// $this->rights[$r][3]     1=Permis par defaut, 0=Non permis par defaut
+		// $this->rights[$r][4]     Niveau 1 pour nommer permission dans code
+		// $this->rights[$r][5]     Niveau 2 pour nommer permission dans code
 
-    /**
-     *   \brief      Fonction appelee lors de l'activation du module. Insere en base les constantes, boites, permissions du module.
-     *               Definit egalement les repertoires de donnees a creer pour ce module.
-     */
-    function init() {
+		$this->rights[$r]->id = 451;
+		$this->rights[$r]->desc = 'See map';
+		$this->rights[$r]->default = true;
+		$this->rights[$r]->perm = array('read');
+	}
 
-        $sql = array();
+	/**
+	 *   \brief      Fonction appelee lors de l'activation du module. Insere en base les constantes, boites, permissions du module.
+	 *               Definit egalement les repertoires de donnees a creer pour ce module.
+	 */
+	function init() {
 
-        //$result=$this->load_tables();
-        return $this->_init($sql);
-    }
+		$sql = array();
 
-    /**
-     *    \brief      Fonction appelee lors de la desactivation d'un module.
-     *                Supprime de la base les constantes, boites et permissions du module.
-     */
-    function remove() {
-        $sql = array();
+		//$result=$this->load_tables();
+		return $this->_init($sql);
+	}
 
-        return $this->_remove($sql);
-    }
+	/**
+	 *    \brief      Fonction appelee lors de la desactivation d'un module.
+	 *                Supprime de la base les constantes, boites et permissions du module.
+	 */
+	function remove() {
+		$sql = array();
 
-    /**
-     * 		\brief		Create tables and keys required by module
-     * 					Files mymodule.sql and mymodule.key.sql with create table and create keys
-     * 					commands must be stored in directory /mymodule/sql/
-     * 					This function is called by this->init.
-     * 		\return		int		<=0 if KO, >0 if OK
-     */
-    function load_tables() {
-        return $this->_load_tables('/map/sql/');
-    }
+		return $this->_remove($sql);
+	}
+
+	/**
+	 * 		\brief		Create tables and keys required by module
+	 * 					Files mymodule.sql and mymodule.key.sql with create table and create keys
+	 * 					commands must be stored in directory /mymodule/sql/
+	 * 					This function is called by this->init.
+	 * 		\return		int		<=0 if KO, >0 if OK
+	 */
+	function load_tables() {
+		return $this->_load_tables('/map/sql/');
+	}
 
 }
 
