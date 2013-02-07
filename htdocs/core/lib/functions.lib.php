@@ -3665,7 +3665,7 @@ function dol_htmloutput_events() {
                 ?>
                 <script>
                     $(document).ready(function() {
-                        notify('<? echo $row->title; ?>', '<? echo $row->message; ?>', {
+                        notify('<?php echo $row->title; ?>', '<?php echo $row->message; ?>', {
                             autoClose: true,
                             delay: 2500,
                             closeDelay: <?php echo $closeDelay;?>,
