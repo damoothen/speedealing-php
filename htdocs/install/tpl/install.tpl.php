@@ -132,50 +132,6 @@
 
 	<legend class="legend"><?php echo $langs->trans("Configuration"); ?></legend>
 
-	<div class="field-block">
-		<h4 class="blue"><?php echo $langs->trans("ConfigurationTitle"); ?></h4>
-		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/configuration.png" alt="Configuration"></div>
-		<p><?php echo $langs->trans("ConfigurationDesc"); ?></p>
-	</div>
-
-	<div class="field-block button-height">
-		<label for="main_dir" class="label"><b><?php echo $langs->trans("WebPagesDirectory"); ?></b></label>
-		<input type="text" name="main_dir" id="main_dir" value="<?php echo $dolibarr_main_document_root; ?>" class="input full-width validate[required,custom[noTrailingSlash]]">
-	</div>
-
-	<div class="field-block button-height">
-		<label for="main_url" class="label"><b><?php echo $langs->trans("URLRoot"); ?></b></label>
-		<input type="text" name="main_url" id="main_url" value="<?php echo $dolibarr_main_url_root; ?>" class="input full-width validate[required,custom[urlMini],custom[noTrailingSlash]]">
-	</div>
-
-	<div class="field-drop button-height black-inputs">
-		<input type="checkbox" name="main_force_https" id="main_force_https" class="switch medium" <?php echo ($https_enabled?' checked="checked"':''); ?>> &nbsp; <label for="main_force_https"><?php echo $langs->trans("ForceHttps"); ?></label>
-	</div>
-
-	<div class="field-block">
-		<h4 class="blue"><?php echo $langs->trans("MemcachedTitle"); ?></h4>
-		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png" alt="Memcached"></div>
-		<p><?php echo $langs->trans("MemcachedDesc"); ?></p>
-	</div>
-
-	<div class="field-block button-height">
-		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
-		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width validate[required]">
-	</div>
-
-	<div class="field-block button-height">
-		<label for="memcached_port" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
-		<input type="text" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyNumberSp]]">
-	</div>
-
-</fieldset>
-
-<!-- Database section -->
-
-<fieldset id="database" class="wizard-fieldset fields-list">
-
-	<legend class="legend"><?php echo $langs->trans("Database"); ?></legend>
-
 	<!-- Local Superadmin -->
 
 	<div class="field-block">
@@ -194,9 +150,31 @@
 		<input type="password" name="couchdb_pass_root" id="couchdb_pass_root" value="" class="input full-width validate[required]">
 	</div>
 
-	<div class="field-drop button-height black-inputs">
-		<input type="checkbox" name="couchdb_create_admin" id="couchdb_create_admin" class="switch medium" checked="checked"> &nbsp; <label for="couchdb_create_admin"><?php echo $langs->trans("CreateAdminUser"); ?></label>
+	<!-- User Account -->
+
+	<div class="field-block">
+		<h4 class="blue"><?php echo $langs->trans("UserAccount"); ?></h4>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/useraccount.png" alt="UserAccount"></div>
+		<p><?php echo $langs->trans("UserAccountDesc"); ?></p>
 	</div>
+
+	<div class="field-block button-height">
+		<label for="couchdb_user_email" class="label"><b><?php echo $langs->trans("EmailAddress"); ?></b></label>
+		<input type="text" name="couchdb_user_email" id="couchdb_user_email" value="demo@demo.org" class="input full-width validate[required,custom[email]]">
+	</div>
+
+	<div class="field-block button-height">
+		<label for="couchdb_user_pass" class="label"><b><?php echo $langs->trans("Password"); ?></b></label>
+		<input type="password" name="couchdb_user_pass" id="couchdb_user_pass" value="" class="input full-width validate[required]">
+	</div>
+
+</fieldset>
+
+<!-- Database section -->
+
+<fieldset id="database" class="wizard-fieldset fields-list">
+
+	<legend class="legend"><?php echo $langs->trans("Database"); ?></legend>
 
 	<!-- Local database -->
 
@@ -221,10 +199,6 @@
 		<input type="text" name="couchdb_port" id="couchdb_port" value="5984" class="input validate[required,custom[onlyNumberSp]]">
 	</div>
 
-	<div class="field-drop button-height black-inputs">
-		<input type="checkbox" name="couchdb_create_database" id="couchdb_create_database" class="switch medium" checked="checked"> &nbsp; <label for="couchdb_create_database"><?php echo $langs->trans("CheckToCreateCouchdbDatabase"); ?></label>
-	</div>
-
 	<!-- Local Sync User -->
 
 	<div class="field-block syncuser">
@@ -243,8 +217,26 @@
 		<input type="password" name="couchdb_pass_sync" id="couchdb_pass_sync" value="" class="input full-width validate[required]">
 	</div>
 
-	<div class="field-drop button-height black-inputs syncuser">
-		<input type="checkbox" name="couchdb_create_syncuser" id="couchdb_create_syncuser" class="switch medium" checked="checked"> &nbsp; <label for="couchdb_create_syncuser"><?php echo $langs->trans("CreateSyncUser"); ?></label>
+	<div class="field-drop button-height black-inputs">
+		<input type="checkbox" name="couchdb_create_usersync" id="couchdb_create_usersync" class="switch mini"> &nbsp; <label for="couchdb_create_usersync"><?php echo $langs->trans("CheckToCreateCouchdbUserSync"); ?></label>
+	</div>
+
+	<!-- Memcached -->
+
+	<div class="field-block">
+		<h4 class="blue"><?php echo $langs->trans("MemcachedTitle"); ?></h4>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png" alt="Memcached"></div>
+		<p><?php echo $langs->trans("MemcachedDesc"); ?></p>
+	</div>
+
+	<div class="field-block button-height">
+		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
+		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width validate[required]">
+	</div>
+
+	<div class="field-block button-height">
+		<label for="memcached_port" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
+		<input type="text" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyNumberSp]]">
 	</div>
 
 	<!-- Remote database -->
@@ -305,7 +297,7 @@
 	</div>
 
 	<div class="field-drop button-height black-inputs">
-		<input type="checkbox" name="remove_install" id="remove_install" class="switch medium" checked="checked"> &nbsp; <label for="remove_install"><?php echo $langs->trans("RemoveInstallDirectory"); ?></label>
+
 	</div>
 
 </fieldset>

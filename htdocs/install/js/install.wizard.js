@@ -65,12 +65,9 @@ $(document).ready(function() {
 			// Check pre-requisites
 			ckeckPrerequisite();
 		} else if (step == 'configuration') {
-			var memcached = $('#memcached_enabled').val();
-			if (memcached == 'true')
-				$('#memcached_host, #memcached_port').removeAttr('disabled');
-			else
-				$('#memcached_host, #memcached_port').attr('disabled', 'disabled');
+			// nothing
 		} else if (step == 'database') {
+			// Server or Client
 			var install_type = $('input[name=install_type]:checked').val();
 			if (install_type == 'server') {
 				$('.syncuser, .remotebase').hide();
@@ -78,6 +75,26 @@ $(document).ready(function() {
 				$('.syncuser').hide();
 				$('.remotebase').show();
 			}
+			// First check for syncuser
+			if ($('#couchdb_create_usersync').prop('checked')) {
+				$('.syncuser').show();
+			} else {
+				$('.syncuser').hide();
+			}
+			// Check change for syncuser
+			$('#couchdb_create_usersync').change(function() {
+				if ($(this).prop('checked')) {
+					$('.syncuser').show();
+				} else {
+					$('.syncuser').hide();
+				}
+			});
+			// Memcached
+			var memcached = $('#memcached_enabled').val();
+			if (memcached == 'true')
+				$('#memcached_host, #memcached_port').removeAttr('disabled');
+			else
+				$('#memcached_host, #memcached_port').attr('disabled', 'disabled');
 		} else if (step == 'install') {
 			$('#add_conf').progress({style: 'large'}).showProgressStripes();
 			//$('#add_syncuser').progress({style: 'large'}).showProgressStripes();
