@@ -53,7 +53,7 @@
 
 	<div class="field-block button-height">
 		<span class="label"><b><?php echo $langs->trans("InstallType"); ?></b></span>
-		<input type="radio" name="install_type" id="install_type_server" value="server" class="radio" selected> <label for="install_type_server"><?php echo $langs->trans("InstallTypeServer"); ?></label>
+		<input type="radio" name="install_type" id="install_type_server" value="server" class="radio" checked> <label for="install_type_server"><?php echo $langs->trans("InstallTypeServer"); ?></label>
 		<span class="info-spot on-top">
 			<span class="icon-info-round"></span>
 			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeServerDesc"); ?></span>
@@ -103,7 +103,6 @@
 	<div class="field-block">
 		<label for="php_memcached" class="label"><b><?php echo $langs->trans("PHPMemcached"); ?></b></label>
 		<div id="php_memcached"></div>
-		<input type="hidden" name="memcached_enabled" id="memcached_enabled" value="false">
 	</div>
 
 	<div class="field-block">
@@ -224,12 +223,14 @@
 
 	<div class="field-block button-height syncuser">
 		<label for="couchdb_user_sync" class="label"><b><?php echo $langs->trans("Identifier"); ?></b></label>
-		<input type="text" name="couchdb_user_sync" id="couchdb_user_sync" value="" class="input full-width validate[required]">
+		<span id="couchdb_user_sync"></span>
+		<button type="button" id="reload_identifier" class="icon-redo button compact orange-gradient glossy float-right">
 	</div>
 
 	<div class="field-block button-height syncuser">
 		<label for="couchdb_pass_sync" class="label"><b><?php echo $langs->trans("SecurityKey"); ?></b></label>
-		<input type="password" name="couchdb_pass_sync" id="couchdb_pass_sync" value="" class="input full-width validate[required]">
+		<span id="couchdb_pass_sync"></span>
+		<button type="button" id="reload_secretkey" class="icon-redo button compact orange-gradient glossy float-right">
 	</div>
 
 	<!-- Remote database -->
@@ -297,17 +298,12 @@
 		<span id="add_conf"></span>
 	</div>
 
-	<div class="field-block hidden">
-		<label for="add_syncuser" class="label"><b><?php echo $langs->trans("AddSyncUser"); ?></b></label>
-		<span id="add_syncuser"></span>
-	</div>
-
 	<div class="field-block">
 		<label for="add_database" class="label"><b><?php echo $langs->trans("AddDatabase"); ?></b></label>
 		<span id="add_database"></span>
 	</div>
 
-	<div class="field-block hidden">
+	<div class="field-block syncprogress">
 		<label for="sync_database" class="label"><b><?php echo $langs->trans("SynchronizingDatabase"); ?></b></label>
 		<span id="sync_database"></span>
 	</div>

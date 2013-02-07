@@ -84,9 +84,11 @@ $(document).ready(function() {
 			// Check change for syncuser
 			$('#couchdb_create_usersync').change(function() {
 				if ($(this).prop('checked')) {
-					$('.syncuser').show();
+					getRandomToken('couchdb_user_sync');
+					getRandomToken('couchdb_pass_sync');
+					$('.syncuser').show('blind');
 				} else {
-					$('.syncuser').hide();
+					$('.syncuser').hide('blind');
 				}
 			});
 			// First check for replication
@@ -98,22 +100,19 @@ $(document).ready(function() {
 			// Check change for replication
 			$('#couchdb_replication').change(function() {
 				if ($(this).prop('checked')) {
-					$('.remotebase').show();
+					$('.remotebase').show('blind');
 				} else {
-					$('.remotebase').hide();
+					$('.remotebase').hide('blind');
 				}
 			});
-			// Memcached
-			var memcached = $('#memcached_enabled').val();
-			if (memcached == 'true')
-				$('.memcached').show();
-			else
-				$('.memcached').hide();
 		} else if (step == 'install') {
+			$('.wizard-prev, .syncprogress').hide();
 			$('#add_conf').progress({style: 'large'}).showProgressStripes();
-			//$('#add_syncuser').progress({style: 'large'}).showProgressStripes();
 			$('#add_database').progress({style: 'large'}).showProgressStripes();
-			//$('#sync_database').progress({style: 'large'}).showProgressStripes();
+			if ($('#couchdb_replication').prop('checked')) {
+				$('.syncprogress').show();
+				$('#sync_database').progress({style: 'large'}).showProgressStripes();
+			}
 		}
 	});
 	
@@ -131,10 +130,11 @@ $(document).ready(function() {
 			if (data) {
 				$.each(data, function(key, value) {
 					if (key == 'memcached') {
-						if (value == true)
-							$('#memcached_enabled').val('true');
-						else
-							$('#memcached_enabled').val('false');
+						if (value == true) {
+							$('.memcached').show();
+						} else {
+							$('.memcached').hide();
+						}
 					} else if (key == 'continue') {
 						if (value == true) {
 							$('#reload_button, #reload_required').hide();
@@ -148,6 +148,22 @@ $(document).ready(function() {
 					}
 				});
 			}
+		});
+	}
+	
+	// Get random security key
+	$("#reload_identifier").click(function() {
+		getRandomToken('couchdb_user_sync');
+    });
+	$("#reload_secretkey").click(function() {
+		getRandomToken('couchdb_pass_sync');
+    });
+	function getRandomToken(input) {
+		$.get("/install/ajax/security.php", {
+    		action: 'getrandompassword'
+		},
+		function(token) {
+			$("#" + input).html(token);
 		});
 	}
 });
