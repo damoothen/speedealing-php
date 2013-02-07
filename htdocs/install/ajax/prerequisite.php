@@ -96,11 +96,13 @@ if ($action == 'check_prerequisite') {
 	}
 
 	// Check if memcached supported
-	if (!class_exists('Memcached'))
-		$out['php_memcached'] .= '<br><span class="icon-cross icon-red">'.$langs->trans("ErrorPHPDoesNotSupportMemcached").'</span>';
-	else {
-		$out['php_memcached'] .= '<br><span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcached").'</span>';
-		$memcached = true;
+	if (!$memcached) {
+		if (!class_exists('Memcached'))
+			$out['php_memcached'] = '<span class="icon-cross icon-red">'.$langs->trans("ErrorPHPDoesNotSupportMemcached").'</span>';
+		else {
+			$out['php_memcached'] = '<span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcached").'</span>';
+			$memcached = true;
+		}
 	}
 
 	// Check config file

@@ -53,28 +53,16 @@
 
 	<div class="field-block button-height">
 		<span class="label"><b><?php echo $langs->trans("InstallType"); ?></b></span>
-		<input type="radio" name="install_type" id="install_type_fullweb" value="fullweb" class="radio" checked="checked"> <label for="install_type_fullweb"><?php echo $langs->trans("InstallTypeFullWeb"); ?></label>
+		<input type="radio" name="install_type" id="install_type_server" value="server" class="radio" selected> <label for="install_type_server"><?php echo $langs->trans("InstallTypeServer"); ?></label>
 		<span class="info-spot on-top">
-			<span class="icon-info-round"></span>
-			<span class="info-bubble"><?php echo $langs->trans("InstallTypeDesc"); ?></span>
+			<span class="icon-info-round icon-blue"></span>
+			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeServerDesc"); ?></span>
 		</span>
 		<br>
-		<input type="radio" name="install_type" id="install_type_primary_server" value="primary_server" class="radio"> <label for="install_type_primary_server"><?php echo $langs->trans("InstallTypePrimaryServer"); ?></label>
+		<input type="radio" name="install_type" id="install_type_client" value="client" class="radio" disabled> <label for="install_type_client"><?php echo $langs->trans("InstallTypeClient"); ?></label>
 		<span class="info-spot on-top">
-			<span class="icon-info-round"></span>
-			<span class="info-bubble"><?php echo $langs->trans("InstallTypePrimaryServerDesc"); ?></span>
-		</span>
-		<br>
-		<input type="radio" name="install_type" id="install_type_secondary_server" value="secondary_server" class="radio"> <label for="install_type_secondary_server"><?php echo $langs->trans("InstallTypeSecondaryServer"); ?></label>
-		<span class="info-spot on-top">
-			<span class="icon-info-round"></span>
-			<span class="info-bubble"><?php echo $langs->trans("InstallTypeSecondaryServerDesc"); ?></span>
-		</span>
-		<br>
-		<input type="radio" name="install_type" id="install_type_client" value="client" class="radio"> <label for="install_type_client"><?php echo $langs->trans("InstallTypeClient"); ?></label>
-		<span class="info-spot on-top">
-			<span class="icon-info-round"></span>
-			<span class="info-bubble"><?php echo $langs->trans("InstallTypeClientDesc"); ?></span>
+			<span class="icon-info-round icon-blue"></span>
+			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeClientDesc"); ?></span>
 		</span>
 	</div>
 
@@ -197,7 +185,7 @@
 	</div>
 
 	<div class="field-block button-height">
-		<label for="couchdb_user_root" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
+		<label for="couchdb_user_root" class="label"><b><?php echo $langs->trans("EmailAddress"); ?></b></label>
 		<input type="text" name="couchdb_user_root" id="couchdb_user_root" value="" class="input full-width validate[required,custom[email]]">
 	</div>
 
@@ -246,12 +234,12 @@
 	</div>
 
 	<div class="field-block button-height syncuser">
-		<label for="couchdb_user_sync" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
+		<label for="couchdb_user_sync" class="label"><b><?php echo $langs->trans("Identifier"); ?></b></label>
 		<input type="text" name="couchdb_user_sync" id="couchdb_user_sync" value="" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height syncuser">
-		<label for="couchdb_pass_sync" class="label"><b><?php echo $langs->trans("Password"); ?></b></label>
+		<label for="couchdb_pass_sync" class="label"><b><?php echo $langs->trans("SecurityKey"); ?></b></label>
 		<input type="password" name="couchdb_pass_sync" id="couchdb_pass_sync" value="" class="input full-width validate[required]">
 	</div>
 
@@ -268,28 +256,18 @@
 	</div>
 
 	<div class="field-block button-height remotebase">
-		<label for="couchdb_user_sync_remote" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
+		<label for="couchdb_user_sync_remote" class="label"><b><?php echo $langs->trans("Identifier"); ?></b></label>
 		<input type="text" name="couchdb_user_sync_remote" id="couchdb_user_sync_remote" value="" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height remotebase">
-		<label for="couchdb_pass_sync_remote" class="label"><b><?php echo $langs->trans("Password"); ?></b></label>
+		<label for="couchdb_pass_sync_remote" class="label"><b><?php echo $langs->trans("SecurityKey"); ?></b></label>
 		<input type="password" name="couchdb_pass_sync_remote" id="couchdb_pass_sync_remote" value="" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height remotebase">
-		<label for="couchdb_host_remote" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
+		<label for="couchdb_host_remote" class="label"><b><?php echo $langs->trans("DatabaseUrl"); ?></b></label>
 		<input type="text" name="couchdb_host_remote" id="couchdb_host_remote" value="http://localhost" class="input full-width validate[required,custom[urlMini],custom[noTrailingSlash]]">
-	</div>
-
-	<div class="field-block button-height remotebase">
-		<label for="couchdb_name_remote" class="label"><b><?php echo $langs->trans("DatabaseName"); ?></b></label>
-		<input type="text" name="couchdb_name_remote" id="couchdb_name_remote" value="" class="input full-width validate[required,custom[onlyLetterNumber]]">
-	</div>
-
-	<div class="field-block button-height remotebase">
-		<label for="couchdb_port_remote" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
-		<input type="text" name="couchdb_port_remote" id="couchdb_port_remote" value="5984" class="input validate[required,custom[onlyNumberSp]]">
 	</div>
 
 </fieldset>
