@@ -2,7 +2,7 @@
 <project name="dolibarr" default="hudson" basedir=".">
 
 <!-- Exclude/ignore paths -->
- <property name="ignorepaths" value="${basedir}/htdocs/conf,${basedir}/htdocs/core/db/couchdb,${basedir}/htdocs/core/filemanagerdol,${basedir}/htdocs/includes,${basedir}/htdocs/theme/symeos" />
+ <property name="ignorepaths" value="${basedir}/htdocs/conf,${basedir}/htdocs/core/db/couchdb,${basedir}/htdocs/core/filemanagerdol,${basedir}/htdocs/includes,${basedir}/htdocs/langs,${basedir}/htdocs/theme/symeos" />
  <property name="ignoreregexp" value="**/PEAR/*,**/NET/*,**/HTTP/*" />
  
  <target name="clean">
@@ -47,6 +47,7 @@
    				--exclude '${basedir}/htdocs/core/db/couchdb'
    				--exclude '${basedir}/htdocs/core/filemanagerdol'
    				--exclude '${basedir}/htdocs/includes'
+   				--exclude '${basedir}/htdocs/langs'
 				--exclude '${basedir}/htdocs/theme/symeos'
    				--min-tokens 70
    				--min-lines 20 
@@ -63,6 +64,7 @@
    				--exclude '${basedir}/htdocs/core/db/couchdb'
    				--exclude '${basedir}/htdocs/core/filemanagerdol'
    				--exclude '${basedir}/htdocs/includes'
+   				--exclude '${basedir}/htdocs/langs'
 				--exclude '${basedir}/htdocs/theme/symeos'
    				htdocs
    				" />
