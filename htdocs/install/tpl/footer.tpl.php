@@ -43,7 +43,7 @@
 $(document).ready(function() {
 	$('#selectlang').change(function() {
 		var lang = $(this).val();
-		window.location.replace('<?php echo DOL_URL_ROOT; ?>/install/install.php?selectlang=' + lang);
+		window.location.replace('<?php echo $_SERVER['PHP_SELF']; ?>?selectlang=' + lang);
 	});
 	$('.wizard').wizard({
 		controlPrev: '<button type="button" class="button glossy mid-margin-right wizard-prev float-left"><span class="button-icon anthracite-gradient"><span class="icon-backward"></span></span><?php echo $langs->trans("Previous"); ?></button>',
