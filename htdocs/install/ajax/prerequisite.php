@@ -87,22 +87,13 @@ if ($action == 'check_prerequisite') {
 	else
 		$out['php_curl'] = '<span class="icon-tick icon-green">'.$langs->trans("PHPSupportCurl").'</span>';
 
-	// Check if memcache supported
-	if (!class_exists('Memcache'))
-		$out['php_memcached'] = '<span class="icon-cross icon-red">'.$langs->trans("ErrorPHPDoesNotSupportMemcache").'</span>';
-	else {
-		$out['php_memcached'] = '<span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcache").'</span>';
+	// Check if memcache or memcached supported
+	if (!class_exists('Memcache') && class_exists('Memcached')) {
+		$out['php_memcached'] = $langs->trans("ErrorPHPDoesNotSupportMemcached");
+		$out['php_memcached'].= ' <span class="info-spot on-top"><span class="icon-info-round"></span><span class="info-bubble blue-bg">'.$langs->trans("MemcachedDesc").'</span></span>';
+	} else {
+		$out['php_memcached'] = '<span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcached").'</span>';
 		$memcached = true;
-	}
-
-	// Check if memcached supported
-	if (!$memcached) {
-		if (!class_exists('Memcached'))
-			$out['php_memcached'] = '<span class="icon-cross icon-red">'.$langs->trans("ErrorPHPDoesNotSupportMemcached").'</span>';
-		else {
-			$out['php_memcached'] = '<span class="icon-tick icon-green">'.$langs->trans("PHPSupportMemcached").'</span>';
-			$memcached = true;
-		}
 	}
 
 	// Check config file
