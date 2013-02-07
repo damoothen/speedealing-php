@@ -262,18 +262,18 @@
 
 	<!-- Memcached -->
 
-	<div class="field-block">
+	<div class="field-block memcached">
 		<h4 class="blue"><?php echo $langs->trans("MemcachedTitle"); ?></h4>
 		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/memcached.png" alt="Memcached"></div>
 		<p><?php echo $langs->trans("MemcachedDesc"); ?></p>
 	</div>
 
-	<div class="field-block button-height">
+	<div class="field-block button-height memcached">
 		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
 		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width validate[required]">
 	</div>
 
-	<div class="field-block button-height">
+	<div class="field-block button-height memcached">
 		<label for="memcached_port" class="label"><b><?php echo $langs->trans("Port"); ?></b></label>
 		<input type="text" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyNumberSp]]">
 	</div>

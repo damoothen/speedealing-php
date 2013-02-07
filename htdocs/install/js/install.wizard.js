@@ -106,9 +106,9 @@ $(document).ready(function() {
 			// Memcached
 			var memcached = $('#memcached_enabled').val();
 			if (memcached == 'true')
-				$('#memcached_host, #memcached_port').removeAttr('disabled');
+				$('.memcached').show();
 			else
-				$('#memcached_host, #memcached_port').attr('disabled', 'disabled');
+				$('.memcached').hide();
 		} else if (step == 'install') {
 			$('#add_conf').progress({style: 'large'}).showProgressStripes();
 			//$('#add_syncuser').progress({style: 'large'}).showProgressStripes();
