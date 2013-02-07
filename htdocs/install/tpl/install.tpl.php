@@ -198,7 +198,7 @@
 
 	<div class="field-block button-height">
 		<label for="couchdb_user_root" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
-		<input type="text" name="couchdb_user_root" id="couchdb_user_root" value="" class="input full-width validate[required,custom[email]]">
+		<input type="text" name="couchdb_user_root" id="couchdb_user_root" value="admin@speedealing.com" class="input full-width validate[required,custom[email]]">
 	</div>
 
 	<div class="field-block button-height">
@@ -225,7 +225,7 @@
 
 	<div class="field-block button-height">
 		<label for="couchdb_name" class="label"><b><?php echo $langs->trans("DatabaseName"); ?></b></label>
-		<input type="text" name="couchdb_name" id="couchdb_name" value="" class="input full-width validate[required,custom[onlyLetterNumber]]">
+		<input type="text" name="couchdb_name" id="couchdb_name" value="speedealing" class="input full-width validate[required,custom[onlyLetterNumber]]">
 	</div>
 
 	<div class="field-block button-height">
