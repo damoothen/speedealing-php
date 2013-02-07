@@ -17,6 +17,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ *       \file       htdocs/install/index.php
+ *       \ingroup    install
+ *       \brief      Install process
+ */
 include 'inc.php';
 include '../core/class/html.formadmin.class.php';
 
