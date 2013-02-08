@@ -53,6 +53,11 @@ $(document).ready(function() {
 	$('.wizard fieldset').on('wizardleave', function() {
 		// Called everytime a step (fieldset) becomes the active one
 		var step = $(this).attr('id');
+		if (step == 'database') {
+			$('.wizard-next').show();
+		} else if (step == 'install') {
+			$('.wizard-prev').show();
+		}
 	});
 
 	$('.wizard fieldset').on('wizardenter', function() {
@@ -67,6 +72,10 @@ $(document).ready(function() {
 		} else if (step == 'users') {
 			// nothing
 		} else if (step == 'database') {
+			$('.wizard-next').hide();
+			$('#install_button').click(function() {
+				$('.wizard').showWizardNextStep();
+			});
 			// Server or Client
 			var install_type = $('input[name=install_type]:checked').val();
 			if (install_type == 'server') {
@@ -106,6 +115,7 @@ $(document).ready(function() {
 				}
 			});
 		} else if (step == 'install') {
+			var error = false;
 			$('.wizard-prev, .syncprogress').hide();
 			$('#add_conf').progress({style: 'large'}).showProgressStripes();
 			$('#add_database').progress({style: 'large'}).showProgressStripes();
@@ -113,10 +123,126 @@ $(document).ready(function() {
 				$('.syncprogress').show();
 				$('#sync_database').progress({style: 'large'}).showProgressStripes();
 			}
+			// Create config file
+			$.post("/install/ajax/install.php", {
+	    		action: 'create_config',
+	    		couchdb_name: $('#couchdb_name').val(),
+	    		couchdb_host: $('#couchdb_host').val(),
+	    		couchdb_port: $('#couchdb_port').val(),
+	    		memcached_host: ($('#memcached_host').prop('disabled') ?  false : $('#memcached_host').val()),
+	    		memcached_port: ($('#memcached_port').prop('disabled') ? false : $('#memcached_port').val())
+			},
+			function(value) {
+				if (value > 0) {
+					$('#add_conf').setProgressValue('25%');
+					// Create superadmin
+					$.post("/install/ajax/install.php", {
+			    		action: 'create_admin',
+			    		couchdb_user_root: $('#couchdb_user_root').val(),
+			    		couchdb_pass_root: $('#couchdb_pass_root').val()
+					},
+					function(value) {
+						if (value > 0) {
+							$('#add_conf').setProgressValue('50%');
+							// Create user
+							$.post("/install/ajax/install.php", {
+					    		action: 'create_user',
+					    		couchdb_user_firstname: $('#couchdb_user_firstname').val(),
+					    		couchdb_user_lastname: $('#couchdb_user_lastname').val(),
+					    		couchdb_user_pseudo: $('#couchdb_user_pseudo').val(),
+					    		couchdb_user_email: $('#couchdb_user_email').val(),
+					    		couchdb_user_pass: $('#couchdb_user_pass').val()
+							},
+							function(value) {
+								if (value > 0) {
+									$('#add_conf').setProgressValue('75%');
+									// Create syncuser
+									$.post("/install/ajax/install.php", {
+							    		action: 'create_syncuser',
+							    		couchdb_user_sync: $('#couchdb_user_sync').val(),
+							    		couchdb_pass_sync: $('#couchdb_pass_sync').val()
+									},
+									function(value) {
+										if (value > 0) {
+											setProgressBar('add_conf', 100);
+										} else {
+											// Show error
+											error = true;
+										}
+										if (error == false) {
+											// Create database
+											$.post("/install/ajax/install.php", {
+									    		action: 'create_database'
+											},
+											function(value) {
+												if (value > 0) {
+													setProgressBar('add_database', 25);
+													// Populate database
+													var progress_value = 25;
+													var step = Math.round(75 / numfiles);
+													var files = $.parseJSON(jsonfiles);
+													$.each(files, function(name, path) {
+														$.ajaxSetup({async:false});
+														$.ajax({
+															type: 'POST',
+															url: '/install/ajax/install.php',
+															dataType: 'json',
+															async: false,
+															data: {
+																action: 'populate_database',
+													    		filename: name,
+													    		filepath: path
+															},
+															success: function(value) {
+																if (value > 0) {
+																	progress_value = progress_value + step;
+																	setProgressBar('add_database', progress_value);
+																} else {
+																	// Show error
+																	error = true;
+																	return false;
+																}
+															}
+														});
+														$.ajaxSetup({async:true});
+													});
+													// For avoid count error
+													setProgressBar('add_database', 100);
+												} else {
+													// Show error
+													error = true;
+												}
+											});
+										}
+									});
+								} else {
+									// Show error
+									error = true;
+								}
+							});
+						} else {
+							// Show error
+							error = true;
+						}
+					});
+				} else {
+					// Show error
+					error = true;
+				}
+			});
 		}
 	});
 	
-	// Reload page
+	// Set progress bar
+	function setProgressBar(key, value) {
+		$('#' + key).setProgressValue(value + '%');
+		if (value == 100) {
+			$('#' + key).changeProgressBarColor('green-bg', true)
+						.hideProgressStripes();
+		}
+	}
+	
+	// Reload pre-requisite
 	$('#reload_button').click(function() {
 		ckeckPrerequisite();
 	});
@@ -132,8 +258,10 @@ $(document).ready(function() {
 					if (key == 'memcached') {
 						if (value == true) {
 							$('.memcached').show();
+							$('#memcached_host, #memcached_port').removeAttr('disabled');
 						} else {
 							$('.memcached').hide();
+							$('#memcached_host, #memcached_port').attr('disabled', 'disabled');
 						}
 					} else if (key == 'continue') {
 						if (value == true) {

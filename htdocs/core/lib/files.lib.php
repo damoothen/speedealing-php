@@ -65,7 +65,7 @@ function dol_dir_list($path, $types="all", $recursive=0, $filter="", $excludefil
 	$path=preg_replace('/([\\/]+)$/i','',$path);
 	$newpath=dol_osencode($path);
 
-	if (! $nohook) {
+	if (is_object($hookmanager) && !$nohook) {
 		$hookmanager->initHooks(array('fileslib'));
 		$parameters=array(
 				'path' => $newpath,

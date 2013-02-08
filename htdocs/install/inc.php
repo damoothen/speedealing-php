@@ -31,20 +31,11 @@ require_once realpath(dirname(__FILE__)) . '/../filefunc.inc.php';
 // Define DOL_DOCUMENT_ROOT and ADODB_PATH used for install/upgrade process
 if (!defined('DOL_DOCUMENT_ROOT'))
     define('DOL_DOCUMENT_ROOT', realpath(dirname(__FILE__)) . '/..');
-/*
-if (!defined('ADODB_PATH')) {
-    $foundpath = DOL_DOCUMENT_ROOT . '/includes/adodbtime/';
-    if (!is_dir($foundpath))
-        $foundpath = '/usr/share/php/adodb/';
-    define('ADODB_PATH', $foundpath);
-}
-*/
 
 require_once DOL_DOCUMENT_ROOT . '/core/class/translatestandalone.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/functions.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
-//require_once ADODB_PATH . 'adodb-time.inc.php';
 
 // For couchdb
 if (!class_exists('couch'))
@@ -68,21 +59,23 @@ if (isset($_SERVER["DOCUMENT_URI"]) && $_SERVER["DOCUMENT_URI"]) {
     $_SERVER["PHP_SELF"] = $_SERVER["DOCUMENT_URI"];
 }
 
-
 // Define vars
 $conffiletoshowshort = "conf.php";
 // Define localization of conf file
 $conffile = realpath(dirname(__FILE__)) . '/../conf/conf.php';
 $conffiletoshow = "htdocs/conf/conf.php";
 
+if (! defined('DONOTLOADCONF') && file_exists($conffile))
+	include_once $conffile;	// Load conf file
+
 // Define DOL_URL_ROOT
 // If defined (Ie: Apache with Linux)
 if (isset($_SERVER["SCRIPT_URI"])) {
-	$dolibarr_main_url_root = $_SERVER["SCRIPT_URI"];
+	$main_url_root = $_SERVER["SCRIPT_URI"];
 }
 // If defined (Ie: Apache with Caudium)
 elseif (isset($_SERVER["SERVER_URL"]) && isset($_SERVER["DOCUMENT_URI"])) {
-	$dolibarr_main_url_root = $_SERVER["SERVER_URL"] . $_SERVER["DOCUMENT_URI"];
+	$main_url_root = $_SERVER["SERVER_URL"] . $_SERVER["DOCUMENT_URI"];
 }
 // If SCRIPT_URI, SERVER_URL, DOCUMENT_URI not defined (Ie: Apache 2.0.44 for Windows)
 else {
@@ -91,13 +84,13 @@ else {
 		$serverport = $_SERVER["HTTP_HOST"];
 	else
 		$serverport = $_SERVER["SERVER_NAME"];
-	$dolibarr_main_url_root = $proto . "://" . $serverport . $_SERVER["SCRIPT_NAME"];
+	$main_url_root = $proto . "://" . $serverport . $_SERVER["SCRIPT_NAME"];
 }
 // Clean proposed URL
-$dolibarr_main_url_root = preg_replace('/\/$/', '', $dolibarr_main_url_root);     // Remove the /
-$dolibarr_main_url_root = preg_replace('/\/index\.php$/', '', $dolibarr_main_url_root);  // Remove the /index.php
-$dolibarr_main_url_root = preg_replace('/\/install$/', '', $dolibarr_main_url_root);   // Remove the /install
-$uri = preg_replace('/^http(s?):\/\//i', '', $dolibarr_main_url_root);	// $uri contains url without http*
+$main_url_root = preg_replace('/\/$/', '', $main_url_root);     // Remove the /
+$main_url_root = preg_replace('/\/index\.php$/', '', $main_url_root);  // Remove the /index.php
+$main_url_root = preg_replace('/\/install$/', '', $main_url_root);   // Remove the /install
+$uri = preg_replace('/^http(s?):\/\//i', '', $main_url_root);	// $uri contains url without http*
 $suburi = strstr($uri, '/');       // $suburi contains url without domain
 if ($suburi == '/')
     $suburi = '';   // If $suburi is /, it is now ''
@@ -113,6 +106,25 @@ if (file_exists($lockfile)) {
     exit;
 }
 
+// MAIN_DOCUMENT_ROOT
+// Si le php fonctionne en CGI, alors SCRIPT_FILENAME vaut le path du php et
+// ce n'est pas ce qu'on veut. Dans ce cas, on propose $_SERVER["DOCUMENT_ROOT"]
+if (preg_match('/^php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/[\\/]php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/php\.exe$/i', $_SERVER["SCRIPT_FILENAME"])) {
+	$main_document_root = $_SERVER["DOCUMENT_ROOT"];
+
+	if (!preg_match('/[\\/]speedealing[\\/]htdocs$/i', $main_document_root)) {
+		$main_document_root.="/speedealing/htdocs";
+	}
+} else {
+	$main_document_root = dirname(dirname($_SERVER["SCRIPT_FILENAME"]));
+	// Nettoyage du path propose
+	// Gere les chemins windows avec double "\"
+	$main_document_root = str_replace('\\\\', '/', $main_document_root);
+
+	// Supprime les slash ou antislash de fins
+	$main_document_root = preg_replace('/[\\/]+$/', '', $main_document_root);
+}
+
 // Defini objet langs
 $langs = new TranslateStandalone(realpath(dirname(__FILE__)) . '/..');
 if (GETPOST('lang'))
@@ -120,6 +132,12 @@ if (GETPOST('lang'))
 else
     $langs->setDefaultLang('auto');
 
+// Get json files list
+$jsonfiles = array();
+$fileslist = dol_dir_list($main_document_root.'/install/couchdb/json', 'files');
+foreach($fileslist as $file) {
+	$jsonfiles[$file['name']] = $file['fullname'];
+}
 
 /**
  * Show HTML header of install pages
@@ -128,6 +146,7 @@ else
  */
 function pHeader() {
     global $conf, $langs;
+    global $jsonfiles;
 
     $langs->load("main");
     $langs->load("admin");
@@ -146,4 +165,97 @@ function pFooter() {
 	include 'tpl/footer.tpl.php';
 }
 
+/**
+ *  Save configuration file. No particular permissions are set by installer.
+ *
+ *  @return	void
+ */
+function write_conf_file() {
+	global $conf, $langs;
+	global $couchdb_host, $couchdb_port, $couchdb_name, $force_https;
+	global $memcached_host, $memcached_port;
+	global $conffile, $conffiletoshowshort;
+
+	$key = md5(uniqid(mt_rand(), TRUE)); // Generate random hash
+
+	$fp = fopen("$conffile", "w");
+	if ($fp) {
+		clearstatcache();
+
+		fputs($fp, '<?php' . "\n");
+		fputs($fp, '//' . "\n");
+		fputs($fp, '// File generated by Speedealing installer ' . "\n");
+		fputs($fp, '//' . "\n");
+		fputs($fp, '// Take a look at conf.php.example file for an example of ' . $conffiletoshowshort . ' file' . "\n");
+		fputs($fp, '// and explanations for all possibles parameters.' . "\n");
+		fputs($fp, '//' . "\n");
+
+		/* Alternative directory */
+
+		fputs($fp, '$dolibarr_main_root_alt=\'custom\';');
+		fputs($fp, "\n");
+
+		/* Authentication */
+		fputs($fp, '$dolibarr_main_authentication=\'dolibarr\';');
+		fputs($fp, "\n\n");
+
+		/* CouchDB */
+
+		fputs($fp, '// Couchdb settings');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_main_couchdb_name=\'' . str_replace("'", "\'", $couchdb_name) . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_main_couchdb_host=\'' . str_replace("'", "\'", $couchdb_host) . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_main_couchdb_port=\'' . str_replace("'", "\'", $couchdb_port) . '\';');
+		fputs($fp, "\n\n");
+
+		/* Memcached */
+
+		if (!empty($memcached_host) && !empty($memcached_port)) {
+			fputs($fp, '// Memcached settings');
+			fputs($fp, "\n");
+
+			fputs($fp, '$dolibarr_main_memcached_host=\'' . str_replace("'", "\'", $memcached_host) . '\';');
+			fputs($fp, "\n");
+
+			fputs($fp, '$dolibarr_main_memcached_port=\'' . str_replace("'", "\'", $memcached_port) . '\';');
+			fputs($fp, "\n\n");
+		}
+
+		/* Specific setting */
+
+		fputs($fp, '// Specific settings');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_main_prod=\'0\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_nocsrfcheck=\'0\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_main_force_https=\'' . (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on'?1:0) . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_main_cookie_cryptkey=\'' . $key . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_mailing_limit_sendbyweb=\'0\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '?>');
+		fclose($fp);
+
+		if (file_exists("$conffile")) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+
+	return -2;
+}
 ?>

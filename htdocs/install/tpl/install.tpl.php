@@ -279,6 +279,15 @@
 		<input type="text" name="memcached_port" id="memcached_port" value="11211" class="input validate[required,custom[onlyNumberSp]]">
 	</div>
 
+	<div class="field-block button-height wizard-controls align-right">
+		<button type="button" id="install_button" class="button glossy mid-margin-right">
+			<?php echo $langs->trans("Install"); ?>
+			<span class="button-icon green-gradient right-side">
+				<span class="icon-tick"></span>
+			</span>
+		</button>
+	</div>
+
 </fieldset>
 
 <!-- Install step -->

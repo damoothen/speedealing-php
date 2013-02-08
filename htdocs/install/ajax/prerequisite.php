@@ -97,26 +97,20 @@ if ($action == 'check_prerequisite') {
 	}
 
 	// Check config file
-	if (!file_exists($conffile))
-	{
+	if (!file_exists($conffile)) {
 		$out['conf_file'] = '<span class="icon-warning icon-red">'.$langs->trans("ConfFileDoesNotExistsAndCouldNotBeCreated", $conffiletoshow);
 		$out['conf_file'].= '<br>'.$langs->trans("YouMustCreateWithPermission", $conffiletoshow).'</span>';
 		$continue = false;
-	}
-	else
-	{
+	} else {
 		// File exists
 		$out['conf_file'] = '<span class="icon-tick icon-green">'.$langs->trans("ConfFileExists", $conffiletoshow).'</span>';
 
 		// File is not editable
-		if (!is_writable($conffile))
-		{
+		if (!is_writable($conffile)) {
 			$out['conf_file'].= '<br><span class="icon-warning icon-red">'.$langs->trans("ConfFileIsNotWritable", $conffiletoshow).'</span>';
 			$continue = false;
-		}
-		// File is editable
-		else
-		{
+		} else {
+			// File is editable
 			$out['conf_file'].= '<br><span class="icon-tick icon-green">'.$langs->trans("ConfFileIsWritable",$conffiletoshow).'</span>';
 		}
 	}
@@ -129,6 +123,4 @@ if ($action == 'check_prerequisite') {
 
 	echo json_encode($out);
 }
-
-
 ?>

@@ -32,31 +32,6 @@ $langs->load("install");
 
 $formadmin = new FormAdmin('');
 
-// MAIN_DOCUMENT_ROOT
-// Si le php fonctionne en CGI, alors SCRIPT_FILENAME vaut le path du php et
-// ce n'est pas ce qu'on veut. Dans ce cas, on propose $_SERVER["DOCUMENT_ROOT"]
-if (preg_match('/^php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/[\\/]php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/php\.exe$/i', $_SERVER["SCRIPT_FILENAME"])) {
-	$dolibarr_main_document_root = $_SERVER["DOCUMENT_ROOT"];
-
-	if (!preg_match('/[\\/]speedealing[\\/]htdocs$/i', $dolibarr_main_document_root)) {
-		$dolibarr_main_document_root.="/speedealing/htdocs";
-	}
-} else {
-	$dolibarr_main_document_root = dirname(dirname($_SERVER["SCRIPT_FILENAME"]));
-	// Nettoyage du path propose
-	// Gere les chemins windows avec double "\"
-	$dolibarr_main_document_root = str_replace('\\\\', '/', $dolibarr_main_document_root);
-
-	// Supprime les slash ou antislash de fins
-	$dolibarr_main_document_root = preg_replace('/[\\/]+$/', '', $dolibarr_main_document_root);
-}
-
-// Force https by default
-if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on')
-	$https_enabled = true;
-else
-	$https_enabled = false;
-
 // Create matrice conf file
 if (is_readable($conffile) && filesize($conffile) > 8) {
 	// Conf file already defined
@@ -74,7 +49,6 @@ if (is_readable($conffile) && filesize($conffile) > 8) {
 		}
 	}
 }
-
 
 /*
  * View
