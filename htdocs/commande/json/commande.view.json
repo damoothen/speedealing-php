@@ -1,6 +1,6 @@
 {
    "_id": "_design/Commande",
-   "_rev": "5-4ca3142750f0605b78f02b0041f6f087",
+   "_rev": "10-af81cd6c4aa426fafb2070e635803601",
    "language": "javascript",
    "views": {
        "list": {
@@ -36,7 +36,7 @@
            "map": "function(doc) {\nif (doc.class && doc.class == 'Commande')\n  emit(doc.client.id, doc);\n}"
        },
        "lines": {
-           "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nfor (i in doc.lines) {\n  emit(doc._id, doc.lines[i]);\n}\n}\n}"
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nfor (i in doc.lines) {\n  emit(doc._id, doc.lines[i]);\n}\n }\n}\n"
        }
    },
    "updates": {

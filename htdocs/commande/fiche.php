@@ -102,7 +102,7 @@ if (!empty($_GET['json'])) {
       'endkey' => array($user->id, mktime(0, 0, 0, date("m") + 1, date("d"), date("Y")))); */
 
     try {
-        $result = $object->getView($_GET["json"]);
+        $result = $object->getView($_GET["json"], array('key' => $id));
     } catch (Exception $exc) {
         print $exc->getMessage();
     }

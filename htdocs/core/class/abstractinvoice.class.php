@@ -395,8 +395,8 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->mDataProp = "id";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = false;
-        $obj->aoColumns[$i]->bVisible = false;
-        $obj->aoColumns[$i]->sDefaultContent = $i+1;
+        $obj->aoColumns[$i]->bVisible = true;
+        $obj->aoColumns[$i]->sDefaultContent = "ok";
         $i++;
         print'<th class="essential">';
         print $langs->trans("Description");
@@ -599,7 +599,7 @@ class AbstractInvoice extends nosqlDocument {
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listTODOByUser";
 //
 //}
-        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=lines";
+        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=lines&id=" . $this->id;
 
         $this->datatablesCreate($obj, "listlines", true, true);
         
