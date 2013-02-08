@@ -104,7 +104,7 @@ if ($action == 'create_config') {
 	// $dolibarr_main_couchdb_port
 
 	// Create database
-	//sleep(1); // for test
+	sleep(1); // for test
 
 	echo 1;
 }

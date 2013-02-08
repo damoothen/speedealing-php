@@ -117,12 +117,7 @@ $(document).ready(function() {
 		} else if (step == 'install') {
 			var error = false;
 			$('.wizard-prev, .syncprogress').hide();
-			$('#add_conf').progress({style: 'large'}).showProgressStripes();
-			$('#add_database').progress({style: 'large'}).showProgressStripes();
-			if ($('#couchdb_replication').prop('checked')) {
-				$('.syncprogress').show();
-				$('#sync_database').progress({style: 'large'}).showProgressStripes();
-			}
+			$('#install_progress').progress({style: 'large'}).showProgressStripes();
 			// Create config file
 			$.post("/install/ajax/install.php", {
 	    		action: 'create_config',
@@ -134,7 +129,7 @@ $(document).ready(function() {
 			},
 			function(value) {
 				if (value > 0) {
-					$('#add_conf').setProgressValue('25%');
+					setProgressBar('install_progress', 10);
 					// Create superadmin
 					$.post("/install/ajax/install.php", {
 			    		action: 'create_admin',
@@ -143,7 +138,7 @@ $(document).ready(function() {
 					},
 					function(value) {
 						if (value > 0) {
-							$('#add_conf').setProgressValue('50%');
+							setProgressBar('install_progress', 20);
 							// Create user
 							$.post("/install/ajax/install.php", {
 					    		action: 'create_user',
@@ -155,7 +150,7 @@ $(document).ready(function() {
 							},
 							function(value) {
 								if (value > 0) {
-									$('#add_conf').setProgressValue('75%');
+									setProgressBar('install_progress', 30);
 									// Create syncuser
 									$.post("/install/ajax/install.php", {
 							    		action: 'create_syncuser',
@@ -164,55 +159,44 @@ $(document).ready(function() {
 									},
 									function(value) {
 										if (value > 0) {
-											setProgressBar('add_conf', 100);
-										} else {
-											// Show error
-											error = true;
-										}
-										if (error == false) {
+											setProgressBar('install_progress', 40);
 											// Create database
 											$.post("/install/ajax/install.php", {
 									    		action: 'create_database'
 											},
 											function(value) {
 												if (value > 0) {
-													setProgressBar('add_database', 25);
+													setProgressBar('install_progress', 50);
 													// Populate database
-													var progress_value = 25;
-													var step = Math.round(75 / numfiles);
+													var progress_value = 50;
+													var step = Math.round((50 / numfiles) + 1);
 													var files = $.parseJSON(jsonfiles);
 													$.each(files, function(name, path) {
-														$.ajaxSetup({async:false});
-														$.ajax({
-															type: 'POST',
-															url: '/install/ajax/install.php',
-															dataType: 'json',
-															async: false,
-															data: {
-																action: 'populate_database',
-													    		filename: name,
-													    		filepath: path
-															},
-															success: function(value) {
-																if (value > 0) {
-																	progress_value = progress_value + step;
-																	setProgressBar('add_database', progress_value);
-																} else {
-																	// Show error
-																	error = true;
-																	return false;
-																}
+														$.post("/install/ajax/install.php", {
+															action: 'populate_database',
+												    		filename: name,
+												    		filepath: path
+														},
+														function(value) {
+															if (value > 0) {
+																progress_value = progress_value + step;
+																progress_value = (progress_value < 100 ? progress_value : 100)
+																setProgressBar('install_progress', progress_value);
+															} else {
+																// Show error
+																error = true;
+																return false;
 															}
 														});
-														$.ajaxSetup({async:true});
 													});
-													// For avoid count error
-													setProgressBar('add_database', 100);
 												} else {
 													// Show error
 													error = true;
 												}
 											});
+										} else {
+											// Show error
+											error = true;
 										}
 									});
 								} else {
