@@ -12,6 +12,13 @@
        "ref_client",
        "Status"
    ],
+   "createLine": [
+       "description",
+       "subprice",
+       "qty",
+       "tva_tx",
+       "remise"
+   ],
    "fields": {
        "Status": {
            "type": "select",
@@ -96,6 +103,31 @@
        },
        "notes": {
            "enable": true
+       },
+       "description": {
+           "type": "text",
+           "enable": true,
+           "label": "Description"
+       },
+       "subprice": {
+           "type": "text",
+           "enable": true,
+           "label": "PriceUHT"
+       },
+       "qty": {
+           "type": "text",
+           "enable": true,
+           "label": "Qty"
+       },
+       "tva_tx": {
+           "type": "text",
+           "enable": true,
+           "label": "VAT"
+       },
+       "remise": {
+           "type": "text",
+           "enable": true,
+           "label": "ReductionShort"
        }
    }
 }

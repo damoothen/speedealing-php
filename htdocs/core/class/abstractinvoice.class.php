@@ -135,7 +135,6 @@ class AbstractInvoice extends nosqlDocument {
             // Insert line
             $line = new stdClass();
 
-            $line->fk_commande = $commandeid;
             $line->label = $label;
             $line->description = $desc;
             $line->qty = $qty;
@@ -144,7 +143,7 @@ class AbstractInvoice extends nosqlDocument {
             $line->localtax2_tx = $txlocaltax2;
             $line->fk_product = $fk_product;
             $line->fk_remise_except = $fk_remise_except;
-            $line->remise_percent = $remise_percent;
+            $line->remise = $remise_percent;
             $line->subprice = $pu_ht;
 //            $line->rang = $rangtouse;
             $line->info_bits = $info_bits;
@@ -153,7 +152,7 @@ class AbstractInvoice extends nosqlDocument {
             $line->total_localtax1 = $total_localtax1;
             $line->total_localtax2 = $total_localtax2;
             $line->total_ttc = $total_ttc;
-            $line->product_type = $type;
+            $line->product_type = $type == 1 ? 'SERVICE' : 'PRODUCT';
             $line->special_code = $special_code;
             $line->fk_parent_line = $fk_parent_line;
 
@@ -163,10 +162,6 @@ class AbstractInvoice extends nosqlDocument {
             // infos marge
             $line->fk_fournprice = $fk_fournprice;
             $line->pa_ht = $pa_ht;
-
-            // TODO Ne plus utiliser
-            $line->price = $price;
-            $line->remise = $remise;
             
             $this->lines[] = $line;
             $this->lines = array_merge($this->lines);
@@ -280,10 +275,6 @@ class AbstractInvoice extends nosqlDocument {
             $line->fk_fournprice = $fk_fournprice;
             $line->pa_ht = $pa_ht;
 
-            // TODO deprecated
-            $line->price = $price;
-            $line->remise = $remise;
-
             $this->lines = array_merge($this->lines);
             $this->record();
             $this->update_price();
@@ -341,12 +332,59 @@ class AbstractInvoice extends nosqlDocument {
         return 1;
     }
     
+    /**
+     *  For menu Add/Remove a datatable
+     *
+     *  @param $ref_css name of #list
+     *  @return string
+     */
+    public function datatablesEditLine($ref_css, $title = "") {
+        global $langs, $user;
+
+        $class = strtolower(get_class($this));
+
+        if (!$user->rights->$class->edit && !$user->rights->$class->creer)
+            return null;
+
+        if (count($this->fk_extrafields->createLine)) {
+            print '<form id="' . $ref_css . '_formAddNewRow" class="block" title="' . $title . '">';
+            //print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+            print '<input type="hidden" name="json" id="json" value="addline" />';
+            print '<input type="hidden" name="fk_invoice" id="fk_invoice" value="' . $this->id . '" />';
+            print '<input type="hidden" name="class" id="class" value="' . get_class($this) . '" />';
+            foreach ($this->fk_extrafields->createLine as $aRow) {
+                print '<p class="button-height block-label">';
+                $label = $langs->trans($this->fk_extrafields->fields->$aRow->label);
+                if (empty($label))
+                    $label = $langs->trans($aRow);
+                print '<label for = "' . $aRow . '" class="label">' . $label . '</label>';
+                print $this->select_fk_extrafields($aRow, $aRow, null, true, 40, "full-width");
+                print '</p>';
+            }
+            print '</form>';
+
+            if ($user->rights->$class->edit || $user->rights->$class->creer)
+                print '<button id="' . $ref_css . '_btnAddNewRow">' . $langs->trans("Add") . '</button> ';
+        }
+
+        /* if ($user->rights->$class->delete)
+          print '<button id="' . $ref_css . '_btnDeleteRow">' . $langs->trans("Delete") . '</button>'; */
+
+        print '<p class="button-height "></p>';
+    }
+    
     public function showLines() {
         
         global $langs;
+        
+        require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
+        $product = new Product($this->db);
+        
+        print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
 
-        print $this->datatablesEdit("listlines", $langs->trans("Lines"));
+        print $this->datatablesEditLine("listlines", $langs->trans("Lines"));
 
+        $i = 0;
         print '<table class="display dt_act" id="listlines" >';
         // Ligne des titres 
         print'<thead>';
@@ -354,10 +392,11 @@ class AbstractInvoice extends nosqlDocument {
         print'<th>';
         print'</th>';
         $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "rowid";
+        $obj->aoColumns[$i]->mDataProp = "id";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = false;
-        $obj->aoColumns[$i]->bVisible = false;
+        $obj->aoColumns[$i]->bVisible = true;
+        $obj->aoColumns[$i]->sDefaultContent = "ok";
         $i++;
         print'<th class="essential">';
         print $langs->trans("Description");
@@ -367,6 +406,63 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Type");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "product_type";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->editable = true;
+        $obj->aoColumns[$i]->fnRender = $product->datatablesFnRender("type", "status");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("VAT");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "tva_tx";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->editable = true;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("PriceUHT");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "subprice";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->editable = true;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("subprice", "price");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Qty");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "qty";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->editable = true;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("ReductionShort");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "remise";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->editable = true;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("TotalHTShort");
+        print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
+        $obj->aoColumns[$i]->mDataProp = "total_ht";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->editable = true;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("total_ht", "price");        
         $i++;
 //        print'<th class="essential">';
 //        print $langs->trans('Company');
@@ -464,14 +560,18 @@ class AbstractInvoice extends nosqlDocument {
         $i++;
         print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Description") . '" /></th>';
         $i++;
-//        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
-//        $i++;
-//        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search RefCustomer") . '" /></th>';
-//        $i++;
-//        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Date") . '" /></th>';
-//        $i++;
-//print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search DateEnd") . '" /></th>';
-//$i++;
+        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Type") . '" /></th>';
+        $i++;
+        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search VAT") . '" /></th>';
+        $i++;
+        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search PriceUHT") . '" /></th>';
+        $i++;
+        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Qty") . '" /></th>';
+        $i++;
+        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search ReductionShort") . '" /></th>';
+        $i++;
+        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search TotalHTShort") . '" /></th>';
+        $i++;
 //print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
 //$i++;
 //        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
@@ -499,9 +599,11 @@ class AbstractInvoice extends nosqlDocument {
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listTODOByUser";
 //
 //}
-//$obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
+        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=lines&id=" . $this->id;
 
         $this->datatablesCreate($obj, "listlines", true, true);
+        
+        print end_box();
     }
 
 }

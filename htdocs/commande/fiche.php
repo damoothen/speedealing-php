@@ -85,6 +85,40 @@ if (!empty($id)) {
 $hookmanager->initHooks(array('ordercard'));
 
 
+if (!empty($_GET['json'])) {
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => 0,
+        "iTotalDisplayRecords" => 0,
+        "aaData" => array()
+    );
+
+//    $keystart[0] = $user->id;
+//    $keyend[0] = $user->id;
+//    $keyend[1] = new stdClass();
+
+    /* $params = array('startkey' => array($user->id, mktime(0, 0, 0, date("m") - 1, date("d"), date("Y"))),
+      'endkey' => array($user->id, mktime(0, 0, 0, date("m") + 1, date("d"), date("Y")))); */
+
+    try {
+        $result = $object->getView($_GET["json"], array('key' => $id));
+    } catch (Exception $exc) {
+        print $exc->getMessage();
+    }
+
+    $iTotal = count($result->rows);
+    $output["iTotalRecords"] = $iTotal;
+    $output["iTotalDisplayRecords"] = $iTotal;
+    $i = 0;
+    foreach ($result->rows as $aRow) {
+        $output["aaData"][] = $aRow->value;
+    }
+
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
+}
+
 /* Actions ****************************************************************** */
 
 
@@ -1376,6 +1410,9 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
     }
 
     // Lines
+    
+    $object->showLines();
+    
     print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
     print '<table id="tablelines" class="noborder" width="100%">';
 
