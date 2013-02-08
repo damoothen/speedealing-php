@@ -117,7 +117,12 @@ $(document).ready(function() {
 		} else if (step == 'install') {
 			var error = false;
 			$('.wizard-prev, .syncprogress').hide();
-			$('#install_progress').progress({style: 'large'}).showProgressStripes();
+			$('#add_conf').progress({style: 'large'}).showProgressStripes();
+			$('#add_database').progress({style: 'large'}).showProgressStripes();
+			if ($('#couchdb_replication').prop('checked')) {
+				$('.syncprogress').show();
+				$('#sync_database').progress({style: 'large'}).showProgressStripes();
+			}
 			// Create config file
 			$.post("/install/ajax/install.php", {
 	    		action: 'create_config',
@@ -129,7 +134,7 @@ $(document).ready(function() {
 			},
 			function(value) {
 				if (value > 0) {
-					setProgressBar('install_progress', 10);
+					setProgressBar('add_conf', 25);
 					// Create superadmin
 					$.post("/install/ajax/install.php", {
 			    		action: 'create_admin',
@@ -138,7 +143,7 @@ $(document).ready(function() {
 					},
 					function(value) {
 						if (value > 0) {
-							setProgressBar('install_progress', 20);
+							setProgressBar('add_conf', 50);
 							// Create user
 							$.post("/install/ajax/install.php", {
 					    		action: 'create_user',
@@ -150,7 +155,7 @@ $(document).ready(function() {
 							},
 							function(value) {
 								if (value > 0) {
-									setProgressBar('install_progress', 30);
+									setProgressBar('add_conf', 75);
 									// Create syncuser
 									$.post("/install/ajax/install.php", {
 							    		action: 'create_syncuser',
@@ -159,17 +164,17 @@ $(document).ready(function() {
 									},
 									function(value) {
 										if (value > 0) {
-											setProgressBar('install_progress', 40);
+											setProgressBar('add_conf', 100);
 											// Create database
 											$.post("/install/ajax/install.php", {
 									    		action: 'create_database'
 											},
 											function(value) {
 												if (value > 0) {
-													setProgressBar('install_progress', 50);
+													setProgressBar('add_database', 25);
 													// Populate database
-													var progress_value = 50;
-													var step = Math.round((50 / numfiles) + 1);
+													var progress_value = 25;
+													var step = Math.round((75 / numfiles) + 1);
 													var files = $.parseJSON(jsonfiles);
 													$.each(files, function(name, path) {
 														$.post("/install/ajax/install.php", {
@@ -181,7 +186,7 @@ $(document).ready(function() {
 															if (value > 0) {
 																progress_value = progress_value + step;
 																progress_value = (progress_value < 100 ? progress_value : 100)
-																setProgressBar('install_progress', progress_value);
+																setProgressBar('add_database', progress_value);
 															} else {
 																// Show error
 																error = true;

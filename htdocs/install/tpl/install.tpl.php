@@ -303,8 +303,18 @@
 	</div>
 
 	<div class="field-block">
-		<label for="install_progress" class="label"><b><?php echo $langs->trans("SystemSetup"); ?></b></label>
-		<span id="install_progress"></span>
+		<label for="add_conf" class="label"><b><?php echo $langs->trans("SystemSetup"); ?></b></label>
+		<span id="add_conf"></span>
+	</div>
+
+	<div class="field-block">
+		<label for="add_database" class="label"><b><?php echo $langs->trans("AddDatabase"); ?></b></label>
+		<span id="add_database"></span>
+	</div>
+
+	<div class="field-block syncprogress">
+		<label for="sync_database" class="label"><b><?php echo $langs->trans("SynchronizingDatabase"); ?></b></label>
+		<span id="sync_database"></span>
 	</div>
 
 	<div class="field-drop button-height black-inputs">
