@@ -45,6 +45,8 @@ if (!defined('LOG_DEBUG')) {
     }
 }
 
+define('DOL_DOCUMENT_ROOT', realpath(dirname(__FILE__)));   // Filesystem core php (htdocs)
+
 // End of common declaration part
 if (defined('DOL_INC_FOR_VERSION_ERROR'))
     return;
@@ -79,7 +81,7 @@ if (!empty($dolibarr_main_prod))
 $dolibarr_main_data_root = trim($dolibarr_main_data_root);
 $dolibarr_main_url_root = trim($dolibarr_main_url_root);
 $dolibarr_main_url_root_alt = trim($dolibarr_main_url_root_alt);
-$dolibarr_main_document_root = trim($dolibarr_main_document_root);
+$dolibarr_main_document_root = realpath(dirname(__FILE__));
 $dolibarr_main_document_root_alt = trim($dolibarr_main_document_root_alt);
 
 if (empty($dolibarr_main_db_port))
@@ -125,7 +127,6 @@ if (empty($dolibarr_main_couchdb_host)) {
 // Define some constants
 define('DOL_CLASS_PATH', 'class/');         // Filesystem path to class dir (defined only for some code that want to be compatible with old versions without this parameter)
 define('DOL_DATA_ROOT', $dolibarr_main_data_root);     // Filesystem data (documents)
-define('DOL_DOCUMENT_ROOT', $dolibarr_main_document_root);   // Filesystem core php (htdocs)
 if (!empty($dolibarr_main_document_root_alt)) {
     define('DOL_DOCUMENT_ROOT_ALT', $dolibarr_main_document_root_alt); // Filesystem paths to alternate core php (alternate htdocs)
 }

@@ -23,7 +23,7 @@
  *       \brief      Install process
  */
 include 'inc.php';
-include '../core/class/html.formadmin.class.php';
+include DOL_DOCUMENT_ROOT . '/core/class/html.formadmin.class.php';
 
 $setuplang = GETPOST("selectlang", '', 3) ? GETPOST("selectlang", '', 3) : 'auto';
 $langs->setDefaultLang($setuplang);

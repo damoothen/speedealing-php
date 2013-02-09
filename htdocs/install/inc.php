@@ -27,11 +27,6 @@ if (!defined('DOL_INC_FOR_VERSION_ERROR'))
     define('DOL_INC_FOR_VERSION_ERROR', '1');
 require_once realpath(dirname(__FILE__)) . '/../filefunc.inc.php';
 
-
-// Define DOL_DOCUMENT_ROOT and ADODB_PATH used for install/upgrade process
-if (!defined('DOL_DOCUMENT_ROOT'))
-    define('DOL_DOCUMENT_ROOT', realpath(dirname(__FILE__)) . '/..');
-
 require_once DOL_DOCUMENT_ROOT . '/core/class/translatestandalone.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/functions.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
@@ -62,7 +57,7 @@ if (isset($_SERVER["DOCUMENT_URI"]) && $_SERVER["DOCUMENT_URI"]) {
 // Define vars
 $conffiletoshowshort = "conf.php";
 // Define localization of conf file
-$conffile = realpath(dirname(__FILE__)) . '/../conf/conf.php';
+$conffile = DOL_DOCUMENT_ROOT . '/conf/conf.php';
 $conffiletoshow = "htdocs/conf/conf.php";
 
 if (! defined('DONOTLOADCONF') && file_exists($conffile))
@@ -105,7 +100,7 @@ if (file_exists($lockfile)) {
 }
 
 // Defini objet langs
-$langs = new TranslateStandalone(realpath(dirname(__FILE__)) . '/..');
+$langs = new TranslateStandalone(DOL_DOCUMENT_ROOT);
 if (GETPOST('lang'))
     $langs->setDefaultLang(GETPOST('lang'));
 else
@@ -170,10 +165,6 @@ function write_conf_file() {
 		fputs($fp, '//' . "\n");
 
 		/* Alternative directory */
-
-		/* for backward compatibility */
-		fputs($fp, '$dolibarr_main_document_root=\''.str_replace("'","\'", DOL_DOCUMENT_ROOT).'\';');
-		fputs($fp,"\n");
 
 		fputs($fp, '$dolibarr_main_root_alt=\'custom\';');
 		fputs($fp, "\n");
