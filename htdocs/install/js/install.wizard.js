@@ -239,6 +239,21 @@ $(document).ready(function() {
 		function(value) {
 			if (value > 0) {
 				setProgressBar('set_security', 100);
+				lockInstall();
+			} else {
+				return false;
+			}
+		});
+	}
+	
+	// Add lock file
+	function lockInstall() {
+		$.post("/install/ajax/install.php", {
+    		action: 'lock_install'
+		},
+		function(value) {
+			if (value > 0) {
+				return true;
 			} else {
 				return false;
 			}

@@ -111,5 +111,8 @@ if ($action == 'create_config') {
 	sleep(1); // for test
 
 	echo 1;
+} else if ($action == 'lock_install') {
+	// Install is finished, we create the lock file
+	echo write_lock_file();
 }
 ?>

@@ -30,6 +30,7 @@ $langs->setDefaultLang($setuplang);
 
 $langs->load("install");
 
+// For select language
 $formadmin = new FormAdmin('');
 
 // Create matrice conf file
@@ -54,9 +55,12 @@ if (is_readable($conffile) && filesize($conffile) > 8) {
  * View
  */
 
+// Show header
 pHeader();
 
+// Show wizard
 include 'tpl/install.tpl.php';
 
+//Show footer
 pFooter();
 ?>

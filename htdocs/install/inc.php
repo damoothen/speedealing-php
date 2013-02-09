@@ -5,7 +5,7 @@
  * Copyright (C) 2004		Sebastien DiCintio		<sdicintio@ressource-toi.org>
  * Copyright (C) 2007-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2007-2013	Regis Houssin			<regis.houssin@capnetworks.com>
- * Copyright (C) 2012		Herve Prot				<herve.prot@symeos.com>
+ * Copyright (C) 2012-2013	Herve Prot				<herve.prot@symeos.com>
  * Copyright (C) 2012		Marcos García
  *
  * This program is free software; you can redistribute it and/or modify
@@ -96,33 +96,11 @@ if ($suburi == '/')
     $suburi = '';   // If $suburi is /, it is now ''
 define('DOL_URL_ROOT', $suburi);    // URL relative root ('', '/dolibarr', ...)
 
-// Define array of document root directories
-$conf->file->dol_document_root = array(DOL_DOCUMENT_ROOT);
-
 // Security check
 $lockfile = DOL_DOCUMENT_ROOT . '/install/install.lock';
 if (file_exists($lockfile)) {
 	header("Location: " . DOL_URL_ROOT . "/");
-    exit;
-}
-
-// MAIN_DOCUMENT_ROOT
-// Si le php fonctionne en CGI, alors SCRIPT_FILENAME vaut le path du php et
-// ce n'est pas ce qu'on veut. Dans ce cas, on propose $_SERVER["DOCUMENT_ROOT"]
-if (preg_match('/^php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/[\\/]php$/i', $_SERVER["SCRIPT_FILENAME"]) || preg_match('/php\.exe$/i', $_SERVER["SCRIPT_FILENAME"])) {
-	$main_document_root = $_SERVER["DOCUMENT_ROOT"];
-
-	if (!preg_match('/[\\/]speedealing[\\/]htdocs$/i', $main_document_root)) {
-		$main_document_root.="/speedealing/htdocs";
-	}
-} else {
-	$main_document_root = dirname(dirname($_SERVER["SCRIPT_FILENAME"]));
-	// Nettoyage du path propose
-	// Gere les chemins windows avec double "\"
-	$main_document_root = str_replace('\\\\', '/', $main_document_root);
-
-	// Supprime les slash ou antislash de fins
-	$main_document_root = preg_replace('/[\\/]+$/', '', $main_document_root);
+	exit;
 }
 
 // Defini objet langs
@@ -134,7 +112,7 @@ else
 
 // Get json files list
 $jsonfiles = array();
-$fileslist = dol_dir_list($main_document_root.'/install/couchdb/json', 'files');
+$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json', 'files');
 foreach($fileslist as $file) {
 	$jsonfiles[$file['name']] = $file['fullname'];
 }
@@ -257,5 +235,29 @@ function write_conf_file() {
 	}
 
 	return -2;
+}
+
+/**
+ *	Save lock file.
+ *
+ *  @return	void
+ */
+function write_lock_file() {
+	global $lockfile;
+
+	$force_install_lockinstall = 444;
+	$fp = fopen($lockfile, "w");
+	if ($fp) {
+		fwrite($fp, "This is a lock file to prevent use of install pages (set with permission " . $force_install_lockinstall . ")");
+		fclose($fp);
+		@chmod($lockfile, octdec($force_install_lockinstall));
+		if (file_exists("$lockfile")) {
+			return 1;
+		} else {
+			return -1;
+		}
+	} else {
+		return -2;
+	}
 }
 ?>
