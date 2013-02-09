@@ -106,21 +106,29 @@ if (!empty($conf->memcached->host) && class_exists('Memcached')) {
         $conf->memcached->enabled = true;
 }
 
+// Creation objet $langs (must be before all other code)
+if (!defined('NOREQUIRETRAN')) {
+	if (!class_exists('TranslateStandalone'))
+		require DOL_DOCUMENT_ROOT . '/core/class/translatestandalone.class.php';
+	$langs = new TranslateStandalone(); // Use translations files
+}
+
 /*
  * Object $db
  */
 if (!defined('NOREQUIREDB')) {
-	if (!empty($conf->db->host)) {
+	//if (!empty($conf->db->host)) {
+	//var_dump($conf->db);
 		$db = getDoliDBInstance($conf->db->type, $conf->db->host, $conf->db->user, $conf->db->pass, $conf->db->name, $conf->db->port);
 
 		if ($db->error) {
 			dol_print_error($db, "host=" . $conf->db->host . ", port=" . $conf->db->port . ", user=" . $conf->db->user . ", databasename=" . $conf->db->name . ", " . $db->error);
 			exit;
 		}
-	} else {
+	//} else {
 		// For backward compatibility
-		$db = new stdClass();
-	}
+		//$db = new stdClass();
+	//}
 
     // By default conf->entity is 1, but we change this if we ask another value
     if ($conf->urlrewrite && GETPOST("db")) // Value pass from url for the name of the database : need url rewrite
@@ -148,13 +156,6 @@ if (!defined('NOREQUIREDB')) {
 
     $couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
     $couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
-}
-
-// Creation objet $langs (must be before all other code)
-if (!defined('NOREQUIRETRAN')) {
-	if (!class_exists('TranslateStandalone'))
-		require DOL_DOCUMENT_ROOT . '/core/class/translatestandalone.class.php';
-	$langs = new TranslateStandalone(); // Use translations files
 }
 
 // Create the global $hookmanager object
