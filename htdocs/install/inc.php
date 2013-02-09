@@ -146,7 +146,7 @@ function pFooter() {
  */
 function write_conf_file() {
 	global $conf, $langs;
-	global $couchdb_host, $couchdb_port, $couchdb_name, $force_https;
+	global $couchdb_host, $couchdb_port, $force_https;
 	global $memcached_host, $memcached_port;
 	global $conffile, $conffiletoshowshort;
 
@@ -176,9 +176,6 @@ function write_conf_file() {
 		/* CouchDB */
 
 		fputs($fp, '// Couchdb settings');
-		fputs($fp, "\n");
-
-		fputs($fp, '$dolibarr_main_couchdb_name=\'' . str_replace("'", "\'", $couchdb_name) . '\';');
 		fputs($fp, "\n");
 
 		fputs($fp, '$dolibarr_main_couchdb_host=\'' . str_replace("'", "\'", $couchdb_host) . '\';');
