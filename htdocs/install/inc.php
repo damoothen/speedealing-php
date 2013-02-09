@@ -170,6 +170,10 @@ function write_conf_file() {
 
 		/* Alternative directory */
 
+		/* for backward compatibility */
+		fputs($fp, '$dolibarr_main_document_root=\''.str_replace("'","\'", DOL_DOCUMENT_ROOT).'\';');
+		fputs($fp,"\n");
+
 		fputs($fp, '$dolibarr_main_root_alt=\'custom\';');
 		fputs($fp, "\n");
 

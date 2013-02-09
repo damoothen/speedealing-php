@@ -1,5 +1,8 @@
 htdocs/conf/conf.php
 htdocs/conf/conf.php.old
+htdocs/conf/conf.php.bak
+htdocs/install/install.lock
+htdocs/test.php
 documents/
 /nbproject/private/
 default.properties

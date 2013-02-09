@@ -116,22 +116,10 @@ if (!defined('NOCSRFCHECK') && empty($dolibarr_nocsrfcheck) && !empty($_SERVER['
     print "If you access your server behind a proxy using url rewriting, you might add the line \$dolibarr_nocsrfcheck=1 into your conf.php file.\n";
     die;
 }
-if (empty($dolibarr_main_db_host)) {
+if (empty($dolibarr_main_couchdb_host)) {
     print '<div align="center">Speedealing setup is not yet complete.<br><br>' . "\n";
     print '<a href="install/index.php">Click here to finish Speedealing install process</a> ...</div>' . "\n";
     die;
-}
-if (empty($dolibarr_main_url_root)) {
-    print 'Value for parameter \'dolibarr_main_url_root\' is not defined in your \'htdocs\conf\conf.php\' file.<br>' . "\n";
-    print 'You must add this parameter with your full Speedealing root Url (Example: http://myvirtualdomain/ or http://mydomain/mydolibarrurl/)' . "\n";
-    die;
-}
-if (empty($dolibarr_main_db_type))
-    $dolibarr_main_db_type = 'mysql';   // Pour compatibilite avec anciennes configs, si non defini, on prend 'mysql'
-if (empty($dolibarr_main_data_root)) {
-    // Si repertoire documents non defini, on utilise celui par defaut
-    $dolibarr_main_data_root = str_replace("/htdocs", "", $dolibarr_main_document_root);
-    $dolibarr_main_data_root.="/documents";
 }
 
 // Define some constants
