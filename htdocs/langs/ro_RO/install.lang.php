@@ -184,10 +184,10 @@ $install = array(
 		'NothingToDelete' => 'Aucune liaison invalide trouvée',
 		'SourceType' => 'Source',
 		'TargetType' => 'Cible',
-                // Upgrade
-                'UpgradeOk' => 'Upgrade is ok !',
-                'NewInstalledVersion' => 'Your new version is %s',
-                'NeedUpgrade' => 'New Speedealing version !',
-                'WarningUpgrade' => 'Installed version is %s, you must upgrade to %s. <br>Please contact your administrator.'
+		// Upgrade
+		'UpgradeOk' => 'Actualizare efectuată !',
+		'NewInstalledVersion' => 'Noua versiune Speedealing este %s',
+		'NeedUpgrade' => 'Noua versiune Speadealing',
+		'WarningUpgrade' => 'Versiunea instalata este %s, trebuie sa actualiyati la versiunea %s.<br> Contactati administratorul dvs.'
 );
 ?>
