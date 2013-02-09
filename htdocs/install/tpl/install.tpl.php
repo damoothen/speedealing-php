@@ -321,6 +321,15 @@
 
 	</div>
 
+	<div class="field-block button-height wizard-controls align-right">
+		<button id="start_button" type="button" class="button glossy mid-margin-right">
+			<?php echo $langs->trans("Start"); ?>
+			<span class="button-icon green-gradient right-side">
+				<span class="icon-play"></span>
+			</span>
+		</button>
+	</div>
+
 </fieldset>
 
 </form>

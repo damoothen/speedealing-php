@@ -116,7 +116,8 @@ $(document).ready(function() {
 			});
 		} else if (step == 'install') {
 			var error = false;
-			$('.wizard-prev, .syncprogress').hide();
+			$('.wizard-prev').hide();
+			$('#start_button').attr('disabled', 'disabled');
 			$('#set_conf').progress({style: 'large'}).showProgressStripes();
 			$('#set_database').progress({style: 'large'}).showProgressStripes();
 			$('#set_security').progress({style: 'large'}).showProgressStripes();
@@ -253,7 +254,7 @@ $(document).ready(function() {
 		},
 		function(value) {
 			if (value > 0) {
-				return true;
+				$('#start_button').removeAttr('disabled');
 			} else {
 				return false;
 			}
@@ -268,6 +269,11 @@ $(document).ready(function() {
 						.hideProgressStripes();
 		}
 	}
+	
+	// Start button
+	$('#start_button').click(function() {
+		$(location).attr('href', '/');
+	});
 	
 	// Reload pre-requisite
 	$('#reload_button').click(function() {
