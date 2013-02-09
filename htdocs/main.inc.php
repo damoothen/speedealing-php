@@ -332,7 +332,6 @@ if (!defined('NOLOGIN')) {
         $_SESSION["dol_screenheight"] = isset($dol_screenheight) ? $dol_screenheight : '';
         $_SESSION["dol_company"] = $conf->global->MAIN_INFO_SOCIETE_NOM;
         $_SESSION["dol_entity"] = $conf->entity;
-        dol_syslog("This is a new started user session. _SESSION['dol_login']=" . $_SESSION["dol_login"] . ' Session id=' . session_id());
 
         // Call triggers
         if (!class_exists('Interfaces'))
@@ -345,12 +344,8 @@ if (!defined('NOLOGIN')) {
         // End call triggers
 
         if ($error) {
-            $db->rollback();
             session_destroy();
-            dol_print_error($db, 'Error in some triggers on action USER_LOGIN', LOG_ERR);
             exit;
-        } else {
-            $db->commit();
         }
 
         //header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database

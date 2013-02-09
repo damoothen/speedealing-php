@@ -150,8 +150,6 @@ class Societe extends nosqlDocument {
 			$this->fournisseur = 0;
 		$this->import_key = trim($this->import_key);
 
-		dol_syslog(get_class($this) . "::create " . $this->name);
-
 		// Check parameters
 		if (!empty($conf->global->SOCIETE_MAIL_REQUIRED) && !isValidEMail($this->email)) {
 			$langs->load("errors");
@@ -173,8 +171,6 @@ class Societe extends nosqlDocument {
 		$result = $this->verify();
 
 		if ($result >= 0) {
-
-			dol_syslog(get_class($this) . "::create sql=" . $sql);
 
 			// Ajout du commercial affecte
 			if ($this->commercial_id->id != '' && $this->commercial_id->id != "-1") {
@@ -200,14 +196,11 @@ class Societe extends nosqlDocument {
 				}
 				// Fin appel triggers
 
-				dol_syslog(get_class($this) . "::Create success id=" . $this->id);
 				return $this->id;
 			} else {
-				dol_syslog(get_class($this) . "::Create echec update " . $this->error, LOG_ERR);
 				return -3;
 			}
 		} else {
-			dol_syslog(get_class($this) . "::Create fails verify " . join(',', $this->errors), LOG_WARNING);
 			return -3;
 		}
 	}
@@ -327,9 +320,6 @@ class Societe extends nosqlDocument {
 		require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
 
 		$error = 0;
-
-		dol_syslog(get_class($this) . "::Update id=" . $id . " call_trigger=" . $call_trigger . " allowmodcodeclient=" . $allowmodcodeclient . " allowmodcodefournisseur=" . $allowmodcodefournisseur);
-
 		$now = dol_now();
 
 		// Clean parameters
@@ -432,7 +422,6 @@ class Societe extends nosqlDocument {
 		$result = $this->verify();
 
 		if ($result >= 0) {
-			dol_syslog(get_class($this) . "::Update verify ok");
 
 			$resql = $this->record();
 
@@ -470,7 +459,6 @@ class Societe extends nosqlDocument {
 				}
 
 				if (!$error) {
-					dol_syslog(get_class($this) . "::Update success");
 					return 1;
 				} else {
 					return -1;
@@ -483,13 +471,11 @@ class Societe extends nosqlDocument {
 				} else {
 
 					$this->error = $langs->trans("Error sql=" . $sql);
-					dol_syslog(get_class($this) . "::Update fails update sql=" . $sql, LOG_ERR);
 					$result = -2;
 				}
 				return $result;
 			}
 		} else {
-			dol_syslog(get_class($this) . "::Update fails verify " . join(',', $this->errors), LOG_WARNING);
 			return -3;
 		}
 	}
@@ -505,7 +491,6 @@ class Societe extends nosqlDocument {
 
 		require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 
-		dol_syslog(get_class($this) . "::delete", LOG_DEBUG);
 		$error = 0;
 
 		// Test if child exists
@@ -532,17 +517,15 @@ class Societe extends nosqlDocument {
 			}
 
 			return parent::delete();
-
+/*
 			// TODO Supprimer les contacts
 			// Remove contacts
 			if (!$error) {
 				$sql = "DELETE FROM " . MAIN_DB_PREFIX . "socpeople";
 				$sql.= " WHERE fk_soc = " . $id;
-				dol_syslog(get_class($this) . "::delete sql=" . $sql, LOG_DEBUG);
 				if (!$this->db->query($sql)) {
 					$error++;
 					$this->error .= $this->db->lasterror();
-					dol_syslog(get_class($this) . "::delete erreur -1 " . $this->error, LOG_ERR);
 				}
 			}
 
@@ -550,11 +533,9 @@ class Societe extends nosqlDocument {
 			if (!$error) {
 				$sql = "UPDATE " . MAIN_DB_PREFIX . "adherent";
 				$sql.= " SET fk_soc = NULL WHERE fk_soc = " . $id;
-				dol_syslog(get_class($this) . "::delete sql=" . $sql, LOG_DEBUG);
 				if (!$this->db->query($sql)) {
 					$error++;
 					$this->error .= $this->db->lasterror();
-					dol_syslog(get_class($this) . "::delete erreur -1 " . $this->error, LOG_ERR);
 				}
 			}
 
@@ -562,14 +543,12 @@ class Societe extends nosqlDocument {
 			if (!$error) {
 				$sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe_rib";
 				$sql.= " WHERE fk_soc = " . $id;
-				dol_syslog(get_class($this) . "::Delete sql=" . $sql, LOG_DEBUG);
 				if (!$this->db->query($sql)) {
 					$error++;
 					$this->error = $this->db->lasterror();
-					dol_syslog(get_class($this) . "::Delete erreur -2 " . $this->error, LOG_ERR);
 				}
 			}
-
+*/
 			// Removed extrafields
 			//$result=$this->deleteExtraFields($this);
 			//if ($result < 0) $error++;
@@ -585,19 +564,17 @@ class Societe extends nosqlDocument {
 					$this->error = $hookmanager->error;
 				}
 			}
-
+/*
 			// Remove third party
 			if (!$error) {
 				$sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe";
 				$sql.= " WHERE rowid = " . $id;
-				dol_syslog(get_class($this) . "::delete sql=" . $sql, LOG_DEBUG);
 				if (!$this->db->query($sql)) {
 					$error++;
 					$this->error = $this->db->lasterror();
-					dol_syslog(get_class($this) . "::delete erreur -3 " . $this->error, LOG_ERR);
 				}
 			}
-
+*/
 			if (!$error) {
 				// Appel des triggers
 				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
@@ -669,8 +646,6 @@ class Societe extends nosqlDocument {
 			$this->error = $langs->trans("ErrorFieldRequired", $langs->trans("Note"));
 			return -2;
 		}
-
-		dol_syslog(get_class($this) . "::set_remise_client " . $remise . ", " . $note . ", " . $user->id);
 
 		if ($this->id) {
 			$this->db->begin();
@@ -1088,8 +1063,6 @@ class Societe extends nosqlDocument {
 
 			$this->code_client = $mod->getNextValue($objsoc, $type);
 			$this->prefixCustomerIsRequired = $mod->prefixIsRequired;
-
-			dol_syslog(get_class($this) . "::get_codeclient code_client=" . $this->code_client . " module=" . $var);
 		}
 	}
 
@@ -1114,8 +1087,6 @@ class Societe extends nosqlDocument {
 			$mod = new $var;
 
 			$this->code_fournisseur = $mod->getNextValue($objsoc, $type);
-
-			dol_syslog(get_class($this) . "::get_codefournisseur code_fournisseur=" . $this->code_fournisseur . " module=" . $var);
 		}
 	}
 
@@ -1139,7 +1110,6 @@ class Societe extends nosqlDocument {
 
 			$mod = new $var;
 
-			dol_syslog(get_class($this) . "::codeclient_modifiable code_client=" . $this->code_client . " module=" . $var);
 			if ($mod->code_modifiable_null && !$this->code_client)
 				return 1;
 			if ($mod->code_modifiable_invalide && $this->check_codeclient() < 0)
@@ -1172,7 +1142,6 @@ class Societe extends nosqlDocument {
 
 			$mod = new $var;
 
-			dol_syslog(get_class($this) . "::codefournisseur_modifiable code_founisseur=" . $this->code_fournisseur . " module=" . $var);
 			if ($mod->code_modifiable_null && !$this->code_fournisseur)
 				return 1;
 			if ($mod->code_modifiable_invalide && $this->check_codefournisseur() < 0)
@@ -1209,7 +1178,6 @@ class Societe extends nosqlDocument {
 
 			$mod = new $var;
 
-			dol_syslog(get_class($this) . "::check_codeclient code_client=" . $this->code_client . " module=" . $var);
 			$result = $mod->verif($this->db, $this->code_client, $this, 0);
 			return $result;
 		}
@@ -1241,7 +1209,6 @@ class Societe extends nosqlDocument {
 
 			$mod = new $var;
 
-			dol_syslog(get_class($this) . "::check_codefournisseur code_fournisseur=" . $this->code_fournisseur . " module=" . $var);
 			$result = $mod->verif($this->db, $this->code_fournisseur, $this, 1);
 			return $result;
 		}
@@ -1724,22 +1691,17 @@ class Societe extends nosqlDocument {
 			$sql.= " SET fk_soc=" . $this->id;
 			$sql.= " WHERE rowid=" . $member->id;
 
-			dol_syslog(get_class($this) . "::create_from_member sql=" . $sql, LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql) {
 				$this->db->commit();
 				return $this->id;
 			} else {
 				$this->error = $this->db->error();
-				dol_syslog(get_class($this) . "::create_from_member - 1 - " . $this->error, LOG_ERR);
 
 				$this->db->rollback();
 				return -1;
 			}
 		} else {
-			// $this->error deja positionne
-			dol_syslog(get_class($this) . "::create_from_member - 2 - " . $this->error . " - " . join(',', $this->errors), LOG_ERR);
-
 			$this->db->rollback();
 			return $result;
 		}
@@ -1841,7 +1803,6 @@ class Societe extends nosqlDocument {
 				$country_code = $tmp[1];
 				$country_label = $tmp[2];
 			} else {					// For backward compatibility
-				dol_syslog("Your country setup use an old syntax. Reedit it using setup area.", LOG_WARNING);
 				include_once DOL_DOCUMENT_ROOT . '/core/lib/company.lib.php';
 				$country_code = getCountry($country_id, 2, $db);  // This need a SQL request, but it's the old feature
 				$country_label = getCountry($country_id, 0, $db);  // This need a SQL request, but it's the old feature

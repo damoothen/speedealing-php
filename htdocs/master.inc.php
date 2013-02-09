@@ -117,7 +117,7 @@ if (!defined('NOREQUIRETRAN')) {
  * Object $db
  */
 if (!defined('NOREQUIREDB')) {
-	//if (!empty($conf->db->host)) {
+	if (!empty($conf->db->host)) {
 	//var_dump($conf->db);
 		$db = getDoliDBInstance($conf->db->type, $conf->db->host, $conf->db->user, $conf->db->pass, $conf->db->name, $conf->db->port);
 
@@ -125,10 +125,10 @@ if (!defined('NOREQUIREDB')) {
 			dol_print_error($db, "host=" . $conf->db->host . ", port=" . $conf->db->port . ", user=" . $conf->db->user . ", databasename=" . $conf->db->name . ", " . $db->error);
 			exit;
 		}
-	//} else {
+	} else {
 		// For backward compatibility
-		//$db = new stdClass();
-	//}
+		$db = new stdClass();
+	}
 
     // By default conf->entity is 1, but we change this if we ask another value
     if ($conf->urlrewrite && GETPOST("db")) // Value pass from url for the name of the database : need url rewrite

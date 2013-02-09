@@ -1135,8 +1135,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
     }
 }
 
-$db->close();
-
 print end_box();
 print '</div>';
 

@@ -1,6 +1,7 @@
 <?php
 
-/* Copyright (C) 2012      Herve Prot           <herve.prot@symeos.com>
+/* Copyright (C) 2012	Herve Prot		<herve.prot@symeos.com>
+ * Copyright (C) 2013	Regis Houssin	<regis.houssin@capnetworks.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
+require_once DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 
 /**
  * 	Class to manage Dolibarr users
@@ -26,13 +27,10 @@ class Dict extends nosqlDocument {
 
 	public $element = 'dict';
 	public $table_element = 'dict';
-	
+
 	/**
 	 *    Constructor de la classe
-	 *
-	 *    @param   DoliDb  $db     Database handler
 	 */
-
 	function __construct($db) {
 		$this->db = $db;
 		parent::__construct($db);

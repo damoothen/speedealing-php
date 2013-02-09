@@ -1,19 +1,19 @@
 <?php
 
-/* Copyright (c) 2002-2007 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2012 Laurent Destailleur   <eldy@users.sourceforge.net>
- * Copyright (C) 2004      Benoit Mortier        <benoit.mortier@opensides.be>
- * Copyright (C) 2004      Sebastien Di Cintio   <sdicintio@ressource-toi.org>
- * Copyright (C) 2004      Eric Seigne           <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2012 Regis Houssin         <regis.houssin@capnetworks.com>
- * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
- * Copyright (C) 2006      Marc Barilley/Ocebo   <marc@ocebo.com>
- * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerker@telenet.be>
- * Copyright (C) 2007      Patrick Raguin        <patrick.raguin@gmail.com>
- * Copyright (C) 2010      Juanjo Menent         <jmenent@2byte.es>
- * Copyright (C) 2010      Philippe Grand        <philippe.grand@atoo-net.com>
- * Copyright (C) 2011-2012 Herve Prot            <herve.prot@symeos.com>
- * Copyright (C) 2012      Marcos García         <marcosgdf@gmail.com>
+/* Copyright (c) 2002-2007	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2004		Benoit Mortier			<benoit.mortier@opensides.be>
+ * Copyright (C) 2004		Sebastien Di Cintio		<sdicintio@ressource-toi.org>
+ * Copyright (C) 2004		Eric Seigne				<eric.seigne@ryxeo.com>
+ * Copyright (C) 2005-2013	Regis Houssin			<regis.houssin@capnetworks.com>
+ * Copyright (C) 2006		Andre Cianfarani		<acianfa@free.fr>
+ * Copyright (C) 2006		Marc Barilley/Ocebo		<marc@ocebo.com>
+ * Copyright (C) 2007		Franky Van Liedekerke	<franky.van.liedekerker@telenet.be>
+ * Copyright (C) 2007		Patrick Raguin			<patrick.raguin@gmail.com>
+ * Copyright (C) 2010		Juanjo Menent			<jmenent@2byte.es>
+ * Copyright (C) 2010		Philippe Grand			<philippe.grand@atoo-net.com>
+ * Copyright (C) 2011-2012	Herve Prot				<herve.prot@symeos.com>
+ * Copyright (C) 2012		Marcos García			<marcosgdf@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,8 +57,6 @@ class Form {
 
     /**
      * Constructor
-     *
-     * @param		DoliDB		$db      Database handler
      */
     public function __construct($db) {
         $this->db = $db;
@@ -225,10 +223,6 @@ class Form {
             $out.= '<input id="element_id_' . $htmlname . '" type="hidden" value="' . $object->id . '"/>';
             $out.= '<input id="element_class_' . $htmlname . '" type="hidden" value="' . get_class($object) . '"/>';
 
-            //$out.= '<input id="element_' . $htmlname . '" value="' . $element . '" type="hidden"/>' . "\n";
-            //$out.= '<input id="table_element_' . $htmlname . '" value="' . $table_element . '" type="hidden"/>' . "\n";
-            //$out.= '<input id="fk_element_' . $htmlname . '" value="' . $fk_element . '" type="hidden"/>' . "\n";
-
             if (!empty($loadmethod))
                 $out.= '<input id="loadmethod_' . $htmlname . '" value="' . $loadmethod . '" type="hidden"/>' . "\n";
             if (!empty($savemethod))
@@ -239,10 +233,9 @@ class Form {
                 $out.= '<input id="success_' . $htmlname . '" value="' . $success . '" type="hidden"/>' . "\n";
 
             $out.= '<span id="viewval_' . $htmlname . '" class="viewval_' . $inputType . ($button_only ? ' inactive' : ' active') . '">';
-            //if (preg_match('/^select/', $inputType)) {
             $out.= $object->print_fk_extrafields($htmlname);
-            //}
             $out.= '</span>' . "\n";
+
             if (preg_match('/^tag/', $inputType)) {
                 $out.= '<ul class="array_tag_handler" id="editval_' . $htmlname . '"></ul>';
             } else {
@@ -426,7 +419,10 @@ class Form {
      * 	TODO move in DAO class
      */
     function load_cache_types_fees() {
-        global $langs;
+
+        return false;
+        /*
+    	global $langs;
 
         $langs->load("trips");
 
@@ -456,6 +452,7 @@ class Form {
             dol_print_error($this->db);
             return -1;
         }
+        */
     }
 
     /**
@@ -664,7 +661,10 @@ class Form {
      * 	@return	 int						<0 if KO, Nb of contact in list if OK
      */
     function selectcontacts($socid, $selected = '', $htmlname = 'contactid', $showempty = 0, $exclude = '', $limitto = '', $showfunction = 0, $moreclass = '', $options_only = false, $showsoc = 0) {
-        global $conf, $langs;
+        return false;
+
+        /*
+    	global $conf, $langs;
 
         $langs->load('companies');
 
@@ -763,6 +763,7 @@ class Form {
             dol_print_error($this->db);
             return -1;
         }
+        */
     }
 
     /**
@@ -832,7 +833,9 @@ class Form {
      *  @return     array    				Array of keys for json
      */
     function select_produits_do($selected = '', $htmlname = 'productid', $filtertype = '', $limit = 20, $price_level = 0, $filterkey = '', $status = 1, $finished = 2, $disableout = 0) {
-        global $langs, $conf, $user, $db;
+        return false;
+    	/*
+    	global $langs, $conf, $user, $db;
 
         $sql = "SELECT ";
         $sql.= " p.rowid, p.label, p.ref, p.description, p.fk_product_type, p.price, p.price_ttc, p.price_base_type, p.tva_tx, p.duration, p.stock";
@@ -884,7 +887,6 @@ class Form {
         $outselect = '';
         $outjson = array();
 
-        dol_syslog(get_class($this) . "::select_produits_do search product sql=" . $sql, LOG_DEBUG);
         $result = $this->db->query($sql);
         if ($result) {
             $num = $this->db->num_rows($result);
@@ -1042,6 +1044,7 @@ class Form {
         else {
             dol_print_error($db);
         }
+        */
     }
 
 
@@ -1272,9 +1275,6 @@ class Form {
             if (empty($disableout))
                 print $outselect;
             return $outjson;
-        }
-        else {
-            dol_print_error($db);
         }
     }
 

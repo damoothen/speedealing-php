@@ -111,10 +111,8 @@ print "</tr>\n";
 print "</table>\n";
 print end_box();
 
+
 /*
- * Speedealing Working Board with weather
- */
-/*$showweather = empty($conf->global->MAIN_DISABLE_METEO) ? 1 : 0;
 $rowspan = 0;
 $dashboardlines = array();
 print start_box($langs->trans("SpeedealingWorkBoard"), "eight", "16-Cloud.png");
@@ -125,8 +123,6 @@ print '<th class="liste_titre"align="right">' . $langs->trans("Number") . '</th>
 print '<th class="liste_titre"align="right">' . $langs->trans("Late") . '</th>';
 print '<th class="liste_titre">&nbsp;</th>';
 print '<th class="liste_titre"width="20">&nbsp;</th>';
-if ($showweather)
-    print '<th class="liste_titre" width="80">&nbsp;</th>';
 print '</tr>';
 //
 // Do not include sections without management permission
@@ -332,22 +328,6 @@ foreach ($dashboardlines as $key => $board) {
     print '<td nowrap="nowrap" align="right">';
     print ' (>' . ceil($board->warning_delay) . ' ' . $langs->trans("days") . ')';
     print '</td>';
-    if ($showweather) {
-        print '<td class="nohover" rowspan="' . $rowspan . '" width="80" style="border-left: 1px solid #DDDDDD" align="center">';
-        $text = '';
-        if ($totallate > 0)
-            $text = $langs->transnoentitiesnoconv("WarningYouHaveAtLeastOneTaskLate") . ' (' . $langs->transnoentitiesnoconv("NActionsLate", $totallate) . ')';
-        $options = 'height="64px"';
-        if ($rowspan <= 2)
-            $options = 'height="24"';  // Weather logo is smaller if dashboard has few elements
-        else if ($rowspan <= 3)
-            $options = 'height="48"';  // Weather logo is smaller if dashboard has few elements
-        print showWeather($totallate, $text, $options);
-        //print showWeather(0,'');
-        //print showWeather(40,$text);
-        print '</td>';
-        $showweather = 0;
-    }
     print '</tr>';
     print "\n";
 }
@@ -643,49 +623,4 @@ llxFooter();
   });
   </script>
   <?php */
-$db->close();
-
-/**
- *  Show weather logo. Logo to show depends on $totallate and values for
- *  $conf->global->MAIN_METEO_OFFSET
- *  $conf->global->MAIN_METEO_GAP
- *
- *  @param      int     $totallate      Nb of element late
- *  @param      string  $text           Text to show on logo
- *  @param      string  $options        More parameters on img tag
- *  @return     string                  Return img tag of weather
- */
-function showWeather($totallate, $text, $options) {
-    global $conf;
-
-    $out = '';
-    $offset = 0;
-    $cursor = 10; // By default
-    //if (! empty($conf->global->MAIN_METEO_OFFSET)) $offset=$conf->global->MAIN_METEO_OFFSET;
-    //if (! empty($conf->global->MAIN_METEO_GAP)) $cursor=$conf->global->MAIN_METEO_GAP;
-    $level0 = $offset;
-    if (!empty($conf->global->MAIN_METEO_LEVEL0))
-        $level0 = $conf->global->MAIN_METEO_LEVEL0;
-    $level1 = $offset + 1 * $cursor;
-    if (!empty($conf->global->MAIN_METEO_LEVEL1))
-        $level1 = $conf->global->MAIN_METEO_LEVEL1;
-    $level2 = $offset + 2 * $cursor;
-    if (!empty($conf->global->MAIN_METEO_LEVEL2))
-        $level2 = $conf->global->MAIN_METEO_LEVEL2;
-    $level3 = $offset + 3 * $cursor;
-    if (!empty($conf->global->MAIN_METEO_LEVEL3))
-        $level3 = $conf->global->MAIN_METEO_LEVEL3;
-
-    if ($totallate <= $level0)
-        $out.=img_picto_common($text, 'weather/weather-clear.png', $options);
-    if ($totallate > $level0 && $totallate <= $level1)
-        $out.=img_picto_common($text, 'weather/weather-few-clouds.png', $options);
-    if ($totallate > $level1 && $totallate <= $level2)
-        $out.=img_picto_common($text, 'weather/weather-clouds.png', $options);
-    if ($totallate > $level2 && $totallate <= $level3)
-        $out.=img_picto_common($text, 'weather/weather-many-clouds.png', $options);
-    if ($totallate > $level3)
-        $out.=img_picto_common($text, 'weather/weather-storm.png', $options);
-    return $out;
-}
 ?>

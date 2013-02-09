@@ -170,13 +170,13 @@ class ExtraFields extends nosqlDocument {
      */
     function fetch($class) {
         global $langs;
-        require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
+        require_once DOL_DOCUMENT_ROOT . '/admin/class/dict.class.php';
 
         try {
             $this->load("extrafields:" . $class, true); // load and cache
             //print_r($this->fields->Status);
         } catch (Exception $e) {
-            
+
         }
 
         if (count($this->fields))
