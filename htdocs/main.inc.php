@@ -644,7 +644,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     print "<title>" . $appli . "</title>";
                 print "\n";
                 ?>
-                <base href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
+                <base href="<?php echo MAIN_PROTOCOL . '://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
 
 
                 <!-- For all browsers -->

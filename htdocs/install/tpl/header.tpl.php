@@ -32,6 +32,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta name="robots" content="noindex,nofollow" />
 	<meta name="author" content="Speedealing Development Team" />
+	<base href="<?php echo MAIN_PROTOCOL . '://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
 	<title><?php echo $langs->trans("SpeedealingSetup"); ?></title>
 
 	<!-- For all browsers -->

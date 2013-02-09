@@ -128,7 +128,7 @@ $(document).ready(function() {
 	
 	// Create config
 	function addConfig() {
-		$.post("/install/ajax/install.php", {
+		$.post("install/ajax/install.php", {
     		action: 'create_config',
     		couchdb_name: $('#couchdb_name').val(),
     		couchdb_host: $('#couchdb_host').val(),
@@ -148,7 +148,7 @@ $(document).ready(function() {
 	
 	// Add usersync
 	function addUsersync() {
-		$.post("/install/ajax/install.php", {
+		$.post("install/ajax/install.php", {
     		action: 'create_syncuser',
     		couchdb_user_sync: $('#couchdb_user_sync').val(),
     		couchdb_pass_sync: $('#couchdb_pass_sync').val()
@@ -165,7 +165,7 @@ $(document).ready(function() {
 	
 	// Add database
 	function addDatabase() {
-		$.post("/install/ajax/install.php", {
+		$.post("install/ajax/install.php", {
     		action: 'create_database'
 		},
 		function(value) {
@@ -189,7 +189,7 @@ $(document).ready(function() {
 			var step = Math.round((75 / numfiles) + 1);
 			var files = $.parseJSON(jsonfiles);
 			$.each(files, function(name, path) {
-				$.post("/install/ajax/install.php", {
+				$.post("install/ajax/install.php", {
 					action: 'populate_database',
 		    		filename: name,
 		    		filepath: path
@@ -212,7 +212,7 @@ $(document).ready(function() {
 	// Create superadmin
 	function addSuperadmin() {
 		var result;
-		$.post("/install/ajax/install.php", {
+		$.post("install/ajax/install.php", {
     		action: 'create_admin',
     		couchdb_user_root: $('#couchdb_user_root').val(),
     		couchdb_pass_root: $('#couchdb_pass_root').val()
@@ -229,7 +229,7 @@ $(document).ready(function() {
 	
 	// Create user
 	function addUser() {
-		$.post("/install/ajax/install.php", {
+		$.post("install/ajax/install.php", {
     		action: 'create_user',
     		couchdb_user_firstname: $('#couchdb_user_firstname').val(),
     		couchdb_user_lastname: $('#couchdb_user_lastname').val(),
@@ -249,7 +249,7 @@ $(document).ready(function() {
 	
 	// Add lock file
 	function lockInstall() {
-		$.post("/install/ajax/install.php", {
+		$.post("install/ajax/install.php", {
     		action: 'lock_install'
 		},
 		function(value) {
@@ -272,7 +272,7 @@ $(document).ready(function() {
 	
 	// Start button
 	$('#start_button').click(function() {
-		$(location).attr('href', '/');
+		$(location).attr('href', $("base").attr("href"));
 	});
 	
 	// Reload pre-requisite
@@ -285,7 +285,7 @@ $(document).ready(function() {
 		// Add loader
 		$('#php_version, #php_memory, #php_utf8, #php_gd, #php_curl, #php_memcached, #conf_file').html('<span class="loader"></span>');
 		// Check prerequisites
-		$.getJSON('ajax/prerequisite.php', { action: 'check_prerequisite', lang: $('#selectlang').val() }, function(data) {
+		$.getJSON('install/ajax/prerequisite.php', { action: 'check_prerequisite', lang: $('#selectlang').val() }, function(data) {
 			if (data) {
 				$.each(data, function(key, value) {
 					if (key == 'memcached') {

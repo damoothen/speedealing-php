@@ -45,7 +45,12 @@ if (!defined('LOG_DEBUG')) {
     }
 }
 
+// Define DOL_DOCUMENT_ROOT
 define('DOL_DOCUMENT_ROOT', realpath(dirname(__FILE__)));   // Filesystem core php (htdocs)
+
+// Define MAIN_PROTOCOL
+$protocol = ((!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on')?'https':'http');
+define('MAIN_PROTOCOL', $protocol);
 
 // End of common declaration part
 if (defined('DOL_INC_FOR_VERSION_ERROR'))
@@ -154,7 +159,7 @@ if (!$found) { // If autodetect fails (Ie: when using apache alias that point ou
     $tmp = $dolibarr_main_url_root;
 }
 else
-    $tmp = 'http' . ((empty($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != 'on') ? '' : 's') . '://' . $_SERVER["SERVER_NAME"] . ((empty($_SERVER["SERVER_PORT"]) || $_SERVER["SERVER_PORT"] == 80) ? '' : ':' . $_SERVER["SERVER_PORT"]) . ($tmp3 ? (preg_match('/^\//', $tmp3) ? '' : '/') . $tmp3 : '');
+    $tmp = MAIN_PROTOCOL . '://' . $_SERVER["SERVER_NAME"] . ((empty($_SERVER["SERVER_PORT"]) || $_SERVER["SERVER_PORT"] == 80) ? '' : ':' . $_SERVER["SERVER_PORT"]) . ($tmp3 ? (preg_match('/^\//', $tmp3) ? '' : '/') . $tmp3 : '');
 //print "tmp1=".$tmp1." tmp2=".$tmp2." tmp3=".$tmp3." tmp=".$tmp;
 
 if (!empty($dolibarr_main_force_https))
