@@ -94,6 +94,27 @@ if (!empty($json) && !empty($class)) {
             exit;
         }
     }
+    
+    else if ($json == 'addline') {
+        
+        $id = GETPOST('fk_invoice', 'alpha');
+        $object->fetch($id);
+        
+        $object->addline($id, GETPOST('description'), GETPOST('subprice'), GETPOST('qty'), GETPOST('tva_tx'), 0, 0, 0, GETPOST('remise'));
+
+        $idline = count($object->lines);
+        $line = $object->lines[$idline - 1];
+        
+        $obj->_id = $idline;
+        $obj->description = $line->description;
+        $obj->subprice = $line->subprice;
+        $obj->qty = $line->qty;
+        $obj->remise = $line->remise;
+        $obj->tva_tx = $line->tva_tx;
+        $obj->total_ht = $line->total_ht;
+
+        
+    }
 }
 
 //error_log(json_encode($res));
