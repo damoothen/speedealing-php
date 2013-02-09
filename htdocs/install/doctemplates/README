@@ -6,3 +6,5 @@ process.
 WARNING:
 Do not edit files in those directories, but in installed data
 directory instead.
+
+TODO: move this documents in database

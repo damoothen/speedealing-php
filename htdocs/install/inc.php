@@ -89,6 +89,7 @@ else {
 // Clean proposed URL
 $main_url_root = preg_replace('/\/$/', '', $main_url_root);     // Remove the /
 $main_url_root = preg_replace('/\/index\.php$/', '', $main_url_root);  // Remove the /index.php
+$main_url_root = preg_replace('/\/phpinfo\.php$/', '', $main_url_root);   // Remove the /phpinfo.php
 $main_url_root = preg_replace('/\/install$/', '', $main_url_root);   // Remove the /install
 $uri = preg_replace('/^http(s?):\/\//i', '', $main_url_root);	// $uri contains url without http*
 $suburi = strstr($uri, '/');       // $suburi contains url without domain

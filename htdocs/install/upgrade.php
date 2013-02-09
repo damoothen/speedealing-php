@@ -16,6 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ *
+ * @return number
+ * @todo move this function outside install directory
+ */
 function upgrade() {
 	global $user, $conf, $langs;
 
@@ -92,7 +97,7 @@ function upgrade() {
 			}
 			$dict->record();
 		} else {
-			
+
 		}
 	}
 
