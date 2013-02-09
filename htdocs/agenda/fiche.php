@@ -1294,8 +1294,6 @@ if ($id) {
 print "</div>";
 print "</div>";
 
-$db->close();
-
 llxFooter();
 
 /**

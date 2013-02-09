@@ -1670,5 +1670,4 @@ if ($action == 'presend') {
 print '</div>';
 print '</div>';
 llxFooter();
-$db->close();
 ?>

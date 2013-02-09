@@ -23,6 +23,8 @@
  *  \brief      Page des stats factures
  */
 
+// TODO voir pour gérer des graphiques dynamiques
+
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
 require_once DOL_DOCUMENT_ROOT.'/facture/class/facturestats.class.php';
@@ -299,8 +301,5 @@ print '</td></tr></table>';
 
 dol_fiche_end();
 
-
 llxFooter();
-
-$db->close();
 ?>

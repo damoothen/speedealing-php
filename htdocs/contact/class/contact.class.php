@@ -462,7 +462,9 @@ class Contact extends nosqlDocument {
      *  @return     int             					<0 if KO, >=0 if OK
      */
     function load_ref_elements() {
-        // Compte les elements pour lesquels il est contact
+        return false;
+    	/*
+    	// Compte les elements pour lesquels il est contact
         $sql = "SELECT tc.element, count(ec.rowid) as nb";
         $sql.=" FROM " . MAIN_DB_PREFIX . "element_contact as ec, " . MAIN_DB_PREFIX . "c_type_contact as tc";
         $sql.=" WHERE ec.fk_c_type_contact = tc.rowid";
@@ -493,6 +495,7 @@ class Contact extends nosqlDocument {
             dol_syslog(get_class($this) . "::load_ref_elements Error " . $this->error, LOG_ERR);
             return -1;
         }
+       */
     }
 
     /**

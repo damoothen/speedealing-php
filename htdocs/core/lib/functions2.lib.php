@@ -1241,6 +1241,8 @@ function version_webserver()
  */
 function getListOfModels($db,$type,$maxfilenamelength=0)
 {
+	return false;
+	/*
     global $conf,$langs;
     $liste=array();
     $found=0;
@@ -1250,7 +1252,7 @@ function getListOfModels($db,$type,$maxfilenamelength=0)
     $sql.= " FROM ".MAIN_DB_PREFIX."document_model";
     $sql.= " WHERE type = '".$type."'";
     $sql.= " AND entity in (0,".$conf->entity.")";
-    
+
     //print $sql;
 
     $resql = $db->query($sql);
@@ -1284,7 +1286,7 @@ function getListOfModels($db,$type,$maxfilenamelength=0)
                         $tmpdir=preg_replace('/DOL_DATA_ROOT/',DOL_DATA_ROOT."/".$conf->entity,$tmpdir);
                     else
                         $tmpdir=preg_replace('/DOL_DATA_ROOT/',DOL_DATA_ROOT,$tmpdir);
-                    
+
                     if (! $tmpdir) { unset($listofdir[$key]); continue; }
                     if (is_dir($tmpdir))
                     {
@@ -1321,6 +1323,7 @@ function getListOfModels($db,$type,$maxfilenamelength=0)
 
     if ($found) return $liste;
     else return 0;
+*/
 }
 
 /**

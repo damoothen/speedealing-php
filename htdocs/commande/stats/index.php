@@ -24,6 +24,9 @@
  *		\brief      Page with customers or suppliers orders statistics
  */
 
+// TODO les graphiques était stocké dans le rep documents
+// voir pour faire autrement car le rep n'existe plus
+
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 require_once DOL_DOCUMENT_ROOT.'/commande/class/commandestats.class.php';
@@ -325,8 +328,5 @@ print '</td></tr></table>';
 
 dol_fiche_end();
 
-
 llxFooter();
-
-$db->close();
 ?>

@@ -1788,7 +1788,7 @@ abstract class CommonObject {
         if (!empty($conf->global->MAIN_DISABLE_CANVAS))
             return 0;    // To increase speed. Not enabled by default.
 
-            
+
 // Clean parameters
         $ref = trim($ref);
 
@@ -1914,6 +1914,8 @@ abstract class CommonObject {
      *  @return	int					<0 if KO, 0 if not used, >0 if already used
      */
     function isObjectUsed($id) {
+    	return false;
+    	/*
         // Check parameters
         if (!isset($this->childtables) || !is_array($this->childtables) || count($this->childtables) == 0) {
             dol_print_error('Called isObjectUsed on a class with property this->childtables not defined');
@@ -1947,6 +1949,7 @@ abstract class CommonObject {
         }
         else
             return 0;
+       */
     }
 
     /**

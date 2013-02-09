@@ -292,5 +292,4 @@ $object->datatablesCreate($obj, "list_contacts", true, true);
 print '</div>'; // end
 
 llxFooter();
-$db->close();
 ?>

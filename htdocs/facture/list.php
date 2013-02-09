@@ -1,10 +1,6 @@
 <?php
-/* Copyright (C) 2001-2005 Rodolphe Quiedeville   <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2012 Laurent Destailleur    <eldy@users.sourceforge.net>
- * Copyright (C) 2005      Marc Barilley / Ocebo  <marc@ocebo.com>
- * Copyright (C) 2005-2012 Regis Houssin          <regis.houssin@capnetworks.com>
- * Copyright (C) 2012      Juanjo Menent          <jmenent@2byte.es>
- * Copyright (C) 2012      David Moothen          <dmoothen@websitti.fr>
+/* Copyright (C) 2012-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012		David Moothen	<dmoothen@websitti.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +111,7 @@ print $object->datatablesEdit("listinvoices", $langs->trans("NewBill"));
 $i = 0;
 $obj = new stdClass();
 print '<table class="display dt_act" id="listinvoices" >';
-// Ligne des titres 
+// Ligne des titres
 print'<thead>';
 print'<tr>';
 print'<th>';
@@ -267,14 +263,11 @@ $obj->aaSorting = array(array(2, 'asc'));
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listDONEByUser";
 //    else
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listTODOByUser";
-//        
+//
 //}
 //$obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
 
 $object->datatablesCreate($obj, "listinvoices", true, true);
 
-
 llxFooter();
-
-$db->close();
 ?>

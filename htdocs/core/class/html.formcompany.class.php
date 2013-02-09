@@ -56,6 +56,8 @@ class FormCompany
 	 */
 	function typent_array($mode=0, $filter='')
 	{
+		return false;
+		/*
 		global $langs;
 
 		$effs = array();
@@ -86,6 +88,7 @@ class FormCompany
 		}
 
 		return $effs;
+		*/
 	}
 
 	/**
@@ -305,7 +308,7 @@ class FormCompany
 	function select_ziptown($selected='', $htmlname='zipcode', $fields='', $fieldsize=0, $disableautocomplete=0)
 	{
 		global $conf;
-		
+
 		include_once (DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php');
 
 		$out='';

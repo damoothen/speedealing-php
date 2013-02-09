@@ -1821,5 +1821,4 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 // End of page
 llxFooter();
-$db->close();
 ?>

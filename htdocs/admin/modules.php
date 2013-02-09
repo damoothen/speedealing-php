@@ -1,12 +1,12 @@
 <?php
 
-/* Copyright (C) 2003-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2011 Regis Houssin        <regis.houssin@capnetworks.com>
- * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
- * Copyright (C) 2011	   Juanjo Menent        <jmenent@2byte.es>
+/* Copyright (C) 2003-2007	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2003		Jean-Louis Bergamo		<jlb@j1b.org>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2004		Eric Seigne				<eric.seigne@ryxeo.com>
+ * Copyright (C) 2005-2013	Regis Houssin			<regis.houssin@capnetworks.com>
+ * Copyright (C) 2011-2013	Herve Prot				<herve.prot@symeos.com>
+ * Copyright (C) 2011		Juanjo Menent			<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ if ($action == 'set' && $user->admin) {
     try {
         $object->load($_GET['id']); // update if module exist
     } catch (Exception $e) {
-        
+
     }
 
     try {
@@ -65,7 +65,7 @@ if ($action == 'set' && $user->admin) {
 
         foreach ($objMod as $key => $aRow)
             $object->$key = $aRow;
-        
+
         $object->_id = "module:" . $objMod->name;
         $object->enabled = true;
         dol_delcache("MenuAuguria:list"); //refresh menu
@@ -203,8 +203,8 @@ $obj->fnDrawCallback = "function(oSettings){
                                 nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
                                 sLastGroup = sGroup;
                             }
-                    
-                    
+
+
                 }
 	}";
 
@@ -372,6 +372,4 @@ print end_box();
 print '</div></div>';
 
 llxFooter();
-
-$db->close();
 ?>

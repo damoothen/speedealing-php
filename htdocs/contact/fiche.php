@@ -910,6 +910,4 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 print '</div></div>';
 
 llxFooter();
-
-$db->close();
 ?>

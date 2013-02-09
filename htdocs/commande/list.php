@@ -116,7 +116,7 @@ $obj = new stdClass();
 print $object->datatablesEdit("listorders", $langs->trans("NewOrder"));
 
 print '<table class="display dt_act" id="listorders" >';
-// Ligne des titres 
+// Ligne des titres
 print'<thead>';
 print'<tr>';
 print'<th>';
@@ -273,8 +273,5 @@ $object->datatablesCreate($obj, "listorders", true, true);
 
 print '</div>';
 
-
 llxFooter();
-
-$db->close();
 ?>

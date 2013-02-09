@@ -2457,6 +2457,8 @@ class Form {
      * 	@return	int							Nb of loaded lines, 0 if already loaded, <0 if KO
      */
     function load_cache_vatrates($country_code) {
+    	return false;
+    	/*
         global $langs;
 
         $num = count($this->cache_vatrates);
@@ -2490,6 +2492,7 @@ class Form {
             $this->error = '<font class="error">' . $this->db->error() . '</font>';
             return -2;
         }
+        */
     }
 
     /**

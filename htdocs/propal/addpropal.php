@@ -21,6 +21,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO remove this page
+
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php';
 require_once DOL_DOCUMENT_ROOT . '/propal/core/modules/propale/modules_propale.php';
@@ -333,5 +335,4 @@ print '</div>';
 print '</div>';
 print end_box();
 llxFooter();
-$db->close();
 ?>
