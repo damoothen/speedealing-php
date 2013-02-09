@@ -117,110 +117,133 @@ $(document).ready(function() {
 		} else if (step == 'install') {
 			var error = false;
 			$('.wizard-prev, .syncprogress').hide();
-			$('#add_conf').progress({style: 'large'}).showProgressStripes();
-			$('#add_database').progress({style: 'large'}).showProgressStripes();
-			if ($('#couchdb_replication').prop('checked')) {
-				$('.syncprogress').show();
-				$('#sync_database').progress({style: 'large'}).showProgressStripes();
-			}
-			// Create config file
-			$.post("/install/ajax/install.php", {
-	    		action: 'create_config',
-	    		couchdb_name: $('#couchdb_name').val(),
-	    		couchdb_host: $('#couchdb_host').val(),
-	    		couchdb_port: $('#couchdb_port').val(),
-	    		memcached_host: ($('#memcached_host').prop('disabled') ?  false : $('#memcached_host').val()),
-	    		memcached_port: ($('#memcached_port').prop('disabled') ? false : $('#memcached_port').val())
-			},
-			function(value) {
-				if (value > 0) {
-					setProgressBar('add_conf', 25);
-					// Create superadmin
-					$.post("/install/ajax/install.php", {
-			    		action: 'create_admin',
-			    		couchdb_user_root: $('#couchdb_user_root').val(),
-			    		couchdb_pass_root: $('#couchdb_pass_root').val()
-					},
-					function(value) {
-						if (value > 0) {
-							setProgressBar('add_conf', 50);
-							// Create user
-							$.post("/install/ajax/install.php", {
-					    		action: 'create_user',
-					    		couchdb_user_firstname: $('#couchdb_user_firstname').val(),
-					    		couchdb_user_lastname: $('#couchdb_user_lastname').val(),
-					    		couchdb_user_pseudo: $('#couchdb_user_pseudo').val(),
-					    		couchdb_user_email: $('#couchdb_user_email').val(),
-					    		couchdb_user_pass: $('#couchdb_user_pass').val()
-							},
-							function(value) {
-								if (value > 0) {
-									setProgressBar('add_conf', 75);
-									// Create syncuser
-									$.post("/install/ajax/install.php", {
-							    		action: 'create_syncuser',
-							    		couchdb_user_sync: $('#couchdb_user_sync').val(),
-							    		couchdb_pass_sync: $('#couchdb_pass_sync').val()
-									},
-									function(value) {
-										if (value > 0) {
-											setProgressBar('add_conf', 100);
-											// Create database
-											$.post("/install/ajax/install.php", {
-									    		action: 'create_database'
-											},
-											function(value) {
-												if (value > 0) {
-													setProgressBar('add_database', 25);
-													// Populate database
-													var progress_value = 25;
-													var step = Math.round((75 / numfiles) + 1);
-													var files = $.parseJSON(jsonfiles);
-													$.each(files, function(name, path) {
-														$.post("/install/ajax/install.php", {
-															action: 'populate_database',
-												    		filename: name,
-												    		filepath: path
-														},
-														function(value) {
-															if (value > 0) {
-																progress_value = progress_value + step;
-																progress_value = (progress_value < 100 ? progress_value : 100)
-																setProgressBar('add_database', progress_value);
-															} else {
-																// Show error
-																error = true;
-																return false;
-															}
-														});
-													});
-												} else {
-													// Show error
-													error = true;
-												}
-											});
-										} else {
-											// Show error
-											error = true;
-										}
-									});
-								} else {
-									// Show error
-									error = true;
-								}
-							});
-						} else {
-							// Show error
-							error = true;
-						}
-					});
-				} else {
-					// Show error
-					error = true;
-				}
-			});
+			$('#set_conf').progress({style: 'large'}).showProgressStripes();
+			$('#set_database').progress({style: 'large'}).showProgressStripes();
+			$('#set_security').progress({style: 'large'}).showProgressStripes();
+			// Create config
+			addConfig();
 		}
 	});
+	
+	// Create config
+	function addConfig() {
+		$.post("/install/ajax/install.php", {
+    		action: 'create_config',
+    		couchdb_name: $('#couchdb_name').val(),
+    		couchdb_host: $('#couchdb_host').val(),
+    		couchdb_port: $('#couchdb_port').val(),
+    		memcached_host: ($('#memcached_host').prop('disabled') ?  false : $('#memcached_host').val()),
+    		memcached_port: ($('#memcached_port').prop('disabled') ? false : $('#memcached_port').val())
+		},
+		function(value) {
+			if (value > 0) {
+				setProgressBar('set_conf', 50);
+				addUsersync();
+			} else {
+				return false;
+			}
+		});
+	}
+	
+	// Add usersync
+	function addUsersync() {
+		$.post("/install/ajax/install.php", {
+    		action: 'create_syncuser',
+    		couchdb_user_sync: $('#couchdb_user_sync').val(),
+    		couchdb_pass_sync: $('#couchdb_pass_sync').val()
+		},
+		function(value) {
+			if (value > 0) {
+				setProgressBar('set_conf', 100);
+				addDatabase();
+			} else {
+				return false
+			}
+		});
+	}
+	
+	// Add database
+	function addDatabase() {
+		$.post("/install/ajax/install.php", {
+    		action: 'create_database'
+		},
+		function(value) {
+			if (value > 0) {
+				setProgressBar('set_database', 25);
+				populateDatabase();
+			} else {
+				return false;
+			}
+		});
+	}
+	
+	// Populate database
+	function populateDatabase() {
+		if ($('#couchdb_replication').prop('checked')) {
+			// Sync database
+			// TODO add sync progress here
+		} else {
+			// Populate local database
+			var progress_value = 25;
+			var step = Math.round((75 / numfiles) + 1);
+			var files = $.parseJSON(jsonfiles);
+			$.each(files, function(name, path) {
+				$.post("/install/ajax/install.php", {
+					action: 'populate_database',
+		    		filename: name,
+		    		filepath: path
+				},
+				function(value) {
+					if (value > 0) {
+						progress_value = progress_value + step;
+						progress_value = (progress_value < 100 ? progress_value : 100)
+						setProgressBar('set_database', progress_value);
+					} else {
+						// Break
+						return false;
+					}
+				});
+			});
+			addSuperadmin();
+		}
+	}
+	
+	// Create superadmin
+	function addSuperadmin() {
+		var result;
+		$.post("/install/ajax/install.php", {
+    		action: 'create_admin',
+    		couchdb_user_root: $('#couchdb_user_root').val(),
+    		couchdb_pass_root: $('#couchdb_pass_root').val()
+		},
+		function(value) {
+			if (value > 0) {
+				setProgressBar('set_security', 50);
+				addUser();
+			} else {
+				return false;
+			}
+		});
+	}
+	
+	// Create user
+	function addUser() {
+		$.post("/install/ajax/install.php", {
+    		action: 'create_user',
+    		couchdb_user_firstname: $('#couchdb_user_firstname').val(),
+    		couchdb_user_lastname: $('#couchdb_user_lastname').val(),
+    		couchdb_user_pseudo: $('#couchdb_user_pseudo').val(),
+    		couchdb_user_email: $('#couchdb_user_email').val(),
+    		couchdb_user_pass: $('#couchdb_user_pass').val()
+		},
+		function(value) {
+			if (value > 0) {
+				setProgressBar('set_security', 100);
+			} else {
+				return false;
+			}
+		});
+	}
 	
 	// Set progress bar
 	function setProgressBar(key, value) {

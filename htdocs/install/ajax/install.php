@@ -63,6 +63,7 @@ if ($action == 'create_config') {
 	// $dolibarr_main_couchdb_port
 
 	// Create superadmin
+	sleep(1); // for test
 
 	echo 1;
 } else if ($action == 'create_user') {
@@ -76,6 +77,7 @@ if ($action == 'create_config') {
 	// $dolibarr_main_couchdb_port
 
 	// Create first user
+	sleep(1); // for test
 
 	echo 1;
 } else if ($action == 'create_syncuser') {
@@ -86,6 +88,7 @@ if ($action == 'create_config') {
 	// $dolibarr_main_couchdb_port
 
 	// Create first user
+	sleep(1); // for test
 
 	echo 1;
 } else if ($action == 'create_database') {
@@ -94,6 +97,7 @@ if ($action == 'create_config') {
 	// $dolibarr_main_couchdb_port
 
 	// Create database
+	sleep(1); // for test
 
 	echo 1;
 } else if ($action == 'populate_database') {
