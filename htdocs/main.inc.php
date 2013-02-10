@@ -609,18 +609,12 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
     <!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
     <!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
     <!--[if (gt IE 9)|(gt IEMobile 7)]><!-->
-    <html
-        class="no-js" lang="en">
-        <!--<![endif]-->
 
-        <?php
-        if (!empty($conf->global->MAIN_USE_CACHE_MANIFEST))
-            print '<html manifest="cache.manifest">' . "\n";
-        else
-            print '<html>' . "\n";
+    <html class="no-js" lang="en">
 
-        if (empty($disablehead)) {
-            ?>
+    <!--<![endif]-->
+
+	<?php if (empty($disablehead)) { ?>
             <head>
                 <meta charset="utf-8" />
                 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -632,7 +626,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 <meta name="robots" content="noindex,nofollow" />
                 <meta name="author" content="Speedealing Development Team" />
                 <?php
-// Displays title
+				// Displays title
                 if (empty($mysoc->name))
                     $appli = 'Speedealing';
                 else
