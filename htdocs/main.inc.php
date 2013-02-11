@@ -896,9 +896,6 @@ function top_menu() {
 
 	$conf->top_menu = 'auguria_backoffice.php';
 
-	// For backward compatibility with old modules
-	//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
-
 	/*
 	 * Top menu
 	 */
@@ -1108,7 +1105,6 @@ function left_menu() {
 		$result = $agenda->getView("listMyTasks", $params);
 		if (count($result->rows)) :
 		?>
-
 		<ul class="unstyled-list">
 			<li class="title-menu">Today's event</li>
 			<li>
@@ -1123,36 +1119,8 @@ function left_menu() {
 				?>
 				</ul>
 			</li>
-		<?php endif;
-                    /*
-                      <li class="title-menu">New messages</li>
-                      <li>
-                      <ul class="message-menu">
-                      <li><span class="message-status"> <a href="#" class="starred"
-                      title="Starred">Starred</a> <a href="#" class="new-message"
-                      title="Mark as read">New</a>
-                      </span> <span class="message-info"> <span class="blue">17:12</span>
-                      <a href="#" class="attach" title="Download attachment">Attachment</a>
-                      </span> <a href="#" title="Read message"> <strong class="blue">John
-                      Doe</strong><br> <strong>Mail subject</strong>
-                      </a>
-                      </li>
-                      <li><a href="#" title="Read message"> <span class="message-status">
-                      <span class="unstarred">Not starred</span> <span
-                      class="new-message">New</span>
-                      </span> <span class="message-info"> <span class="blue">15:47</span>
-                      </span> <strong class="blue">May Starck</strong><br> <strong>Mail
-                      subject a bit longer</strong>
-                      </a>
-                      </li>
-                      <li><span class="message-status"> <span class="unstarred">Not
-                      starred</span>
-                      </span> <span class="message-info"> <span class="blue">15:12</span>
-                      </span> <strong class="blue">May Starck</strong><br> Read message</li>
-                      </ul>
-                      </li> */
-                    ?>
 		</ul>
+		<?php endif; ?>
 	</div>
 	<!-- End content wrapper -->
 
@@ -1160,110 +1128,14 @@ function left_menu() {
 	<footer id="menu-footer">
 		<div>
 			<p>Copyright 2012-2013 - Symeos</p>
-		</span>
+		</div>
 	</footer>
 
 	</section>
 	<!-- End sidebar/drop-down menu -->
 	<?php
-	// Define $searchform
-	/*
-	if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->rights->societe->lire) {
-		$langs->load("companies");
-		$searchform.=printSearchForm(DOL_URL_ROOT . '/societe/societe.php', DOL_URL_ROOT . '/societe/societe.php', img_object('', 'company') . ' ' . $langs->trans("ThirdParties"), 'soc', 'socname');
-	}
-
-	if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_CONTACT && $user->rights->societe->lire) {
-		$langs->load("companies");
-		$searchform.=printSearchForm(DOL_URL_ROOT . '/contact/list.php', DOL_URL_ROOT . '/contact/list.php', img_object('', 'contact') . ' ' . $langs->trans("Contacts"), 'contact', 'contactname');
-	}
-
-	if ((($conf->product->enabled && $user->rights->produit->lire) || ($conf->service->enabled && $user->rights->service->lire)) && $conf->global->MAIN_SEARCHFORM_PRODUITSERVICE) {
-		$langs->load("products");
-		$searchform.=printSearchForm(DOL_URL_ROOT . '/product/liste.php', DOL_URL_ROOT . '/product/liste.php', img_object('', 'product') . ' ' . $langs->trans("Products") . "/" . $langs->trans("Services"), 'products', 'sall');
-	}
-
-	if ($conf->adherent->enabled && $conf->global->MAIN_SEARCHFORM_ADHERENT && $user->rights->adherent->lire) {
-		$langs->load("members");
-		$searchform.=printSearchForm(DOL_URL_ROOT . '/adherents/liste.php', DOL_URL_ROOT . '/adherents/liste.php', img_object('', 'user') . ' ' . $langs->trans("Members"), 'member', 'sall');
-	 }
-
-	 // Execute hook printSearchForm
-	 $parameters = array();
-	 $searchform.=$hookmanager->executeHooks('printSearchForm', $parameters); // Note that $action and $object may have been modified by some hooks
-	 // Define $bookmarks
-	 if ($conf->bookmark->enabled && $user->rights->bookmark->lire) {
-	 	include DOL_DOCUMENT_ROOT . '/bookmarks/bookmarks.lib.php';
-	 	$langs->load("bookmarks");
-	 	$bookmarks = printBookmarksList($db, $langs);
-	 }
-	 */
-
-        // Load the top menu manager (only if not already done)
-        /* if (!class_exists('MenuLeft')) {
-          $menufound = 0;
-          $dirmenus = array_merge(array("/core/menus/"), $conf->menus_modules);
-          foreach ($dirmenus as $dirmenu) {
-          $menufound = dol_include_once($dirmenu . "standard/" . $left_menu);
-          if ($menufound)
-          break;
-          }
-          if (!$menufound) { // If failed to include, we try with standard
-          $top_menu = 'eldy_backoffice.php';
-          include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
-          }
-          } */
-
-
         // Left column
         print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
-        /*
-          print '<div class = "row">' . "\n";
-          print '<div class = "three columns hide-on-phones">' . "\n";
-
-          //$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
-          //$menuleft->showmenu(); // output menu_array and menu found in database
-          // Show other forms
-          if ($searchform) {
-          print "\n";
-          print "<!-- Begin SearchForm -->\n";
-          print '<div id = "blockvmenusearch" class = "blockvmenusearch">' . "\n";
-          print $searchform;
-          print '</div>' . "\n";
-          print "<!-- End SearchForm -->\n";
-          }
-
-          // More search form
-          if ($moresearchform) {
-          print $moresearchform;
-          }
-
-          // Bookmarks
-          if ($bookmarks) {
-          print "\n";
-          print "<!-- Begin Bookmarks -->\n";
-          print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">' . "\n";
-          print $bookmarks;
-          print '</div>' . "\n";
-          print "<!-- End Bookmarks -->\n";
-          }
-
-          print "</div>\n";
-          print "<!-- End left vertical menu -->\n";
-
-          print "\n";
-
-          // Execute hook printLeftBlock
-          $parameters = array();
-          $leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters); // Note that $action and $object may have been modified by some hooks
-          print $leftblock;
-
-          //print '</td>';
-
-          print "\n";
-          print '<!-- End of left area -->' . "\n";
-          print "\n";
-          print '<!-- Begin right area -->' . "\n"; */
 }
 
 /**
@@ -1281,40 +1153,6 @@ function main_area($title = '') {
 
 	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 		print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
-}
-
-/**
- * Show a search area
- *
- * @param  string	$urlaction          Url post
- * @param  string	$urlobject          Url of the link under the search box
- * @param  string	$title              Title search area
- * @param  string	$htmlmodesearch     Value to set into parameter "mode_search" ('soc','contact','products','member',...)
- * @param  string	$htmlinputname      Field Name input form
- * @return	void
- */
-function printSearchForm($urlaction, $urlobject, $title, $htmlmodesearch, $htmlinputname) {
-	global $conf, $langs;
-
-	$ret = '';
-	$ret.='<div class="menu_titre">';
-	$ret.='<a class="vsmenu" href="' . $urlobject . '">';
-	$ret.=$title . '</a><br>';
-	$ret.='</div>';
-	$ret.='<form action="' . $urlaction . '" method="post">';
-	$ret.='<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-	$ret.='<input type="hidden" name="mode" value="search">';
-	$ret.='<input type="hidden" name="mode_search" value="' . $htmlmodesearch . '">';
-	$ret.='<input type="text" class="flat" ';
-	if (!empty($conf->global->MAIN_HTML5_PLACEHOLDER))
-		$ret.=' placeholder="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
-	else
-		$ret.=' title="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
-	$ret.=' name="' . $htmlinputname . '" size="10" />&nbsp;';
-	$ret.='<input type="submit" class="button" value="' . $langs->trans("Go") . '">';
-	$ret.="</form>\n";
-
-	return $ret;
 }
 
 if (!function_exists("llxFooter")) {
