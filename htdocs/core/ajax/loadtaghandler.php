@@ -27,7 +27,7 @@ if (!defined('NOREQUIRESOC'))
     define('NOREQUIRESOC', '1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
-require('../../main.inc.php');
+require '../../main.inc.php';
 
 $key = GETPOST('key', 'alpha');
 $class = GETPOST('element_class', 'alpha');
@@ -40,14 +40,14 @@ $key = substr($key, 8); // remove prefix editval_
 /*$error = var_export($_GET, true);
 error_log($error);*/
 
-top_httphead();
+top_httphead('json'); // true for json header format
 
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 
 if (!empty($id) && !empty($class)) {
-    $res = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
+    $res = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php", $class);
     if (!$res) // old dolibarr
-        dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+        dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php", $class);
 
     $return = array();
 

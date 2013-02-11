@@ -527,12 +527,13 @@ if (!function_exists("llxHeader")) {
 /**
  * Show HTTP header
  *
- * @return	void
+ *	@param	$type	Header type
+ *	@return	void
  */
-function top_httphead($json=false) {
+function top_httphead($type=false) {
 	global $conf;
 
-	if ($json)
+	if ($type == 'json')
 		header('Content-type: application/json');
 	else
 		header("Content-type: text/html; charset=UTF-8");

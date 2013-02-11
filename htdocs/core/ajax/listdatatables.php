@@ -38,7 +38,7 @@ $bServerSide = GETPOST('bServerSide', 'int');
  * View
  */
 
-top_httphead(true); // true for json header format
+top_httphead('json'); // true for json header format
 
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 
