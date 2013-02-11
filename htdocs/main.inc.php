@@ -480,7 +480,7 @@ if (!function_exists("llxHeader")) {
 		if (empty($conf->global->MAIN_VERSION) || ($conf->global->MAIN_VERSION != DOL_VERSION)) {
 			$langs->load("install");
 			if (!empty($user->admin) && (empty($conf->global->MAIN_VERSION) || DOL_VERSION > $conf->global->MAIN_VERSION)) {
-				include_once DOL_DOCUMENT_ROOT . "/install/upgrade.php";
+				include_once DOL_DOCUMENT_ROOT . '/install/upgrade.php';
 				upgrade(); // Auto-upgrade
 			} else { // Need manual upgrade source code Speedealing
 				$log = dol_getcache("warnings");
@@ -529,10 +529,13 @@ if (!function_exists("llxHeader")) {
  *
  * @return	void
  */
-function top_httphead() {
+function top_httphead($json=false) {
 	global $conf;
 
-	header("Content-type: text/html; charset=UTF-8");
+	if ($json)
+		header('Content-type: application/json');
+	else
+		header("Content-type: text/html; charset=UTF-8");
 
 	// On the fly GZIP compression for all pages (if browser support it). Must set the bit 3 of constant to 1.
 	if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x04))
@@ -814,7 +817,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 		if (!defined('NOLOGIN')) {
 			// Global js function
-			// TODO deprecated ?
 			print '<!-- Includes JS of Speedealing -->' . "\n";
 			print '<script type="text/javascript" src="core/js/lib_head.js"></script>' . "\n";
 		}
@@ -838,7 +840,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		print '<!-- datatables -->';
 		print '<link rel="stylesheet" href="includes/jquery/plugins/datatables/css/demo_table_jui.css" media="all" />';
 
-		// FIXME load twice
 		print '<!-- main styles -->';
 		print '<link rel="stylesheet" href="theme/eldy/style.css" />';
 

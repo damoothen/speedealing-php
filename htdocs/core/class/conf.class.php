@@ -26,9 +26,9 @@
  *  \brief      	File of class to manage storage of current setup
  *  				Config is stored into file conf.php
  */
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/memory.lib.php"); // Lib for memcached
-require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+require_once DOL_DOCUMENT_ROOT . '/core/lib/memory.lib.php'; // Lib for memcached
+require_once DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 
 /**
  *  Class to stock current configuration
@@ -75,7 +75,7 @@ class Conf extends nosqlDocument {
      *
      * @return Conf
      */
-    function Conf() {
+    function __construct() {
         // Avoid warnings when filling this->xxx
         $this->file = new stdClass();
         $this->db = new stdClass();
@@ -119,9 +119,6 @@ class Conf extends nosqlDocument {
      * 	@return     int					< 0 if KO, >= 0 if OK
      */
     function setValues() {
-        global $conf;
-
-        dol_syslog(get_class($this) . "::setValues", LOG_INFO, get_class($this));
 
         // Avoid warning if not defined
         if (empty($this->db->dolibarr_main_db_encryption))
@@ -139,7 +136,6 @@ class Conf extends nosqlDocument {
         $result = dol_getcache("const");
         if (is_object($result))
             $found = true;
-
 
         if (!$found) {
             $result = array();

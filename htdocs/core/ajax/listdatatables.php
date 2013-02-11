@@ -1,6 +1,7 @@
 <?php
 
-/* Copyright (C) 2012			Herve Prot	<herve.prot@symeos.com>
+/* Copyright (C) 2012	Herve Prot		<herve.prot@symeos.com>
+ * Copyright (C) 2013	Regis Houssin	<regis.houssin@capnetworks.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,14 +21,14 @@ if (!defined('NOTOKENRENEWAL'))
     define('NOTOKENRENEWAL', '1'); // Disables token renewal
 if (!defined('NOREQUIREMENU'))
     define('NOREQUIREMENU', '1');
-//if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
+if (! defined('NOREQUIREHTML'))
+	define('NOREQUIREHTML','1');
 if (!defined('NOREQUIREAJAX'))
     define('NOREQUIREAJAX', '1');
 if (!defined('NOREQUIRESOC'))
     define('NOREQUIRESOC', '1');
-//if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
-require('../../main.inc.php');
+require '../../main.inc.php';
 
 $json = GETPOST('json', 'alpha');
 $class = GETPOST('class', 'alpha');
@@ -37,15 +38,15 @@ $bServerSide = GETPOST('bServerSide', 'int');
  * View
  */
 
-top_httphead();
+top_httphead(true); // true for json header format
 
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 
 if (!empty($json) && !empty($class)) {
 
-    $result = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
+    $result = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php", $class);
     if (empty($result)) {
-        dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php"); // Old version
+        dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php", $class); // Old version
     }
 
     $object = new $class($db);
@@ -99,8 +100,6 @@ if (!empty($json) && !empty($class)) {
     if ($bServerSide)
         $object->sortDatatable($output["aaData"], $_GET['mDataProp_' . $_GET['iSortCol_0']], $_GET['sSortDir_0']);
 
-    header('Content-type: application/json');
     echo json_encode($output);
-    exit;
 }
 ?>
