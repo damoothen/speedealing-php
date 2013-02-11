@@ -392,11 +392,11 @@ class AbstractInvoice extends nosqlDocument {
         print'<th>';
         print'</th>';
         $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "id";
+        $obj->aoColumns[$i]->mDataProp = "_id";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = false;
         $obj->aoColumns[$i]->bVisible = true;
-        $obj->aoColumns[$i]->sDefaultContent = "ok";
+        $obj->aoColumns[$i]->sDefaultContent = "";
         $i++;
         print'<th class="essential">';
         print $langs->trans("Description");
@@ -406,6 +406,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->sDefaultContent = "";
         $i++;
         print'<th class="essential">';
         print $langs->trans("Type");
@@ -416,6 +417,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
         $obj->aoColumns[$i]->fnRender = $product->datatablesFnRender("type", "status");
+		$obj->aoColumns[$i]->sDefaultContent = "SERVICE";
         $i++;
         print'<th class="essential">';
         print $langs->trans("VAT");
@@ -425,6 +427,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->sDefaultContent = 0;
         $i++;
         print'<th class="essential">';
         print $langs->trans("PriceUHT");
@@ -435,6 +438,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
         $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("subprice", "price");
+		$obj->aoColumns[$i]->sDefaultContent = 0;
         $i++;
         print'<th class="essential">';
         print $langs->trans("Qty");
@@ -444,6 +448,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->sDefaultContent = 0;
         $i++;
         print'<th class="essential">';
         print $langs->trans("ReductionShort");
@@ -453,6 +458,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->sDefaultContent = "";
         $i++;
         print'<th class="essential">';
         print $langs->trans("TotalHTShort");
@@ -462,7 +468,8 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("total_ht", "price");        
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("total_ht", "price");    
+		$obj->aoColumns[$i]->sDefaultContent = 0;
         $i++;
 //        print'<th class="essential">';
 //        print $langs->trans('Company');
@@ -553,32 +560,6 @@ class AbstractInvoice extends nosqlDocument {
         print'</tr>';
         print'</thead>';
         print'<tfoot>';
-        /* input search view */
-        $i = 0; //Doesn't work with bServerSide
-        print'<tr>';
-        print'<th id="' . $i . '"></th>';
-        $i++;
-        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Description") . '" /></th>';
-        $i++;
-        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Type") . '" /></th>';
-        $i++;
-        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search VAT") . '" /></th>';
-        $i++;
-        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search PriceUHT") . '" /></th>';
-        $i++;
-        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Qty") . '" /></th>';
-        $i++;
-        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search ReductionShort") . '" /></th>';
-        $i++;
-        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search TotalHTShort") . '" /></th>';
-        $i++;
-//print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
-//$i++;
-//        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
-//        $i++;
-//        print'<th id="' . $i . '"></th>';
-//        $i++;
-        print'</tr>';
         print'</tfoot>';
         print'<tbody>';
         print'</tbody>';
