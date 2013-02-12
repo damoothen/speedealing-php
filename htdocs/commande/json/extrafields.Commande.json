@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Commande",
-   "_rev": "20-cc57facfdf3991aaa8a7a51fb57d7af4",
+   "_rev": "49-b978a5a9c0107a9b7f63b0a47db3f40b",
    "class": "extrafields",
    "ico": "16-Document.png",
    "langs": [
@@ -14,7 +14,7 @@
    ],
    "createLine": [
        "description",
-       "subprice",
+       "pu_ht",
        "qty",
        "tva_tx",
        "remise"
@@ -109,7 +109,7 @@
            "enable": true,
            "label": "Description"
        },
-       "subprice": {
+       "pu_ht": {
            "type": "text",
            "enable": true,
            "label": "PriceUHT"

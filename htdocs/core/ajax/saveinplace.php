@@ -98,10 +98,18 @@ if (!empty($key) && !empty($id) && !empty($class)) {
         
             $idInvoice = $matches[1];
             $idLine = $matches[2];
-            
+                        
             $object->fetch($idInvoice);
-            $object->lines[$idLine]->$key = $value;
-            $object->record();
+            $line = $object->lines[$idLine];
+            $tmp = array();
+            foreach ($object->fk_extrafields->createLine as $createLineField) {
+                $tmp[$createLineField] = $line->$createLineField;
+            }
+            $tmp[$key] = $value;
+            extract($tmp);
+            
+            $object->updateline($idLine+1, $description, $pu_ht, $qty, $remise, $tva_tx);        
+            
             echo $value;
             
         }

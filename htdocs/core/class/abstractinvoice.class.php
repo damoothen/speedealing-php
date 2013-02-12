@@ -144,7 +144,7 @@ class AbstractInvoice extends nosqlDocument {
             $line->fk_product = $fk_product;
             $line->fk_remise_except = $fk_remise_except;
             $line->remise = $remise_percent;
-            $line->subprice = $pu_ht;
+            $line->pu_ht = $pu_ht;
 //            $line->rang = $rangtouse;
             $line->info_bits = $info_bits;
             $line->total_ht = $total_ht;
@@ -249,15 +249,14 @@ class AbstractInvoice extends nosqlDocument {
 
             $line = $this->lines[$rowid-1];
 
-            $line->id = $rowid;
             $line->label = $label;
             $line->description = $desc;
             $line->qty = $qty;
             $line->tva_tx = $txtva;
             $line->localtax1_tx = $txlocaltax1;
             $line->localtax2_tx = $txlocaltax2;
-            $line->remise_percent = $remise_percent;
-            $line->subprice = $subprice;
+            $line->remise = $remise_percent;
+            $line->pu_ht = $subprice;
             $line->info_bits = $info_bits;
             $line->special_code = 0; // To remove special_code=3 coming from proposals copy
             $line->total_ht = $total_ht;
@@ -395,8 +394,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->mDataProp = "_id";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = false;
-        $obj->aoColumns[$i]->bVisible = true;
-        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->bVisible = false;
         $i++;
         print'<th class="essential">';
         print $langs->trans("Description");
@@ -433,12 +431,12 @@ class AbstractInvoice extends nosqlDocument {
         print $langs->trans("PriceUHT");
         print'</th>';
         $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "subprice";
+        $obj->aoColumns[$i]->mDataProp = "pu_ht";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("subprice", "price");
-		$obj->aoColumns[$i]->sDefaultContent = 0;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("pu_ht", "price");
+        $obj->aoColumns[$i]->sDefaultContent = 0;
         $i++;
         print'<th class="essential">';
         print $langs->trans("Qty");
@@ -458,7 +456,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
-		$obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->sDefaultContent = "0";
         $i++;
         print'<th class="essential">';
         print $langs->trans("TotalHTShort");
