@@ -1,14 +1,6 @@
 <?php
-/* Copyright (C) 2001-2007 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur   <eldy@users.sourceforge.net>
- * Copyright (C) 2004      Eric Seigne           <eric.seigne@ryxeo.com>
- * Copyright (C) 2005      Marc Barilley / Ocebo <marc@ocebo.com>
- * Copyright (C) 2005-2012 Regis Houssin         <regis.houssin@capnetworks.com>
- * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
- * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
- * Copyright (C) 2010-2011 Philippe Grand        <philippe.grand@atoo-net.com>
- * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
- * Copyright (C) 2012      David Moothen   <dmoothen@websitti.fr>
+/* Copyright (C) 2012-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012		David Moothen	<dmoothen@websitti.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,20 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/propal/class/propal.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/agenda/lib/agenda.lib.php");
-if (!empty($conf->projet->enabled))
-    require_once(DOL_DOCUMENT_ROOT . "/core/lib/project.lib.php");
+require '../main.inc.php';
+if (!class_exists('Contact'))
+	require DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
+if (!class_exists('Propal'))
+	require DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php';
 
 $langs->load('companies');
 $langs->load('propal');
-$langs->load('compta');
-$langs->load('bills');
-$langs->load('orders');
-$langs->load('products');
 
 $socid=GETPOST('socid','int');
 
@@ -158,7 +144,7 @@ print $object->datatablesEdit("listpropals", $langs->trans("NewProposal"));
 $i = 0;
 $obj = new stdClass();
 print '<table class="display dt_act" id="listpropals" >';
-// Ligne des titres 
+// Ligne des titres
 print'<thead>';
 print'<tr>';
 print'<th>';
@@ -227,7 +213,7 @@ $i++;
   $obj->aoColumns[$i]->mDataProp = "author";
   $obj->aoColumns[$i]->sDefaultContent = "";
   $obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
-  $i++; 
+  $i++;
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
@@ -276,7 +262,7 @@ $i++;
 //print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search DateEnd") . '" /></th>';
 //$i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
-$i++; 
+$i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
 $i++;
 print'<th id="' . $i . '"></th>';
@@ -301,7 +287,7 @@ $obj->aaSorting = array(array(1, 'asc'));
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listDONEByUser";
 //    else
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listTODOByUser";
-//        
+//
 //}
 //$obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
 

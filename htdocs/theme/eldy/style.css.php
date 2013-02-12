@@ -25,20 +25,20 @@
 //if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled because need to load personalized language
 //if (! defined('NOREQUIREDB'))   define('NOREQUIREDB','1');	// Not disabled to increase speed. Language code is found on url.
 if (!defined('NOREQUIRESOC'))
-	define('NOREQUIRESOC', '1');
+    define('NOREQUIRESOC', '1');
 //if (! defined('NOREQUIRETRAN')) define('NOREQUIRETRAN','1');	// Not disabled because need to do translations
 if (!defined('NOCSRFCHECK'))
-	define('NOCSRFCHECK', 1);
+    define('NOCSRFCHECK', 1);
 if (!defined('NOTOKENRENEWAL'))
-	define('NOTOKENRENEWAL', 1);
-if (!defined('NOLOGIN'))
-	define('NOLOGIN', 1);		  // File must be accessed by logon page so without login
+    define('NOTOKENRENEWAL', 1);
+//if (!defined('NOLOGIN'))
+    //define('NOLOGIN', 1);          // File must be accessed by logon page so without login
 if (!defined('NOREQUIREMENU'))
-	define('NOREQUIREMENU', 1);
+    define('NOREQUIREMENU', 1);
 if (!defined('NOREQUIREHTML'))
-	define('NOREQUIREHTML', 1);
+    define('NOREQUIREHTML', 1);
 if (!defined('NOREQUIREAJAX'))
-	define('NOREQUIREAJAX', '1');
+    define('NOREQUIREAJAX', '1');
 
 session_cache_limiter(FALSE);
 
@@ -51,26 +51,26 @@ header('Content-type: text/css');
 // Important: Following code is to avoid page request by browser and PHP CPU at
 // each Dolibarr page access.
 if (empty($dolibarr_nocache))
-	header('Cache-Control: max-age=3600, public, must-revalidate');
+    header('Cache-Control: max-age=3600, public, must-revalidate');
 else
-	header('Cache-Control: no-cache');
+    header('Cache-Control: no-cache');
 
 // On the fly GZIP compression for all pages (if browser support it). Must set the bit 3 of constant to 1.
 if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x04)) {
-	ob_start("ob_gzhandler");
+    ob_start("ob_gzhandler");
 }
 
 if (GETPOST('lang'))
-	$langs->setDefaultLang(GETPOST('lang')); // If language was forced on URL
+    $langs->setDefaultLang(GETPOST('lang')); // If language was forced on URL
 if (GETPOST('theme'))
-	$conf->theme = GETPOST('theme');  // If theme was forced on URL
+    $conf->theme = GETPOST('theme');  // If theme was forced on URL
 $langs->load("main", 0, 1);
 $right = ($langs->trans("DIRECTION") == 'rtl' ? 'left' : 'right');
 $left = ($langs->trans("DIRECTION") == 'rtl' ? 'right' : 'left');
 
-$path = '';	// This value may be used in future for external module to overwrite theme
+$path = '';    // This value may be used in future for external module to overwrite theme
 // Define image path files
-$fontlist = 'arial,tahoma,verdana,helvetica';	//$fontlist='Verdana,Helvetica,Arial,sans-serif';
+$fontlist = 'arial,tahoma,verdana,helvetica';    //$fontlist='Verdana,Helvetica,Arial,sans-serif';
 $img_head = dol_buildpath($path . '/theme/eldy/img/headbg2.jpg', 1);
 $img_button = dol_buildpath($path . '/theme/eldy/img/button_bg.png', 1);
 
@@ -87,24 +87,24 @@ $colgreen = empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED) ? (empty($conf->g
 $colblue = empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED) ? (empty($conf->global->THEME_ELDY_RGB) ? 235 : hexdec(substr($conf->global->THEME_ELDY_RGB, 4, 2))) : (empty($user->conf->THEME_ELDY_RGB) ? 235 : hexdec(substr($user->conf->THEME_ELDY_RGB, 4, 2)));
 
 // Colors
-$isred = max(0, (2 * $colred - $colgreen - $colblue) / 2);		// 0 - 255
-$isgreen = max(0, (2 * $colgreen - $colred - $colblue) / 2);	  // 0 - 255
-$isblue = max(0, (2 * $colblue - $colred - $colgreen) / 2);	   // 0 - 255
-$colorback1 = ($colred - 3) . ',' . ($colgreen - 3) . ',' . ($colblue - 3);		 // topmenu
+$isred = max(0, (2 * $colred - $colgreen - $colblue) / 2);        // 0 - 255
+$isgreen = max(0, (2 * $colgreen - $colred - $colblue) / 2);      // 0 - 255
+$isblue = max(0, (2 * $colblue - $colred - $colgreen) / 2);       // 0 - 255
+$colorback1 = ($colred - 3) . ',' . ($colgreen - 3) . ',' . ($colblue - 3);         // topmenu
 $colorback2 = ($colred + 5) . ',' . ($colgreen + 5) . ',' . ($colblue + 5);
-$colorbacktab1 = ($colred + 15) . ',' . ($colgreen + 16) . ',' . ($colblue + 17);	  // vmenu
-$colorbacktab1b = ($colred + 5) . ',' . ($colgreen + 6) . ',' . ($colblue + 7);		// vmenu (not menu)
+$colorbacktab1 = ($colred + 15) . ',' . ($colgreen + 16) . ',' . ($colblue + 17);      // vmenu
+$colorbacktab1b = ($colred + 5) . ',' . ($colgreen + 6) . ',' . ($colblue + 7);        // vmenu (not menu)
 $colorbacktab2 = ($colred - 15) . ',' . ($colgreen - 15) . ',' . ($colblue - 15);
-$colorbacktitle1 = ($colred - 5) . ',' . ($colgreen - 5) . ',' . ($colblue - 5);	// title of array
+$colorbacktitle1 = ($colred - 5) . ',' . ($colgreen - 5) . ',' . ($colblue - 5);    // title of array
 $colorbacktitle2 = ($colred - 15) . ',' . ($colgreen - 15) . ',' . ($colblue - 15);
 $colorbacktabcard1 = ($colred + 15) . ',' . ($colgreen + 16) . ',' . ($colblue + 17);  // card
 $colorbacktabcard2 = ($colred - 15) . ',' . ($colgreen - 15) . ',' . ($colblue - 15);
 $colorbacktabactive = ($colred - 15) . ',' . ($colgreen - 15) . ',' . ($colblue - 15);
-$colorbacklineimpair1 = (244 + round($isred / 3)) . ',' . (244 + round($isgreen / 3)) . ',' . (244 + round($isblue / 3));	// line impair
-$colorbacklineimpair2 = (250 + round($isred / 3)) . ',' . (250 + round($isgreen / 3)) . ',' . (250 + round($isblue / 3));	// line impair
-$colorbacklineimpairhover = (230 + round(($isred + $isgreen + $isblue) / 9)) . ',' . (230 + round(($isred + $isgreen + $isblue) / 9)) . ',' . (230 + round(($isred + $isgreen + $isblue) / 9));	// line impair
-$colorbacklinepair1 = '255,255,255';	// line pair
-$colorbacklinepair2 = '255,255,255';	// line pair
+$colorbacklineimpair1 = (244 + round($isred / 3)) . ',' . (244 + round($isgreen / 3)) . ',' . (244 + round($isblue / 3));    // line impair
+$colorbacklineimpair2 = (250 + round($isred / 3)) . ',' . (250 + round($isgreen / 3)) . ',' . (250 + round($isblue / 3));    // line impair
+$colorbacklineimpairhover = (230 + round(($isred + $isgreen + $isblue) / 9)) . ',' . (230 + round(($isred + $isgreen + $isblue) / 9)) . ',' . (230 + round(($isred + $isgreen + $isblue) / 9));    // line impair
+$colorbacklinepair1 = '255,255,255';    // line pair
+$colorbacklinepair2 = '255,255,255';    // line pair
 $colorbacklinepairhover = (230 + round(($isred + $isgreen + $isblue) / 9)) . ',' . (230 + round(($isred + $isgreen + $isblue) / 9)) . ',' . (230 + round(($isred + $isgreen + $isblue) / 9));
 $colorbackbody = '#ffffff url(' . $img_head . ') 0 0 no-repeat;';
 $colortext = '40,40,40';
@@ -113,25 +113,25 @@ $fontsizesmaller = empty($conf->browser->phone) ? '11' : '14';
 
 // Eldy colors
 if (empty($conf->global->THEME_ELDY_ENABLE_PERSONALIZED)) {
-	$conf->global->THEME_ELDY_TOPMENU_BACK1 = '180,196,216';	// topmenu
-	$conf->global->THEME_ELDY_TOPMENU_BACK2 = '190,206,226';
-	$conf->global->THEME_ELDY_VERMENU_BACK1 = '246,248,250';	// vmenu
-	$conf->global->THEME_ELDY_VERMENU_BACK1b = '226,228,230';   // vmenu (not menu)
-	$conf->global->THEME_ELDY_VERMENU_BACK2 = '220,224,227';
-	$conf->global->THEME_ELDY_BACKTITLE1 = '140,160,185';	   // title of arrays
-	$conf->global->THEME_ELDY_BACKTITLE2 = '210,220,235';
-	$conf->global->THEME_ELDY_BACKTABCARD1 = '231,232,235';	 // card
-	$conf->global->THEME_ELDY_BACKTABCARD2 = '220,224,227';
-	$conf->global->THEME_ELDY_BACKTABACTIVE = '220,224,227';
-	$conf->global->THEME_ELDY_BACKBODY = '#ffffff url(' . $img_head . ') 0 0 no-repeat;';
-	$conf->global->THEME_ELDY_LINEIMPAIR1 = '242,242,242';
-	$conf->global->THEME_ELDY_LINEIMPAIR2 = '248,248,248';
-	$conf->global->THEME_ELDY_LINEIMPAIRHOVER = '238,246,252';
-	$conf->global->THEME_ELDY_LINEPAIR1 = '255,255,255';
-	$conf->global->THEME_ELDY_LINEPAIR2 = '255,255,255';
-	$conf->global->THEME_ELDY_LINEPAIRHOVER = '238,246,252';
-	$conf->global->THEME_ELDY_BACKBODY = '#ffffff url(' . $img_head . ') 0 0 no-repeat;';
-	$conf->global->THEME_ELDY_TEXT = '48,102,102';
+    $conf->global->THEME_ELDY_TOPMENU_BACK1 = '180,196,216';    // topmenu
+    $conf->global->THEME_ELDY_TOPMENU_BACK2 = '190,206,226';
+    $conf->global->THEME_ELDY_VERMENU_BACK1 = '246,248,250';    // vmenu
+    $conf->global->THEME_ELDY_VERMENU_BACK1b = '226,228,230';   // vmenu (not menu)
+    $conf->global->THEME_ELDY_VERMENU_BACK2 = '220,224,227';
+    $conf->global->THEME_ELDY_BACKTITLE1 = '140,160,185';       // title of arrays
+    $conf->global->THEME_ELDY_BACKTITLE2 = '210,220,235';
+    $conf->global->THEME_ELDY_BACKTABCARD1 = '231,232,235';     // card
+    $conf->global->THEME_ELDY_BACKTABCARD2 = '220,224,227';
+    $conf->global->THEME_ELDY_BACKTABACTIVE = '220,224,227';
+    $conf->global->THEME_ELDY_BACKBODY = '#ffffff url(' . $img_head . ') 0 0 no-repeat;';
+    $conf->global->THEME_ELDY_LINEIMPAIR1 = '242,242,242';
+    $conf->global->THEME_ELDY_LINEIMPAIR2 = '248,248,248';
+    $conf->global->THEME_ELDY_LINEIMPAIRHOVER = '238,246,252';
+    $conf->global->THEME_ELDY_LINEPAIR1 = '255,255,255';
+    $conf->global->THEME_ELDY_LINEPAIR2 = '255,255,255';
+    $conf->global->THEME_ELDY_LINEPAIRHOVER = '238,246,252';
+    $conf->global->THEME_ELDY_BACKBODY = '#ffffff url(' . $img_head . ') 0 0 no-repeat;';
+    $conf->global->THEME_ELDY_TEXT = '48,102,102';
 }
 
 $colorback1 = empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED) ? (empty($conf->global->THEME_ELDY_TOPMENU_BACK1) ? $colorback1 : $conf->global->THEME_ELDY_TOPMENU_BACK1) : (empty($user->conf->THEME_ELDY_TOPMENU_BACK1) ? $colorback1 : $user->conf->THEME_ELDY_TOPMENU_BACK1);
@@ -156,9 +156,9 @@ $fontsize = empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED) ? (empty($conf->g
 $fontsizesmaller = empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED) ? (empty($conf->global->THEME_ELDY_FONT_SIZE2) ? $fontsize : $conf->global->THEME_ELDY_FONT_SIZE2) : (empty($user->conf->THEME_ELDY_FONT_SIZE2) ? $fontsize : $user->conf->THEME_ELDY_FONT_SIZE2);
 // No hover by default, we keep only if we set var THEME_ELDY_USE_HOVER
 if ((!empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED) && empty($user->conf->THEME_ELDY_USE_HOVER))
-		|| (empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED) && empty($conf->global->THEME_ELDY_USE_HOVER))) {
-	$colorbacklineimpairhover = '';
-	$colorbacklinepairhover = '';
+        || (empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED) && empty($conf->global->THEME_ELDY_USE_HOVER))) {
+    $colorbacklineimpairhover = '';
+    $colorbacklinepairhover = '';
 }
 
 // Set text color to black or white
@@ -168,17 +168,17 @@ $tmpval+=(!empty($tmppart[2]) ? $tmppart[2] : '');
 $tmpval+=(!empty($tmppart[3]) ? $tmppart[3] : '');
 //print $tmpval;
 if ($tmpval < 340)
-	$colortextmain = 'FFFFFF';
+    $colortextmain = 'FFFFFF';
 else
-	$colortextmain = '101010';
+    $colortextmain = '101010';
 
 $usecss3 = true;
 if ($conf->browser->name == 'ie' && round($conf->browser->version, 2) < 10)
-	$usecss3 = false;
+    $usecss3 = false;
 elseif ($conf->browser->name == 'iceweasel')
-	$usecss3 = false;
+    $usecss3 = false;
 elseif ($conf->browser->name == 'epiphany')
-	$usecss3 = false;
+    $usecss3 = false;
 
 print '/*' . "\n";
 print 'colred=' . $colred . ' colgreen=' . $colgreen . ' colblue=' . $colblue . "\n";
@@ -200,9 +200,9 @@ print '*/' . "\n";
 /*
 body {
 <?php if (GETPOST("optioncss") == 'print') { ?>
-	background-color: #FFFFFF;
+    background-color: #FFFFFF;
 <?php } else { ?>
-	background: <?php print $colorbackbody; ?>;
+    background: <?php print $colorbackbody; ?>;
 <?php } ?>
 color: #101010;
 font-size: <?php print $fontsize ?>px;
@@ -324,7 +324,7 @@ width: 100%;
 
 .hideobject { display: none; }
 <?php if (!empty($conf->browser->phone)) { ?>
-	.hideonsmartphone { display: none; }
+    .hideonsmartphone { display: none; }
 <?php } ?>
 .linkobject { cursor: pointer; }
 
@@ -358,69 +358,47 @@ width: 100%;
 clear: both;	/* This is to have div fichecenter that are true rectangles */
 }
 div.fichethirdleft {
-<?php
-if (empty($conf->browser->phone)) {
-	print "float: " . $left . ";\n";
-}
-?>
-<?php
-if (empty($conf->browser->phone)) {
-	print "width: 35%;\n";
-}
-?>
-<?php
-if (!empty($conf->browser->phone)) {
-	print "padding-bottom: 6px;\n";
-}
-?>
+<?php if (empty($conf->browser->phone)) {
+    print "float: " . $left . ";\n";
+} ?>
+<?php if (empty($conf->browser->phone)) {
+    print "width: 35%;\n";
+} ?>
+<?php if (!empty($conf->browser->phone)) {
+    print "padding-bottom: 6px;\n";
+} ?>
 }
 div.fichetwothirdright {
-<?php
-if (empty($conf->browser->phone)) {
-	print "float: " . $right . ";\n";
-}
-?>
-<?php
-if (empty($conf->browser->phone)) {
-	print "width: 65%;\n";
-}
-?>
-<?php
-if (!empty($conf->browser->phone)) {
-	print "padding-bottom: 6px\n";
-}
-?>
+<?php if (empty($conf->browser->phone)) {
+    print "float: " . $right . ";\n";
+} ?>
+<?php if (empty($conf->browser->phone)) {
+    print "width: 65%;\n";
+} ?>
+<?php if (!empty($conf->browser->phone)) {
+    print "padding-bottom: 6px\n";
+} ?>
 }
 div.fichehalfleft {
-<?php
-if (empty($conf->browser->phone)) {
-	print "float: " . $left . ";\n";
-}
-?>
-<?php
-if (empty($conf->browser->phone)) {
-	print "width: 50%;\n";
-}
-?>
+<?php if (empty($conf->browser->phone)) {
+    print "float: " . $left . ";\n";
+} ?>
+<?php if (empty($conf->browser->phone)) {
+    print "width: 50%;\n";
+} ?>
 }
 div.fichehalfright {
-<?php
-if (empty($conf->browser->phone)) {
-	print "float: " . $right . ";\n";
-}
-?>
-<?php
-if (empty($conf->browser->phone)) {
-	print "width: 50%;\n";
-}
-?>
+<?php if (empty($conf->browser->phone)) {
+    print "float: " . $right . ";\n";
+} ?>
+<?php if (empty($conf->browser->phone)) {
+    print "width: 50%;\n";
+} ?>
 }
 div.ficheaddleft {
-<?php
-if (empty($conf->browser->phone)) {
-	print "padding-left: 16px;\n";
-}
-?>
+<?php if (empty($conf->browser->phone)) {
+    print "padding-left: 16px;\n";
+} ?>
 }
 
 
@@ -430,11 +408,11 @@ if (empty($conf->browser->phone)) {
 
 <?php
 if (!empty($conf->browser->phone)) {
-	$minwidthtmenu = 0;
-	$heightmenu = 19;
+    $minwidthtmenu = 0;
+    $heightmenu = 19;
 } else {
-	$minwidthtmenu = 66;
-	$heightmenu = 52;
+    $minwidthtmenu = 66;
+    $heightmenu = 52;
 }
 ?>
 
@@ -442,18 +420,18 @@ if (!empty($conf->browser->phone)) {
 div#tmenu_tooltip {
 <?php
 if (!empty($conf->global->THEME_ELDY_ENABLE_PERSONALIZED) || !empty($user->conf->THEME_ELDY_ENABLE_PERSONALIZED)) {
-	$colortexttopmenu = $colortextmain;
-	?>
-	background: rgb(<?php echo $colorback1 ?>);
-	<?php
+    $colortexttopmenu = $colortextmain;
+    ?>
+    background: rgb(<?php echo $colorback1 ?>);
+<?php
 } else {
-	//if ($usecss3) $colortexttopmenu='FFFFFF';
-	//else
-	$colortexttopmenu = '000000';
-	?>
-	background: rgb(<?php echo $colorback1 ?>);
-	/* background: #305582; *//* 2C68A3 */
-	<?php
+    //if ($usecss3) $colortexttopmenu='FFFFFF';
+    //else
+    $colortexttopmenu = '000000';
+    ?>
+    background: rgb(<?php echo $colorback1 ?>);
+    /* background: #305582; *//* 2C68A3 */
+    <?php
 }
 ?>
 margin-bottom: 10px;
@@ -461,35 +439,35 @@ margin-bottom: 10px;
 
 div.tmenudiv {
 <?php if (GETPOST("optioncss") == 'print') { ?>
-	display:none;
+    display:none;
 <?php } else { ?>
-	position: relative;
-	display: block;
-	white-space: nowrap;
-	border-top: 0px solid #D3E5EC;
-	border-<?php print $left; ?>: 0px;
-	border-<?php print $right; ?>: 0px solid #555555;
-	border-bottom: 1px solid #FFFFFF;
-	padding: 0px 0px 0px 0px;	/* t r b l */
-	margin: 0px 0px 0px 0px;	/* t r b l */
-	font-size: 13px;
-	font-weight: normal;
-	height: <?php print ($heightmenu + 1); ?>px;
+    position: relative;
+    display: block;
+    white-space: nowrap;
+    border-top: 0px solid #D3E5EC;
+    border-<?php print $left; ?>: 0px;
+    border-<?php print $right; ?>: 0px solid #555555;
+    border-bottom: 1px solid #FFFFFF;
+    padding: 0px 0px 0px 0px;	/* t r b l */
+    margin: 0px 0px 0px 0px;	/* t r b l */
+    font-size: 13px;
+    font-weight: normal;
+    height: <?php print ($heightmenu + 1); ?>px;
 
-	<?php if ($usecss3) { ?>
-		/*    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%); */
-		/*    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%);*/
-		/*    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 40%, rgb(<?php echo $colorback2; ?>) 60%, rgb(<?php echo $colorback1; ?>) 100%);*/
-		/*    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%);*/
-		/*    background-image: linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%); */
-		background: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/nav-overlay3.png' ?>) 50% 0% repeat-x;
-	<?php } else { ?>
-		background-image: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/tmenu2.jpg' ?>);
-		background-position:top;
-		background-repeat:repeat-x;
-	<?php } ?>
-	color: #000000;
-	text-decoration: none;
+    <?php if ($usecss3) { ?>
+        /*    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%); */
+        /*    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%);*/
+        /*    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 40%, rgb(<?php echo $colorback2; ?>) 60%, rgb(<?php echo $colorback1; ?>) 100%);*/
+        /*    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%);*/
+        /*    background-image: linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%); */
+        background: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/nav-overlay3.png' ?>) 50% 0% repeat-x;
+    <?php } else { ?>
+        background-image: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/tmenu2.jpg' ?>);
+        background-position:top;
+        background-repeat:repeat-x;
+    <?php } ?>
+    color: #000000;
+    text-decoration: none;
 <?php } ?>
 }
 
@@ -559,12 +537,12 @@ font-weight: normal;
 }
 li.tmenu:hover, li.tmenusel {
 <?php if ($usecss3) { ?>
-	/*    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%); */
-	/*    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%);*/
-	/*    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 40%, rgb(<?php echo $colorback2; ?>) 60%, rgb(<?php echo $colorback1; ?>) 100%); */
-	/*    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%);*/
-	/*    background-image: linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%); */
-	background: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/nav-overlay3.png' ?>) 50% 0 repeat-x;
+    /*    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%); */
+    /*    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%);*/
+    /*    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 40%, rgb(<?php echo $colorback2; ?>) 60%, rgb(<?php echo $colorback1; ?>) 100%); */
+    /*    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%);*/
+    /*    background-image: linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 75%, rgb(<?php echo $colorback2; ?>) 100%); */
+    background: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/nav-overlay3.png' ?>) 50% 0 repeat-x;
 <?php } ?>
 }
 div.tmenuleft
@@ -601,146 +579,146 @@ min-width: 40px;
 
 <?php if (empty($conf->browser->phone)) { ?>
 
-	div.mainmenu.home{
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/home.png', 1) ?>);
-	background-position-x: middle;
-	}
+    div.mainmenu.home{
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/home.png', 1) ?>);
+    background-position-x: middle;
+    }
 
-	div.mainmenu.accountancy {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/money.png', 1) ?>);
-	}
+    div.mainmenu.accountancy {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/money.png', 1) ?>);
+    }
 
-	div.mainmenu.agenda {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/agenda.png', 1) ?>);
-	}
+    div.mainmenu.agenda {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/agenda.png', 1) ?>);
+    }
 
-	div.mainmenu.bank {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/bank.png', 1) ?>);
-	}
+    div.mainmenu.bank {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/bank.png', 1) ?>);
+    }
 
-	div.mainmenu.bookmark {
-	}
+    div.mainmenu.bookmark {
+    }
 
-	div.mainmenu.cashdesk {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/pointofsale.png', 1) ?>);
-	}
+    div.mainmenu.cashdesk {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/pointofsale.png', 1) ?>);
+    }
 
-	div.mainmenu.click2dial {
-	}
+    div.mainmenu.click2dial {
+    }
 
-	div.mainmenu.companies {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/members.png', 1) ?>);
-	}
+    div.mainmenu.companies {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/members.png', 1) ?>);
+    }
 
-	div.mainmenu.contacts {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/stethoscope.png', 1) ?>);
-	}
+    div.mainmenu.contacts {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/stethoscope.png', 1) ?>);
+    }
 
-	div.mainmenu.commercial {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/commercial.png', 1) ?>);
-	}
+    div.mainmenu.commercial {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/commercial.png', 1) ?>);
+    }
 
-	div.mainmenu.ecm {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/ecm.png', 1) ?>);
-	}
+    div.mainmenu.ecm {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/ecm.png', 1) ?>);
+    }
 
-	div.mainmenu.externalsite {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/externalsite.png', 1) ?>);
-	}
+    div.mainmenu.externalsite {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/externalsite.png', 1) ?>);
+    }
 
-	div.mainmenu.ftp {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/tools.png', 1) ?>);
-	}
+    div.mainmenu.ftp {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/tools.png', 1) ?>);
+    }
 
-	div.mainmenu.gravatar {
-	}
+    div.mainmenu.gravatar {
+    }
 
-	div.mainmenu.geopipmaxmind {
-	}
+    div.mainmenu.geopipmaxmind {
+    }
 
-	div.mainmenu.holiday {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/holiday.png', 1) ?>);
-	}
+    div.mainmenu.holiday {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/holiday.png', 1) ?>);
+    }
 
-	div.mainmenu.members {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/members.png', 1) ?>);
-	}
+    div.mainmenu.members {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/members.png', 1) ?>);
+    }
 
-	div.mainmenu.paypal {
-	}
+    div.mainmenu.paypal {
+    }
 
-	div.mainmenu.products {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/products.png', 1) ?>);
-	margin-left: 10px;
-	}
+    div.mainmenu.products {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/products.png', 1) ?>);
+    margin-left: 10px;
+    }
 
-	div.mainmenu.project {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/project.png', 1) ?>);
-	}
+    div.mainmenu.project {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/project.png', 1) ?>);
+    }
 
-	div.mainmenu.tools {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/tools.png', 1) ?>);
-	}
+    div.mainmenu.tools {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/tools.png', 1) ?>);
+    }
 
-	div.mainmenu.webservices {
-	}
+    div.mainmenu.webservices {
+    }
 
-	div.mainmenu.google {
-	background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/globe.png', 1) ?>);
-	}
+    div.mainmenu.google {
+    background-image: url(<?php echo dol_buildpath($path . '/theme/eldy/img/menus/globe.png', 1) ?>);
+    }
 
 
-	<?php
+    <?php
 // Add here more div for other menu entries. moduletomainmenu=array('module name'=>'name of class for div')
 
-	$moduletomainmenu = array('user' => '', 'syslog' => '', 'societe' => 'companies', 'projet' => 'project', 'propale' => 'commercial', 'commande' => 'commercial',
-		'produit' => 'products', 'service' => 'products', 'stock' => 'products',
-		'don' => 'accountancy', 'tax' => 'accountancy', 'banque' => 'accountancy', 'facture' => 'accountancy', 'compta' => 'accountancy', 'accounting' => 'accountancy', 'adherent' => 'members', 'import' => 'tools', 'export' => 'tools', 'mailing' => 'tools',
-		'contrat' => 'commercial', 'ficheinter' => 'commercial', 'deplacement' => 'commercial',
-		'fournisseur' => 'companies',
-		'barcode' => '', 'fckeditor' => '', 'categorie' => '',
-	);
-	$mainmenuused = 'home';
-	foreach ($conf->modules as $val) {
-		$mainmenuused.=',' . (isset($moduletomainmenu[$val]) ? $moduletomainmenu[$val] : $val);
-	}
+    $moduletomainmenu = array('user' => '', 'syslog' => '', 'societe' => 'companies', 'projet' => 'project', 'propale' => 'commercial', 'commande' => 'commercial',
+        'produit' => 'products', 'service' => 'products', 'stock' => 'products',
+        'don' => 'accountancy', 'tax' => 'accountancy', 'banque' => 'accountancy', 'facture' => 'accountancy', 'compta' => 'accountancy', 'accounting' => 'accountancy', 'adherent' => 'members', 'import' => 'tools', 'export' => 'tools', 'mailing' => 'tools',
+        'contrat' => 'commercial', 'ficheinter' => 'commercial', 'deplacement' => 'commercial',
+        'fournisseur' => 'companies',
+        'barcode' => '', 'fckeditor' => '', 'categorie' => '',
+    );
+    $mainmenuused = 'home';
+    foreach ($conf->modules as $val) {
+        $mainmenuused.=',' . (isset($moduletomainmenu[$val]) ? $moduletomainmenu[$val] : $val);
+    }
 //var_dump($mainmenuused);
-	$mainmenuusedarray = array_unique(explode(',', $mainmenuused));
+    $mainmenuusedarray = array_unique(explode(',', $mainmenuused));
 
-	$generic = 1;
-	$divalreadydefined = array('home', 'companies', 'products', 'commercial', 'accountancy', 'project', 'tools', 'members', 'agenda', 'holiday', 'bookmark', 'cashdesk', 'ecm', 'geoipmaxmind', 'gravatar', 'clicktodial', 'paypal', 'webservices');
-	foreach ($mainmenuusedarray as $val) {
-		if (empty($val) || in_array($val, $divalreadydefined))
-			continue;
-		//print "XXX".$val;
-		// Search img file in module dir
-		$found = 0;
-		$url = '';
-		foreach ($conf->file->dol_document_root as $dirroot) {
-			if (file_exists($dirroot . "/" . $val . "/img/" . $val . ".png")) {
-				$url = dol_buildpath('/' . $val . '/img/' . $val . '.png', 1);
-				$found = 1;
-				break;
-			}
-		}
-		// Img file not found
-		if (!$found) {
-			$url = dol_buildpath($path . '/theme/eldy/img/menus/generic' . $generic . ".png", 1);
-			$found = 1;
-			if ($generic < 4)
-				$generic++;
-			print "/* A mainmenu entry but img file " . $val . ".png not found, so we use a generic one */\n";
-		}
-		if ($found) {
-			print "div.mainmenu." . $val . " {\n";
-			print "	background-image: url(" . $url . ");\n";
-			print "}\n";
-		}
-	}
+    $generic = 1;
+    $divalreadydefined = array('home', 'companies', 'products', 'commercial', 'accountancy', 'project', 'tools', 'members', 'agenda', 'holiday', 'bookmark', 'cashdesk', 'ecm', 'geoipmaxmind', 'gravatar', 'clicktodial', 'paypal', 'webservices');
+    foreach ($mainmenuusedarray as $val) {
+        if (empty($val) || in_array($val, $divalreadydefined))
+            continue;
+        //print "XXX".$val;
+        // Search img file in module dir
+        $found = 0;
+        $url = '';
+        foreach ($conf->file->dol_document_root as $dirroot) {
+            if (file_exists($dirroot . "/" . $val . "/img/" . $val . ".png")) {
+                $url = dol_buildpath('/' . $val . '/img/' . $val . '.png', 1);
+                $found = 1;
+                break;
+            }
+        }
+        // Img file not found
+        if (!$found) {
+            $url = dol_buildpath($path . '/theme/eldy/img/menus/generic' . $generic . ".png", 1);
+            $found = 1;
+            if ($generic < 4)
+                $generic++;
+            print "/* A mainmenu entry but img file " . $val . ".png not found, so we use a generic one */\n";
+        }
+        if ($found) {
+            print "div.mainmenu." . $val . " {\n";
+            print "	background-image: url(" . $url . ");\n";
+            print "}\n";
+        }
+    }
 // End of part to add more div class css
-	?>
+    ?>
 
-	<?php
+    <?php
 } // End test if not phone
 ?>
 
@@ -805,7 +783,7 @@ position: absolute;
 top: 3px;
 font-weight: bold;
 <?php if (GETPOST("optioncss") == 'print') { ?>
-	display: none;
+    display: none;
 <?php } ?>
 }
 
@@ -851,7 +829,7 @@ width: 174px;
 .vmenu {
 margin-left: 4px;
 <?php if (GETPOST("optioncss") == 'print') { ?>
-	display: none;
+    display: none;
 <?php } ?>
 }
 
@@ -882,15 +860,15 @@ padding-bottom: 3px;
 margin: 1px 0px 8px 2px;
 
 <?php if ($usecss3) { ?>
-	background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
 <?php } else { ?>
-	background-image: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/tmenu.jpg' ?>);
-	background-position:top;
-	background-repeat:repeat-x;
+    background-image: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/tmenu.jpg' ?>);
+    background-position:top;
+    background-repeat:repeat-x;
 <?php } ?>
 border-left: 1px solid #CCCCCC;
 border-right: 1px solid #BBBBBB;
@@ -918,11 +896,11 @@ margin: 1px 0px 8px 2px;
 background: #E3E6E8;
 
 <?php if ($usecss3) { ?>
-	background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
 <?php } ?>
 
 border-left: 1px solid #CCCCCC;
@@ -952,11 +930,11 @@ margin: 6px 0px 8px 2px;
 background: #E3E6E8;
 
 <?php if ($usecss3) { ?>
-	background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktab1b; ?>) 85%, rgb(<?php echo $colorbacktab2; ?>) 100%);
 <?php } ?>
 
 border-left: 1px solid #CCCCCC;
@@ -972,18 +950,18 @@ box-shadow: 4px 4px 4px #CCC;
 div.blockvmenuhelp
 {
 <?php if (empty($conf->browser->phone)) { ?>
-	width:174px;
-	font-family: <?php print $fontlist ?>;
-	color: #000000;
-	text-align: center;
-	text-decoration: none;
-	padding-left: 0px;
-	padding-right: 3px;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	margin: 4px 0px 0px 0px;
+    width:174px;
+    font-family: <?php print $fontlist ?>;
+    color: #000000;
+    text-align: center;
+    text-decoration: none;
+    padding-left: 0px;
+    padding-right: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin: 4px 0px 0px 0px;
 <?php } else { ?>
-	display: none;
+    display: none;
 <?php } ?>
 }
 
@@ -1035,14 +1013,14 @@ overflow:   auto;  /* add scrolling to content-div */
 
 .toolbar {
 <?php if ($usecss3) { ?>
-	background-image: -o-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
-	background-image: -moz-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
-	background-image: -webkit-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
-	background-image: -ms-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
-	background-image: linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
+    background-image: -o-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
+    background-image: -moz-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
+    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
+    background-image: -ms-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
+    background-image: linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
 <?php } else { ?>
-	background-image: url(<?php echo DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/tmenu2.jpg' ?>) !important;
-	background-repeat: repeat-x !important;
+    background-image: url(<?php echo DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/tmenu2.jpg' ?>) !important;
+    background-repeat: repeat-x !important;
 <?php } ?>
 border: 1px solid #CCC !important;
 
@@ -1151,13 +1129,13 @@ filter:  alpha(opacity=100);
 */
 .ui-layout-toggler {
 <?php if (empty($conf->browser->phone)) { ?>
-	border-top: 1px solid #AAA; /* match pane-border */
-	border-right: 1px solid #AAA; /* match pane-border */
-	border-bottom: 1px solid #AAA; /* match pane-border */
-	background-color: #DDD;
-	top: 5px !important;
+    border-top: 1px solid #AAA; /* match pane-border */
+    border-right: 1px solid #AAA; /* match pane-border */
+    border-bottom: 1px solid #AAA; /* match pane-border */
+    background-color: #DDD;
+    top: 5px !important;
 <?php } else { ?>
-	diplay: none;
+    diplay: none;
 <?php } ?>
 }
 .ui-layout-toggler-open {
@@ -1284,13 +1262,13 @@ border-left: 1px solid #D0D0D0;
 border-top: 1px solid #D8D8D8;
 
 <?php if ($usecss3) { ?>
-	background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
-	background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
+    background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktabcard1; ?>) 25%, rgb(<?php echo $colorbacktabcard2; ?>) 100%);
 <?php } else { ?>
-	background: #dee7ec url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/tab_background.png' ?>) repeat-x;
+    background: #dee7ec url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/tab_background.png' ?>) repeat-x;
 <?php } ?>
 -moz-box-shadow: 4px 4px 4px #CCC;
 -webkit-box-shadow: 4px 4px 4px #CCC;
@@ -1330,22 +1308,22 @@ border-<?php print $left; ?>: 1px solid #D8D8D8;
 border-top: 1px solid #D8D8D8;
 
 <?php if ($usecss3) { ?>
-	background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
-	background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
+    background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktab1; ?>) 35%, rgb(<?php echo $colorbacktab2; ?>) 100%);
 <?php } else { ?>
-	background: #dee7ec;
+    background: #dee7ec;
 <?php } ?>
 }
 
 a.tab#active {
 <?php if ($usecss3) { ?>
-	border-bottom: 1px solid rgb(<?php echo $colorbacktabactive; ?>) !important;
-	background-color: rgb(<?php echo $colorbacktabactive; ?>) !important;
+    border-bottom: 1px solid rgb(<?php echo $colorbacktabactive; ?>) !important;
+    background-color: rgb(<?php echo $colorbacktabactive; ?>) !important;
 <?php } else { ?>
-	background: #ffffff;
+    background: #ffffff;
 <?php } ?>
 background-image: none !important;
 }
@@ -1436,9 +1414,9 @@ box-shadow: 4px 4px 4px #CCC;
 }
 
 <?php if (!empty($conf->global->MAIN_BUTTON_HIDE_UNAUTHORIZED)) { ?>
-	.butActionRefused {
-	display: none;
-	}
+    .butActionRefused {
+    display: none;
+    }
 <?php } ?>
 
 span.butAction, span.butActionDelete {
@@ -1611,14 +1589,14 @@ height: 20px !important;
 background-repeat: repeat-x;
 
 <?php if ($usecss3) { ?>
-	background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
-	background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
 <?php } else { ?>
-	background: #7699A9;
-	background-image: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/liste_titre2.png' ?>);
+    background: #7699A9;
+    background-image: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/liste_titre2.png' ?>);
 <?php } ?>
 color: #<?php echo $colortextmain; ?>;
 font-family: <?php print $fontlist ?>;
@@ -1663,26 +1641,24 @@ white-space: nowrap;
 
 .impair:hover {
 <?php if ($colorbacklineimpairhover) {
-	if ($usecss3) {
-		?>
-		background: rgb(<?php echo $colorbacklineimpairhover; ?>);
-	<?php } else { ?>
-		background: #fafafa;
-	<?php }
-}
-?>
+    if ($usecss3) { ?>
+        background: rgb(<?php echo $colorbacklineimpairhover; ?>);
+    <?php } else { ?>
+        background: #fafafa;
+    <?php }
+} ?>
 border: 0px;
 }
 
 .impair, .nohover .impair:hover, tr.impair td.nohover {
 <?php if ($usecss3) { ?>
-	background: linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
-	background: -o-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
-	background: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
-	background: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
-	background: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: -o-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
 <?php } else { ?>
-	background: #eaeaea;
+    background: #eaeaea;
 <?php } ?>
 font-family: <?php print $fontlist ?>;
 border: 0px;
@@ -1692,27 +1668,25 @@ color: #202020;
 
 .pair:hover {
 <?php if ($colorbacklinepairhover) {
-	if ($usecss3) {
-		?>
-		background: rgb(<?php echo $colorbacklinepairhover; ?>);
-	<?php } else { ?>
-		background: #fafafa;
-	<?php }
-}
-?>
+    if ($usecss3) { ?>
+        background: rgb(<?php echo $colorbacklinepairhover; ?>);
+    <?php } else { ?>
+        background: #fafafa;
+    <?php }
+} ?>
 border: 0px;
 }
 */
 
 .pair, .nohover .pair:hover, tr.pair td.nohover {
 <?php if ($usecss3) { ?>
-	background: linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
-	background: -o-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
-	background: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
-	background: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
-	background: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: -o-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
 <?php } else { ?>
-	background: #ffffff;
+    background: #ffffff;
 <?php } ?>
 font-family: <?php print $fontlist ?>;
 border: 0px;
@@ -1763,13 +1737,13 @@ height: 20px;
 background: #7699A9;
 
 <?php if ($usecss3) { ?>
-	background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
-	background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
+    background-image: linear-gradient(bottom, rgb(<?php echo $colorbacktitle1; ?>) 15%, rgb(<?php echo $colorbacktitle2; ?>) 100%);
 <?php } else { ?>
-	background-image: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/liste_titre2.png' ?>);
+    background-image: url(<?php echo DOL_URL_ROOT . '/theme/eldy/img/liste_titre2.png' ?>);
 <?php } ?>
 background-repeat: repeat-x;
 color: #<?php echo $colortextmain; ?>;
@@ -1781,26 +1755,26 @@ white-space: nowrap;
 
 tr.box_impair {
 <?php if ($usecss3) { ?>
-	background: -o-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
-	background: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
-	background: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
-	background: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
-	background: linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: -o-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
+    background: linear-gradient(bottom, rgb(<?php echo $colorbacklineimpair1; ?>) 85%, rgb(<?php echo $colorbacklineimpair2; ?>) 100%);
 <?php } else { ?>
-	background: #eaeaea;
+    background: #eaeaea;
 <?php } ?>
 font-family: <?php print $fontlist ?>;
 }
 
 tr.box_pair {
 <?php if ($usecss3) { ?>
-	background: -o-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
-	background: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
-	background: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
-	background: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
-	background: linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: -o-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: -moz-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: -webkit-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: -ms-linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
+    background: linear-gradient(bottom, rgb(<?php echo $colorbacklinepair1; ?>) 85%, rgb(<?php echo $colorbacklinepair2; ?>) 100%);
 <?php } else { ?>
-	background: #ffffff;
+    background: #ffffff;
 <?php } ?>
 font-family: <?php print $fontlist ?>;
 }
@@ -2578,8 +2552,8 @@ right:4px;
 .jnotify-container {
 position: fixed !important;
 <?php if (!empty($conf->global->MAIN_JQUERY_JNOTIFY_BOTTOM)) { ?>
-	top: auto !important;
-	bottom: 4px !important;
+    top: auto !important;
+    bottom: 4px !important;
 <?php } ?>
 text-align: center;
 min-width: 500px;
@@ -2627,5 +2601,5 @@ box-shadow: 0px 0px 10px #AAA;
 
 <?php
 if (is_object($db))
-	$db->close();
+    $db->close();
 ?>
