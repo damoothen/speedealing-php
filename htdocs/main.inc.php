@@ -564,7 +564,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		$conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
 
 	// DOCTYPE
-	include 'core/tpl/preheader.tpl.php';
+	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 
 	if (empty($disablehead)) {
 
@@ -586,7 +586,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		$theme = $themepath . $themeparam;
 
 		// Header template
-		include 'core/tpl/header.tpl.php';
+		include DOL_DOCUMENT_ROOT . '/core/tpl/header.tpl.php';
 
 
 		// CSS forced by modules (relative url starting with /)

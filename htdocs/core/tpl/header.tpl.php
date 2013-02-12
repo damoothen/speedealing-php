@@ -243,7 +243,7 @@
 	<!-- chosen (select element extended) -->
 	<!-- <link rel="stylesheet" href="includes/jquery/plugins/chosen/chosen.css" media="all" /> -->
 	<!-- datatables -->
-	<!-- <link rel="stylesheet" href="includes/jquery/plugins/datatables/css/demo_table_jui.css" media="all" /> -->
+	<link rel="stylesheet" href="includes/jquery/plugins/datatables/css/demo_table_jui.css" media="all" />
 
 	<!-- main styles -->
 	<link rel="stylesheet" href="theme/eldy/style.css" />
