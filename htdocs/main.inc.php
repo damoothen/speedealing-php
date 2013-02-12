@@ -615,6 +615,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		// For new theme TODO script init A revoir
 		print '<script>
 			$(document).ready(function() {
+                prth_stickyFooter.resize();
 				//prth_common.init();
 			});
 		</script>';
