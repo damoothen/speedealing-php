@@ -93,23 +93,39 @@ if (!empty($key) && !empty($id) && !empty($class)) {
     }
 
     try {
-
-        if (is_object($value) || is_array($value)) {
-            $object->load($id);
-            $object->$key = $value;
+        
+        if (preg_match("#^([a-z0-9]+)\#([0-9]+)$#", $id, $matches)) {
+        
+            $idInvoice = $matches[1];
+            $idLine = $matches[2];
+            
+            $object->fetch($idInvoice);
+            $object->lines[$idLine]->$key = $value;
             $object->record();
-        } else {
-            $object->id = $id;
-            $res = $object->set($key, $value);
+            echo $value;
+            
         }
+        
+        else {
 
-        if ($type == 'numeric')
-            $value = price($value);
-        elseif ($type == 'textarea')
-            $value = dol_nl2br($value);
+            if (is_object($value) || is_array($value)) {
+                $object->load($id);
+                $object->$key = $value;
+                $object->update_price();
+            } else {
+                $object->id = $id;
+                $res = $object->set($key, $value);
+            }
 
-        error_log($object->print_fk_extrafields($key));
-        echo $object->print_fk_extrafields($key);
+            if ($type == 'numeric')
+                $value = price($value);
+            elseif ($type == 'textarea')
+                $value = dol_nl2br($value);
+
+            error_log($object->print_fk_extrafields($key));
+            echo $object->print_fk_extrafields($key);
+            
+        }
     } catch (Exception $exc) {
         error_log($exc->getMessage());
     }
