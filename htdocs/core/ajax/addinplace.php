@@ -105,7 +105,7 @@ if (!empty($json) && !empty($class)) {
         $idline = count($object->lines);
         $line = $object->lines[$idline - 1];
         
-        $obj->_id = $idline;
+        $obj->_id = $id . '#' . (intval($idline-1));
         $obj->description = $line->description;
         $obj->pu_ht = $line->pu_ht;
         $obj->qty = $line->qty;

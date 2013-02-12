@@ -375,6 +375,7 @@ class AbstractInvoice extends nosqlDocument {
     public function showLines() {
         
         global $langs;
+        global $conf;
         
         require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
         $product = new Product($this->db);
@@ -524,38 +525,25 @@ class AbstractInvoice extends nosqlDocument {
 //  $obj->aoColumns[$i]->sDefaultContent = "";
 //  $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("author.name", "url", array('id' => "author.id"));
 //  $i++;
-//        print'<th class="essential">';
-//        print $langs->trans("Status");
-//        print'</th>';
-//        $obj->aoColumns[$i] = new stdClass();
-//        $obj->aoColumns[$i]->mDataProp = "Status";
-//        $obj->aoColumns[$i]->sClass = "center";
-//        $obj->aoColumns[$i]->sDefaultContent = "DRAFT";
-//        $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
-//        $obj->aoColumns[$i]->editable = true;
-//        $i++;
-//        print'<th class="essential">';
-//        print $langs->trans('Action');
-//        print'</th>';
-//        $obj->aoColumns[$i] = new stdClass();
-//        $obj->aoColumns[$i]->mDataProp = "";
-//        $obj->aoColumns[$i]->sClass = "center content_actions";
-//        $obj->aoColumns[$i]->sWidth = "60px";
-//        $obj->aoColumns[$i]->bSortable = false;
-//        $obj->aoColumns[$i]->sDefaultContent = "";
-//
-//        $url = "commande/fiche.php";
-//        $obj->aoColumns[$i]->fnRender = 'function(obj) {
-//	var ar = [];
-//	ar[ar.length] = "<a href=\"' . $url . '?id=";
-//	ar[ar.length] = obj.aData._id.toString();
-//	ar[ar.length] = "&action=edit&backtopage=' . $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"' . $langs->trans("Edit") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
-//	ar[ar.length] = "<a href=\"\"";
-//	ar[ar.length] = " class=\"delEnqBtn\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
-//	var str = ar.join("");
-//	return str;
-//}';
-        print'</tr>';
+print'<th class="essential">';
+print $langs->trans('Action');
+print'</th>';
+$obj->aoColumns[$i] = new stdClass();
+$obj->aoColumns[$i]->mDataProp = "";
+$obj->aoColumns[$i]->sClass = "center content_actions";
+$obj->aoColumns[$i]->sWidth = "60px";
+$obj->aoColumns[$i]->bSortable = false;
+$obj->aoColumns[$i]->sDefaultContent = "";
+
+$url = "commande/fiche.php";
+$obj->aoColumns[$i]->fnRender = 'function(obj) {
+	var ar = [];
+	ar[ar.length] = "<a href=\"\"";
+	ar[ar.length] = " class=\"delEnqBtn\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
+	var str = ar.join("");
+	return str;
+}';
+print'</tr>';
         print'</thead>';
         print'<tfoot>';
         print'</tfoot>';

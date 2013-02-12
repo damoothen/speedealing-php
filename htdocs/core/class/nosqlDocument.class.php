@@ -801,7 +801,7 @@ abstract class nosqlDocument extends CommonObject {
 				var answer = confirm("<?php echo $langs->trans("Delete"); ?> '"+text+"' ?");
 				if(answer) {
 					$.ajax({
-						type: "GET",
+						type: "POST",
 						url: "<?php echo DOL_URL_ROOT . '/core/ajax/deleteinplace.php'; ?>",
 						data: "json=delete&class=<?php echo get_class($this); ?>&id="+aData["_id"],
 						success: function(msg){
