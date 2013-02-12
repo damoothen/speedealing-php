@@ -638,10 +638,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			print $head . "\n";
 		if (!empty($conf->global->MAIN_HTML_HEADER))
 			print $conf->global->MAIN_HTML_HEADER . "\n";
-		?>
-	</head>
 
-	<?php
+		print '</head>';
 	}
 
 	$conf->headerdone = 1; // To tell header was output
