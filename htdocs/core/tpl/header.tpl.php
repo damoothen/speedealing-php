@@ -179,7 +179,7 @@
 	<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>
 	<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>
 	<script type="text/javascript" src="includes/jquery/plugins/spinner/ui.spinner.min.js"></script>
-	<script src="includes/jquery/plugins/tagHandler/js/jquery.taghandler.min.js"></script>
+	<script type="text/javascript" src="includes/jquery/plugins/tagHandler/js/jquery.taghandler.min.js"></script>
 
 	<!-- END NOLOGIN -->
 
