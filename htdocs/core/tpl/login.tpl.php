@@ -1,7 +1,7 @@
 <?php
-/* Copyright (C) 2009-2010 Regis Houssin 		<regis.houssin@capnetworks.com>
+/* Copyright (C) 2009-2013 Regis Houssin 		<regis.houssin@capnetworks.com>
  * Copyright (C) 2011-2012 Laurent Destailleur 	<eldy@users.sourceforge.net>
- * Copyright (C) 2011-2012 Herve 				<herve.prot@symeos.com>
+ * Copyright (C) 2011-2013 Herve Prot			<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 header('Cache-Control: Public, must-revalidate');
 header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 ?>
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <!--[if IEMobile 7]><html class="no-js iem7 oldie linen"><![endif]-->
 <!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie linen" lang="en"><![endif]-->
@@ -30,20 +30,19 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 <!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html class="no-js linen" lang="en"><!--<![endif]-->
 
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta name="robots" content="noindex,nofollow" />
         <meta name="author" content="Speedealing Development Team" />
-        <meta charset="utf-8" />
         <base href="http://<?php echo $_SERVER['HTTP_HOST'] . DOL_URL_ROOT; ?>/" />
 
         <title><?php echo $langs->trans('Login') . ' ' . $title; ?></title>
         <meta name="description" content="">
 
         <!-- http://davidbcalhoun.com/2010/viewport-metatag -->
-        <meta name="HandheldFriendly" content="True">
-        <meta name="MobileOptimized" content="320">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="MobileOptimized" content="320" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
         <!-- For all browsers -->
         <link rel="stylesheet" href="theme/symeos/css/reset.css?v=1">
@@ -80,8 +79,8 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
         <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
 
         <!-- iOS web-app metas -->
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
         <!-- Startup image for web apps -->
         <!--<link rel="apple-touch-startup-image" href="theme/developr/html/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
@@ -89,23 +88,20 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
         <link rel="apple-touch-startup-image" href="theme/developr/html/img/splash/iphone.png" media="screen and (max-device-width: 320px)">-->
 
         <!-- Microsoft clear type rendering -->
-        <meta http-equiv="cleartype" content="on">
+        <meta http-equiv="cleartype" content="on" />
 
         <!-- IE9 Pinned Sites: http://msdn.microsoft.com/en-us/library/gg131029.aspx -->
-        <meta name="application-name" content="Developr Admin Skin">
+        <meta name="application-name" content="Developr Admin Skin" />
         <meta name="msapplication-tooltip" content="Cross-platform admin template.">
-        <meta name="msapplication-starturl" content="http://www.display-inline.fr/demo/developr">
+        <meta name="msapplication-starturl" content="http://www.display-inline.fr/demo/developr" />
         <!-- These custom tasks are examples, you need to edit them to show actual pages -->
-        <meta name="msapplication-task" content="name=Agenda;action-uri=http://www.display-inline.fr/demo/developr/agenda.html;icon-uri=http://www.display-inline.fr/demo/developr/img/favicons/favicon.ico">
-        <meta name="msapplication-task" content="name=My profile;action-uri=http://www.display-inline.fr/demo/developr/profile.html;icon-uri=http://www.display-inline.fr/demo/developr/img/favicons/favicon.ico">
+        <meta name="msapplication-task" content="name=Agenda;action-uri=http://www.display-inline.fr/demo/developr/agenda.html;icon-uri=http://www.display-inline.fr/demo/developr/img/favicons/favicon.ico" />
+        <meta name="msapplication-task" content="name=My profile;action-uri=http://www.display-inline.fr/demo/developr/profile.html;icon-uri=http://www.display-inline.fr/demo/developr/img/favicons/favicon.ico" />
 
         <?php
-        print '<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <!-- Foundation framework -->';
-        //print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/foundation/stylesheets/foundation.css">';
+        print '<meta name="viewport" content="width=device-width, initial-scale=1.0" />';
 
         print '<!-- main styles -->';
-        //print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/css/style.css" />';
         if (!empty($conf->global->MAIN_HTML_HEADER))
             print $conf->global->MAIN_HTML_HEADER;
         print '<!-- HTTP_USER_AGENT = ' . $_SERVER['HTTP_USER_AGENT'] . ' -->';
@@ -204,12 +200,12 @@ if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_G
 
             // If layout is centered
             centered;
-            
+
             function isValidEmailAddress(emailAddress) {
                 var pattern = new RegExp(/^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i);
                 return pattern.test(emailAddress);
             };
-            
+
             formLogin.submit(function(event)
             {
                 // Values
@@ -217,7 +213,7 @@ if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_G
                 pass = $.trim($('#pass').val());
 
                 // Check inputs
-                if (!isValidEmailAddress(login)) 
+                if (!isValidEmailAddress(login))
                 {
                     // Display message
                     displayError('Please check your login must be a mail');
@@ -240,9 +236,9 @@ if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_G
                     // Show progress
                     displayLoading('Checking credentials...');
                     event.preventDefault();
-                    
+
                     var urlPrefix;
-                    
+
                     if(this.urlPrefix === undefined)
                         urlPrefix = "";
                     else
@@ -268,12 +264,12 @@ if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_G
                         error: function()
                         {
                             formLogin.clearMessages();
-                            displayError('Error while contacting server, contact the support');   
+                            displayError('Error while contacting server, contact the support');
                         }
                     });
                 }
             });
-			
+
             // Handle resizing (mostly for debugging)
             function handleLoginResize()
             {
