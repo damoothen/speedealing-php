@@ -144,7 +144,7 @@ class AbstractInvoice extends nosqlDocument {
             $line->fk_product = $fk_product;
             $line->fk_remise_except = $fk_remise_except;
             $line->remise = $remise_percent;
-            $line->subprice = $pu_ht;
+            $line->pu_ht = $pu_ht;
 //            $line->rang = $rangtouse;
             $line->info_bits = $info_bits;
             $line->total_ht = $total_ht;
@@ -249,15 +249,14 @@ class AbstractInvoice extends nosqlDocument {
 
             $line = $this->lines[$rowid-1];
 
-            $line->id = $rowid;
             $line->label = $label;
             $line->description = $desc;
             $line->qty = $qty;
             $line->tva_tx = $txtva;
             $line->localtax1_tx = $txlocaltax1;
             $line->localtax2_tx = $txlocaltax2;
-            $line->remise_percent = $remise_percent;
-            $line->subprice = $subprice;
+            $line->remise = $remise_percent;
+            $line->pu_ht = $subprice;
             $line->info_bits = $info_bits;
             $line->special_code = 0; // To remove special_code=3 coming from proposals copy
             $line->total_ht = $total_ht;
@@ -376,6 +375,7 @@ class AbstractInvoice extends nosqlDocument {
     public function showLines() {
         
         global $langs;
+        global $conf;
         
         require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
         $product = new Product($this->db);
@@ -395,8 +395,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->mDataProp = "_id";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = false;
-        $obj->aoColumns[$i]->bVisible = true;
-        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->bVisible = false;
         $i++;
         print'<th class="essential">';
         print $langs->trans("Description");
@@ -433,12 +432,12 @@ class AbstractInvoice extends nosqlDocument {
         print $langs->trans("PriceUHT");
         print'</th>';
         $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "subprice";
+        $obj->aoColumns[$i]->mDataProp = "pu_ht";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("subprice", "price");
-		$obj->aoColumns[$i]->sDefaultContent = 0;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("pu_ht", "price");
+        $obj->aoColumns[$i]->sDefaultContent = 0;
         $i++;
         print'<th class="essential">';
         print $langs->trans("Qty");
@@ -458,7 +457,7 @@ class AbstractInvoice extends nosqlDocument {
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
         $obj->aoColumns[$i]->editable = true;
-		$obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->sDefaultContent = "0";
         $i++;
         print'<th class="essential">';
         print $langs->trans("TotalHTShort");
@@ -526,38 +525,25 @@ class AbstractInvoice extends nosqlDocument {
 //  $obj->aoColumns[$i]->sDefaultContent = "";
 //  $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("author.name", "url", array('id' => "author.id"));
 //  $i++;
-//        print'<th class="essential">';
-//        print $langs->trans("Status");
-//        print'</th>';
-//        $obj->aoColumns[$i] = new stdClass();
-//        $obj->aoColumns[$i]->mDataProp = "Status";
-//        $obj->aoColumns[$i]->sClass = "center";
-//        $obj->aoColumns[$i]->sDefaultContent = "DRAFT";
-//        $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
-//        $obj->aoColumns[$i]->editable = true;
-//        $i++;
-//        print'<th class="essential">';
-//        print $langs->trans('Action');
-//        print'</th>';
-//        $obj->aoColumns[$i] = new stdClass();
-//        $obj->aoColumns[$i]->mDataProp = "";
-//        $obj->aoColumns[$i]->sClass = "center content_actions";
-//        $obj->aoColumns[$i]->sWidth = "60px";
-//        $obj->aoColumns[$i]->bSortable = false;
-//        $obj->aoColumns[$i]->sDefaultContent = "";
-//
-//        $url = "commande/fiche.php";
-//        $obj->aoColumns[$i]->fnRender = 'function(obj) {
-//	var ar = [];
-//	ar[ar.length] = "<a href=\"' . $url . '?id=";
-//	ar[ar.length] = obj.aData._id.toString();
-//	ar[ar.length] = "&action=edit&backtopage=' . $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"' . $langs->trans("Edit") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
-//	ar[ar.length] = "<a href=\"\"";
-//	ar[ar.length] = " class=\"delEnqBtn\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
-//	var str = ar.join("");
-//	return str;
-//}';
-        print'</tr>';
+print'<th class="essential">';
+print $langs->trans('Action');
+print'</th>';
+$obj->aoColumns[$i] = new stdClass();
+$obj->aoColumns[$i]->mDataProp = "";
+$obj->aoColumns[$i]->sClass = "center content_actions";
+$obj->aoColumns[$i]->sWidth = "60px";
+$obj->aoColumns[$i]->bSortable = false;
+$obj->aoColumns[$i]->sDefaultContent = "";
+
+$url = "commande/fiche.php";
+$obj->aoColumns[$i]->fnRender = 'function(obj) {
+	var ar = [];
+	ar[ar.length] = "<a href=\"\"";
+	ar[ar.length] = " class=\"delEnqBtn\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
+	var str = ar.join("");
+	return str;
+}';
+print'</tr>';
         print'</thead>';
         print'<tfoot>';
         print'</tfoot>';
