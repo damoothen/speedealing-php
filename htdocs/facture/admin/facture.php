@@ -5,6 +5,7 @@
  * Copyright (C) 2005-2012	Regis Houssin				<regis.houssin@capnetworks.com>
  * Copyright (C) 2008		Raphael Bertrand (Resultic)	<raphael.bertrand@resultic.fr>
  * Copyright (C) 2012		Juanjo Menent				<jmenent@2byte.es>
+ * Copyright (C) 2013		Herve Prot					<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +27,7 @@
  *		\brief      Page to setup invoice module
  */
 
-require '../main.inc.php';
+require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
@@ -77,7 +78,7 @@ if ($action == 'specimen')
 	$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
 	foreach($dirmodels as $reldir)
 	{
-	    $file=dol_buildpath($reldir."core/modules/facture/doc/pdf_".$modele.".modules.php",0);
+	    $file=dol_buildpath($reldir."facture/core/modules/facture/doc/pdf_".$modele.".modules.php",0);
     	if (file_exists($file))
     	{
     		$filefound=1;
@@ -324,7 +325,7 @@ clearstatcache();
 
 foreach ($dirmodels as $reldir)
 {
-	$dir = dol_buildpath($reldir."core/modules/facture/");
+	$dir = dol_buildpath($reldir."facture/core/modules/facture/");
     if (is_dir($dir))
     {
         $handle = opendir($dir);
@@ -492,7 +493,7 @@ foreach ($dirmodels as $reldir)
 {
     foreach (array('','/doc') as $valdir)
     {
-    	$dir = dol_buildpath($reldir."core/modules/facture".$valdir);
+    	$dir = dol_buildpath($reldir."facture/core/modules/facture".$valdir);
 
         if (is_dir($dir))
         {
