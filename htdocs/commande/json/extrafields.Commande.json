@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Commande",
-   "_rev": "49-b978a5a9c0107a9b7f63b0a47db3f40b",
+   "_rev": "55-e4fc696bae5f675c0787799808b21f52",
    "class": "extrafields",
    "ico": "16-Document.png",
    "langs": [
@@ -13,6 +13,8 @@
        "Status"
    ],
    "createLine": [
+       "product",
+       "product_type",
        "description",
        "pu_ht",
        "qty",
@@ -128,6 +130,36 @@
            "type": "text",
            "enable": true,
            "label": "ReductionShort"
+       },
+       "product": {
+           "type": "select",
+           "enable": true,
+           "class": "Product",
+           "view": "list",
+           "label": "Product"
+       },
+       "product_type": {
+           "type": "select",
+           "enable": true,
+           "default": "PRODUCT",
+           "status": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "PRODUCT": {
+                   "enable": true,
+                   "label": "Product",
+                   "cssClass": "blue-gradient"
+               },
+               "SERVICE": {
+                   "label": "Service",
+                   "enable": true,
+                   "cssClass": "green-gradient"
+               }
+           }
        }
    }
 }
