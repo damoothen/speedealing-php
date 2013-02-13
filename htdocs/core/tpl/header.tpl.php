@@ -139,11 +139,6 @@
 
 	<!-- NOLOGIN section (obsolete?) -->
 
-	<!-- JQuery Flot -->
-	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="includes/jquery/plugins/flot/excanvas.min.js"></script><![endif]-->
-	<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.min.js"></script>
-	<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.pie.min.js"></script>
-	<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>
 	<!-- jQuery jeditable -->
 	<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.min.js"></script>
 	<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>
@@ -200,10 +195,7 @@
 
 	<!-- HighChart -->
 	<script type="text/javascript" src="includes/jquery/plugins/highcharts/js/highcharts.js"></script>
-	<!-- <script type="text/javascript" src="includes/jquery/plugins/highcharts/js/themes/symeos.js"></script> -->
 	<!-- Highstock -->
-	<!-- <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.4.2/mootools-yui-compressed.js" type="text/javascript"></script> -->
-	<!-- <script src="includes/jquery/plugins/Highstock/js/adapters/mootools-adapter.js" type="text/javascript"></script> -->
 	<script type="text/javascript" src="includes/jquery/plugins/highstock/js/highstock.js"></script>
 	<script type="text/javascript" src="includes/jquery/plugins/highcharts/js/themes/symeos.js"></script>
 
@@ -214,9 +206,7 @@
 	<!-- BEGIN THEME -->
 	<script type="text/javascript" src="includes/js/jquery.ui.extend.js"></script>
 	<script type="text/javascript" src="includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>
-	<!-- <script type="text/javascript" src="includes/lib/jQplot/jquery.jqplot.min.js"></script> -->
-	<!-- <script type="text/javascript" src="includes/lib/jQplot/jqplot.plugins.js"></script> -->
-	<script type="text/javascript" src="includes/lib/fullcalendar/fullcalendar.min.js"></script>
+	<!-- <script type="text/javascript" src="includes/lib/fullcalendar/fullcalendar.min.js"></script> -->
 	<script type="text/javascript" src="includes/lib/stepy/js/jquery.stepy.min.js"></script>
 	<script type="text/javascript" src="includes/lib/validate/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="includes/lib/validate/localization/messages_<?php echo substr($langs->getDefaultLang(), 0, 2); ?>.js"></script>
@@ -230,14 +220,6 @@
 	<!-- jQuery Datepicker default options -->
 	<script type="text/javascript" src="core/js/datepicker.js.php?lang=<?php echo $langs->defaultlang; ?>"></script>
 
-	<!-- jquery UI -->
-	<link rel="stylesheet" href="includes/jquery/plugins/jQueryUI/css/Aristo/Aristo.css" media="all" />
-	<!-- jQplot (charts) -->
-	<link rel="stylesheet" href="includes/jquery/plugins/jQplot/jquery.jqplot.css" media="all" />
-	<!-- fancybox -->
-	<link rel="stylesheet" href="includes/jquery/plugins/fancybox/jquery.fancybox-1.3.4.css" media="all" />
-	<!-- fullcalendar -->
-	<link rel="stylesheet" href="includes/jquery/plugins/fullcalendar/fullcalendar.css" media="all" />
 	<!-- tooltips -->
 	<link rel="stylesheet" href="includes/jquery/plugins/qtip2/jquery.qtip.min.css" />
 	<!-- chosen (select element extended) -->
@@ -247,9 +229,3 @@
 
 	<!-- main styles -->
 	<link rel="stylesheet" href="theme/eldy/style.css" />
-
-	<!--[if lt IE 9]>
-	<link rel="stylesheet" href="foundation/stylesheets/ie.css">
-	<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<script src="lib/jQplot/excanvas.min.js"></script>
-	<![endif]-->
