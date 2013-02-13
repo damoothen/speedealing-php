@@ -104,6 +104,8 @@ if (!empty($json) && !empty($class)) {
 
         $idline = count($object->lines);
         $line = $object->lines[$idline - 1];
+        $line->product_type = GETPOST('product_type');
+        $object->record();
         
         $obj->_id = $id . '#' . (intval($idline-1));
         $obj->description = $line->description;
@@ -112,6 +114,7 @@ if (!empty($json) && !empty($class)) {
         $obj->remise = $line->remise;
         $obj->tva_tx = $line->tva_tx;
         $obj->total_ht = $line->total_ht;
+        $obj->product_type = $line->product_type;
 
         
     }
