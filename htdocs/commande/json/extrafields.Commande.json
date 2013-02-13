@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Commande",
-   "_rev": "54-cae5da2b80ece57a777018f769f09963",
+   "_rev": "55-e4fc696bae5f675c0787799808b21f52",
    "class": "extrafields",
    "ico": "16-Document.png",
    "langs": [
@@ -13,6 +13,7 @@
        "Status"
    ],
    "createLine": [
+       "product",
        "product_type",
        "description",
        "pu_ht",
@@ -129,6 +130,13 @@
            "type": "text",
            "enable": true,
            "label": "ReductionShort"
+       },
+       "product": {
+           "type": "select",
+           "enable": true,
+           "class": "Product",
+           "view": "list",
+           "label": "Product"
        },
        "product_type": {
            "type": "select",

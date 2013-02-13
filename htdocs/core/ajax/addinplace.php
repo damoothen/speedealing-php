@@ -100,11 +100,37 @@ if (!empty($json) && !empty($class)) {
         $id = GETPOST('fk_invoice', 'alpha');
         $object->fetch($id);
         
-        $object->addline($id, GETPOST('description'), GETPOST('pu_ht'), GETPOST('qty'), GETPOST('tva_tx'), 0, 0, 0, GETPOST('remise'));
+        $idProduct = GETPOST('product');
+        $productData = null;
+        
+        if (!empty($idProduct)) {
+           dol_include_once("/product/class/product.class.php");
+           $product = new Product($db);
+           $product->fetch($idProduct);
+           $description = $product->description;
+           $pu_ht = $product->price->price;
+           $tva_tx = $product->price->tva_tx;
+           $product_type = $product->type;
+           $productData = new stdClass();
+           $productData->id = $idProduct;
+           $productData->label = $product->label;
+           $productData->description = $product->description;
+           
+        } else {
+            $description = GETPOST('description');
+            $pu_ht = GETPOST('pu_ht');
+            $tva_tx = GETPOST('tva_tx');
+            $product_type = GETPOST('product_type');
+        }
+        $qty = GETPOST('qty');
+        $remise = GETPOST('remise');
+        
+        $object->addline($id, $description, $pu_ht, $qty, $tva_tx, 0, 0, 0, $remise);
 
         $idline = count($object->lines);
         $line = $object->lines[$idline - 1];
-        $line->product_type = GETPOST('product_type');
+        $line->product = $productData;
+        $line->product_type = $product_type;
         $object->record();
         
         $obj->_id = $id . '#' . (intval($idline-1));
@@ -114,8 +140,6 @@ if (!empty($json) && !empty($class)) {
         $obj->remise = $line->remise;
         $obj->tva_tx = $line->tva_tx;
         $obj->total_ht = $line->total_ht;
-        $obj->product_type = $line->product_type;
-
         
     }
 }
