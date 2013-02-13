@@ -889,7 +889,7 @@ function left_menu() {
 	<!-- This is optional -->
 	<footer id="menu-footer">
 		<div>
-			<p>Copyright 2012-2013 - Symeos</p>
+			<p>Speedealing v.<?php echo DOL_VERSION; ?></p>
 		</div>
 	</footer>
 
