@@ -169,16 +169,21 @@ class Societe extends nosqlDocument {
 		// Check more parameters
 		// If error, this->errors[] is filled
 		$result = $this->verify();
+		
+		$staticuser = new User($db);
 
 		if ($result >= 0) {
 
 			// Ajout du commercial affecte
 			if ($this->commercial_id->id != '' && $this->commercial_id->id != "-1") {
 				$this->commercial_id->id = trim($this->commercial_id->id);
+				$staticuser->load($this->commercial_id->id);
+				$this->commercial_id->name = $staticuser->login;
 			}
 			// si un commercial cree un client il lui est affecte automatiquement
 			else {
-				$this->commercial_id->id = $user->login;
+				$this->commercial_id->id = $user->id;
+				$this->commercial_id->name = $user->login;
 			}
 
 			$ret = $this->update('', $user, 0, 1, 1, 'add'); // Record

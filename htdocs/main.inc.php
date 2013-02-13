@@ -562,143 +562,35 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 	if (empty($conf->css))
 		$conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
-	?>
-	<!DOCTYPE html>
 
-	<!--[if IEMobile 7]><html class="no-js iem7 oldie"><![endif]-->
-	<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie" lang="en"><![endif]-->
-	<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
-	<!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
-	<!--[if (gt IE 9)|(gt IEMobile 7)]><!-->
+	// DOCTYPE
+	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 
-	<html class="no-js" lang="en">
+	if (empty($disablehead)) {
 
-	<!--<![endif]-->
+		// Title
+		$name = 'Speedealing';
+		if (!empty($mysoc->name))
+			$name = $mysoc->name;
+		$title = $name . (!empty($title)?$title:'');
 
-	<?php if (empty($disablehead)) { ?>
-	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		// Base href
+		$base_href = MAIN_PROTOCOL . '://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/';
 
-		<meta name="HandheldFriendly" content="True">
-		<meta name="MobileOptimized" content="320">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		<meta name="robots" content="noindex,nofollow" />
-		<meta name="author" content="Speedealing Development Team" />
-
-		<?php
-		// Displays title
-		if (empty($mysoc->name))
-			$appli = 'Speedealing';
-		else
-			$appli = $mysoc->name;
-
-		if ($title)
-			print '<title>' . $appli . ' - ' . $title . '</title>';
-		else
-			print "<title>" . $appli . "</title>";
-		print "\n";
-		?>
-
-		<base href="<?php echo MAIN_PROTOCOL . '://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
-
-		<!-- For all browsers -->
-		<link rel="stylesheet" href="theme/symeos/css/reset.css?v=1">
-		<link rel="stylesheet" href="theme/symeos/css/style.css?v=1">
-		<link rel="stylesheet" href="theme/symeos/css/colors.css?v=1">
-		<link rel="stylesheet" media="print" href="theme/symeos/css/print.css?v=1">
-		<!-- For progressively larger displays -->
-		<link rel="stylesheet" media="only all and (min-width: 480px)" href="theme/symeos/css/480.css?v=1">
-		<link rel="stylesheet" media="only all and (min-width: 768px)" href="theme/symeos/css/768.css?v=1">
-		<link rel="stylesheet" media="only all and (min-width: 992px)" href="theme/symeos/css/992.css?v=1">
-		<link rel="stylesheet" media="only all and (min-width: 1200px)" href="theme/symeos/css/1200.css?v=1">
-		<!-- For Retina displays -->
-		<link rel="stylesheet"
-				media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)"
-				href="theme/symeos/css/2x.css?v=1">
-
-		<!-- Symeos -->
-		<link rel="stylesheet" href="theme/symeos/css/symeos.css?v=1">
-
-		<!-- Webfonts -->
-		<!--<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>-->
-
-		<!-- Additional styles -->
-		<link rel="stylesheet" href="theme/symeos/css/styles/agenda.css?v=1">
-		<link rel="stylesheet" href="theme/symeos/css/styles/dashboard.css?v=1">
-		<link rel="stylesheet" href="theme/symeos/css/styles/form.css?v=1">
-		<link rel="stylesheet" href="theme/symeos/css/styles/modal.css?v=1">
-		<link rel="stylesheet" href="theme/symeos/css/styles/progress-slider.css?v=1">
-		<link rel="stylesheet" href="theme/symeos/css/styles/switches.css?v=1">
-		<link rel="stylesheet" href="theme/symeos/css/styles/table.css?v=1">
-		<link rel="stylesheet" href="theme/symeos/css/styles/calendars.css?v=1">
-
-		<!-- DataTables -->
-		<!--<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">-->
-
-		<!-- JavaScript at bottom except for Modernizr -->
-		<script src="includes/js/modernizr.custom.js"></script>
-
-		<!-- For Modern Browsers -->
-		<link rel="shortcut icon" href="favicon.png">
-		<!-- For everything else -->
-		<link rel="shortcut icon" href="favicon.ico">
-		<!--<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/> -->
-		<!-- For retina screens -->
-		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-retina.png">
-		<!-- For iPad 1-->
-		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-ipad.png">
-		<!-- For iPhone 3G, iPod Touch and Android -->
-		<link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
-
-		<!-- iOS web-app metas -->
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-		<!-- Startup image for web apps -->
-		<!--<link rel="apple-touch-startup-image" href="theme/developr/html/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
-		<link rel="apple-touch-startup-image" href="theme/developr/html/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
-		<link rel="apple-touch-startup-image" href="theme/developr/html/img/splash/iphone.png" media="screen and (max-device-width: 320px)">-->
-
-		<!-- Microsoft clear type rendering -->
-		<meta http-equiv="cleartype" content="on">
-
-		<!-- IE9 Pinned Sites: http://msdn.microsoft.com/en-us/library/gg131029.aspx -->
-		<meta name="application-name" content="Developr Admin Skin">
-		<meta name="msapplication-tooltip" content="Cross-platform admin template.">
-		<meta name="msapplication-starturl" content="http://www.display-inline.fr/demo/developr">
-		<!-- These custom tasks are examples, you need to edit them to show actual pages -->
-		<meta name="msapplication-task" content="name=Agenda;action-uri=http://www.display-inline.fr/demo/developr/html/agenda.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
-		<base name="msapplication-task" content="name=My profile;action-uri=http://www.display-inline.fr/demo/developr/html/profile.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
-
-		<?php
-		print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
-		// jQuery fileupload
-		print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
-		// jQuery datatables
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" />'."\n";
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" />'."\n";
-		print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />' . "\n";
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" />'."\n";
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" />'."\n";
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" />'."\n";
-		print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" />' . "\n";
-		// jQuery multiselect
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" />'."\n";
-		print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />' . "\n";
-		// jQuery taghandler
-		print '<link rel="stylesheet" href="includes/jquery/plugins/tagHandler/css/jquery.taghandler.css" media="all" />' . "\n";
-
-		print '<!-- Includes for Speedealing, modules or specific pages-->' . "\n";
+		// Eldy Theme (obsolete)
 		// Output style sheets (optioncss='print' or '')
 		$themepath = dol_buildpath((empty($conf->global->MAIN_FORCETHEMEDIR) ? '' : $conf->global->MAIN_FORCETHEMEDIR) . $conf->css, 1);
 		$themeparam = '?lang=' . $langs->defaultlang . '&amp;theme=' . $conf->theme . (GETPOST('optioncss') ? '&amp;optioncss=' . GETPOST('optioncss', 'alpha', 1) : '');
 		if (!empty($_SESSION['dol_resetcache']))
 			$themeparam.='&amp;dol_resetcache=' . $_SESSION['dol_resetcache'];
-		//print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
-		print '<link rel="stylesheet" type="text/css" title="default" href="' . $themepath . $themeparam . '">' . "\n";
+		$theme = $themepath . $themeparam;
+
+		// Header template
+		include DOL_DOCUMENT_ROOT . '/core/tpl/header.tpl.php';
+
 
 		// CSS forced by modules (relative url starting with /)
+		/*
 		if (is_array($conf->css_modules)) {
 			foreach ($conf->css_modules as $key => $cssfile) {
 				// cssfile is an absolute path
@@ -718,141 +610,12 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 					print $themeparam;
 				print '"><!-- Added by page -->' . "\n";
 			}
-		}
-
-		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-			print '<link rel="top" title="' . $langs->trans("Home") . '" href="' . (DOL_URL_ROOT ? DOL_URL_ROOT : '/') . '">' . "\n";
-		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-			print '<link rel="copyright" title="GNU General Public License" href="http://www.gnu.org/copyleft/gpl.html#SEC1">' . "\n";
-		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-			print '<link rel="author" title="Speedealing Development Team" href="http://www.speedealing.com">' . "\n";
-
-		// JQuery. Must be before other includes
-		print '<!-- Includes JS for JQuery -->' . "\n";
-		print '<script type="text/javascript" src="includes/jquery/js/jquery-latest.min.js"></script>' . "\n";
-		print '<script type="text/javascript" src="includes/jquery/js/jquery-ui-latest.custom.min.js"></script>' . "\n";
-		print '<script type="text/javascript" src="includes/jquery/plugins/globalize/lib/globalize.js"></script>' . "\n";
-		print '<script type="text/javascript" src="includes/jquery/plugins/globalize/lib/cultures/globalize.cultures.js"></script>' . "\n";
-
-		if (!defined('NOLOGIN')) {
-			// Flot
-			print '<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="includes/jquery/plugins/flot/excanvas.min.js"></script><![endif]-->' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.min.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.pie.min.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>' . "\n";
-			// jQuery jeditable
-			print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.min.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>' . "\n";
-			print '<script type="text/javascript">' . "\n";
-			print 'var urlSaveInPlace = \'core/ajax/saveinplace.php\';' . "\n";
-			print 'var urlAddInPlace = \'core/ajax/addinplace.php\';' . "\n";
-			print 'var tagSaveInPlace = \'core/ajax/savetaghandler.php\';' . "\n";
-			print 'var urlLoadInPlace = \'core/ajax/loadinplace.php\';' . "\n";
-			print 'var tagLoadInPlace = \'core/ajax/loadtaghandler.php\';' . "\n";
-			print 'var tooltipInPlace = \'' . $langs->transnoentities('ClickToEdit') . '\';' . "\n";
-			print 'var placeholderInPlace = \'' . $langs->trans('ClickToEdit') . '\';' . "\n";
-			print 'var cancelInPlace = \'' . $langs->trans('Cancel') . '\';' . "\n";
-			print 'var submitInPlace = \'' . $langs->trans('Ok') . '\';' . "\n";
-			print 'var indicatorInPlace = \'<img src="' . "theme/" . $conf->theme . "/img/working.gif" . '">\';' . "\n";
-			print 'var ckeditorConfig = \'' . dol_buildpath('/theme/' . $conf->theme . '/ckeditor/config.js', 1) . '\';' . "\n";
-			print '</script>' . "\n";
-			print '<script type="text/javascript" src="core/js/editinplace.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>' . "\n";
-			// jQuery File Upload
-			print '<script type="text/javascript" src="includes/jquery/plugins/template/tmpl.min.js"></script>' . "\n";
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/js/jquery.iframe-transport.js"></script>'."\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/timepicker/jquery-ui-timepicker-addon.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/timepicker/localization/jquery-ui-timepicker-' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
-			print '<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/spinner/ui.spinner.min.js"></script>' . "\n";
-			print '<script src="includes/jquery/plugins/tagHandler/js/jquery.taghandler.min.js"></script>' . "\n";
-		}
-		// jQuery DataTables
-		print '<script type="text/javascript" src="includes/jquery/plugins/datatables/media/js/jquery.dataTables.min.js"></script>' . "\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/dataTables.plugins.js"></script>';
-		print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColReorder/media/js/ColReorder.min.js"></script>' . "\n";
-		print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColVis/media/js/ColVis.min.js"></script>' . "\n";
-		print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/TableTools/media/js/TableTools.min.js"></script>' . "\n";
-		print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AutoFill/media/js/AutoFill.min.js"></script>' . "\n";
-		print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AjaxReload/media/js/fnReloadAjax.js"></script>' . "\n";
-		print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/DataTables-Editable/media/js/jquery.dataTables.editable.js"></script>' . "\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/initXHR'.$ext.'"></script>'."\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/searchColumns'.$ext.'"></script>'."\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/ZeroClipboard'.$ext.'"></script>'."\n";
-		// jQuery Multiselect
-		//print '<script type="text/javascript" src="includes/jquery/plugins/multiselect/js/ui.multiselect.js"></script>' . "\n";
-
-		// HightChart
-		print '<script type="text/javascript" src="includes/jquery/plugins/highcharts/js/highcharts.js"></script>';
-		//print '<script type="text/javascript" src="includes/jquery/plugins/highcharts/js/themes/symeos.js"></script>';
-		// Highstock
-		//print '<script src="https://ajax.googleapis.com/ajax/libs/mootools/1.4.2/mootools-yui-compressed.js" type="text/javascript"></script>';
-		//print '<script src="includes/jquery/plugins/Highstock/js/adapters/mootools-adapter.js" type="text/javascript"></script>';
-		print '<script type="text/javascript" src="includes/jquery/plugins/highstock/js/highstock.js"></script>';
-		print '<script type="text/javascript" src="includes/jquery/plugins/highcharts/js/themes/symeos.js"></script>';
-
-		// CKEditor
-		print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'' . DOL_URL_ROOT . '/includes/ckeditor/\';</script>' . "\n";
-		print '<script type="text/javascript" src="includes/ckeditor/ckeditor_basic.js"></script>' . "\n";
-
-		// BEGIN THEME
-		print '<script type="text/javascript" src="includes/js/jquery.ui.extend.js"></script>';
-		print '<script type="text/javascript" src="includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>';
-		//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jquery.jqplot.min.js"></script>';
-		//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jqplot.plugins.js"></script>';
-		print '<script type="text/javascript" src="includes/lib/fullcalendar/fullcalendar.min.js"></script>';
-		print '<script type="text/javascript" src="includes/lib/stepy/js/jquery.stepy.min.js"></script>';
-		print '<script type="text/javascript" src="includes/lib/validate/jquery.validate.min.js"></script>';
-		print '<script type="text/javascript" src="includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
-		print '<script type="text/javascript" src="includes/js/jquery.rwd-table.js"></script>';
-		// END THEME
-
-		if (!defined('NOLOGIN')) {
-			// Global js function
-			print '<!-- Includes JS of Speedealing -->' . "\n";
-			print '<script type="text/javascript" src="core/js/lib_head.js"></script>' . "\n";
-		}
-
-		// Add datepicker default options
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
-
-		//print '<link rel="stylesheet" href="theme/pertho_sample/foundation/stylesheets/foundation.css">';
-		print '<!-- jquery UI -->';
-		print '<link rel="stylesheet" href="includes/jquery/plugins/jQueryUI/css/Aristo/Aristo.css" media="all" />';
-		print '<!-- jQplot (charts) -->';
-		print '<link rel="stylesheet" href="includes/jquery/plugins/jQplot/jquery.jqplot.css" media="all" />';
-		print '<!-- fancybox -->';
-		print '<link rel="stylesheet" href="includes/jquery/plugins/fancybox/jquery.fancybox-1.3.4.css" media="all" />';
-		print '<!-- fullcalendar -->';
-		print '<link rel="stylesheet" href="includes/jquery/plugins/fullcalendar/fullcalendar.css" media="all" />';
-		print '<!-- tooltips -->';
-		print '<link rel="stylesheet" href="includes/jquery/plugins/qtip2/jquery.qtip.min.css" />';
-		//print '<!-- chosen (select element extended) -->';
-		//print '<link rel="stylesheet" href="includes/jquery/plugins/chosen/chosen.css" media="all" />';
-		print '<!-- datatables -->';
-		print '<link rel="stylesheet" href="includes/jquery/plugins/datatables/css/demo_table_jui.css" media="all" />';
-
-		print '<!-- main styles -->';
-		print '<link rel="stylesheet" href="theme/eldy/style.css" />';
-
-		print '<!--[if lt IE 9]>';
-		print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
-		print '<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>';
-		print '<script src="lib/jQplot/excanvas.min.js"></script>';
-		print '<![endif]-->';
+		}*/
 
 		// For new theme TODO script init A revoir
 		print '<script>
 			$(document).ready(function() {
+                prth_stickyFooter.resize();
 				//prth_common.init();
 			});
 		</script>';
@@ -875,10 +638,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			print $head . "\n";
 		if (!empty($conf->global->MAIN_HTML_HEADER))
 			print $conf->global->MAIN_HTML_HEADER . "\n";
-		?>
-	</head>
 
-	<?php
+		print '</head>';
 	}
 
 	$conf->headerdone = 1; // To tell header was output
@@ -1187,80 +948,15 @@ if (!function_exists("llxFooter")) {
 
 			define("MAIN_CORE_ERROR", 0);
 		}
-		?>
 
-        <?php if (!defined('NOHEADER')) : ?>
-            <script src="theme/symeos/js/setup.js"></script>
+		if (!defined('NOHEADER')) {
 
-            <script src="theme/symeos/js/developr.navigable.js"></script>
-            <script src="theme/symeos/js/developr.scroll.js"></script>
+			// Footer template
+			include DOL_DOCUMENT_ROOT . '/core/tpl/footer.tpl.php';
 
-            <script src="theme/symeos/js/s_scripts.js"></script>
-            <script src="theme/symeos/js/symeos.js"></script>
-
-            <script src="theme/symeos/js/developr.input.js"></script>
-            <script src="theme/symeos/js/developr.message.js"></script>
-            <script src="theme/symeos/js/developr.modal.js"></script>
-            <script src="theme/symeos/js/developr.notify.js"></script>
-            <script src="theme/symeos/js/developr.progress-slider.js"></script>
-            <script src="theme/symeos/js/developr.tooltip.js"></script>
-            <script src="theme/symeos/js/developr.confirm.js"></script>
-            <script src="theme/symeos/js/developr.agenda.js"></script>
-
-            <script src="theme/symeos/js/developr.tabs.js"></script>
-            <!-- Must be loaded last -->
-
-            <!-- Tinycon -->
-            <script src="includes/js/tinycon.min.js"></script>
-
-            <script>
-
-                // Call template init (optional, but faster if called manually)
-                $.template.init();
-
-                // Favicon count
-                Tinycon.setBubble(<?php echo $count_icon; ?>);
-
-            </script>
-
-            <script>
-                //* sticky footer
-                prth_stickyFooter = {
-                    init: function() {
-                        prth_stickyFooter.resize();
-                    },
-                    resize: function() {
-                        if($("#sticky-footer-push").height() === undefined)
-                            var docHeight = $(document.body).height();
-                        else
-                            var docHeight = $(document.body).height() - $("#sticky-footer-push").height();
-
-                        if(docHeight < $(window).height()){
-                            var diff = $(window).height() - docHeight +1;
-                            if ($("#sticky-footer-push").length == 0) {
-                                $('#footer').before('<div id="sticky-footer-push"></div>');
-                            }
-                            $("#sticky-footer-push").height(diff - $("#title-bar").height() - 2);
-                        } else {
-                            $("#sticky-footer-push").remove();
-                        }
-                    }
-                };
-            </script>
-
-            <footer id="footer">
-                <div class="with-mid-padding">
-                    <div>Copyright &copy; 2012-2013
-                        speedealing.com - symeos.com - tzd-themes.com -
-                        themeforest.net/user/displayinline
-                    </div>
-                </div>
-            </footer>
-            <?php
             printCommonFooter();
-            ?>
-        <?php endif; ?>
-        <?php
+		}
+
         print "</body>\n";
         print "</html>\n";
     }

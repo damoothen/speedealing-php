@@ -75,9 +75,10 @@ function upgrade() {
 		} catch (Exception $e) {
 			// Dict not in db
 		}
-		$fp = fopen($dir . $aRow->key . ".json", "r");
+		$filename = str_replace(':', '.', $aRow->key);
+		$fp = fopen($dir . $filename . ".json", "r");
 		if ($fp) {
-			$json = fread($fp, filesize($dir . $aRow->key . ".json"));
+			$json = fread($fp, filesize($dir . $filename . ".json"));
 			$obj = json_decode($json);
 			unset($obj->_rev);
 		}

@@ -245,7 +245,6 @@ if ($action == 'add_action') {
 
         if ($idaction > 0) {
             if (!$object->error) {
-                $db->commit();
                 if (!empty($backtopage)) {
                     dol_syslog("Back to " . $backtopage);
                     Header("Location: " . $backtopage);
@@ -257,13 +256,11 @@ if ($action == 'add_action') {
                 exit;
             } else {
                 // Si erreur
-                $db->rollback();
                 $id = $idaction;
                 $langs->load("errors");
                 $error = $langs->trans($object->error);
             }
         } else {
-            $db->rollback();
             $id = $idaction;
             $langs->load("errors");
             $error = $langs->trans($object->error);

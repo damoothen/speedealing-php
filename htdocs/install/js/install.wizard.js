@@ -130,7 +130,6 @@ $(document).ready(function() {
 	function addConfig() {
 		$.post("install/ajax/install.php", {
     		action: 'create_config',
-    		couchdb_name: $('#couchdb_name').val(),
     		couchdb_host: $('#couchdb_host').val(),
     		couchdb_port: $('#couchdb_port').val(),
     		memcached_host: ($('#memcached_host').prop('disabled') ?  false : $('#memcached_host').val()),
@@ -166,7 +165,10 @@ $(document).ready(function() {
 	// Add database
 	function addDatabase() {
 		$.post("install/ajax/install.php", {
-    		action: 'create_database'
+    		action: 'create_database',
+    		couchdb_name: $('#couchdb_name').val(),
+    		couchdb_host: $('#couchdb_host').val(),
+    		couchdb_port: $('#couchdb_port').val()
 		},
 		function(value) {
 			if (value > 0) {
