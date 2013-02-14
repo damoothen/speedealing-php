@@ -67,8 +67,8 @@
 	<link rel="stylesheet" href="theme/symeos/css/styles/table.css?v=1">
 	<link rel="stylesheet" href="theme/symeos/css/styles/calendars.css?v=1">
 
-	<!-- DataTables -->
-	<!--<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">-->
+	<!-- DataTables --><!-- jquery UI -->
+	<link rel="stylesheet" href="includes/jquery/plugins/jQueryUI/css/Aristo/Aristo.css" media="all" />
 
 	<!-- JavaScript at bottom except for Modernizr -->
 	<script src="includes/js/modernizr.custom.js"></script>
