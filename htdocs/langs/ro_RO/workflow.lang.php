@@ -17,7 +17,7 @@
 
 $workflow = array(
 		'CHARSET' => 'UTF-8',
-		'WorkflowSetup' => 'Fluxul de lucru modul de configurare',
+		'WorkflowSetup' => 'Configurare modul Flux de lucru',
 		'WorkflowDesc' => 'Acest modul este placut in aceleasi nuante pentru a modifica comportamentul de acţiuni automate în aplicare. În mod implicit, fluxul de lucru este deschis (a face ceva în ordinea dorită). Puteţi activat acţiuni automate pe care le sunt interesante inch',
 		'ThereIsNoWorkflowToModify' => 'Nu există nici un flux de lucru se poate modifica pentru modulul care le-aţi activat.',
 		'descWORKFLOW_PROPAL_AUTOCREATE_ORDER' => 'Crearea unui ordin de client în mod automat, după o propunere comercială este semnat',
