@@ -76,8 +76,7 @@
 	<footer id="footer">
 		<div class="with-mid-padding">
 			<div>Copyright &copy; 2012-2013
-			speedealing.com - symeos.com - tzd-themes.com -
-			themeforest.net/user/displayinline
+			speedealing.com - under GPLv3 license
 			</div>
 		</div>
 	</footer>

@@ -204,7 +204,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 
         $id = $edituser->update($user, 0, $action);
 
-        print $id;
+        //print $id;
 
         if ($id == $edituser->id) {
             $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);

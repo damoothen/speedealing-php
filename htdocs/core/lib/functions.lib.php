@@ -832,7 +832,7 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
-        
+
 // If date undefined or "", we return ""
     if (dol_strlen($time) == 0)
         return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
@@ -844,7 +844,7 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
-        
+
 //print 'x'.$time;
 
     if (preg_match('/%b/i', $format)) {  // There is some text to translate
@@ -2326,7 +2326,7 @@ function start_box($title, $nbcolumn = 'twelve', $icon = '16-Abacus.png', $box_a
     $path = DOL_URL_ROOT;
     if (empty($path))
         $path = "..";
-    
+
     if(empty($icon))
         $icon = '16-Abacus.png';
 
@@ -2728,7 +2728,7 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
 
 
 
-            
+
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
         if (dol_strlen($nbofdectoround))
             $amount = round($amount, $nbofdectoround); // $nbofdectoround can be 0.
@@ -3121,7 +3121,7 @@ function dol_mkdir($dir, $dataroot = '') {
 
 
 
-            
+
 // Attention, le is_dir() peut echouer bien que le rep existe.
         // (ex selon config de open_basedir)
         if ($ccdir) {
