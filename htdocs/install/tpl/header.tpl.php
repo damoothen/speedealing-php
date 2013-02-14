@@ -56,10 +56,10 @@
 	<link rel="stylesheet" href="<?php echo DOL_URL_ROOT; ?>/theme/symeos/css/styles/progress-slider.css?v=1">
 
 	<!-- jQuery Form Validation -->
-	<link rel="stylesheet" href="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/libs/formValidator/developr.validationEngine.css?v=1">
+	<link rel="stylesheet" href="<?php echo DOL_URL_ROOT; ?>/includes/lib/formValidator/developr.validationEngine.css?v=1">
 
 	<!-- JavaScript at bottom except for Modernizr -->
-	<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/libs/modernizr.custom.js"></script>
+	<script src="<?php echo DOL_URL_ROOT; ?>/includes/js/modernizr.custom.js"></script>
 
 	<!-- Json files for database -->
 	<script type="text/javascript">
