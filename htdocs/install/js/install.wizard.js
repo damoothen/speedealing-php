@@ -54,9 +54,13 @@ $(document).ready(function() {
 		// Called everytime a step (fieldset) becomes the active one
 		var step = $(this).attr('id');
 		if (step == 'database') {
+			// Restore next button
 			$('.wizard-next').show();
 		} else if (step == 'install') {
+			// Restore previous button
 			$('.wizard-prev').show();
+			// Reset progress bar
+			$('#set_conf, #set_database, #set_security').setProgressValue(0, false);
 		}
 	});
 
@@ -136,9 +140,14 @@ $(document).ready(function() {
     		memcached_port: ($('#memcached_port').prop('disabled') ? false : $('#memcached_port').val())
 		},
 		function(value) {
-			if (value > 0) {
-				setProgressBar('set_conf', 50);
-				addUsersync();
+			if (value == true) {
+				if ($('#couchdb_create_usersync').prop('checked')) {
+					setProgressBar('set_conf', 50);
+					addUsersync();
+				} else {
+					setProgressBar('set_conf', 100);
+					addDatabase();
+				}
 			} else {
 				return false;
 			}
@@ -153,7 +162,7 @@ $(document).ready(function() {
     		couchdb_pass_sync: $('#couchdb_pass_sync').val()
 		},
 		function(value) {
-			if (value > 0) {
+			if (value == true) {
 				setProgressBar('set_conf', 100);
 				addDatabase();
 			} else {
@@ -171,7 +180,7 @@ $(document).ready(function() {
     		couchdb_port: $('#couchdb_port').val()
 		},
 		function(value) {
-			if (value > 0) {
+			if (value == true) {
 				setProgressBar('set_database', 25);
 				populateDatabase();
 			} else {
@@ -197,7 +206,7 @@ $(document).ready(function() {
 		    		filepath: path
 				},
 				function(value) {
-					if (value > 0) {
+					if (value == true) {
 						progress_value = progress_value + step;
 						progress_value = (progress_value < 100 ? progress_value : 100)
 						setProgressBar('set_database', progress_value);
@@ -220,7 +229,7 @@ $(document).ready(function() {
     		couchdb_pass_root: $('#couchdb_pass_root').val()
 		},
 		function(value) {
-			if (value > 0) {
+			if (value == true) {
 				setProgressBar('set_security', 50);
 				addUser();
 			} else {
@@ -240,7 +249,7 @@ $(document).ready(function() {
     		couchdb_user_pass: $('#couchdb_user_pass').val()
 		},
 		function(value) {
-			if (value > 0) {
+			if (value == true) {
 				setProgressBar('set_security', 100);
 				lockInstall();
 			} else {
@@ -255,7 +264,7 @@ $(document).ready(function() {
     		action: 'lock_install'
 		},
 		function(value) {
-			if (value > 0) {
+			if (value == true) {
 				$('#start_button').removeAttr('disabled');
 			} else {
 				return false;

@@ -62,16 +62,23 @@ if ($action == 'create_config') {
 	// Create first user
 	sleep(1); // for test
 
-	echo 1;
+	echo true;
+// Create database
 } else if ($action == 'create_database') {
 	$couchdb_name	= GETPOST('couchdb_name', 'alpha');
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
+	$couchdb_host	= GETPOST('couchdb_host', 'alpha');
+	$couchdb_port	= GETPOST('couchdb_port', 'int');
 
-	// Create database
-	sleep(1); // for test
+	$couch = new couchClient($couchdb_host . ':' . $couchdb_port . '/', $couchdb_name);
 
-	echo 1;
+	try {
+		$couch->createDatabase();
+		echo true;
+	} catch (Exception $e) {
+		$langs->load("errors");
+		echo $langs->trans("ErrorDatabaseAlreadyExists", $couchdb_name);
+	}
+
 } else if ($action == 'populate_database') {
 	$filename	= GETPOST('filename', 'alpha');
 	$filepath	= GETPOST('filepath');
@@ -81,7 +88,7 @@ if ($action == 'create_config') {
 	// Create database
 	sleep(1); // for test
 
-	echo 1;
+	echo true;
 } else if ($action == 'create_admin') {
 	$couchdb_user_root	= GETPOST('couchdb_user_root', 'alpha');
 	$couchdb_pass_root	= GETPOST('couchdb_pass_root', 'alpha');
@@ -91,7 +98,7 @@ if ($action == 'create_config') {
 	// Create superadmin
 	sleep(1); // for test
 
-	echo 1;
+	echo true;
 } else if ($action == 'create_user') {
 	$couchdb_user_firstname	= GETPOST('couchdb_user_firstname', 'alpha');
 	$couchdb_user_lastname	= GETPOST('couchdb_user_lastname', 'alpha');
@@ -104,7 +111,7 @@ if ($action == 'create_config') {
 	// Create first user
 	sleep(1); // for test
 
-	echo 1;
+	echo true;
 } else if ($action == 'lock_install') {
 	// Install is finished, we create the lock file
 	echo write_lock_file();

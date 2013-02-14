@@ -220,14 +220,13 @@ function write_conf_file() {
 		fputs($fp, '?>');
 		fclose($fp);
 
-		if (file_exists("$conffile")) {
-			return 1;
-		} else {
-			return -1;
-		}
+		if (file_exists("$conffile"))
+			return true;
+		else
+			return false;
 	}
 
-	return -2;
+	return false;
 }
 
 /**
@@ -244,13 +243,12 @@ function write_lock_file() {
 		fwrite($fp, "This is a lock file to prevent use of install pages (set with permission " . $force_install_lockinstall . ")");
 		fclose($fp);
 		@chmod($lockfile, octdec($force_install_lockinstall));
-		if (file_exists("$lockfile")) {
-			return 1;
-		} else {
-			return -1;
-		}
+		if (file_exists("$lockfile"))
+			return true;
+		else
+			return false;
 	} else {
-		return -2;
+		return false;
 	}
 }
 ?>

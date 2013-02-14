@@ -1,9 +1,7 @@
 <?php
 
-/* Copyright (c) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (c) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (c) 2005-2011 Regis Houssin        <regis.houssin@capnetworks.com>
- * Copyright (C) 2012      Herve Prot           <herve.prot@symeos.com>
+/* Copyright (c) 2012-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012-2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +21,11 @@
  * 	 \file       htdocs/user/class/usergroup.class.php
  * 	 \brief      File of class to manage user groups
  */
-require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
-if ($conf->ldap->enabled)
-    require_once (DOL_DOCUMENT_ROOT . "/core/class/ldap.class.php");
+require_once DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchAdmin.php';
+if (!empty($conf->ldap->enabled))
+    require_once DOL_DOCUMENT_ROOT . '/core/class/ldap.class.php';
 
 /**
  * 	\class      UserGroup
