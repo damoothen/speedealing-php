@@ -31,11 +31,12 @@ $langs->load("errors");
 $action	= GETPOST('action','alpha');
 $out = array();
 
-header('Content-type: application/json');
 
 /*
  * View
  */
+
+header('Content-type: application/json');
 
 // This variable are loaded by inc.php
 // $dolibarr_main_couchdb_host
@@ -72,10 +73,8 @@ if ($action == 'create_config') {
 // Create database
 } else if ($action == 'create_database') {
 	$couchdb_name	= GETPOST('couchdb_name', 'alpha');
-	$couchdb_host	= GETPOST('couchdb_host', 'alpha');
-	$couchdb_port	= GETPOST('couchdb_port', 'int');
 
-	$couch = new couchClient($couchdb_host . ':' . $couchdb_port . '/', $couchdb_name);
+	$couch = new couchClient($dolibarr_main_couchdb_host . ':' . $dolibarr_main_couchdb_port . '/', $couchdb_name);
 
 	if (!$couch->databaseExists()) {
 		try {
@@ -123,7 +122,8 @@ if ($action == 'create_config') {
 
 } else if ($action == 'lock_install') {
 	// Install is finished, we create the lock file
-	$ret = write_lock_file();
+	//$ret = write_lock_file();
+	$ret = 1; // TODO for debug
 	if ($ret > 0)
 		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('LockFileCreated')));
 	else

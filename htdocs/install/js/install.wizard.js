@@ -175,9 +175,7 @@ $(document).ready(function() {
 	function addDatabase() {
 		$.post("install/ajax/install.php", {
     		action: 'create_database',
-    		couchdb_name: $('#couchdb_name').val(),
-    		couchdb_host: $('#couchdb_host').val(),
-    		couchdb_port: $('#couchdb_port').val()
+    		couchdb_name: $('#couchdb_name').val()
 		},
 		function(value) {
 			if (value.status == 'ok') {
