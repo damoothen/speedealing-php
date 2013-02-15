@@ -266,8 +266,8 @@ function write_conf_file() {
 		else
 			return -1;
 	}
-
-	return -2;
+	else
+		return -2;
 }
 
 /**
@@ -288,8 +288,8 @@ function write_lock_file() {
 			return 1;
 		else
 			return -1;
-	} else {
-		return -2;
 	}
+	else
+		return -2;
 }
 ?>
