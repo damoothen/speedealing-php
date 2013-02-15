@@ -29,14 +29,14 @@ abstract class nosqlDocument extends CommonObject {
 	public $canvas; // Contains canvas name if it is
 	public $fk_extrafields;
 	public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "couchdb", "db",
-		"error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
-		"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin", "right");
+			"error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
+			"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin", "right");
 
 	/**
 	 * 	class constructor
 	 *
 	 * 	@param	couchClient	$db		Database handler
-	 */
+	*/
 	function __construct($db) {
 		$this->class = get_class($this);
 		$this->db = $db;
@@ -186,14 +186,14 @@ abstract class nosqlDocument extends CommonObject {
 
 		foreach (get_object_vars($this) as $key => $aRow)
 			if (!in_array($key, $this->no_save)) {
-				$values->$key = $aRow;
-				if (isset($this->fk_extrafields->fields->$key->settype)) // transtypage
-					settype($values->$key, $this->fk_extrafields->fields->$key->settype);
+			$values->$key = $aRow;
+			if (isset($this->fk_extrafields->fields->$key->settype)) // transtypage
+				settype($values->$key, $this->fk_extrafields->fields->$key->settype);
 
-				// If empty set default value
-				if (empty($values->$key) && isset($this->fk_extrafields->fields->$key->default))
-					$values->$key = $this->fk_extrafields->fields->$key->default;
-			}
+			// If empty set default value
+			if (empty($values->$key) && isset($this->fk_extrafields->fields->$key->default))
+				$values->$key = $this->fk_extrafields->fields->$key->default;
+		}
 
 
 		if (empty($values->_id) && !empty($this->id))
@@ -389,7 +389,7 @@ abstract class nosqlDocument extends CommonObject {
 		$result = new stdClass();
 		try {
 			/* if (!empty($conf->view_limit))
-			  $params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT; */
+			 $params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT; */
 			//$params['limit'] = $conf->view_limit;
 
 			$params['include_docs'] = true;
@@ -513,7 +513,7 @@ abstract class nosqlDocument extends CommonObject {
 		}
 
 		/* if ($user->rights->$class->delete)
-		  print '<button id="' . $ref_css . '_btnDeleteRow">' . $langs->trans("Delete") . '</button>'; */
+		 print '<button id="' . $ref_css . '_btnDeleteRow">' . $langs->trans("Delete") . '</button>'; */
 
 		print '<p class="button-height "></p>';
 	}
@@ -529,7 +529,8 @@ abstract class nosqlDocument extends CommonObject {
 		global $conf, $langs, $user;
 
 		$class = strtolower(get_class($this));
-		?><script type="text/javascript" charset="utf-8">
+		?>
+<script type="text/javascript" charset="utf-8">
 			$(document).ready(function() {
 				var oTable = $('#<?php echo $ref_css ?>').dataTable( {
 					"aoColumns" : [
@@ -813,10 +814,10 @@ abstract class nosqlDocument extends CommonObject {
 			});
 		});
 		</script>
-		<?php
-		//$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
-		/* $output.= 'new AutoFill( oTable, {
-		  "aoColumnDefs": [
+<?php
+//$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
+/* $output.= 'new AutoFill( oTable, {
+ "aoColumnDefs": [
 		  {
 		  "bEnable":false,
 		  "aTargets": [ 0,1,2,3,5,6,8]
@@ -956,15 +957,21 @@ abstract class nosqlDocument extends CommonObject {
 					$params['id'] = "_id";
 
 				$rtr = 'function(obj) {
-				var ar = [];
-                                if(obj.aData.' . $params["id"] . ' === undefined)
-                                    return ar.join("");
+	 		var ar = [];
+	 		if(obj.aData.' . $params["id"] . ' === undefined)
 
-				ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
-				ar[ar.length] = obj.aData.' . $key . '.toString();
-				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
-				ar[ar.length] = obj.aData.' . $key . '.toString();
-				ar[ar.length] = "\"> <a href=\"' . $url . '";
+	 		return ar.join("");';
+
+				if (!empty($this->fk_extrafields->ico)) {
+					$rtr.= '
+						ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
+						ar[ar.length] = obj.aData.' . $key . '.toString();
+						ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
+						ar[ar.length] = obj.aData.' . $key . '.toString();
+						ar[ar.length] = "\"> "';
+				}
+				$rtr.= '
+				ar[ar.length] = "<a href=\"' . $url . '";
 				ar[ar.length] = obj.aData.' . $params["id"] . ';
 				ar[ar.length] = "\">";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
@@ -977,52 +984,52 @@ abstract class nosqlDocument extends CommonObject {
 			case "email":
 				$rtr = 'function(obj) {
 				var ar = [];
-                                if(obj.aData.' . $key . ' === undefined)
-                                    return ar.join("");
+				if(obj.aData.' . $key . ' === undefined)
+					return ar.join("");
 
-				ar[ar.length] = "<a href=\"mailto:";
-				ar[ar.length] = obj.aData.' . $key . '.toString();
-				ar[ar.length] = "\">";
-				ar[ar.length] = obj.aData.' . $key . '.toString();
-				ar[ar.length] = "</a>";
-				var str = ar.join("");
-				return str;
+					ar[ar.length] = "<a href=\"mailto:";
+					ar[ar.length] = obj.aData.' . $key . '.toString();
+					ar[ar.length] = "\">";
+					ar[ar.length] = obj.aData.' . $key . '.toString();
+					ar[ar.length] = "</a>";
+					var str = ar.join("");
+					return str;
 			}';
 				break;
 
 			case "date":
 				$rtr = 'function(obj) {
-			if(obj.aData.' . $key . ')
-			{
+						if(obj.aData.' . $key . ')
+						{
 				var date = new Date(obj.aData.' . $key . '*1000);
-				return Globalize.format(date,"d","fr");
+					return Globalize.format(date,"d","fr");
 			}
-			else
-				return null;
+					else
+					return null;
 			}';
 				break;
 
 			case "datetime" :
 				$rtr = 'function(obj) {
-			if(obj.aData.' . $key . ')
-			{
+	 		if(obj.aData.' . $key . ')
+	 		{
 				var date = new Date(obj.aData.' . $key . '*1000);
-				return Globalize.format(date,"F","fr");
+			return Globalize.format(date,"F","fr");
 			}
 			else
-				return null;
+			return null;
 			}';
 				break;
 
 			case "status":
 				$rtr = 'function(obj) {
-					var now = Math.round(+new Date()/1000);
-					var status = new Array();
-					var expire = new Array();
-                                        var statusDateEnd = "";
-					var stat = obj.aData.' . $key . ';
-					if(stat === undefined)
-						stat = "' . $this->fk_extrafields->fields->$key->default . '";';
+	 		var now = Math.round(+new Date()/1000);
+	 		var status = new Array();
+	 		var expire = new Array();
+	 		var statusDateEnd = "";
+	 		var stat = obj.aData.' . $key . ';
+	 		if(stat === undefined)
+	 		stat = "' . $this->fk_extrafields->fields->$key->default . '";';
 
 				foreach ($this->fk_extrafields->fields->$key->values as $key1 => $aRow) {
 					if (isset($aRow->label))
@@ -1040,7 +1047,7 @@ abstract class nosqlDocument extends CommonObject {
 					$rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' != "")';
 					$rtr.= 'if(parseInt(obj.aData.' . $params["dateEnd"] . ') < now)';
 					$rtr.= 'if(expire[stat] !== undefined)
-                                stat = expire[stat];';
+				stat = expire[stat];';
 				}
 				$rtr.= 'var ar = [];
 				ar[ar.length] = "<span class=\"tag ";
@@ -1066,8 +1073,8 @@ abstract class nosqlDocument extends CommonObject {
 				ar[ar.length] = obj.aData._id;
 				ar[ar.length] = "/";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
-				ar[ar.length] = "\">";
-				ar[ar.length] = obj.aData.' . $key . '.toString();
+					ar[ar.length] = "\">";
+					ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "</a>";
 				var str = ar.join("");
 				return str;
@@ -1077,8 +1084,8 @@ abstract class nosqlDocument extends CommonObject {
 			case "sizeMo":
 				$rtr = 'function(obj) {
 				var ar = [];
-			if(obj.aData.' . $key . ')
-			{
+	 		if(obj.aData.' . $key . ')
+	 		{
 				var size = obj.aData.' . $key . '/1000000;
 				size = (Math.round(size*100))/100;
 				ar[ar.length] = size;
@@ -1086,8 +1093,8 @@ abstract class nosqlDocument extends CommonObject {
 				var str = ar.join("");
 				return str;
 			}
-			else
-			{
+	 		else
+	 		{
 				ar[ar.length] = "0 Mo";
 				var str = ar.join("");
 				return str;
@@ -1097,27 +1104,27 @@ abstract class nosqlDocument extends CommonObject {
 
 			case "price":
 				$rtr = 'function(obj) {
-			var ar = [];
-                        if(obj.aData.' . $key . ' === undefined) {
-                            ar[ar.length] = "0.00 €";
-                            var str = ar.join("");
-                            return str;
+				var ar = [];
+				if(obj.aData.' . $key . ' === undefined) {
+						ar[ar.length] = "0.00 €";
+						var str = ar.join("");
+						return str;
                         }
-			else
-			{
-				var price = obj.aData.' . $key . ';
-				price = ((Math.round(price*100))/100).toFixed(2);
-				ar[ar.length] = price;
-				ar[ar.length] = " €";
-				var str = ar.join("");
-				return str;
+						else
+						{
+						var price = obj.aData.' . $key . ';
+							price = ((Math.round(price*100))/100).toFixed(2);
+							ar[ar.length] = price;
+							ar[ar.length] = " €";
+							var str = ar.join("");
+							return str;
 			}
 			}';
 				break;
 
 			case "pourcentage":
 				$rtr = 'function(obj) {
-				var ar = [];
+			var ar = [];
 			if(obj.aData.' . $key . ')
 			{
 				var total = obj.aData.' . $key . ';
@@ -1127,8 +1134,8 @@ abstract class nosqlDocument extends CommonObject {
 				var str = ar.join("");
 				return str;
 			}
-			else
-			{
+	 		else
+	 		{
 				ar[ar.length] = "0.00 %";
 				var str = ar.join("");
 				return str;
@@ -1138,16 +1145,16 @@ abstract class nosqlDocument extends CommonObject {
 
 			case "tag":
 				$rtr = 'function(obj) {
-                                var ar = [];
+					var ar = [];
 
-                                for (var i in obj.aData.' . $key . ') {
-                                    ar[ar.length] = "<span class=\"tag anthracite-gradient glossy";
-                                    ar[ar.length] = " \">";
-                                    ar[ar.length] = obj.aData.' . $key . '[i].toString();
-                                    ar[ar.length] = "</span> ";
+					for (var i in obj.aData.' . $key . ') {
+					ar[ar.length] = "<span class=\"tag anthracite-gradient glossy";
+					ar[ar.length] = " \">";
+					ar[ar.length] = obj.aData.' . $key . '[i].toString();
+					ar[ar.length] = "</span> ";
                                 }
-				var str = ar.join("");
-				return str;
+					var str = ar.join("");
+					return str;
 			}';
 				break;
 
@@ -1165,7 +1172,7 @@ abstract class nosqlDocument extends CommonObject {
 	 * @return string
 	 */
 	/* public function buttonCreate($url) {
-	  global $langs;
+	 global $langs;
 
 	  print '<a href="#fd_input" class="gh_button pill icon add" id="fd3">' . $langs->trans("Create") . '</a>';
 	  ?>
@@ -1206,12 +1213,12 @@ abstract class nosqlDocument extends CommonObject {
 	public function sortDatatable(&$array, $key, $dir) {
 		if ($dir == "desc")
 			usort($array, function($a, $b) use ($key) {
-						return $a->$key > $b->$key ? -1 : 1;
-					});
+			return $a->$key > $b->$key ? -1 : 1;
+		});
 		else
 			usort($array, function($a, $b) use ($key) {
-						return $a->$key > $b->$key ? 1 : -1;
-					});
+			return $a->$key > $b->$key ? 1 : -1;
+		});
 	}
 
 	/**
@@ -1228,8 +1235,8 @@ abstract class nosqlDocument extends CommonObject {
 
 		if (count($result->rows) > 0)
 			foreach ($result->rows as $aRow) {
-				$list[] = $langs->trans($aRow->key);
-			}
+			$list[] = $langs->trans($aRow->key);
+		}
 
 		return $list;
 	}
@@ -1331,7 +1338,7 @@ abstract class nosqlDocument extends CommonObject {
 				if (GETPOST($htmlname))
 					$selected = GETPOST($htmlname);
 				elseif (!empty($value)) // Using value from the function
-					$selected = $value;
+				$selected = $value;
 				else
 					$selected = $this->$key;
 
@@ -1344,10 +1351,10 @@ abstract class nosqlDocument extends CommonObject {
 					$params = array();
 					if (count($aRow->params))
 						foreach ($aRow->params as $idx => $row) {
-							eval("\$row = $row;");
-							if (!empty($row))
-								$params[$idx] = $row;
-						}
+						eval("\$row = $row;");
+						if (!empty($row))
+							$params[$idx] = $row;
+					}
 					try {
 						$result = $object->getView($aRow->view, $params);
 					} catch (Exception $e) {
