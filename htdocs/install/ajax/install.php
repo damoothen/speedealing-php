@@ -39,8 +39,8 @@ $out = array();
 header('Content-type: application/json');
 
 // This variable are loaded by inc.php
-// $dolibarr_main_couchdb_host
-// $dolibarr_main_couchdb_port
+// $main_couchdb_host
+// $main_couchdb_port
 
 if ($action == 'create_config') {
 	$couchdb_host	= GETPOST('couchdb_host', 'alpha');
@@ -63,8 +63,8 @@ if ($action == 'create_config') {
 } else if ($action == 'create_syncuser') {
 	$couchdb_user_sync	= GETPOST('couchdb_user_sync', 'alpha');
 	$couchdb_pass_sync	= GETPOST('couchdb_pass_sync', 'alpha');
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
+	// $main_couchdb_host
+	// $main_couchdb_port
 
 	// Create first user
 	sleep(1); // for test
@@ -74,7 +74,7 @@ if ($action == 'create_config') {
 } else if ($action == 'create_database') {
 	$couchdb_name	= GETPOST('couchdb_name', 'alpha');
 
-	$couch = new couchClient($dolibarr_main_couchdb_host . ':' . $dolibarr_main_couchdb_port . '/', $couchdb_name);
+	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
 
 	if (!$couch->databaseExists()) {
 		try {
@@ -90,8 +90,8 @@ if ($action == 'create_config') {
 } else if ($action == 'populate_database') {
 	$filename	= GETPOST('filename', 'alpha');
 	$filepath	= GETPOST('filepath');
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
+	// $main_couchdb_host
+	// $main_couchdb_port
 
 	// Create database
 	sleep(1); // for test
@@ -100,8 +100,8 @@ if ($action == 'create_config') {
 } else if ($action == 'create_admin') {
 	$couchdb_user_root	= GETPOST('couchdb_user_root', 'alpha');
 	$couchdb_pass_root	= GETPOST('couchdb_pass_root', 'alpha');
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
+	// $main_couchdb_host
+	// $main_couchdb_port
 
 	// Create superadmin
 	sleep(1); // for test
@@ -113,8 +113,8 @@ if ($action == 'create_config') {
 	$couchdb_user_pseudo	= GETPOST('couchdb_user_pseudo', 'alpha');
 	$couchdb_user_email		= GETPOST('couchdb_user_email', 'alpha');
 	$couchdb_user_pass		= GETPOST('couchdb_user_pass', 'alpha');
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
+	// $main_couchdb_host
+	// $main_couchdb_port
 
 	// Create first user
 	sleep(1); // for test
