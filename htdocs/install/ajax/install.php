@@ -29,8 +29,9 @@ $langs->load("install");
 $langs->load("errors");
 
 $action	= GETPOST('action','alpha');
-
 $out = array();
+
+header('Content-type: application/json');
 
 /*
  * View
@@ -52,7 +53,12 @@ if ($action == 'create_config') {
 		// Also no other process must be able to read file or we expose the new file, so content with password.
 		@dol_copy($conffile, $conffile . '.old', '0600');
 	}
-	echo write_conf_file();
+	$ret = write_conf_file();
+	if ($ret > 0)
+		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('ConfFileCreated')));
+	else
+		echo json_encode(array('status' => 'error', 'value' => $langs->trans('ConfFileIsNotWritable', $conffile)));
+
 } else if ($action == 'create_syncuser') {
 	$couchdb_user_sync	= GETPOST('couchdb_user_sync', 'alpha');
 	$couchdb_pass_sync	= GETPOST('couchdb_pass_sync', 'alpha');
@@ -61,8 +67,8 @@ if ($action == 'create_config') {
 
 	// Create first user
 	sleep(1); // for test
+	echo json_encode(array('status' => 'ok'));
 
-	echo true;
 // Create database
 } else if ($action == 'create_database') {
 	$couchdb_name	= GETPOST('couchdb_name', 'alpha');
@@ -74,12 +80,12 @@ if ($action == 'create_config') {
 	if (!$couch->databaseExists()) {
 		try {
 			$couch->createDatabase();
-			echo json_encode(array('status' => 'ok', 'value' => 'DATABASE_CREATED'));
+			echo json_encode(array('status' => 'ok', 'value' => $langs->trans('DatabaseCreated')));
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error'));
 		}
 	} else {
-		echo json_encode(array('status' => 'ok', 'value' => 'DATABASE_ALREADY_EXISTS')); // database already exists
+		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('DatabaseAlreadyExists'))); // database already exists
 	}
 
 } else if ($action == 'populate_database') {
@@ -90,8 +96,8 @@ if ($action == 'create_config') {
 
 	// Create database
 	sleep(1); // for test
+	echo json_encode(array('status' => 'ok'));
 
-	echo true;
 } else if ($action == 'create_admin') {
 	$couchdb_user_root	= GETPOST('couchdb_user_root', 'alpha');
 	$couchdb_pass_root	= GETPOST('couchdb_pass_root', 'alpha');
@@ -100,8 +106,8 @@ if ($action == 'create_config') {
 
 	// Create superadmin
 	sleep(1); // for test
+	echo json_encode(array('status' => 'ok'));
 
-	echo true;
 } else if ($action == 'create_user') {
 	$couchdb_user_firstname	= GETPOST('couchdb_user_firstname', 'alpha');
 	$couchdb_user_lastname	= GETPOST('couchdb_user_lastname', 'alpha');
@@ -113,10 +119,14 @@ if ($action == 'create_config') {
 
 	// Create first user
 	sleep(1); // for test
+	echo json_encode(array('status' => 'ok'));
 
-	echo true;
 } else if ($action == 'lock_install') {
 	// Install is finished, we create the lock file
-	echo write_lock_file();
+	$ret = write_lock_file();
+	if ($ret > 0)
+		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('LockFileCreated')));
+	else
+		echo json_encode(array('status' => 'error', 'value' => $langs->trans('LockFileCouldNotBeCreated')));
 }
 ?>

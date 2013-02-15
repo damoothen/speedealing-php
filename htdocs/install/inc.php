@@ -221,12 +221,12 @@ function write_conf_file() {
 		fclose($fp);
 
 		if (file_exists("$conffile"))
-			return true;
+			return 1;
 		else
-			return false;
+			return -1;
 	}
 
-	return false;
+	return -2;
 }
 
 /**
@@ -244,11 +244,11 @@ function write_lock_file() {
 		fclose($fp);
 		@chmod($lockfile, octdec($force_install_lockinstall));
 		if (file_exists("$lockfile"))
-			return true;
+			return 1;
 		else
-			return false;
+			return -1;
 	} else {
-		return false;
+		return -2;
 	}
 }
 ?>

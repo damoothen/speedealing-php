@@ -140,7 +140,7 @@ $(document).ready(function() {
     		memcached_port: ($('#memcached_port').prop('disabled') ? false : $('#memcached_port').val())
 		},
 		function(value) {
-			if (value == true) {
+			if (value.status == 'ok') {
 				if ($('#couchdb_create_usersync').prop('checked')) {
 					setProgressBar('set_conf', 50);
 					addUsersync();
@@ -151,7 +151,7 @@ $(document).ready(function() {
 			} else {
 				return false;
 			}
-		});
+		}, 'json');
 	}
 	
 	// Add usersync
@@ -162,13 +162,13 @@ $(document).ready(function() {
     		couchdb_pass_sync: $('#couchdb_pass_sync').val()
 		},
 		function(value) {
-			if (value == true) {
+			if (value.status == 'ok') {
 				setProgressBar('set_conf', 100);
 				addDatabase();
 			} else {
 				return false
 			}
-		});
+		}, 'json');
 	}
 	
 	// Add database
@@ -206,7 +206,7 @@ $(document).ready(function() {
 		    		filepath: path
 				},
 				function(value) {
-					if (value == true) {
+					if (value.status == 'ok') {
 						progress_value = progress_value + step;
 						progress_value = (progress_value < 100 ? progress_value : 100)
 						setProgressBar('set_database', progress_value);
@@ -214,7 +214,7 @@ $(document).ready(function() {
 						// Break
 						return false;
 					}
-				});
+				}, 'json');
 			});
 			addSuperadmin();
 		}
@@ -229,13 +229,13 @@ $(document).ready(function() {
     		couchdb_pass_root: $('#couchdb_pass_root').val()
 		},
 		function(value) {
-			if (value == true) {
+			if (value.status == 'ok') {
 				setProgressBar('set_security', 50);
 				addUser();
 			} else {
 				return false;
 			}
-		});
+		}, 'json');
 	}
 	
 	// Create user
@@ -249,13 +249,13 @@ $(document).ready(function() {
     		couchdb_user_pass: $('#couchdb_user_pass').val()
 		},
 		function(value) {
-			if (value == true) {
+			if (value.status == 'ok') {
 				setProgressBar('set_security', 100);
 				lockInstall();
 			} else {
 				return false;
 			}
-		});
+		}, 'json');
 	}
 	
 	// Add lock file
@@ -264,12 +264,12 @@ $(document).ready(function() {
     		action: 'lock_install'
 		},
 		function(value) {
-			if (value == true) {
+			if (value.status == 'ok') {
 				$('#start_button').removeAttr('disabled');
 			} else {
 				return false;
 			}
-		});
+		}, 'json');
 	}
 	
 	// Set progress bar
