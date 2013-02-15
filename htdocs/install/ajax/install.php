@@ -71,12 +71,15 @@ if ($action == 'create_config') {
 
 	$couch = new couchClient($couchdb_host . ':' . $couchdb_port . '/', $couchdb_name);
 
-	try {
-		$couch->createDatabase();
-		echo true;
-	} catch (Exception $e) {
-		$langs->load("errors");
-		echo $langs->trans("ErrorDatabaseAlreadyExists", $couchdb_name);
+	if (!$couch->databaseExists()) {
+		try {
+			$couch->createDatabase();
+			echo json_encode(array('status' => 'ok', 'value' => 'DATABASE_CREATED'));
+		} catch (Exception $e) {
+			echo json_encode(array('status' => 'error'));
+		}
+	} else {
+		echo json_encode(array('status' => 'ok', 'value' => 'DATABASE_ALREADY_EXISTS')); // database already exists
 	}
 
 } else if ($action == 'populate_database') {

@@ -180,13 +180,13 @@ $(document).ready(function() {
     		couchdb_port: $('#couchdb_port').val()
 		},
 		function(value) {
-			if (value == true) {
+			if (value.status == 'ok') {
 				setProgressBar('set_database', 25);
 				populateDatabase();
 			} else {
 				return false;
 			}
-		});
+		}, "json");
 	}
 	
 	// Populate database
