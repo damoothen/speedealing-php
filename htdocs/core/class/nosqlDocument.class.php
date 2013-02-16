@@ -964,17 +964,17 @@ abstract class nosqlDocument extends CommonObject {
 
 				if (!empty($this->fk_extrafields->ico)) {
 					$rtr.= '
-						ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
-						ar[ar.length] = obj.aData.' . $key . '.toString();
+				ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
+					ar[ar.length] = obj.aData.' . $key . '.toString();
 						ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
-						ar[ar.length] = obj.aData.' . $key . '.toString();
-						ar[ar.length] = "\"> "';
+					ar[ar.length] = obj.aData.' . $key . '.toString();
+					ar[ar.length] = "\"> "';
 				}
 				$rtr.= '
-				ar[ar.length] = "<a href=\"' . $url . '";
+						ar[ar.length] = "<a href=\"' . $url . '";
 				ar[ar.length] = obj.aData.' . $params["id"] . ';
-				ar[ar.length] = "\">";
-				ar[ar.length] = obj.aData.' . $key . '.toString();
+					ar[ar.length] = "\">";
+					ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "</a>";
 				var str = ar.join("");
 				return str;
@@ -983,8 +983,8 @@ abstract class nosqlDocument extends CommonObject {
 
 			case "email":
 				$rtr = 'function(obj) {
-				var ar = [];
-				if(obj.aData.' . $key . ' === undefined)
+					var ar = [];
+					if(obj.aData.' . $key . ' === undefined)
 					return ar.join("");
 
 					ar[ar.length] = "<a href=\"mailto:";
@@ -999,37 +999,37 @@ abstract class nosqlDocument extends CommonObject {
 
 			case "date":
 				$rtr = 'function(obj) {
-						if(obj.aData.' . $key . ')
-						{
-				var date = new Date(obj.aData.' . $key . '*1000);
-					return Globalize.format(date,"d","fr");
+					if(obj.aData.' . $key . ')
+					{
+					var date = new Date(obj.aData.' . $key . '*1000);
+	 		return Globalize.format(date,"d","fr");
 			}
-					else
-					return null;
+	 		else
+	 		return null;
 			}';
 				break;
 
 			case "datetime" :
 				$rtr = 'function(obj) {
-	 		if(obj.aData.' . $key . ')
-	 		{
+			if(obj.aData.' . $key . ')
+			{
 				var date = new Date(obj.aData.' . $key . '*1000);
-			return Globalize.format(date,"F","fr");
+	 		return Globalize.format(date,"F","fr");
 			}
-			else
-			return null;
+	 		else
+	 		return null;
 			}';
 				break;
 
 			case "status":
 				$rtr = 'function(obj) {
-	 		var now = Math.round(+new Date()/1000);
-	 		var status = new Array();
-	 		var expire = new Array();
-	 		var statusDateEnd = "";
-	 		var stat = obj.aData.' . $key . ';
-	 		if(stat === undefined)
-	 		stat = "' . $this->fk_extrafields->fields->$key->default . '";';
+			var now = Math.round(+new Date()/1000);
+			var status = new Array();
+			var expire = new Array();
+			var statusDateEnd = "";
+			var stat = obj.aData.' . $key . ';
+			if(stat === undefined)
+			stat = "' . $this->fk_extrafields->fields->$key->default . '";';
 
 				foreach ($this->fk_extrafields->fields->$key->values as $key1 => $aRow) {
 					if (isset($aRow->label))
@@ -1050,13 +1050,13 @@ abstract class nosqlDocument extends CommonObject {
 				stat = expire[stat];';
 				}
 				$rtr.= 'var ar = [];
-				ar[ar.length] = "<span class=\"tag ";
-				ar[ar.length] = status[stat][1];
-				ar[ar.length] = " glossy\">";
-				ar[ar.length] = status[stat][0];
-				ar[ar.length] = "</span>";
-				var str = ar.join("");
-				return str;
+		ar[ar.length] = "<span class=\"tag ";
+		ar[ar.length] = status[stat][1];
+		ar[ar.length] = " glossy\">";
+		ar[ar.length] = status[stat][0];
+		ar[ar.length] = "</span>";
+		var str = ar.join("");
+		return str;
 			}';
 				break;
 
@@ -1064,20 +1064,20 @@ abstract class nosqlDocument extends CommonObject {
 				$url_server = "/db/" . $this->couchdb->getDatabaseName();
 
 				$rtr = 'function(obj) {
-				var ar = [];
-				ar[ar.length] = "<img src=\"theme/' . $conf->theme . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
-				ar[ar.length] = obj.aData.' . $key . '.toString();
+			var ar = [];
+			ar[ar.length] = "<img src=\"theme/' . $conf->theme . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
+			ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
-				ar[ar.length] = obj.aData.' . $key . '.toString();
+			ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\"></a> <a href=\"' . $url_server . '/";
 				ar[ar.length] = obj.aData._id;
 				ar[ar.length] = "/";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
-					ar[ar.length] = "\">";
-					ar[ar.length] = obj.aData.' . $key . '.toString();
-				ar[ar.length] = "</a>";
-				var str = ar.join("");
-				return str;
+	 		ar[ar.length] = "\">";
+	 		ar[ar.length] = obj.aData.' . $key . '.toString();
+			ar[ar.length] = "</a>";
+			var str = ar.join("");
+			return str;
 			}';
 				break;
 
@@ -1087,25 +1087,25 @@ abstract class nosqlDocument extends CommonObject {
 	 		if(obj.aData.' . $key . ')
 	 		{
 				var size = obj.aData.' . $key . '/1000000;
-				size = (Math.round(size*100))/100;
-				ar[ar.length] = size;
-				ar[ar.length] = " Mo";
-				var str = ar.join("");
-				return str;
+			size = (Math.round(size*100))/100;
+			ar[ar.length] = size;
+			ar[ar.length] = " Mo";
+			var str = ar.join("");
+			return str;
 			}
-	 		else
-	 		{
-				ar[ar.length] = "0 Mo";
-				var str = ar.join("");
-				return str;
+			else
+			{
+			ar[ar.length] = "0 Mo";
+			var str = ar.join("");
+			return str;
 			}
 			}';
 				break;
 
 			case "price":
 				$rtr = 'function(obj) {
-				var ar = [];
-				if(obj.aData.' . $key . ' === undefined) {
+						var ar = [];
+						if(obj.aData.' . $key . ' === undefined) {
 						ar[ar.length] = "0.00 €";
 						var str = ar.join("");
 						return str;
@@ -1113,20 +1113,20 @@ abstract class nosqlDocument extends CommonObject {
 						else
 						{
 						var price = obj.aData.' . $key . ';
-							price = ((Math.round(price*100))/100).toFixed(2);
-							ar[ar.length] = price;
-							ar[ar.length] = " €";
-							var str = ar.join("");
-							return str;
+						price = ((Math.round(price*100))/100).toFixed(2);
+						ar[ar.length] = price;
+						ar[ar.length] = " €";
+						var str = ar.join("");
+						return str;
 			}
 			}';
 				break;
 
 			case "pourcentage":
 				$rtr = 'function(obj) {
-			var ar = [];
-			if(obj.aData.' . $key . ')
-			{
+	 		var ar = [];
+	 		if(obj.aData.' . $key . ')
+	 		{
 				var total = obj.aData.' . $key . ';
 				price = ((Math.round(total*100))/100).toFixed(2);
 				ar[ar.length] = total;
@@ -1367,10 +1367,12 @@ abstract class nosqlDocument extends CommonObject {
 					$aRow->values[0]->label = "-";
 					$aRow->values[0]->enable = true;
 
-					foreach ($result->rows as $row) {
-						$aRow->values[$row->value->_id] = new stdClass();
-						$aRow->values[$row->value->_id]->label = $row->value->name;
-						$aRow->values[$row->value->_id]->enable = true;
+					if (!empty($result->rows)) {
+						foreach ($result->rows as $row) {
+							$aRow->values[$row->value->_id] = new stdClass();
+							$aRow->values[$row->value->_id]->label = $row->value->name;
+							$aRow->values[$row->value->_id]->enable = true;
+						}
 					}
 
 					$selected = $this->$key->id; // Index of key
