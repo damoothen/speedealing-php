@@ -3602,15 +3602,20 @@ function get_date_range($date_start, $date_end, $format = '', $outputlangs = '')
 function setEventMessage($mesgs, $style = 'mesgs') {
     if (!in_array((string) $style, array('mesgs', 'warnings', 'errors')))
         dol_print_error('', 'Bad parameter for setEventMessage');
+    $events = array();
     if (!is_array($mesgs)) { // If mesgs is a string
         if (!empty($mesgs))
-            $_SESSION['dol_events'][$style][] = $mesgs;
+        	$events[] = (object) array('message' => $mesgs);
+            //$_SESSION['dol_events'][$style][] = $mesgs;
     } else {     // If mesgs is an array
         foreach ($mesgs as $mesg) {
             if (!empty($mesg))
-                $_SESSION['dol_events'][$style][] = $mesg;
+            	$events[] = (object) array('message' => $mesg);
+                //$_SESSION['dol_events'][$style][] = $mesg;
         }
     }
+
+    dol_setcache($style, $events);
 }
 
 /**
@@ -3621,6 +3626,7 @@ function setEventMessage($mesgs, $style = 'mesgs') {
  */
 function dol_htmloutput_events() {
     // Show mesgs
+    /*
     if (isset($_SESSION['dol_events']['mesgs'])) {
         dol_htmloutput_mesg('', $_SESSION['dol_events']['mesgs']);
         unset($_SESSION['dol_events']['mesgs']);
@@ -3636,11 +3642,12 @@ function dol_htmloutput_events() {
     if (isset($_SESSION['dol_events']['warnings'])) {
         dol_htmloutput_mesg('', $_SESSION['dol_events']['warnings'], 'warning');
         unset($_SESSION['dol_events']['warnings']);
-    }
+    }*/
 
     // Log in memcached
     $type = array("errors", "warnings", "mesgs");
     foreach ($type as $aRow) {
+
         $logs = dol_getcache($aRow);
         if (is_array($logs)) {
             switch ($aRow) {
@@ -3665,7 +3672,7 @@ function dol_htmloutput_events() {
                 ?>
                 <script>
                     $(document).ready(function() {
-                        notify('<?php echo $row->title; ?>', '<?php echo $row->message; ?>', {
+                        notify('<?php echo dol_escape_js($row->title); ?>', '<?php echo dol_escape_js($row->message); ?>', {
                             autoClose: true,
                             delay: 2500,
                             closeDelay: <?php echo $closeDelay;?>,

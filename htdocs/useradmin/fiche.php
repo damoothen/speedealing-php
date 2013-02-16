@@ -119,25 +119,30 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
 
 // Action ajout user
 if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser)) && !$_POST["cancel"]) {
-    $message = "";
+
+	$error = 0;
+
     if (!$_POST["nom"]) {
-        $message = '<div class="error">' . $langs->trans("NameNotDefined") . '</div>';
+    	setEventMessage(array($langs->trans("NameNotDefined"), 'errors');
         $action = "create"; // Go back to create page
+        $error++;
     }
     if (!$_POST["login"]) {
-        $message = '<div class="error">' . $langs->trans("LoginNotDefined") . '</div>';
+    	setEventMessage($langs->trans("LoginNotDefined"), 'errors');
         $action = "create"; // Go back to create page
+        $error++;
     }
 
     if (!empty($conf->file->main_limit_users) && $action == 'add') { // If option to limit users is set
         $nb = $edituser->getNbOfUsers("active", 1);
         if ($nb >= $conf->file->main_limit_users) {
-            $message = '<div class="error">' . $langs->trans("YourQuotaOfUsersIsReached") . '</div>';
+        	setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
             $action = "create"; // Go back to create page
+            $error++;
         }
     }
 
-    if (!$message) {
+    if (!$error) {
         $edituser->Lastname = $_POST["nom"];
         $edituser->Firstname = $_POST["prenom"];
         $edituser->name = $_POST["login"];
