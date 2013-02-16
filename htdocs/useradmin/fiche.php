@@ -145,7 +145,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
         $edituser->entity = $_POST["default_entity"];
         $edituser->admin = (bool) $_POST["admin"];
 
-        $id = $edituser->update($user, 0, $action);
+        $id = $edituser->update($user, $action);
 
         if ($id == 'org.couchdb.user:'.$edituser->name) {
             Header("Location: " . $_SERVER['PHP_SELF'] . '?id=' . $id);

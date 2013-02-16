@@ -112,7 +112,7 @@ class UserAdmin extends nosqlDocument {
             //    return 0;
             //}
         }*/
-        
+
         //print $login . "<br>";
 
         try {
@@ -142,7 +142,7 @@ class UserAdmin extends nosqlDocument {
                 $this->admin = true;
             }
         } catch (Exception $e) {
-            
+
         }
 
         $this->id = $this->_id;
@@ -472,20 +472,20 @@ class UserAdmin extends nosqlDocument {
         // Supprime droits
         $sql = "DELETE FROM " . MAIN_DB_PREFIX . "user_rights WHERE fk_user = " . $this->id;
         if ($this->db->query($sql)) {
-            
+
         }
 
         // Remove group
         $sql = "DELETE FROM " . MAIN_DB_PREFIX . "usergroup_user WHERE fk_user  = " . $this->id;
         if ($this->db->query($sql)) {
-            
+
         }
 
         // Si contact, supprime lien
         if ($this->contact_id) {
             $sql = "UPDATE " . MAIN_DB_PREFIX . "socpeople SET fk_user_creat = null WHERE rowid = " . $this->contact_id;
             if ($this->db->query($sql)) {
-                
+
             }
         }
 
@@ -516,18 +516,17 @@ class UserAdmin extends nosqlDocument {
      *  Create or Update an user into database
      *
      *  @param	User	$user        	Objet user qui demande la creation
-     *  @param  int		$notrigger		1 ne declenche pas les triggers, 0 sinon
+     *  @param	string	$action			Create or update action
+     *  @param  int		$notrigger		True for not use triggers, false by default
      *  @return int			         	<0 si KO, id compte cree si OK
      */
-    function update($user, $notrigger = 0, $action) {
+    function update($user, $action, $notrigger = false) {
         global $conf, $langs;
         global $mysoc;
 
         // Clean parameters
         $this->name = trim($this->name);
-
-        dol_syslog(get_class($this) . "::create login=" . $this->name . ", user=" . (is_object($user) ? $user->id : ''), LOG_DEBUG);
-
+        $this->pass = trim($this->pass);
 
         // Check parameters
         if (!isValidEMail($this->name)) {
@@ -536,20 +535,16 @@ class UserAdmin extends nosqlDocument {
             return -1;
         }
 
-        $this->CreateDate = dol_now();
-        trim($this->pass);
-
-        $error = 0;
-
         try {
             $result = $this->couchAdmin->getUser($this->name);
         } catch (Exception $e) {
             // User doesn-t exist
         }
 
+        $this->CreateDate = dol_now();
+
         if (isset($result->name) && $action == 'add') {
             $this->error = 'ErrorLoginAlreadyExists';
-            dol_syslog(get_class($this) . "::create " . $this->error, LOG_WARNING);
             return -6;
         } else {
             if ($action == 'add') {
@@ -560,7 +555,6 @@ class UserAdmin extends nosqlDocument {
                         $this->couchAdmin->createUser($this->name, $this->pass);
                 } catch (Exception $e) {
                     $this->error = $e->getMessage();
-                    dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
                     dol_print_error("", $this->error);
                     exit;
                     return -4;
@@ -595,7 +589,6 @@ class UserAdmin extends nosqlDocument {
             $result = $this->record(); // Save all specific parameters
         } catch (Exception $e) {
             $this->error = $e->getMessage();
-            dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
             dol_print_error("", $this->error);
             exit;
             return -3;
@@ -610,7 +603,7 @@ class UserAdmin extends nosqlDocument {
                 // Appel des triggers
                 include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
                 $interface = new Interfaces($this->db);
-                $result = $interface->run_triggers('USER_CREATE', $this, $user, $langs, $conf);
+                $result = $interface->run_triggers(($action == 'add'?'USER_CREATE':'USER_MODIFY'), $this, $user, $langs, $conf);
                 if ($result < 0) {
                     $error++;
                     $this->errors = $interface->errors;
@@ -619,7 +612,6 @@ class UserAdmin extends nosqlDocument {
             }
         } else {
             $this->error = $this->db->lasterror();
-            dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
             return -2;
         }
 
