@@ -123,7 +123,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 	$error = 0;
 
     if (!$_POST["nom"]) {
-    	setEventMessage(array($langs->trans("NameNotDefined"), 'errors');
+    	setEventMessage($langs->trans("NameNotDefined"), 'errors');
         $action = "create"; // Go back to create page
         $error++;
     }
