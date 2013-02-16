@@ -338,13 +338,13 @@ class AbstractInvoice extends nosqlDocument {
      *  @return string
      */
     public function datatablesEditLine($ref_css, $title = "") {
-        global $langs, $user;
+        global $langs, $user,$conf;
 
         $class = strtolower(get_class($this));
 
         if (!$user->rights->$class->edit && !$user->rights->$class->creer)
             return null;
-
+        
         if (count($this->fk_extrafields->createLine)) {
             print '<form id="' . $ref_css . '_formAddNewRow" class="block" title="' . $title . '">';
             //print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
@@ -352,6 +352,8 @@ class AbstractInvoice extends nosqlDocument {
             print '<input type="hidden" name="fk_invoice" id="fk_invoice" value="' . $this->id . '" />';
             print '<input type="hidden" name="class" id="class" value="' . get_class($this) . '" />';
             foreach ($this->fk_extrafields->createLine as $aRow) {
+                if ($aRow == 'product' && empty($conf->product->enabled))
+                    continue;
                 print '<p class="button-height block-label">';
                 $label = $langs->trans($this->fk_extrafields->fields->$aRow->label);
                 if (empty($label))
