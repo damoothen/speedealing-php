@@ -147,16 +147,15 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 
         $id = $edituser->update($user, 0, $action);
 
-        if ($id == $edituser->name) {
-            Header("Location: " . $_SERVER['PHP_SELF'] . '?id=org.couchdb.user:' . $id);
+        if ($id == 'org.couchdb.user:'.$edituser->name) {
+            Header("Location: " . $_SERVER['PHP_SELF'] . '?id=' . $id);
             exit;
         } else {
             $langs->load("errors");
             if (is_array($edituser->errors) && count($edituser->errors))
-                $message = '<div class="error">' . join('<br>', $langs->trans($edituser->errors)) . '</div>';
+            	setEventMessage(join('<br>', $langs->trans($edituser->errors)), 'errors');
             else
-                $message = '<div class="error">' . $langs->trans($edituser->error) . '</div>';
-            print $edituser->error;
+            	setEventMessage($langs->trans($edituser->error), 'errors');
             if ($action == "add")
                 $action = "create"; // Go back to create page
             if ($action == "update")
@@ -212,14 +211,12 @@ if (($action == 'create') || ($action == 'adduserldap')) {
     print "<br>";
     print "<br>";
 
-    dol_htmloutput_errors($message);
-
     print '<form action="' . $_SERVER["PHP_SELF"] . '" method="post" name="createuser">';
     print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
     print '<input type="hidden" name="action" value="add">';
     if ($ldap_sid)
         print '<input type="hidden" name="ldap_sid" value="' . $ldap_sid . '">';
-    print '<input type="hidden" name="entity" value="' . $conf->entity . '">';
+    print '<input type="hidden" name="default_entity" value="' . $conf->Couchdb->name . '">';
 
     print '<table class="border" width="100%">';
 
@@ -357,8 +354,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             if ($ret == 'html')
                 print '<br>';
         }
-
-        dol_htmloutput_mesg($message);
 
         /*
          * Fiche en mode visu
