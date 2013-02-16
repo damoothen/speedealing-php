@@ -25,7 +25,7 @@
 	<script src="theme/symeos/js/developr.scroll.js"></script>
 
 	<script src="theme/symeos/js/s_scripts.js"></script>
-	<script src="theme/symeos/js/symeos.js"></script>
+	<!-- <script src="theme/symeos/js/symeos.js"></script> -->
 
 	<script src="theme/symeos/js/developr.input.js"></script>
 	<script src="theme/symeos/js/developr.message.js"></script>

@@ -67,8 +67,8 @@
 	<link rel="stylesheet" href="theme/symeos/css/styles/table.css?v=1">
 	<link rel="stylesheet" href="theme/symeos/css/styles/calendars.css?v=1">
 
-	<!-- DataTables -->
-	<!--<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">-->
+	<!-- DataTables --><!-- jquery UI -->
+	<link rel="stylesheet" href="includes/jquery/css/Aristo/Aristo.css" media="all" />
 
 	<!-- JavaScript at bottom except for Modernizr -->
 	<script src="includes/js/modernizr.custom.js"></script>
@@ -174,7 +174,7 @@
 	<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>
 	<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>
 	<script type="text/javascript" src="includes/jquery/plugins/spinner/ui.spinner.min.js"></script>
-	<script src="includes/jquery/plugins/tagHandler/js/jquery.taghandler.min.js"></script>
+	<script type="text/javascript" src="includes/jquery/plugins/tagHandler/js/jquery.taghandler.min.js"></script>
 
 	<!-- END NOLOGIN -->
 

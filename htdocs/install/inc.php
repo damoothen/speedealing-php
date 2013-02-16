@@ -162,20 +162,34 @@ function write_conf_file() {
 		fputs($fp, '//' . "\n");
 		fputs($fp, '// Take a look at conf.php.example file for an example of ' . $conffiletoshowshort . ' file' . "\n");
 		fputs($fp, '// and explanations for all possibles parameters.' . "\n");
-		fputs($fp, '//' . "\n");
-
-		/* Alternative directory */
-
-		fputs($fp, '$dolibarr_main_root_alt=\'custom\';');
-		fputs($fp, "\n");
+		fputs($fp, '//' . "\n\n");
 
 		/* Authentication */
+
+		fputs($fp, '// Authentication (obsolete ?)');
+		fputs($fp, "\n");
+
+		fputs($fp, '$main_authentication=\'dolibarr\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '// Authentication for backward compatibility');
+		fputs($fp, "\n");
+
 		fputs($fp, '$dolibarr_main_authentication=\'dolibarr\';');
 		fputs($fp, "\n\n");
 
 		/* CouchDB */
 
 		fputs($fp, '// Couchdb settings');
+		fputs($fp, "\n");
+
+		fputs($fp, '$main_couchdb_host=\'' . str_replace("'", "\'", $couchdb_host) . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$main_couchdb_port=\'' . str_replace("'", "\'", $couchdb_port) . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '// Couchdb settings for backward compatibility');
 		fputs($fp, "\n");
 
 		fputs($fp, '$dolibarr_main_couchdb_host=\'' . str_replace("'", "\'", $couchdb_host) . '\';');
@@ -190,6 +204,15 @@ function write_conf_file() {
 			fputs($fp, '// Memcached settings');
 			fputs($fp, "\n");
 
+			fputs($fp, '$main_memcached_host=\'' . str_replace("'", "\'", $memcached_host) . '\';');
+			fputs($fp, "\n");
+
+			fputs($fp, '$main_memcached_port=\'' . str_replace("'", "\'", $memcached_port) . '\';');
+			fputs($fp, "\n");
+
+			fputs($fp, '// Memcached settings for backward compatibility');
+			fputs($fp, "\n");
+
 			fputs($fp, '$dolibarr_main_memcached_host=\'' . str_replace("'", "\'", $memcached_host) . '\';');
 			fputs($fp, "\n");
 
@@ -200,6 +223,24 @@ function write_conf_file() {
 		/* Specific setting */
 
 		fputs($fp, '// Specific settings');
+		fputs($fp, "\n");
+
+		fputs($fp, '$main_prod=\'0\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$main_nocsrfcheck=\'0\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$main_force_https=\'' . (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on'?1:0) . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$main_cookie_cryptkey=\'' . $key . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$mailing_limit_sendbyweb=\'0\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '// Specific settings for backward compatibility');
 		fputs($fp, "\n");
 
 		fputs($fp, '$dolibarr_main_prod=\'0\';');
@@ -220,14 +261,13 @@ function write_conf_file() {
 		fputs($fp, '?>');
 		fclose($fp);
 
-		if (file_exists("$conffile")) {
+		if (file_exists("$conffile"))
 			return 1;
-		} else {
+		else
 			return -1;
-		}
 	}
-
-	return -2;
+	else
+		return -2;
 }
 
 /**
@@ -244,13 +284,12 @@ function write_lock_file() {
 		fwrite($fp, "This is a lock file to prevent use of install pages (set with permission " . $force_install_lockinstall . ")");
 		fclose($fp);
 		@chmod($lockfile, octdec($force_install_lockinstall));
-		if (file_exists("$lockfile")) {
+		if (file_exists("$lockfile"))
 			return 1;
-		} else {
+		else
 			return -1;
-		}
-	} else {
-		return -2;
 	}
+	else
+		return -2;
 }
 ?>

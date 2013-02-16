@@ -33,7 +33,7 @@
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.wizard.js"></script>
 
 <!-- jQuery Form Validation -->
-<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/libs/formValidator/jquery.validationEngine.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/includes/lib/formValidator/jquery.validationEngine.js"></script>
 <script src="<?php echo DOL_URL_ROOT; ?>/install/js/install.validation.js.php"></script>
 
 <!-- Wizard process -->
