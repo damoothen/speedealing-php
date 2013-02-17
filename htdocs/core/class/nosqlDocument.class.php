@@ -221,7 +221,6 @@ abstract class nosqlDocument extends CommonObject {
 			}
 		} catch (Exception $e) {
 			dol_print_error("", $e->getMessage());
-			dol_syslog(get_class($this) . "::get " . $error, LOG_WARN);
 			exit;
 		}
 
@@ -369,7 +368,6 @@ abstract class nosqlDocument extends CommonObject {
 				}
 			} catch (Exception $e) {
 				error_log($e->getMessage());
-				dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
 				$result->total_rows = 0;
 			}
 		}
@@ -398,7 +396,6 @@ abstract class nosqlDocument extends CommonObject {
 			$result = $this->couchdb->getIndexedView(get_class($this), $name);
 		} catch (Exception $e) {
 			error_log($e->getMessage());
-			dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
 			$result->total_rows = 0;
 		}
 
