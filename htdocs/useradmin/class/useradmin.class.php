@@ -161,7 +161,6 @@ class UserAdmin extends nosqlDocument {
     function addrights($rid, $allmodule = '', $allperms = '') {
         global $conf;
 
-        dol_syslog(get_class($this) . "::addrights $rid, $allmodule, $allperms");
         $err = 0;
         $whereforadd = '';
 
@@ -342,7 +341,6 @@ class UserAdmin extends nosqlDocument {
      *  @return	void
      */
     function clearrights() {
-        dol_syslog(get_class($this) . "::clearrights reset user->rights");
         $this->rights = '';
         $this->all_permissions_are_loaded = false;
         $this->_tab_loaded = array();
@@ -658,7 +656,6 @@ class UserAdmin extends nosqlDocument {
             $sql.= " WHERE rowid=" . $this->id;
             $resql = $this->db->query($sql);
 
-            dol_syslog(get_class($this) . "::create_from_contact sql=" . $sql, LOG_DEBUG);
             if ($resql) {
                 // Appel des triggers
                 include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -674,15 +671,12 @@ class UserAdmin extends nosqlDocument {
                 return $this->id;
             } else {
                 $this->error = $this->db->error();
-                dol_syslog(get_class($this) . "::create_from_contact " . $this->error, LOG_ERR);
 
                 $this->db->rollback();
                 return -1;
             }
         } else {
             // $this->error deja positionne
-            dol_syslog(get_class($this) . "::create_from_contact - 0");
-
             $this->db->rollback();
             return $result;
         }
@@ -722,21 +716,18 @@ class UserAdmin extends nosqlDocument {
                 $sql.= ", fk_societe=" . $member->fk_soc;
             $sql.= " WHERE rowid=" . $this->id;
 
-            dol_syslog(get_class($this) . "::create_from_member sql=" . $sql, LOG_DEBUG);
             $resql = $this->db->query($sql);
             if ($resql) {
                 $this->db->commit();
                 return $this->id;
             } else {
                 $this->error = $this->db->error();
-                dol_syslog(get_class($this) . "::create_from_member - 1 - " . $this->error, LOG_ERR);
 
                 $this->db->rollback();
                 return -1;
             }
         } else {
             // $this->error deja positionne
-            dol_syslog(get_class($this) . "::create_from_member - 2 - " . $this->error, LOG_ERR);
 
             $this->db->rollback();
             return $result;
@@ -799,8 +790,6 @@ class UserAdmin extends nosqlDocument {
 
         $error = 0;
 
-        dol_syslog(get_class($this) . "::setPassword user=" . $user->id . " password=" . preg_replace('/./i', '*', $password) . " changelater=" . $changelater . " notrigger=" . $notrigger . " nosyncmember=" . $nosyncmember, LOG_DEBUG);
-
         // If new password not provided, we generate one
         if (!$password) {
             $password = getRandomPassword('');
@@ -824,7 +813,6 @@ class UserAdmin extends nosqlDocument {
             }
             $sql.= " WHERE rowid = " . $this->id;
 
-            dol_syslog(get_class($this) . "::setPassword sql=hidden", LOG_DEBUG);
             $result = $this->db->query($sql);
             if ($result) {
                 if ($this->db->affected_rows($result)) {
@@ -844,7 +832,6 @@ class UserAdmin extends nosqlDocument {
                             $result = $adh->setPassword($user, $this->pass, 0, 1); // Cryptage non gere dans module adherent
                             if ($result < 0) {
                                 $this->error = $adh->error;
-                                dol_syslog(get_class($this) . "::setPassword " . $this->error, LOG_ERR);
                                 $error++;
                             }
                         } else {
@@ -852,8 +839,6 @@ class UserAdmin extends nosqlDocument {
                             $error++;
                         }
                     }
-
-                    dol_syslog(get_class($this) . "::setPassword notrigger=" . $notrigger . " error=" . $error, LOG_DEBUG);
 
                     if (!$error && !$notrigger) {
                         // Appel des triggers
@@ -881,7 +866,6 @@ class UserAdmin extends nosqlDocument {
             $sql.= " SET pass_temp = '" . $this->db->escape($password) . "'";
             $sql.= " WHERE rowid = " . $this->id;
 
-            dol_syslog(get_class($this) . "::setPassword sql=hidden", LOG_DEBUG); // No log
             $result = $this->db->query($sql);
             if ($result) {
                 return $password;
@@ -950,7 +934,6 @@ class UserAdmin extends nosqlDocument {
             $url = $urlwithouturlroot . DOL_URL_ROOT . '/user/passwordforgotten.php?action=validatenewpassword&username=' . $this->login . "&passwordmd5=" . dol_hash($password);
             $mesg.= $url . "\n\n";
             $mesg.= "If you didn't ask anything, just forget this email\n\n";
-            dol_syslog(get_class($this) . "::send_password url=" . $url);
         }
         $mailfile = new CMailFile(
                         $subject,
@@ -1092,13 +1075,11 @@ class UserAdmin extends nosqlDocument {
                 return 1;
             } else {
                 $this->error = $interface->error;
-                dol_syslog(get_class($this) . "::SetInGroup " . $this->error, LOG_ERR);
                 $this->db->rollback();
                 return -2;
             }
         } else {
             $this->error = $this->db->lasterror();
-            dol_syslog(get_class($this) . "::SetInGroup " . $this->error, LOG_ERR);
             $this->db->rollback();
             return -1;
         }
@@ -1145,13 +1126,11 @@ class UserAdmin extends nosqlDocument {
                 return 1;
             } else {
                 $this->error = $interface->error;
-                dol_syslog(get_class($this) . "::RemoveFromGroup " . $this->error, LOG_ERR);
                 $this->db->rollback();
                 return -2;
             }
         } else {
             $this->error = $this->db->lasterror();
-            dol_syslog(get_class($this) . "::RemoveFromGroup " . $this->error, LOG_ERR);
             $this->db->rollback();
             return -1;
         }
