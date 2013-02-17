@@ -18,19 +18,19 @@
  */
 
 /**
- *  \file       htdocs/user/class/user.class.php
- * 	\brief      File of class to manage users
+ *  \file       htdocs/useradmin/class/useradmin.class.php
+ * 	\brief      File of class to manage couchdb users
  *  \ingroup	core
  */
-require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+require_once DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchAdmin.php';
+require_once DOL_DOCUMENT_ROOT . '/user/class/userdatabase.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 
 /**
- * 	Class to manage Dolibarr users
-*/
+ * Class to manage Dolibarr users
+ */
 class UserAdmin extends nosqlDocument {
 
 	protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
