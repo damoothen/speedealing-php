@@ -119,14 +119,8 @@ if ($action == 'check_prerequisite') {
 	}
 
 	// Check for couchdb /db proxy_pass and check couchdb version
-	if (!empty($_SERVER["HTTP_HOST"]))
-		$serverport = $_SERVER["HTTP_HOST"];
-	else
-		$serverport = $_SERVER["SERVER_NAME"];
+	$couch = new couchClient($scheme . "://" . $serverport . '/db/', '_users');
 
-	$couch = new couchClient($serverport . '/db/', '_users');
-
-	$couchdb = false;
 	try {
 		$result = $couch->getVersion();
 		$server_found = true;
@@ -141,10 +135,9 @@ if ($action == 'check_prerequisite') {
 		$continue = false;
 	} else {
 		if ($result->version >= '1.2.1') {
-			$out['couchdb_rewrite'] = '<span class="icon-tick icon-green">' . $langs->trans("CouchdbVersion") . '</span>';
-			$couchdb = true;
+			$out['couchdb_rewrite'] = '<span class="icon-tick icon-green">' . $langs->trans("CouchdbVersion", $result->version) . '</span>';
 		} else {
-			$out['couchdb_rewrite'] = '<span class="icon-warning icon-red">' . $langs->trans("CouchdbVersion") . '</span>';
+			$out['couchdb_rewrite'] = '<span class="icon-warning icon-red">' . $langs->trans("ErrorCouchdbVersion", $result->version) . '</span>';
 			$continue = false;
 		}
 	}
@@ -153,7 +146,6 @@ if ($action == 'check_prerequisite') {
 	//$memcached = false; // for debug
 	$out['memcached'] = $memcached;
 	//$continue = false; // for debug
-	$out['couchdb'] = $couchdb;
 	$out['continue'] = $continue;
 
 	echo json_encode($out);
