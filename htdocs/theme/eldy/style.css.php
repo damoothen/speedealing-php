@@ -2597,9 +2597,3 @@ text-align: left;
 -webkit-box-shadow: 0px 0px 10px #AAA;
 box-shadow: 0px 0px 10px #AAA;
 }
-
-
-<?php
-if (is_object($db))
-    $db->close();
-?>
