@@ -25,7 +25,6 @@
 	<script src="theme/symeos/js/developr.scroll.js"></script>
 
 	<script src="theme/symeos/js/s_scripts.js"></script>
-	<!-- <script src="theme/symeos/js/symeos.js"></script> -->
 
 	<script src="theme/symeos/js/developr.input.js"></script>
 	<script src="theme/symeos/js/developr.message.js"></script>
@@ -35,71 +34,28 @@
 	<script src="theme/symeos/js/developr.tooltip.js"></script>
 	<script src="theme/symeos/js/developr.confirm.js"></script>
 	<script src="theme/symeos/js/developr.agenda.js"></script>
-
 	<script src="theme/symeos/js/developr.tabs.js"></script>
-	<!-- Must be loaded last -->
+
+	<!-- Includes specific JS of Speedealing -->
+	<script type="text/javascript" src="core/js/lib_head.js"></script>
 
 	<!-- Tinycon -->
 	<script src="includes/js/tinycon.min.js"></script>
 
 	<script>
-		// Call template init (optional, but faster if called manually)
-		$.template.init();
+		$(document).ready(function() {
+			// Call template init (optional, but faster if called manually)
+			$.template.init();
 
-		// Favicon count
-		Tinycon.setBubble(<?php echo $count_icon; ?>);
+			// Favicon count
+			Tinycon.setBubble(<?php echo $count_icon; ?>);
 
-		// box actions (show/hide, remove)
-		prth_box_actions = {
-			init: function() {
-				$('.box_actions').each(function(){
-					$(this).append('<span class="bAct_hide"><img src="theme/blank.gif" class="bAct_x" alt="" /></span>');
-					$(this).append('<span class="bAct_toggle"><img src="theme/blank.gif" class="bAct_minus" alt="" /></span>');
-					$(this).find('.bAct_hide').on('click', function(){
-						$(this).closest('.box_c').fadeOut('slow',function(){
-							$(this).remove();
-							prth_stickyFooter.resize();
-						});
-					});
-					$(this).find('.bAct_toggle').on('click', function(){
-						if( $(this).closest('.box_c_heading').next('.box_c_content').is(':visible') ) {
-							$(this).closest('.box_c_heading').next('.box_c_content').slideUp('slow',function(){
-								prth_stickyFooter.resize();
-							});
-							$(this).html('<img src="theme/blank.gif" class="bAct_plus" alt="" />');
-						} else {
-							$(this).closest('.box_c_heading').next('.box_c_content').slideDown('slow',function(){
-								prth_stickyFooter.resize();
-							});
-							$(this).html('<img src="theme/blank.gif" class="bAct_minus" alt="" />');
-						}
-					});
-				});
-			}
-		};
+			// Box show/hide/remove
+			prth_box_actions.init();
 
-		// Resize the footer
-		prth_stickyFooter = {
-				init: function() {
-					prth_stickyFooter.resize();
-				},
-				resize: function() {
-					if($("#sticky-footer-push").height() === undefined)
-						var docHeight = $(document.body).height();
-					else
-						var docHeight = $(document.body).height() - $("#sticky-footer-push").height();
-
-					if(docHeight < $(window).height()){
-						var diff = $(window).height() - docHeight +1;
-						if ($("#sticky-footer-push").length == 0) {
-							$('#footer').before('<div id="sticky-footer-push"></div>');
-						}
-						$("#sticky-footer-push").height(diff - $("#title-bar").height() - 2);
-					} else {
-						$("#sticky-footer-push").remove();
-					}
-				}
-			};
+			// Resize footer
+			prth_stickyFooter.init();
+		});
 	</script>
 
 	<footer id="footer">
