@@ -26,14 +26,12 @@ if (!defined('NOREQUIREAJAX'))
 //if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
-require('../../main.inc.php');
+require '../../main.inc.php';
 
-$key = GETPOST('key', 'alpha');
-$class = GETPOST('element_class', 'alpha');
-$id = GETPOST('id', 'alpha');
-$value = $_POST['tags'];
-
-$key = substr($key, 8); // remove prefix editval_
+$id			= GETPOST('id', 'alpha');
+$key		= substr(GETPOST('key', 'alpha'), 8);	// remove prefix editval_
+$classname	= GETPOST('element_class', 'alpha');	// use classname instead class for avoid conflict with php keyword class
+$value		= $_POST['tags'];
 
 /*
  * View
@@ -43,33 +41,33 @@ $key = substr($key, 8); // remove prefix editval_
 /*$error = var_export($_POST,true);
 error_log($error);*/
 
-top_httphead();
+top_httphead('json');
 
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 //print_r($_POST);
 
-if (!empty($key) && !empty($id) && !empty($class)) {
-	$res = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
+if (!empty($key) && !empty($id) && !empty($classname)) {
+	$res = dol_include_once("/" . $classname . "/class/" . strtolower($classname) . ".class.php", $classname);
 	if (!$res) // old dolibarr
-		dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+		dol_include_once("/" . strtolower($classname) . "/class/" . strtolower($classname) . ".class.php", $classname);
 
-	$object = new $class($db);
+	$object = new $classname($db);
 
 	try {
 		$object->id = $id;
 		$object->load($id);
 		$object->$key = $value;
 		$object->record();
-		
+
 		$return=new stdClass();
 		$return->status = "ok";
-		
+
 	} catch (Exception $exc) {
 		error_log($exc->getMessage());
                 $return=new stdClass();
 		$return->status = "not found";
 	}
-	
+
 	echo json_encode($return);
 }
 ?>

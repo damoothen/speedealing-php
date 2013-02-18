@@ -264,11 +264,12 @@ function dol_getprefix() {
  */
 function dol_include_once($relpath, $classname = '') {
     global $conf, $langs, $user, $mysoc;   // Other global var must be retreived with $GLOBALS['var']
-    if (!empty($classname) && !class_exists($classname)) {
-        return @include dol_buildpath($relpath);
-    } else {
-        return @include_once dol_buildpath($relpath);
+    if (!empty($classname)) {
+    	if (!class_exists($classname))
+    		return @include dol_buildpath($relpath);
     }
+    else
+    	return @include_once dol_buildpath($relpath);
 }
 
 /**
