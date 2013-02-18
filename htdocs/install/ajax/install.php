@@ -42,6 +42,7 @@ header('Content-type: application/json');
 // $main_couchdb_host
 // $main_couchdb_port
 
+// Create config file
 if ($action == 'create_config') {
 	$couchdb_host	= GETPOST('couchdb_host', 'alpha');
 	$couchdb_port	= GETPOST('couchdb_port', 'int');
@@ -60,13 +61,13 @@ if ($action == 'create_config') {
 	else
 		echo json_encode(array('status' => 'error', 'value' => $langs->trans('ConfFileIsNotWritable', $conffile)));
 
+// Create sync user
 } else if ($action == 'create_syncuser') {
 	$couchdb_user_sync	= GETPOST('couchdb_user_sync', 'alpha');
 	$couchdb_pass_sync	= GETPOST('couchdb_pass_sync', 'alpha');
 	// $main_couchdb_host
 	// $main_couchdb_port
 
-	// Create first user
 	sleep(1); // for test
 	echo json_encode(array('status' => 'ok'));
 
@@ -87,26 +88,45 @@ if ($action == 'create_config') {
 		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('DatabaseAlreadyExists'))); // database already exists
 	}
 
+// Populate database
 } else if ($action == 'populate_database') {
 	$filename	= GETPOST('filename', 'alpha');
 	$filepath	= GETPOST('filepath');
 	// $main_couchdb_host
 	// $main_couchdb_port
 
-	// Create database
 	sleep(1); // for test
 	echo json_encode(array('status' => 'ok'));
 
+// Create superadmin
 } else if ($action == 'create_admin') {
+	$couchdb_name		= GETPOST('couchdb_name', 'alpha');
 	$couchdb_user_root	= GETPOST('couchdb_user_root', 'alpha');
 	$couchdb_pass_root	= GETPOST('couchdb_pass_root', 'alpha');
-	// $main_couchdb_host
-	// $main_couchdb_port
 
-	// Create superadmin
-	sleep(1); // for test
-	echo json_encode(array('status' => 'ok'));
+	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
+	$admin = new couchAdmin($couch);
 
+	try {
+		$admin->createAdmin($couchdb_user_root, $couchdb_pass_root);
+		//$admin->addDatabaseAdminUser($couchdb_user_root);
+
+		$user = $admin->getUser($couchdb_user_root);
+
+		$user->Status			= 'ENABLE';
+		$user->entity			= $couchdb_name;
+		$user->admin			= true;
+		$user->superadmin		= true;
+		print_r($user); exit;
+		$admin->client->storeDoc($user);
+
+		echo json_encode(array('status' => 'ok'));
+
+	} catch (Exception $e) {
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+	}
+
+// Create first user
 } else if ($action == 'create_user') {
 	$couchdb_user_firstname	= GETPOST('couchdb_user_firstname', 'alpha');
 	$couchdb_user_lastname	= GETPOST('couchdb_user_lastname', 'alpha');
@@ -116,12 +136,11 @@ if ($action == 'create_config') {
 	// $main_couchdb_host
 	// $main_couchdb_port
 
-	// Create first user
 	sleep(1); // for test
 	echo json_encode(array('status' => 'ok'));
 
+// Install is finished, we create the lock file
 } else if ($action == 'lock_install') {
-	// Install is finished, we create the lock file
 	//$ret = write_lock_file();
 	$ret = 1; // TODO for debug
 	if ($ret > 0)

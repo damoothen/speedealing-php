@@ -175,9 +175,10 @@ abstract class nosqlDocument extends CommonObject {
 	}
 
 	/**
-	 * 	save values object document
-	 *  @param	$cache	if true remove element from cache
-	 * @return value of storeDoc
+	 * save values object document
+	 *
+	 * @param	bool	$cache	if true remove element from cache
+	 * @return 	object			value of storeDoc
 	 */
 	public function record($cache = false) {
 		global $conf;
@@ -194,7 +195,6 @@ abstract class nosqlDocument extends CommonObject {
 			if (empty($values->$key) && isset($this->fk_extrafields->fields->$key->default))
 				$values->$key = $this->fk_extrafields->fields->$key->default;
 		}
-
 
 		if (empty($values->_id) && !empty($this->id))
 			$values->_id = $this->id;

@@ -223,6 +223,7 @@ $(document).ready(function() {
 		var result;
 		$.post("install/ajax/install.php", {
     		action: 'create_admin',
+    		couchdb_name: $('#couchdb_name').val(),
     		couchdb_user_root: $('#couchdb_user_root').val(),
     		couchdb_pass_root: $('#couchdb_pass_root').val()
 		},

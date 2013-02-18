@@ -35,10 +35,12 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 // For couchdb
 if (!class_exists('couch'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couch.php';
+if (!class_exists('couchAdmin'))
+	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchAdmin.php';
 if (!class_exists('couchClient'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
-if (!class_exists('nosqlDocument'))
-	require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+//if (!class_exists('nosqlDocument'))
+	//require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
 
 
 // Avoid warnings with strict mode E_STRICT
