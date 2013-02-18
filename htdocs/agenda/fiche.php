@@ -200,8 +200,10 @@ if ($action == 'add_action') {
         $object->userdone->id = GETPOST("doneby");
 
     $object->notes = trim($_POST["note"]);
-    if (isset($_POST["contactid"]))
-        $object->contact = $contact;
+    if (isset($_POST["contactid"])) {
+        $object->contact->id = $contact->id;
+		$object->contact->name = $contact->name;
+	}
     if (!empty($socid)) {
         $societe = new Societe($db);
         $societe->fetch($socid);
