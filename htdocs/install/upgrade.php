@@ -47,10 +47,10 @@ function upgrade() {
 	//Update extrafields && Update views
 	$result = $object->getView("list");
 	foreach ($result->rows as $aRow) {
-		if (!empty($modules[$aRow->value->numero]) && $aRow->value->enabled) { // Test if module is present and enabled
-			if ($aRow->id == "module:User")
-				$aRow->value->numero = 0;
+		if ($aRow->id == "module:User")
+			$aRow->value->numero = 0;
 
+		if (!empty($modules[$aRow->value->numero]) && $aRow->value->enabled) { // Test if module is present and enabled
 			$objMod = $modules[$aRow->value->numero];
 
 			foreach ($objMod as $key => $row)
@@ -98,14 +98,13 @@ function upgrade() {
 			}
 			$dict->record();
 		} else {
-
+			
 		}
 	}
 
 	// Put the new version in $conf
 	$conf->global->MAIN_VERSION = DOL_VERSION;
-	$conf->record(true);
-
+	$conf->record();
 	//Flush caches
 	dol_flushcache();
 

@@ -29,17 +29,18 @@ abstract class nosqlDocument extends CommonObject {
 	public $canvas; // Contains canvas name if it is
 	public $fk_extrafields;
 	public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "couchdb", "db",
-			"error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
-			"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin", "right");
+		"error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
+		"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin", "right");
 
 	/**
 	 * 	class constructor
 	 *
 	 * 	@param	couchClient	$db		Database handler
-	*/
+	 */
 	function __construct($db) {
 		$this->class = get_class($this);
 		$this->db = $db;
+
 		$this->useDatabase();
 	}
 
@@ -58,8 +59,8 @@ abstract class nosqlDocument extends CommonObject {
 
 		if (!empty($dbname))
 			$this->couchdb->useDatabase($dbname);
-		else
-			$this->couchdb->useDatabase($conf->Couchdb->name);
+		//else
+		//	$this->couchdb->useDatabase($conf->Couchdb->name);
 	}
 
 	function fetch($rowid) { // old dolibarr rowid
@@ -148,10 +149,12 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	public function load($id, $cache = false) {
 		global $conf;
+		
+		require_once DOL_DOCUMENT_ROOT . '/core/lib/memory.lib.php';
 
 		$found = false;
 
-		if ($cache) {
+		if ($cache && !empty($conf->memcached)) {
 			$values = dol_getcache($id);
 			if (is_object($values)) {
 				$found = true;
@@ -187,14 +190,14 @@ abstract class nosqlDocument extends CommonObject {
 
 		foreach (get_object_vars($this) as $key => $aRow)
 			if (!in_array($key, $this->no_save)) {
-			$values->$key = $aRow;
-			if (isset($this->fk_extrafields->fields->$key->settype)) // transtypage
-				settype($values->$key, $this->fk_extrafields->fields->$key->settype);
+				$values->$key = $aRow;
+				if (isset($this->fk_extrafields->fields->$key->settype)) // transtypage
+					settype($values->$key, $this->fk_extrafields->fields->$key->settype);
 
-			// If empty set default value
-			if (empty($values->$key) && isset($this->fk_extrafields->fields->$key->default))
-				$values->$key = $this->fk_extrafields->fields->$key->default;
-		}
+				// If empty set default value
+				if (empty($values->$key) && isset($this->fk_extrafields->fields->$key->default))
+					$values->$key = $this->fk_extrafields->fields->$key->default;
+			}
 
 		if (empty($values->_id) && !empty($this->id))
 			$values->_id = $this->id;
@@ -387,7 +390,7 @@ abstract class nosqlDocument extends CommonObject {
 		$result = new stdClass();
 		try {
 			/* if (!empty($conf->view_limit))
-			 $params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT; */
+			  $params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT; */
 			//$params['limit'] = $conf->view_limit;
 
 			$params['include_docs'] = true;
@@ -510,7 +513,7 @@ abstract class nosqlDocument extends CommonObject {
 		}
 
 		/* if ($user->rights->$class->delete)
-		 print '<button id="' . $ref_css . '_btnDeleteRow">' . $langs->trans("Delete") . '</button>'; */
+		  print '<button id="' . $ref_css . '_btnDeleteRow">' . $langs->trans("Delete") . '</button>'; */
 
 		print '<p class="button-height "></p>';
 	}
@@ -527,7 +530,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		$class = strtolower(get_class($this));
 		?>
-<script type="text/javascript" charset="utf-8">
+		<script type="text/javascript" charset="utf-8">
 			$(document).ready(function() {
 				var oTable = $('#<?php echo $ref_css ?>').dataTable( {
 					"aoColumns" : [
@@ -574,9 +577,9 @@ abstract class nosqlDocument extends CommonObject {
 						"bJQueryUI": true,
 						"bAutoWidth": false,
 						/*"sScrollY": "500px",
-										"oScroller": {
-												"loadingIndicator": true
-										},*/
+												"oScroller": {
+														"loadingIndicator": true
+												},*/
 		<?php if ($obj->bServerSide) : ?>
 							"bServerSide": true,
 		<?php else : ?>
@@ -811,10 +814,10 @@ abstract class nosqlDocument extends CommonObject {
 			});
 		});
 		</script>
-<?php
+		<?php
 //$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
-/* $output.= 'new AutoFill( oTable, {
- "aoColumnDefs": [
+		/* $output.= 'new AutoFill( oTable, {
+		  "aoColumnDefs": [
 		  {
 		  "bEnable":false,
 		  "aTargets": [ 0,1,2,3,5,6,8]
@@ -1169,7 +1172,7 @@ abstract class nosqlDocument extends CommonObject {
 	 * @return string
 	 */
 	/* public function buttonCreate($url) {
-	 global $langs;
+	  global $langs;
 
 	  print '<a href="#fd_input" class="gh_button pill icon add" id="fd3">' . $langs->trans("Create") . '</a>';
 	  ?>
@@ -1210,12 +1213,12 @@ abstract class nosqlDocument extends CommonObject {
 	public function sortDatatable(&$array, $key, $dir) {
 		if ($dir == "desc")
 			usort($array, function($a, $b) use ($key) {
-			return $a->$key > $b->$key ? -1 : 1;
-		});
+						return $a->$key > $b->$key ? -1 : 1;
+					});
 		else
 			usort($array, function($a, $b) use ($key) {
-			return $a->$key > $b->$key ? 1 : -1;
-		});
+						return $a->$key > $b->$key ? 1 : -1;
+					});
 	}
 
 	/**
@@ -1232,8 +1235,8 @@ abstract class nosqlDocument extends CommonObject {
 
 		if (count($result->rows) > 0)
 			foreach ($result->rows as $aRow) {
-			$list[] = $langs->trans($aRow->key);
-		}
+				$list[] = $langs->trans($aRow->key);
+			}
 
 		return $list;
 	}
@@ -1335,7 +1338,7 @@ abstract class nosqlDocument extends CommonObject {
 				if (GETPOST($htmlname))
 					$selected = GETPOST($htmlname);
 				elseif (!empty($value)) // Using value from the function
-				$selected = $value;
+					$selected = $value;
 				else
 					$selected = $this->$key;
 
@@ -1348,10 +1351,10 @@ abstract class nosqlDocument extends CommonObject {
 					$params = array();
 					if (count($aRow->params))
 						foreach ($aRow->params as $idx => $row) {
-						eval("\$row = $row;");
-						if (!empty($row))
-							$params[$idx] = $row;
-					}
+							eval("\$row = $row;");
+							if (!empty($row))
+								$params[$idx] = $row;
+						}
 					try {
 						$result = $object->getView($aRow->view, $params);
 					} catch (Exception $e) {

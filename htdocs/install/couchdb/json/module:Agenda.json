@@ -1,0 +1,10 @@
+{
+   "_id": "module:Agenda",
+   "enabled": true,
+   "always_enabled": 1,
+   "rights_admin_allowed": 1,
+   "class": "DolibarrModules",
+   "numero": 2400,
+   "family": "projects",
+   "name": "Agenda"
+}

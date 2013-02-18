@@ -199,6 +199,7 @@ $(document).ready(function() {
 			var files = $.parseJSON(jsonfiles);
 			$.each(files, function(name, path) {
 				$.post("install/ajax/install.php", {
+					couchdb_name: $('#couchdb_name').val(),
 					action: 'populate_database',
 		    		filename: name,
 		    		filepath: path
@@ -241,6 +242,7 @@ $(document).ready(function() {
 	function addUser() {
 		$.post("install/ajax/install.php", {
     		action: 'create_user',
+			couchdb_name: $('#couchdb_name').val(),
     		couchdb_user_firstname: $('#couchdb_user_firstname').val(),
     		couchdb_user_lastname: $('#couchdb_user_lastname').val(),
     		couchdb_user_pseudo: $('#couchdb_user_pseudo').val(),

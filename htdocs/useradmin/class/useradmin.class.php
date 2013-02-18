@@ -106,13 +106,13 @@ class UserAdmin extends nosqlDocument {
 		// Clean parametersadmin
 		$login = trim($login);
 
-		/*if (empty($login)) {
-		 //try {
-		$login = "org.couchdb.user:" . $this->couchAdmin->getLoginSession();
-		//} catch (Exception $e) {
-		//    return 0;
-		//}
-		}*/
+		/* if (empty($login)) {
+		  //try {
+		  $login = "org.couchdb.user:" . $this->couchAdmin->getLoginSession();
+		  //} catch (Exception $e) {
+		  //    return 0;
+		  //}
+		  } */
 
 		//print $login . "<br>";
 
@@ -143,7 +143,7 @@ class UserAdmin extends nosqlDocument {
 				$this->admin = true;
 			}
 		} catch (Exception $e) {
-
+			
 		}
 
 		$this->id = $this->_id;
@@ -401,7 +401,7 @@ class UserAdmin extends nosqlDocument {
 					if (count($perm) == 1)
 						$this->rights->$rights_class->$perm[0] = true;
 					elseif (count($perm) == 2)
-					$this->rights->$rights_class->$perm[0]->$perm[1] = true;
+						$this->rights->$rights_class->$perm[0]->$perm[1] = true;
 				}
 
 				// Add groups rights
@@ -411,7 +411,7 @@ class UserAdmin extends nosqlDocument {
 						if (count($perm) == 1)
 							$this->rights->$rights_class->$perm[0] = true;
 						elseif (count($perm) == 2)
-						$this->rights->$rights_class->$perm[0]->$perm[1] = true;
+							$this->rights->$rights_class->$perm[0]->$perm[1] = true;
 					}
 				}
 			}
@@ -471,20 +471,20 @@ class UserAdmin extends nosqlDocument {
 		// Supprime droits
 		$sql = "DELETE FROM " . MAIN_DB_PREFIX . "user_rights WHERE fk_user = " . $this->id;
 		if ($this->db->query($sql)) {
-
+			
 		}
 
 		// Remove group
 		$sql = "DELETE FROM " . MAIN_DB_PREFIX . "usergroup_user WHERE fk_user  = " . $this->id;
 		if ($this->db->query($sql)) {
-
+			
 		}
 
 		// Si contact, supprime lien
 		if ($this->contact_id) {
 			$sql = "UPDATE " . MAIN_DB_PREFIX . "socpeople SET fk_user_creat = null WHERE rowid = " . $this->contact_id;
 			if ($this->db->query($sql)) {
-
+				
 			}
 		}
 
@@ -554,8 +554,7 @@ class UserAdmin extends nosqlDocument {
 						$this->couchAdmin->createUser($this->name, $this->pass);
 				} catch (Exception $e) {
 					$this->error = $e->getMessage();
-					dol_print_error("", $this->error);
-					exit;
+					error_log($this->error);
 					return -4;
 				}
 			}
@@ -570,13 +569,15 @@ class UserAdmin extends nosqlDocument {
 			$this->roles = $user_tmp->roles;
 			$this->_id = $user_tmp->_id;
 			$this->_rev = $user_tmp->_rev;
-			$this->Status = $user_tmp->Status;
 
-			if ($action == 'add')
+			if ($action == 'add' && empty($this->Status))
 				$this->Status = "DISABLE";
 
-			$caneditpassword = ((($user->login == $this->name) && $user->rights->user->self->password)
-					|| (($user->login != $this->name) && $user->rights->user->user->password)) || $user->admin;
+			if (empty($user)) //install process
+				$caneditpassword = 1;
+			else
+				$caneditpassword = ((($user->login == $this->name) && $user->rights->user->self->password)
+						|| (($user->login != $this->name) && $user->rights->user->user->password)) || $user->admin;
 
 			if ($caneditpassword && !empty($this->pass)) { // Case we can edit only password
 				$this->password_sha = sha1($this->pass . $this->salt, false);
@@ -588,8 +589,7 @@ class UserAdmin extends nosqlDocument {
 			$result = $this->record(); // Save all specific parameters
 		} catch (Exception $e) {
 			$this->error = $e->getMessage();
-			dol_print_error("", $this->error);
-			exit;
+			error_log($this->error);
 			return -3;
 		}
 
@@ -598,11 +598,11 @@ class UserAdmin extends nosqlDocument {
 			$this->_id = $result->id;
 			$this->_rev = $result->rev;
 
-			if (!$notrigger) {
+			if (!$notrigger && !empty($user)) {
 				// Appel des triggers
 				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
 				$interface = new Interfaces($this->db);
-				$result = $interface->run_triggers(($action == 'add'?'USER_CREATE':'USER_MODIFY'), $this, $user, $langs, $conf);
+				$result = $interface->run_triggers(($action == 'add' ? 'USER_CREATE' : 'USER_MODIFY'), $this, $user, $langs, $conf);
 				if ($result < 0) {
 					$error++;
 					$this->errors = $interface->errors;
@@ -937,17 +937,17 @@ class UserAdmin extends nosqlDocument {
 			$mesg.= "If you didn't ask anything, just forget this email\n\n";
 		}
 		$mailfile = new CMailFile(
-				$subject,
-				$this->email,
-				$conf->notification->email_from,
-				$mesg,
-				array(),
-				array(),
-				array(),
-				'',
-				'',
-				0,
-				$msgishtml
+						$subject,
+						$this->email,
+						$conf->notification->email_from,
+						$mesg,
+						array(),
+						array(),
+						array(),
+						'',
+						'',
+						0,
+						$msgishtml
 		);
 
 		if ($mailfile->sendfile()) {
