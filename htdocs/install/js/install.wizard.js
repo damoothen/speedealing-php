@@ -293,7 +293,7 @@ $(document).ready(function() {
 	// Check pre-requisites
 	function ckeckPrerequisite() {
 		// Add loader
-		$('#php_version, #php_memory, #php_utf8, #php_gd, #php_curl, #php_memcached, #conf_file').html('<span class="loader"></span>');
+		$('#php_version, #php_memory, #php_utf8, #php_gd, #php_curl, #php_memcached, #couchdb_rewrite, #conf_file').html('<span class="loader"></span>');
 		// Check prerequisites
 		$.getJSON('install/ajax/prerequisite.php', { action: 'check_prerequisite', lang: $('#selectlang').val() }, function(data) {
 			if (data) {
