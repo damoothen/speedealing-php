@@ -119,12 +119,7 @@ if ($action == 'check_prerequisite') {
 	}
 
 	// Check for couchdb /db proxy_pass and check couchdb version
-	if (!empty($_SERVER["HTTP_HOST"]))
-		$serverport = $_SERVER["HTTP_HOST"];
-	else
-		$serverport = $_SERVER["SERVER_NAME"];
-
-	$couch = new couchClient($serverport . '/db/', '_users');
+	$couch = new couchClient($scheme . "://" . $serverport . '/db/', '_users');
 
 	$couchdb = false;
 	try {

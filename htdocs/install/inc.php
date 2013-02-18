@@ -76,12 +76,12 @@ elseif (isset($_SERVER["SERVER_URL"]) && isset($_SERVER["DOCUMENT_URI"])) {
 }
 // If SCRIPT_URI, SERVER_URL, DOCUMENT_URI not defined (Ie: Apache 2.0.44 for Windows)
 else {
-	$proto = 'http';
+	$scheme = 'http';
 	if (!empty($_SERVER["HTTP_HOST"]))
 		$serverport = $_SERVER["HTTP_HOST"];
 	else
 		$serverport = $_SERVER["SERVER_NAME"];
-	$main_url_root = $proto . "://" . $serverport . $_SERVER["SCRIPT_NAME"];
+	$main_url_root = $scheme . "://" . $serverport . $_SERVER["SCRIPT_NAME"];
 }
 // Clean proposed URL
 $main_url_root = preg_replace('/\/$/', '', $main_url_root);     // Remove the /
