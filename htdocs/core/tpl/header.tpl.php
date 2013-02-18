@@ -214,9 +214,6 @@
 	<script type="text/javascript" src="includes/js/jquery.rwd-table.js"></script>
 	<!-- END THEME -->
 
-	<!-- Includes JS of Speedealing (obsolete ?) -->
-	<script type="text/javascript" src="core/js/lib_head.js"></script>
-
 	<!-- jQuery Datepicker default options -->
 	<script type="text/javascript" src="core/js/datepicker.js.php?lang=<?php echo $langs->defaultlang; ?>"></script>
 
