@@ -1,6 +1,7 @@
 <?php
 
-/* Copyright (C) 2011-2012 Regis Houssin  <regis.houssin@capnetworks.com>
+/* Copyright (C) 2011-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2011-2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +40,7 @@ $value		= $_POST['tags'];
 
 
 /*$error = var_export($_POST,true);
-error_log($error);*/
+ error_log($error);*/
 
 top_httphead('json');
 
@@ -62,10 +63,11 @@ if (!empty($key) && !empty($id) && !empty($classname)) {
 		$return=new stdClass();
 		$return->status = "ok";
 
-	} catch (Exception $exc) {
-		error_log($exc->getMessage());
-                $return=new stdClass();
-		$return->status = "not found";
+	} catch (Exception $e) {
+		error_log($e->getMessage());
+		$return=new stdClass();
+		$return->status = "error";
+		$return->value = $e->getMessage();
 	}
 
 	echo json_encode($return);
