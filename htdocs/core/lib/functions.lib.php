@@ -2180,9 +2180,9 @@ function print_titre($title) {
  *
  * 	@param	string	$title			Title of the box
  * 	@param	string	$nbcolumn		Number of column see style.css
- * 	@param	array	$head                   list of top menu on box
- * 	@param	boolean	$box_action             Enable or Disable buttons reduse and delete box
- * 	@return	string				Title to show
+ * 	@param	array	$head			list of top menu on box
+ * 	@param	boolean	$box_action		Enable or Disable buttons reduse and delete box
+ * 	@return	string					Title to show
  */
 function start_box($title, $nbcolumn = 'twelve', $icon = '16-Abacus.png', $box_action = true, $head = null) {
     global $conf, $langs;

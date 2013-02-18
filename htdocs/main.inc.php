@@ -615,7 +615,11 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		// For new theme TODO script init A revoir
 		print '<script>
 			$(document).ready(function() {
+				// Box show/hide/remove
+				prth_box_actions.init();
+				// Resize footer
                 prth_stickyFooter.resize();
+				// Obsolete ?
 				//prth_common.init();
 			});
 		</script>';

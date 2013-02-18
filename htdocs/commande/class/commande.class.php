@@ -2904,7 +2904,7 @@ class Commande extends AbstractInvoice {
         require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
         $commande = new Commande($this->db);
 
-        print start_box($langs->trans("Orders"), "six", $this->fk_extrafields->ico, false);
+        print start_box($langs->trans("Orders"), "twelve", $this->fk_extrafields->ico);
         print '<table class="display dt_act" id="listcommandes" >';
         // Ligne des titres
 

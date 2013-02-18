@@ -929,7 +929,7 @@ class Agenda extends nosqlDocument {
         $langs->load("agenda");
 
         $titre = $langs->trans("Actions");
-        print start_box($titre, "six", "16-Mail.png", false, $head);
+        print start_box($titre, "twelve", "16-Mail.png", true, $head);
 
         $i = 0;
         $obj = new stdClass();
