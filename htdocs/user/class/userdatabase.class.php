@@ -85,45 +85,51 @@ class UserDatabase extends nosqlDocument {
 
         $membersRoles = $this->couchAdmin->getDatabaseReaderRoles();
 
-        foreach ($members as $aRow) {
-            try {
-                $user = $this->couchAdmin->getUser($aRow);
-            } catch (Exception $e) {
-                // User NOT FOUND
-                $user->email = $aRow;
-                $user->name = $aRow;
-                $user->_id = "org.couchdb.user:" . $aRow;
-                $user->Firstname = $langs->trans("Unknown");
-                $user->Lastname = $langs->trans("Unknown");
-                $user->Status = "DISABLE";
-            }
-            $this->members[] = clone $user;
+        if (!empty($members)) {
+        	foreach ($members as $aRow) {
+        		try {
+        			$user = $this->couchAdmin->getUser($aRow);
+        		} catch (Exception $e) {
+        			// User NOT FOUND
+        			$user->email = $aRow;
+        			$user->name = $aRow;
+        			$user->_id = "org.couchdb.user:" . $aRow;
+        			$user->Firstname = $langs->trans("Unknown");
+        			$user->Lastname = $langs->trans("Unknown");
+        			$user->Status = "DISABLE";
+        		}
+        		$this->members[] = clone $user;
+        	}
         }
 
-        foreach ($membersRoles as $aRow) {
-            $group->id = $aRow;
-            $this->membersRoles[] = clone $group;
+        if (!empty($membersRoles)) {
+        	foreach ($membersRoles as $aRow) {
+        		$group->id = $aRow;
+        		$this->membersRoles[] = clone $group;
+        	}
         }
 
         $membersAdmin = $this->couchAdmin->getDatabaseAdminUsers();
         //$membersRolesAdmin = $this->couchAdmin->getDatabaseAdminRoles();
         //$this->membersRoles = array_merge($this->membersRoles, $membersRolesAdmin);
 
-        foreach ($membersAdmin as $aRow) {
-            try {
-                $user = $this->couchAdmin->getUser($aRow);
-            } catch (Exception $e) {
-                // User NOT FOUND
-                $user->email = $aRow;
-                $user->name = $aRow;
-                $user->_id = "org.couchdb.user:" . $aRow;
-                $user->Firstname = $langs->trans("Unknown");
-                $user->Lastname = $langs->trans("Unknown");
-                $user->Status = "DISABLE";
-                $user->admin = true;
-            }
-            $user->admin = true;
-            $this->members[] = clone $user;
+        if (!empty($membersAdmin)) {
+        	foreach ($membersAdmin as $aRow) {
+        		try {
+        			$user = $this->couchAdmin->getUser($aRow);
+        		} catch (Exception $e) {
+        			// User NOT FOUND
+        			$user->email = $aRow;
+        			$user->name = $aRow;
+        			$user->_id = "org.couchdb.user:" . $aRow;
+        			$user->Firstname = $langs->trans("Unknown");
+        			$user->Lastname = $langs->trans("Unknown");
+        			$user->Status = "DISABLE";
+        			$user->admin = true;
+        		}
+        		$user->admin = true;
+        		$this->members[] = clone $user;
+        	}
         }
 
         /* foreach ($membersRolesAdmin as $aRow) {
