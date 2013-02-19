@@ -669,7 +669,6 @@ class User extends nosqlDocument {
 			}
 		} else {
 			$this->error = $this->db->lasterror();
-			dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
 			return -2;
 		}
 

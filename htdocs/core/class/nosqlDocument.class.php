@@ -165,7 +165,7 @@ abstract class nosqlDocument extends CommonObject {
 			$values = array();
 			$values = $this->couchdb->getDoc($id); // load extrafields for class
 
-			if ($cache) {
+			if ($cache && !empty($conf->memcached)) {
 				dol_setcache($id, $values);
 			}
 		}
@@ -219,7 +219,7 @@ abstract class nosqlDocument extends CommonObject {
 			$values->_id = $this->_id;
 			$values->id = $this->_id;
 			$values->_rev = $this->_rev;
-			if ($cache) {
+			if ($cache && !empty($conf->memcached)) {
 				dol_setcache($this->id, $values);
 			}
 		} catch (Exception $e) {

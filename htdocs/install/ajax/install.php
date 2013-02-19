@@ -105,6 +105,7 @@ if ($action == 'create_config') {
 		$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
 
 		$couch->storeDoc($obj);
+		fclose($fp);
 
 		echo json_encode(array('status' => 'ok'));
 	} else {
@@ -167,7 +168,7 @@ if ($action == 'create_config') {
 	} catch (Exception $e) {
 		// user not exit
 	}
-
+	
 	if (!$found)
 		try {
 			$edituser->Lastname = "Admin";
@@ -266,6 +267,7 @@ if ($action == 'create_config') {
 			}
 
 			$couch->storeDoc($obj);
+			fclose($fp);
 		}
 	}
 

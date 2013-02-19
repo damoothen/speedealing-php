@@ -185,6 +185,9 @@ if (!defined('NOREQUIREAJAX'))
 	require DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'; // Need 22ko memory
 
 
+
+
+	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
 	Header("Location: " . DOL_URL_ROOT . "/install/index.php");
@@ -569,6 +572,9 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		$conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
 
 
+
+
+		
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 
@@ -825,19 +831,25 @@ function top_menu() {
 									</span>
 								</li>
 								<li style="width: 20%;">
-									<a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>">
-										<span class="icon-calendar"></span>
-										<?php
-										require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
-										$agenda = new Agenda($db);
-										$result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
-										//print_r($user->id);
-										if ($result->rows[0]->value) {
-											print '<span class="count">' . $result->rows[0]->value . '</span>';
-											$count_icon+=$result->rows[0]->value;
-										}
-										?>
-									</a>
+										<?php if ($conf->agenda->enabled) : ?>
+										<a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>">
+											<span class="icon-calendar"></span>
+											<?php
+											require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
+											$agenda = new Agenda($db);
+											$result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
+											//print_r($user->id);
+											if ($result->rows[0]->value) {
+												print '<span class="count">' . $result->rows[0]->value . '</span>';
+												$count_icon+=$result->rows[0]->value;
+											}
+											?>
+										</a>
+	<?php else: ?>
+										<span href="agenda/list.php" title="<?php echo $langs->trans("Agenda"); ?>">
+											<span class="icon-calendar"></span>
+										</span>
+	<?php endif; ?>
 								</li>
 								<li style="width: 20%;">
 									<a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile">
@@ -857,12 +869,14 @@ function top_menu() {
 							$menu->atarget = $target;
 							$menu->showmenuTop();
 
-							$agenda = new Agenda($db);
-							$params = array(
-								'startkey' => array($user->id, mktime(0, 0, 0, date("m"), date("d"), date("Y"))),
-								'endkey' => array($user->id, mktime(23, 59, 59, date("m"), date("d"), date("Y")))
-							);
-							$result = $agenda->getView("listMyTasks", $params);
+							if ($conf->agenda->enabled) {
+								$agenda = new Agenda($db);
+								$params = array(
+									'startkey' => array($user->id, mktime(0, 0, 0, date("m"), date("d"), date("Y"))),
+									'endkey' => array($user->id, mktime(23, 59, 59, date("m"), date("d"), date("Y")))
+								);
+								$result = $agenda->getView("listMyTasks", $params);
+							}
 							if (count($result->rows)) :
 								?>
 								<ul class="unstyled-list">
