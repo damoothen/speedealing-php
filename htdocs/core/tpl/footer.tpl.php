@@ -43,13 +43,13 @@
 	<script src="includes/js/tinycon.min.js"></script>
 
 	<script>
+		// Call template init (optional, but faster if called manually)
+		$.template.init();
+
+		// Favicon count
+		Tinycon.setBubble(<?php echo $count_icon; ?>);
+
 		$(document).ready(function() {
-			// Call template init (optional, but faster if called manually)
-			$.template.init();
-
-			// Favicon count
-			Tinycon.setBubble(<?php echo $count_icon; ?>);
-
 			// Box show/hide/remove
 			prth_box_actions.init();
 
