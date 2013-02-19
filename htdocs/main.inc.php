@@ -184,7 +184,7 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX'))
 	require DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'; // Need 22ko memory
 
-	
+
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
 	Header("Location: " . DOL_URL_ROOT . "/install/index.php");
@@ -568,7 +568,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 	if (empty($conf->css))
 		$conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
 
-		
+
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 

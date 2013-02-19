@@ -114,10 +114,6 @@ if ($action == 'create_config') {
 
 	// Create superadmin
 } else if ($action == 'create_admin') {
-	if (!class_exists('UserAdmin'))
-		require_once DOL_DOCUMENT_ROOT . '/useradmin/class/useradmin.class.php';
-	if (!class_exists('User'))
-		require_once DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
 	$couchdb_user_root = GETPOST('couchdb_user_root', 'alpha');
@@ -190,10 +186,6 @@ if ($action == 'create_config') {
 
 	// Create first user
 } else if ($action == 'create_user') {
-	if (!class_exists('UserAdmin'))
-		require_once DOL_DOCUMENT_ROOT . '/useradmin/class/useradmin.class.php';
-	if (!class_exists('User'))
-		require_once DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
 	$couchdb_user_firstname = GETPOST('couchdb_user_firstname', 'alpha');
