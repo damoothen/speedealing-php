@@ -130,7 +130,7 @@
 	<!-- CSS forced by modules -->
 
 	<!-- CSS forced by pages -->
-
+	
 	<!-- JQuery. Must be before other includes -->
 	<script type="text/javascript" src="includes/jquery/js/jquery-latest.min.js"></script>
 	<script type="text/javascript" src="includes/jquery/js/jquery-ui-latest.custom.min.js"></script>

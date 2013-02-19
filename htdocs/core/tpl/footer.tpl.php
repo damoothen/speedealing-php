@@ -52,6 +52,10 @@
 		$(document).ready(function() {
 			// Box show/hide/remove
 			prth_box_actions.init();
+			//* jquery tools tabs
+			prth_tabs.init();
+            //* infinite tabs (jquery UI tabs)
+            prth_infinite_tabs.init();
 
 			// Resize footer
 			prth_stickyFooter.init();
