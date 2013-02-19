@@ -586,7 +586,7 @@ abstract class nosqlDocument extends CommonObject {
 							"bServerSide": false,
 		<?php endif; ?>
 						"bDeferRender": true,
-						"oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/langs/' . ($langs->defaultlang ? $langs->defaultlang : "en_US") . ".txt"; ?>"},
+						"oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/core/js/datatables.js.php?lang=' . ($langs->defaultlang ? $langs->defaultlang : "en_US"); ?>"},
 						/*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
 						/*$obj->sPaginationType = 'full_numbers';*/
 						/*$obj->sDom = 'TC<\"clear\">lfrtip';*/
