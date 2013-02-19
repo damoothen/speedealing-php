@@ -187,6 +187,8 @@ if (!defined('NOREQUIREAJAX'))
 
 
 
+
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -574,6 +576,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 
 
+
+
 		
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
@@ -677,301 +681,293 @@ function top_menu() {
 
 	<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
 		<li class="current">
-			<a href="index.php?idmenu=menu:home" title="<?php echo $langs->trans("Dashboard"); ?>">
-				<img src="theme/common/modules/Maps.png" />
+			<a href="index.php?idmenu=menu:home" class="shortcut-dashboard" title="<?php echo $langs->trans("Dashboard"); ?>">
 	<?php echo $langs->trans("Dashboard"); ?>
 			</a>
 		</li>
 		<li>
-			<span href="inbox.html" title="<?php echo $langs->trans("Messages"); ?>">
-				<img src="theme/common/modules/Mail_alt.png" />
+			<span href="inbox.html" class="shortcut-messages" title="<?php echo $langs->trans("Messages"); ?>">
 	<?php echo $langs->trans("Messages"); ?>
 			</span>
 		</li>
 		<li>
-			<a href="agenda/list.php?idmenu=menu:agendaList" title="<?php echo $langs->trans("Agenda"); ?>">
-				<img src="theme/common/modules/Calendar.png" />
+			<a href="agenda/list.php?idmenu=menu:agendaList" class="shortcut-agenda" title="<?php echo $langs->trans("Agenda"); ?>">
 	<?php echo $langs->trans("Agenda"); ?>
 			</a>
 		</li>
 		<li>
-			<span href="tables.html" title="<?php echo $langs->trans("Contacts"); ?>">
-				<img src="theme/common/modules/Contacts.png" />
+			<span href="tables.html" class="shortcut-contacts" title="<?php echo $langs->trans("Contacts"); ?>">
 	<?php echo $langs->trans("Contacts"); ?>
 			</span>
 		</li>
 		<li>
-			<span href="explorer.html" title="<?php echo $langs->trans("Medias"); ?>">
-				<img src="theme/common/modules/Photos.png" />
+			<span href="explorer.html" class="shortcut-medias" title="<?php echo $langs->trans("Medias"); ?>">
 	<?php echo $langs->trans("Medias"); ?>
 			</span>
 		</li>
 		<li>
-			<span href="sliders.html" title="<?php echo $langs->trans("Stats"); ?>">
-				<img src="theme/common/modules/Stocks.png" />
+			<span href="sliders.html" class="shortcut-stats" title="<?php echo $langs->trans("Stats"); ?>">
 	<?php echo $langs->trans("Stats"); ?>
 			</span>
 		</li>
-		<li>
-			<span href="form.html" title="<?php echo $langs->trans("Settings"); ?>">
-				<img src="theme/common/modules/Settings.png" />
+		<li class="at-bottom">
+			<span href="form.html" class="shortcut-settings" title="<?php echo $langs->trans("Settings"); ?>">
 	<?php echo $langs->trans("Settings"); ?>
-				<span>
-					</li>
-					<li>
-						<span title="<?php echo $langs->trans("Notes"); ?>">
-							<img src="theme/common/modules/Notes.png" />
+			</span>
+		</li>
+		<li>
+			<span class="shortcut-notes" title="<?php echo $langs->trans("Notes"); ?>">
 	<?php echo $langs->trans("Notes"); ?>
-						</span>
-					</li>
-					</ul>
+			</span>
+		</li>
+	</ul>
 
-					<?php
-				}
+	<?php
+}
 
-				/**
-				 * Show left menu bar
-				 *
-				 * @return	void
-				 */
-				function left_menu() {
-					global $user, $conf, $langs, $db;
-					global $hookmanager, $count_icon;
+/**
+ * Show left menu bar
+ *
+ * @return	void
+ */
+function left_menu() {
+	global $user, $conf, $langs, $db;
+	global $hookmanager, $count_icon;
 
-					$searchform = '';
-					$bookmarks = '';
+	$searchform = '';
+	$bookmarks = '';
 
-					// Instantiate hooks of thirdparty module
-					$hookmanager->initHooks(array('searchform', 'leftblock'));
+	// Instantiate hooks of thirdparty module
+	$hookmanager->initHooks(array('searchform', 'leftblock'));
 
-					print "\n";
-					?>
+	print "\n";
+	?>
 
-					<!-- Sidebar/drop-down menu -->
-					<section id="menu" role="complementary">
+	<!-- Sidebar/drop-down menu -->
+	<section id="menu" role="complementary">
 
-						<!-- This wrapper is used by several responsive layouts -->
-						<div id="menu-content">
-							<header>
-								<form action="search.php" id="search_box" method="post">
-									<input name="query" id="query" type="text" size="40" placeholder="<?php echo $langs->trans("SearchOf"); ?>..." autocomplete="off" />
-								</form>
-							</header>
-							<script>
-								$(document).ready(function() {
-									$('#query').sautocomplete('search/data.php', {
-										delay: 10,
-										minChars: 2,
-										max: 6,
-										matchCase: 1,
-										width: 212
-									}).result(function(event, query_val) {
-										$.fancybox({
-											href: 'search/search_result.php',
-											ajax: {
-												type: "POST",
-												data: "search_item=" + query_val
-											},
-											'overlayOpacity': '0.2',
-											'transitionIn': 'elastic',
-											'transitionOut': 'fade',
-											onComplete: function() {
-												$('#query').blur();
-											}
-										});
-									});
-									$('#search_box').submit(function() {
-										var query_val = $("#query").val();
-										$.fancybox({
-											href: 'search/search_result.php',
-											ajax: {
-												type: "POST",
-												data: "search_item=" + query_val
-											},
-											'overlayOpacity': '0.2',
-											'transitionIn': 'elastic',
-											'transitionOut': 'fade'
-										});
-										return false;
-									});
-								});
-							</script>
-
-							<div id="profile" class="with-mid-padding">
-								<div class="columns">
-									<div class="five-columns">
-										<div class="ego-icon big">
-											<?php if (!empty($user->Photo)) : ?>
-												<img alt="User name" class="ego-icon-inner" src="<?php echo $user->getFile($user->Photo); ?>">
-											<?php else : ?>
-												<img src="theme/symeos/img/user.png" alt="User name" class="ego-icon-inner">
-	<?php endif; ?>
-											<img class="ego-icon-outer" src="theme/symeos/img/timbrebase90x100.png">
-										</div>
-									</div>
-									<div class="seven-columns">
-											<?php echo $langs->trans('Hello'); ?>
-										<span class="name">
-	<?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b>
-										</span>
-									</div>
-								</div>
-							</div>
-
-							<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
-							<ul id="access" class="children-tooltip">
-								<li style="width: 20%;">
-									<a href="index.php?idmenu=menu:home" title="<?php echo $langs->trans("Home"); ?>">
-										<span class="icon-home"></span>
-									</a>
-								</li>
-								<li style="width: 20%;">
-									<span href="inbox.html" title="Messages">
-										<span class="icon-inbox"></span>
-									</span>
-								</li>
-								<li style="width: 20%;">
-										<?php if ($conf->agenda->enabled) : ?>
-										<a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>">
-											<span class="icon-calendar"></span>
-											<?php
-											require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
-											$agenda = new Agenda($db);
-											$result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
-											//print_r($user->id);
-											if ($result->rows[0]->value) {
-												print '<span class="count">' . $result->rows[0]->value . '</span>';
-												$count_icon+=$result->rows[0]->value;
-											}
-											?>
-										</a>
-	<?php else: ?>
-										<span href="agenda/list.php" title="<?php echo $langs->trans("Agenda"); ?>">
-											<span class="icon-calendar"></span>
-										</span>
-	<?php endif; ?>
-								</li>
-								<li style="width: 20%;">
-									<a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile">
-										<span class="icon-gear"></span>
-									</a>
-								</li>
-								<li style="width: 20%;">
-									<a href="user/logout.php" title="Log out">
-										<span class="icon-unlock"></span>
-									</a>
-								</li>
-							</ul>
-
-							<?php
-							// Show menu
-							$menu = new MenuAuguria($db);
-							$menu->atarget = $target;
-							$menu->showmenuTop();
-
-							if ($conf->agenda->enabled) {
-								$agenda = new Agenda($db);
-								$params = array(
-									'startkey' => array($user->id, mktime(0, 0, 0, date("m"), date("d"), date("Y"))),
-									'endkey' => array($user->id, mktime(23, 59, 59, date("m"), date("d"), date("Y")))
-								);
-								$result = $agenda->getView("listMyTasks", $params);
+		<!-- This wrapper is used by several responsive layouts -->
+		<div id="menu-content">
+			<header>
+				<form action="search.php" id="search_box" method="post">
+					<input name="query" id="query" type="text" size="40" placeholder="<?php echo $langs->trans("SearchOf"); ?>..." autocomplete="off" />
+				</form>
+			</header>
+			<script>
+				$(document).ready(function() {
+					$('#query').sautocomplete('search/data.php', {
+						delay: 10,
+						minChars: 2,
+						max: 6,
+						matchCase: 1,
+						width: 212
+					}).result(function(event, query_val) {
+						$.fancybox({
+							href: 'search/search_result.php',
+							ajax: {
+								type: "POST",
+								data: "search_item=" + query_val
+							},
+							'overlayOpacity': '0.2',
+							'transitionIn': 'elastic',
+							'transitionOut': 'fade',
+							onComplete: function() {
+								$('#query').blur();
 							}
-							if (count($result->rows)) :
-								?>
-								<ul class="unstyled-list">
-									<li class="title-menu">Today's event</li>
-									<li>
-										<ul class="calendar-menu">
-											<?php
-											foreach ($result->rows as $aRow) {
-												print '<li><a href="agenda/fiche.php?id=' . $aRow->value->_id . '" title="' . $aRow->value->societe->name . '"> <time datetime="' . dol_print_date($aRow->value->datep, "day") . '">';
-												print '<b>' . date("d", $aRow->value->datep) . '</b> ' . date("M", $aRow->value->datep);
-												print '</time> <small class="green">' . dol_print_date($aRow->value->datep, "hour") . '</small> ' . $aRow->value->label;
-												print '</a></li>';
-											}
-											?>
-										</ul>
-									</li>
-								</ul>
+						});
+					});
+					$('#search_box').submit(function() {
+						var query_val = $("#query").val();
+						$.fancybox({
+							href: 'search/search_result.php',
+							ajax: {
+								type: "POST",
+								data: "search_item=" + query_val
+							},
+							'overlayOpacity': '0.2',
+							'transitionIn': 'elastic',
+							'transitionOut': 'fade'
+						});
+						return false;
+					});
+				});
+			</script>
+
+			<div id="profile" class="with-mid-padding">
+				<div class="columns">
+					<div class="five-columns">
+						<div class="ego-icon big">
+							<?php if (!empty($user->Photo)) : ?>
+								<img alt="User name" class="ego-icon-inner" src="<?php echo $user->getFile($user->Photo); ?>">
+							<?php else : ?>
+								<img src="theme/symeos/img/user.png" alt="User name" class="ego-icon-inner">
 	<?php endif; ?>
+							<img class="ego-icon-outer" src="theme/symeos/img/timbrebase90x100.png">
 						</div>
-						<!-- End content wrapper -->
+					</div>
+					<div class="seven-columns">
+							<?php echo $langs->trans('Hello'); ?>
+						<span class="name">
+	<?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b>
+						</span>
+					</div>
+				</div>
+			</div>
 
-						<!-- This is optional -->
-						<footer id="menu-footer">
-							<div>
-								<p>Speedealing v.<?php echo DOL_VERSION; ?></p>
-							</div>
-						</footer>
+			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
+			<ul id="access" class="children-tooltip">
+				<li style="width: 20%;">
+					<a href="index.php?idmenu=menu:home" title="<?php echo $langs->trans("Home"); ?>">
+						<span class="icon-home"></span>
+					</a>
+				</li>
+				<li style="width: 20%;">
+					<span href="inbox.html" title="Messages">
+						<span class="icon-inbox"></span>
+					</span>
+				</li>
+				<li style="width: 20%;">
+						<?php if ($conf->agenda->enabled) : ?>
+						<a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>">
+							<span class="icon-calendar"></span>
+							<?php
+							require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
+							$agenda = new Agenda($db);
+							$result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
+							//print_r($user->id);
+							if ($result->rows[0]->value) {
+								print '<span class="count">' . $result->rows[0]->value . '</span>';
+								$count_icon+=$result->rows[0]->value;
+							}
+							?>
+						</a>
+	<?php else: ?>
+						<span href="agenda/list.php" title="<?php echo $langs->trans("Agenda"); ?>">
+							<span class="icon-calendar"></span>
+						</span>
+	<?php endif; ?>
+				</li>
+				<li style="width: 20%;">
+					<a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile">
+						<span class="icon-gear"></span>
+					</a>
+				</li>
+				<li style="width: 20%;">
+					<a href="user/logout.php" title="Log out">
+						<span class="icon-unlock"></span>
+					</a>
+				</li>
+			</ul>
 
-					</section>
-					<!-- End sidebar/drop-down menu -->
-					<?php
-					// Left column
-					print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
-				}
+			<?php
+			// Show menu
+			$menu = new MenuAuguria($db);
+			$menu->atarget = $target;
+			$menu->showmenuTop();
 
-				/**
-				 * Begin main area
-				 *
-				 * @param	string	$title		Title
-				 * @return	void
-				 */
-				function main_area($title = '') {
-					global $conf, $langs;
-
-					print '<!-- Main content -->';
-					print '<section role="main" id="main">';
-					print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>';
-
-					if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
-						print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
-				}
-
-				if (!function_exists("llxFooter")) {
-
-					/**
-					 * Show HTML footer
-					 * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML.
-					 *
-					 * @return	void
-					 */
-					function llxFooter() {
-						global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache, $count_icon;
-
-						// Global html output events ($mesgs, $errors, $warnings)
-						dol_htmloutput_events();
-						?>
-						</section>
-
-						<!-- End main content -->
-						<?php
-						top_menu(); // print the left menu
-						left_menu(); // print the right menu
-
-						if ($conf->memcached->enabled && get_class($memcache) == 'Memcache')
-							$memcache->close();
-
-						// Core error message
-						if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
-							$title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');
-							print ajax_dialog($title, $langs->trans('CoreErrorMessage'));
-
-							define("MAIN_CORE_ERROR", 0);
-						}
-
-						if (!defined('NOHEADER')) {
-
-							// Footer template
-							include DOL_DOCUMENT_ROOT . '/core/tpl/footer.tpl.php';
-
-							printCommonFooter();
-						}
-
-						print "</body>\n";
-						print "</html>\n";
-					}
-
-				}
+			if ($conf->agenda->enabled) {
+				$agenda = new Agenda($db);
+				$params = array(
+					'startkey' => array($user->id, mktime(0, 0, 0, date("m"), date("d"), date("Y"))),
+					'endkey' => array($user->id, mktime(23, 59, 59, date("m"), date("d"), date("Y")))
+				);
+				$result = $agenda->getView("listMyTasks", $params);
+			}
+			if (count($result->rows)) :
 				?>
+				<ul class="unstyled-list">
+					<li class="title-menu">Today's event</li>
+					<li>
+						<ul class="calendar-menu">
+							<?php
+							foreach ($result->rows as $aRow) {
+								print '<li><a href="agenda/fiche.php?id=' . $aRow->value->_id . '" title="' . $aRow->value->societe->name . '"> <time datetime="' . dol_print_date($aRow->value->datep, "day") . '">';
+								print '<b>' . date("d", $aRow->value->datep) . '</b> ' . date("M", $aRow->value->datep);
+								print '</time> <small class="green">' . dol_print_date($aRow->value->datep, "hour") . '</small> ' . $aRow->value->label;
+								print '</a></li>';
+							}
+							?>
+						</ul>
+					</li>
+				</ul>
+	<?php endif; ?>
+		</div>
+		<!-- End content wrapper -->
+
+		<!-- This is optional -->
+		<footer id="menu-footer">
+			<div>
+				<p>Speedealing v.<?php echo DOL_VERSION; ?></p>
+			</div>
+		</footer>
+
+	</section>
+	<!-- End sidebar/drop-down menu -->
+	<?php
+	// Left column
+	print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
+}
+
+/**
+ * Begin main area
+ *
+ * @param	string	$title		Title
+ * @return	void
+ */
+function main_area($title = '') {
+	global $conf, $langs;
+
+	print '<!-- Main content -->';
+	print '<section role="main" id="main">';
+	print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>';
+
+	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
+		print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
+}
+
+if (!function_exists("llxFooter")) {
+
+	/**
+	 * Show HTML footer
+	 * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML.
+	 *
+	 * @return	void
+	 */
+	function llxFooter() {
+		global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache, $count_icon;
+
+		// Global html output events ($mesgs, $errors, $warnings)
+		dol_htmloutput_events();
+		?>
+		</section>
+
+		<!-- End main content -->
+		<?php
+		top_menu(); // print the left menu
+		left_menu(); // print the right menu
+
+		if ($conf->memcached->enabled && get_class($memcache) == 'Memcache')
+			$memcache->close();
+
+		// Core error message
+		if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
+			$title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');
+			print ajax_dialog($title, $langs->trans('CoreErrorMessage'));
+
+			define("MAIN_CORE_ERROR", 0);
+		}
+
+		if (!defined('NOHEADER')) {
+
+			// Footer template
+			include DOL_DOCUMENT_ROOT . '/core/tpl/footer.tpl.php';
+
+			printCommonFooter();
+		}
+
+		print "</body>\n";
+		print "</html>\n";
+	}
+
+}
+?>

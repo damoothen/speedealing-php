@@ -642,16 +642,9 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnFooterCallback)): ?>
 							"fnFooterCallback": <?php echo $obj->fnFooterCallback; ?>,
 		<?php endif; ?>
-						"fnInitComplete": function(oSettings, json) {
-							prth_stickyFooter.resize();
-						},
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
-			<?php else : ?>
-									"fnDrawCallback": function () {
-										prth_stickyFooter.resize();
-									}
 			<?php endif; ?>
 		<?php endif; ?>
 		<?php if ($user->rights->$class->edit || $user->rights->$class->creer) : ?>

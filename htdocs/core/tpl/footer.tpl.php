@@ -56,16 +56,8 @@
 			prth_tabs.init();
             //* infinite tabs (jquery UI tabs)
             prth_infinite_tabs.init();
-
-			// Resize footer
-			prth_stickyFooter.init();
 		});
 	</script>
 
 	<footer id="footer">
-		<div class="with-mid-padding">
-			<div>Copyright &copy; 2012-2013
-			speedealing.com - under GPLv3 license
-			</div>
-		</div>
 	</footer>
