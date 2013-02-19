@@ -149,7 +149,7 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	public function load($id, $cache = false) {
 		global $conf;
-		
+
 		require_once DOL_DOCUMENT_ROOT . '/core/lib/memory.lib.php';
 
 		$found = false;
@@ -1031,13 +1031,15 @@ abstract class nosqlDocument extends CommonObject {
 			if(stat === undefined)
 			stat = "' . $this->fk_extrafields->fields->$key->default . '";';
 
-				foreach ($this->fk_extrafields->fields->$key->values as $key1 => $aRow) {
-					if (isset($aRow->label))
-						$rtr.= 'status["' . $key1 . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
-					else
-						$rtr.= 'status["' . $key1 . '"]= new Array("' . $langs->trans($key1) . '","' . $aRow->cssClass . '");';
-					if (isset($aRow->dateEnd)) {
-						$rtr.= 'expire["' . $key1 . '"]="' . $aRow->dateEnd . '";';
+				if (!empty($this->fk_extrafields->fields->$key->values)) {
+					foreach ($this->fk_extrafields->fields->$key->values as $key1 => $aRow) {
+						if (isset($aRow->label))
+							$rtr.= 'status["' . $key1 . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
+						else
+							$rtr.= 'status["' . $key1 . '"]= new Array("' . $langs->trans($key1) . '","' . $aRow->cssClass . '");';
+						if (isset($aRow->dateEnd)) {
+							$rtr.= 'expire["' . $key1 . '"]="' . $aRow->dateEnd . '";';
+						}
 					}
 				}
 
