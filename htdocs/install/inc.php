@@ -39,8 +39,10 @@ if (!class_exists('couchAdmin'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchAdmin.php';
 if (!class_exists('couchClient'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
-//if (!class_exists('nosqlDocument'))
-	//require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+if (!class_exists('UserAdmin'))
+	require DOL_DOCUMENT_ROOT . '/useradmin/class/useradmin.class.php';
+if (!class_exists('User'))
+	require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
 
 
 // Avoid warnings with strict mode E_STRICT
