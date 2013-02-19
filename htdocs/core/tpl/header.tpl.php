@@ -130,7 +130,7 @@
 	<!-- CSS forced by modules -->
 
 	<!-- CSS forced by pages -->
-	
+
 	<!-- JQuery. Must be before other includes -->
 	<script type="text/javascript" src="includes/jquery/js/jquery-latest.min.js"></script>
 	<script type="text/javascript" src="includes/jquery/js/jquery-ui-latest.custom.min.js"></script>
@@ -204,7 +204,7 @@
 	<script type="text/javascript" src="includes/ckeditor/ckeditor_basic.js"></script>
 
 	<!-- BEGIN THEME -->
-	<script type="text/javascript" src="includes/js/jquery.ui.extend.js"></script>
+	<!-- <script type="text/javascript" src="includes/js/jquery.ui.extend.js"></script> -->
 	<script type="text/javascript" src="includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>
 	<!-- <script type="text/javascript" src="includes/lib/fullcalendar/fullcalendar.min.js"></script> -->
 	<script type="text/javascript" src="includes/lib/stepy/js/jquery.stepy.min.js"></script>
