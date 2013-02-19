@@ -90,7 +90,7 @@ if ($action == 'create_config') {
 
 // Populate database
 } else if ($action == 'populate_database') {
-	$filename = GETPOST('filename');
+	$filename = GETPOST('filename', 'alpha');
 	$filepath = GETPOST('filepath');
 
 	$fp = fopen($filepath, "r");
