@@ -256,6 +256,28 @@ if ($action == 'create_config') {
 	$admin = new couchAdmin($couch);
 	$admin->addDatabaseReaderUser(trim($couchdb_user_email));
 
+	// Add specifiq view in _users database
+	$couch->useDatabase('_users');
+	$filename = array(DOL_DOCUMENT_ROOT . "/useradmin/json/_auth.view.json", DOL_DOCUMENT_ROOT . "/useradmin/json/useradmin.view.json");
+
+	foreach ($filename as $filepath) {
+		$fp = fopen($filepath, "r");
+		if ($fp) {
+			$json = fread($fp, filesize($filepath));
+			$obj = json_decode($json);
+			unset($obj->_rev);
+			try {
+				$result = $couch->getDoc($obj->_id);
+				$obj->_rev = $result->_rev;
+			} catch (Exception $e) {
+				// not exist
+			}
+
+			$couch->storeDoc($obj);
+		}
+	}
+
+
 	//remove admin_install
 	try {
 		// delete temporary admin user
