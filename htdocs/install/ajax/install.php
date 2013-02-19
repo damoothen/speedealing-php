@@ -69,7 +69,7 @@ if ($action == 'create_config') {
 	// $main_couchdb_port
 
 	sleep(1); // for test
-	echo json_encode(array('status' => 'ok'));
+	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserSyncCreated')));
 
 // Create database
 } else if ($action == 'create_database') {
@@ -90,7 +90,7 @@ if ($action == 'create_config') {
 
 // Populate database
 } else if ($action == 'populate_database') {
-	$filename = GETPOST('filename', 'alpha');
+	$filename = GETPOST('filename');
 	$filepath = GETPOST('filepath');
 
 	$fp = fopen($filepath, "r");
@@ -107,10 +107,10 @@ if ($action == 'create_config') {
 		$couch->storeDoc($obj);
 		fclose($fp);
 
-		echo json_encode(array('status' => 'ok'));
+		echo json_encode(array('status' => 'ok', 'value' => $filename));
 	} else {
-		echo json_encode(array('status' => 'error'));
 		error_log("file not found : " . $filepath);
+		echo json_encode(array('status' => 'error', 'value' => $filepath));
 	}
 
 	// Create superadmin
@@ -137,6 +137,7 @@ if ($action == 'create_config') {
 	} catch (Exception $e) {
 		error_log($e->getMessage());
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
 	}
 
 	// create admin in login database
@@ -156,9 +157,10 @@ if ($action == 'create_config') {
 			error_log($id);
 	} catch (Exception $e) {
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
 	}
 
-	// create admib in couchdb_name database
+	// create admin in couchdb_name database
 	$edituser = new User($db);
 
 	$found = false;
@@ -168,8 +170,8 @@ if ($action == 'create_config') {
 	} catch (Exception $e) {
 		// user not exit
 	}
-	
-	if (!$found)
+
+	if (!$found) {
 		try {
 			$edituser->Lastname = "Admin";
 			$edituser->Firstname = "Admin";
@@ -181,9 +183,11 @@ if ($action == 'create_config') {
 			$id = $edituser->update("", 0, "add");
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+			exit;
 		}
+	}
 
-	echo json_encode(array('status' => 'ok'));
+	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('AdminCreated')));
 
 	// Create first user
 } else if ($action == 'create_user') {
@@ -202,6 +206,7 @@ if ($action == 'create_config') {
 	} catch (Exception $e) {
 		error_log($e->getMessage());
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
 	}
 
 	// create user in login database
@@ -219,6 +224,7 @@ if ($action == 'create_config') {
 		$id = $useradmin->update('', 'add');
 	} catch (Exception $e) {
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
 	}
 
 	// create user in couchdb_name database
@@ -231,7 +237,7 @@ if ($action == 'create_config') {
 		// user not exit
 	}
 
-	if (!$found)
+	if (!$found) {
 		try {
 			$edituser->Lastname = trim($couchdb_user_lastname);
 			$edituser->Firstname = trim($couchdb_user_firstname);
@@ -242,8 +248,9 @@ if ($action == 'create_config') {
 			$id = $edituser->update("", 0, "add");
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+			exit;
 		}
-
+	}
 
 	// Add fisrt user to the database for security database
 	$admin = new couchAdmin($couch);
@@ -251,7 +258,10 @@ if ($action == 'create_config') {
 
 	// Add specifiq view in _users database
 	$couch->useDatabase('_users');
-	$filename = array(DOL_DOCUMENT_ROOT . "/useradmin/json/_auth.view.json", DOL_DOCUMENT_ROOT . "/useradmin/json/useradmin.view.json");
+	$filename = array(
+			DOL_DOCUMENT_ROOT . "/useradmin/json/_auth.view.json",
+			DOL_DOCUMENT_ROOT . "/useradmin/json/useradmin.view.json"
+	);
 
 	foreach ($filename as $filepath) {
 		$fp = fopen($filepath, "r");
@@ -278,14 +288,15 @@ if ($action == 'create_config') {
 		$admin->deleteAdmin("admin_install");
 	} catch (Exception $e) {
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
 	}
 
-	echo json_encode(array('status' => 'ok'));
+	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserCreated')));
 
 	// Install is finished, we create the lock file
 } else if ($action == 'lock_install') {
 	//$ret = write_lock_file();
-	$ret = 1; // TODO for debug
+	$ret = 1; // for debug
 	if ($ret > 0)
 		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('LockFileCreated')));
 	else
