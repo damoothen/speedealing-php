@@ -1,6 +1,5 @@
 {
    "_id": "dict:fk_order_status",
-   "_rev": "18-7612b286ffe7bed6af3734b7403040e2",
    "class": "Dict",
    "values": {
        "DRAFT": {

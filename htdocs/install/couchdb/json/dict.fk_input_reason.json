@@ -1,5 +1,6 @@
 {
    "_id": "dict:fk_input_reason",
+   "class": "Dict",
    "values": {
        "SRC_CAMP_EMAIL": {
            "enable": true,
@@ -25,6 +26,5 @@
            "enable": true,
            "label": "Shop contact"
        }
-   },
-   "class": "dict"
+   }
 }

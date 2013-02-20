@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_payment_term",
-   "_rev": "1-75864e713eb2ed7b8db4355452a96a43",
+   "class": "Dict",
    "values": {
        "RECEP": {
            "enable": true,
@@ -42,6 +42,5 @@
            "nbjour": 60,
            "decalage": 0
        }
-   },
-   "class": "dict"
+   }
 }

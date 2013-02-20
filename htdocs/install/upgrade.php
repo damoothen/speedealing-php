@@ -64,7 +64,7 @@ function upgrade() {
 		}
 	}
 
-	//Upade dict
+	//Update dict
 	$dict = new Dict($db);
 	$result = $dict->getView("list");
 
@@ -98,7 +98,7 @@ function upgrade() {
 			}
 			$dict->record();
 		} else {
-			
+
 		}
 	}
 

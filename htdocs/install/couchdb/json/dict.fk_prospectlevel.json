@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_prospectlevel",
-   "_rev": "3-5ea4f220cf46e60896e38fb4547af127",
+   "class": "Dict",
    "values": {
        "PL_NONE": {
            "enable": true,
@@ -18,6 +18,5 @@
            "enable": true,
            "cssClass": "red-gradient"
        }
-   },
-   "class": "dict"
+   }
 }

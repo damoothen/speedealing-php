@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_stcomm",
-   "_rev": "2-4f44644d6971218a64a742032457e540",
+   "class": "Dict",
    "values": {
        "ST_NO": {
            "enable": true,
@@ -74,6 +74,5 @@
            "type": "customer",
            "cssClass": "green-gradient"
        }
-   },
-   "class": "dict"
+   }
 }
