@@ -5,6 +5,14 @@
    "views": {
        "list": {
            "map": "function(doc) {\n  if(doc.class==\"Dict\" || doc.class==\"dict\") {\n      emit(doc._id, {_id:doc._id,_rev:doc._rev});\n  }\n}"
+       },
+       "townByZip": {
+           "map": "function(doc) {\n    if(doc.class==\"Societe\" && doc.zip && doc._id != \"societe:mysoc\") {\n        var prefix = doc.zip.match(/^[A-Z0-9 ]+/i);\n        if(prefix)\n            emit([prefix[0], doc.town, doc.country_id, doc.state_id], 1);\n    }\n}",
+           "reduce": "function(keys, values) {\n  return sum(values);\n}"
+       },
+       "zipByTown": {
+           "map": "function(doc) {\n    if(doc.class==\"Societe\" && doc.town && doc._id != \"societe:mysoc\") {\n        var prefix = doc.town.match(/^[A-Z0-9 ]+/i);\n        if(prefix)\n            emit([prefix[0], doc.zip, doc.country_id, doc.state_id], 1);\n    }\n}",
+           "reduce": "function(keys, values) {\n  return sum(values);\n}"
        }
    }
 }
