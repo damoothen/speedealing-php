@@ -184,6 +184,23 @@ $install = array(
 		'NothingToDelete' => 'Aucune liaison invalide trouvée',
 		'SourceType' => 'Source',
 		'TargetType' => 'Cible',
+    'Welcome' => 'Welcome',
+    'WelcomeTitle' => 'Welcome to Speedealing',
+    'WelcomeDesc' => 'Speedealing install',
+    'LanguageDesc' => 'Language used on United States',
+    'InstallTypeTitle' => 'Install type',
+    'InstallTypeDesc' => 'Choose your install type',
+    'InstallType' => 'Install type',
+    'InstallTypeServer' => 'Install type server',
+    'InstallTypeServerDesc' => '',
+    'InstallTypeClient' => 'Install type client',
+    'InstallTypeClientDesc' => '',
+    'Prerequisite' => 'Prerequisite',
+    'PrerequisiteTitle' => 'Prerequisite',
+    'PrerequisiteDesc' => 'Test prerequisite',
+    'ConfigFileStatus' => 'Config file status',
+    
+    
 		// Upgrade
 		'UpgradeOk' => 'Upgrade is ok !',
 		'NewInstalledVersion' => 'Your new version is %s',
