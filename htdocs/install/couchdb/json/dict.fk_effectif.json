@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_effectif",
-   "_rev": "1-c51bad2a9cfcc88dd74c74c35e1993db",
+   "class": "Dict",
    "values": {
        "EF0": {
            "enable": true,
@@ -30,6 +30,5 @@
            "enable": true,
            "label": "> 500"
        }
-   },
-   "class": "dict"
+   }
 }
