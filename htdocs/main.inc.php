@@ -189,6 +189,14 @@ if (!defined('NOREQUIREAJAX'))
 
 
 
+
+
+
+
+
+
+
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -578,6 +586,14 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 
 
+
+
+
+
+
+
+
+
 		
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
@@ -677,9 +693,7 @@ function top_menu() {
 		$top_menu = 'auguria_backoffice.php';
 		include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $top_menu;
 	}
-	?>
-
-	<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
+	?><ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
 		<li class="current">
 			<a href="index.php?idmenu=menu:home" class="shortcut-dashboard" title="<?php echo $langs->trans("Dashboard"); ?>">
 	<?php echo $langs->trans("Dashboard"); ?>
@@ -720,9 +734,7 @@ function top_menu() {
 	<?php echo $langs->trans("Notes"); ?>
 			</span>
 		</li>
-	</ul>
-
-	<?php
+	</ul><?php
 }
 
 /**
@@ -741,9 +753,7 @@ function left_menu() {
 	$hookmanager->initHooks(array('searchform', 'leftblock'));
 
 	print "\n";
-	?>
-
-	<!-- Sidebar/drop-down menu -->
+	?><!-- Sidebar/drop-down menu -->
 	<section id="menu" role="complementary">
 
 		<!-- This wrapper is used by several responsive layouts -->
@@ -793,25 +803,11 @@ function left_menu() {
 				});
 			</script>
 
-			<div id="profile" class="with-mid-padding">
-				<div class="columns">
-					<div class="five-columns">
-						<div class="ego-icon big">
-							<?php if (!empty($user->Photo)) : ?>
-								<img alt="User name" class="ego-icon-inner" src="<?php echo $user->getFile($user->Photo); ?>">
-							<?php else : ?>
-								<img src="theme/symeos/img/user.png" alt="User name" class="ego-icon-inner">
-	<?php endif; ?>
-							<img class="ego-icon-outer" src="theme/symeos/img/timbrebase90x100.png">
-						</div>
-					</div>
-					<div class="seven-columns">
-							<?php echo $langs->trans('Hello'); ?>
-						<span class="name">
-	<?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b>
-						</span>
-					</div>
-				</div>
+			<div id="profile">
+				<?php if (!empty($user->Photo)) : ?><img alt="User name" src="<?php echo $user->getFile($user->Photo);?>" width="64" class="user-icon">
+				<?php else : ?><img src="theme/symeos/img/user.png" width="64" alt="User name">
+				<?php endif; ?>
+				<?php echo $langs->trans('Hello'); ?><span class="name"><?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b></span>
 			</div>
 
 			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->

@@ -548,9 +548,7 @@ print '</div></div>';
             colors = Highcharts.getOptions().colors;
 
             $.each(names, function(i, name) {
-
-                $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename='+ name.toLowerCase() +'-c.json&callback=?',	function(data) {
-
+                $.getJSON('<?php echo DOL_URL_ROOT;?>/core/ajax/listgraphexample.php?filename='+ name.toLowerCase() +'-c.json&callback=?',	function(data) {
                     seriesOptions[i] = {
                         name: name,
                         data: data
@@ -563,7 +561,8 @@ print '</div></div>';
                     if (seriesCounter == names.length) {
                         createChart();
                     }
-                });
+                })
+				.error(function() {log.console;});
             });
 
 
