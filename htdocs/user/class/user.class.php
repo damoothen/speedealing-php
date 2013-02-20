@@ -616,6 +616,8 @@ class User extends nosqlDocument {
 
 		// Clean parameters
 		$this->name = trim($this->name);
+		$this->Firstname  = trim($this->Firstname);
+		$this->Lastname = trim($this->Lastname);
 
 		dol_syslog(get_class($this) . "::create login=" . $this->name . ", user=" . (is_object($user) ? $user->id : ''), LOG_DEBUG);
 
