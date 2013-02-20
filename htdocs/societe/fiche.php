@@ -1,13 +1,13 @@
 <?php
 
-/* Copyright (C) 2001-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2003      Brian Fraval         <brian@fraval.org>
- * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@capnetworks.com>
- * Copyright (C) 2008	   Patrick Raguin       <patrick.raguin@auguria.net>
- * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
- * Copyright (C) 2010-2012 Herve Prot           <herve.prot@symeos.com>
+/* Copyright (C) 2001-2007	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2003		Brian Fraval			<brian@fraval.org>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005		Eric Seigne				<eric.seigne@ryxeo.com>
+ * Copyright (C) 2005-2013	Regis Houssin			<regis.houssin@capnetworks.com>
+ * Copyright (C) 2008		Patrick Raguin			<patrick.raguin@auguria.net>
+ * Copyright (C) 2010-2011	Juanjo Menent			<jmenent@2byte.es>
+ * Copyright (C) 2010-2013	Herve Prot				<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ $object = new Societe($db);
 $contact = new Contact($db);
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
+/*
 $object->getCanvas($socid);
 $canvas = $object->canvas ? $object->canvas : GETPOST("canvas");
 $objcanvas = '';
@@ -67,9 +68,10 @@ if (!empty($canvas)) {
 	$objcanvas = new Canvas($db, $action);
 	$objcanvas->getCanvas('thirdparty', 'card', $canvas);
 }
+*/
 
 // Security check
-$result = restrictedArea($user, 'societe', $socid, '&societe', '', 'fk_soc', 'rowid', $objcanvas);
+$result = restrictedArea($user, 'societe', $socid, '&societe', '', 'fk_soc', 'rowid');
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 $hookmanager->initHooks(array('thirdpartycard'));
@@ -79,7 +81,7 @@ $hookmanager->initHooks(array('thirdpartycard'));
  * Actions
  */
 
-$parameters = array('id' => $socid, 'objcanvas' => $objcanvas);
+$parameters = array('id' => $socid);
 $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action);	// Note that $action and $object may have been modified by some hooks
 $error = $hookmanager->error;
 $errors = array_merge($errors, (array) $hookmanager->errors);
@@ -104,7 +106,7 @@ if (empty($reshook)) {
 			$ret = $object->fetch($socid);
 			$oldcopy = dol_clone($object);
 		} else {
-			$object->canvas = $canvas;
+			//$object->canvas = $canvas;
 			$object->commercial_id->id = GETPOST('commercial_id');
 		}
 
@@ -219,7 +221,6 @@ if (empty($reshook)) {
 				$result = $object->create($user);
 				if ($result >= 0) {
 					if ($object->particulier) {
-						dol_syslog("This thirdparty is a personal people", LOG_DEBUG);
 
 						$contact->civilite_id = $object->civilite_id;
 						$contact->name = $object->name_bis;
