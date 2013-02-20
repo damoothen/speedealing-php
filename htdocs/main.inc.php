@@ -805,7 +805,7 @@ function left_menu() {
 
 			<div id="profile">
 				<?php if (!empty($user->Photo)) : ?><img alt="User name" src="<?php echo $user->getFile($user->Photo);?>" width="64" class="user-icon">
-				<?php else : ?><img src="theme/symeos/img/user.png" width="64" alt="User name">
+				<?php else : ?><img src="theme/symeos/img/user.png" width="64" class="user-icon" alt="User name">
 				<?php endif; ?>
 				<?php echo $langs->trans('Hello'); ?><span class="name"><?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b></span>
 			</div>
