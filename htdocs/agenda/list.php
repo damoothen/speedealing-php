@@ -202,6 +202,7 @@ $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "label";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("label", "url");
 $i++;
 print'<th class="essential">';

@@ -1,5 +1,7 @@
 <?php
-/* Copyright (C) 2013 Regis Houssin  <regis.houssin@capnetworks.com>
+
+/* Copyright (C) 2013 Regis Houssin		<regis.houssin@capnetworks.com>
+ * Copyright (C) 2013 Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,34 +21,33 @@
  *       \file       htdocs/install/ajax/install.php
  *       \brief      File to get all status for install process
  */
-
 require '../inc.php';
 
-$default_lang = GETPOST('lang','alpha');
+$default_lang = GETPOST('lang', 'alpha');
 $langs->setDefaultLang($default_lang);
 
 $langs->load("install");
 $langs->load("errors");
 
-$action	= GETPOST('action','alpha');
-
+$action = GETPOST('action', 'alpha');
 $out = array();
+
 
 /*
  * View
  */
 
-// This variable are loaded by inc.php
-// $dolibarr_main_couchdb_name
-// $dolibarr_main_couchdb_host
-// $dolibarr_main_couchdb_port
+header('Content-type: application/json');
 
+// This variable are loaded by inc.php
+// $main_couchdb_host
+// $main_couchdb_port
+// Create config file
 if ($action == 'create_config') {
-	$couchdb_name	= GETPOST('couchdb_name', 'alpha');
-	$couchdb_host	= GETPOST('couchdb_host', 'alpha');
-	$couchdb_port	= GETPOST('couchdb_port', 'int');
-	$memcached_host	= GETPOST('memcached_host', 'alpha');
-	$memcached_port	= GETPOST('memcached_port', 'int');
+	$couchdb_host = GETPOST('couchdb_host', 'alpha');
+	$couchdb_port = GETPOST('couchdb_port', 'int');
+	$memcached_host = GETPOST('memcached_host', 'alpha');
+	$memcached_port = GETPOST('memcached_port', 'int');
 	// Save old conf file on disk
 	if (file_exists("$conffile")) {
 		// We must ignore errors as an existing old file may already exists and not be replacable or
@@ -54,65 +55,251 @@ if ($action == 'create_config') {
 		// Also no other process must be able to read file or we expose the new file, so content with password.
 		@dol_copy($conffile, $conffile . '.old', '0600');
 	}
-	echo write_conf_file();
-} else if ($action == 'create_admin') {
-	$couchdb_user_root	= GETPOST('couchdb_user_root', 'alpha');
-	$couchdb_pass_root	= GETPOST('couchdb_pass_root', 'alpha');
-	// $dolibarr_main_couchdb_name
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
+	$ret = write_conf_file();
+	if ($ret > 0)
+		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('ConfFileCreated')));
+	else
+		echo json_encode(array('status' => 'error', 'value' => $langs->trans('ConfFileIsNotWritable', $conffile)));
+
+// Create sync user
+} else if ($action == 'create_syncuser') {
+	$couchdb_user_sync = GETPOST('couchdb_user_sync', 'alpha');
+	$couchdb_pass_sync = GETPOST('couchdb_pass_sync', 'alpha');
+	// $main_couchdb_host
+	// $main_couchdb_port
+
+	sleep(1); // for test
+	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserSyncCreated')));
+
+// Create database
+} else if ($action == 'create_database') {
+	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
+
+	if (!$couch->databaseExists()) {
+		try {
+			$couch->createDatabase();
+			echo json_encode(array('status' => 'ok', 'value' => $langs->trans('DatabaseCreated')));
+		} catch (Exception $e) {
+			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+			error_log($e->getMessage());
+		}
+	} else {
+		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('DatabaseAlreadyExists'))); // database already exists
+	}
+
+// Populate database
+} else if ($action == 'populate_database') {
+	$filename = GETPOST('filename', 'alpha');
+	$filepath = GETPOST('filepath');
+
+	$fp = fopen($filepath, "r");
+	if ($fp) {
+		$json = fread($fp, filesize($filepath));
+		$obj = json_decode($json);
+		unset($obj->_rev);
+		if ($obj->_id == "const")
+			unset($obj->MAIN_VERSION);
+
+		$couchdb_name = GETPOST('couchdb_name', 'alpha');
+		$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
+
+		$couch->storeDoc($obj);
+		fclose($fp);
+
+		echo json_encode(array('status' => 'ok', 'value' => $filename));
+	} else {
+		error_log("file not found : " . $filepath);
+		echo json_encode(array('status' => 'error', 'value' => $filepath));
+	}
 
 	// Create superadmin
-	sleep(1); // for test
+} else if ($action == 'create_admin') {
 
-	echo 1;
+	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couchdb_user_root = GETPOST('couchdb_user_root', 'alpha');
+	$couchdb_pass_root = GETPOST('couchdb_pass_root', 'alpha');
+
+	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
+	$admin = new couchAdmin($couch);
+
+	try {
+		// create a temporary admin user
+		$admin->createAdmin("admin_install", "admin_install");
+	} catch (Exception $e) {
+		// already exist or protected couchdb server
+	}
+
+	$host = substr($main_couchdb_host, 7);
+
+	try {
+		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+	} catch (Exception $e) {
+		error_log($e->getMessage());
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
+
+	// create admin in login database
+	try {
+		$useradmin = new UserAdmin($db);
+
+		$useradmin->Lastname = "Admin";
+		$useradmin->Firstname = "Admin";
+		$useradmin->name = trim($couchdb_user_root);
+		$useradmin->pass = trim($couchdb_pass_root);
+		$useradmin->entity = $couchdb_name;
+		$useradmin->admin = true;
+		$useradmin->Status = 'ENABLE';
+
+		$id = $useradmin->update('', 'add');
+		if ($id < 0)
+			error_log($id);
+	} catch (Exception $e) {
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
+
+	// create admin in couchdb_name database
+	$edituser = new User($db);
+
+	$found = false;
+	try {
+		$edituser->load("user:admin");
+		$found = true;
+	} catch (Exception $e) {
+		// user not exit
+	}
+
+	if (!$found) {
+		try {
+			$edituser->Lastname = "Admin";
+			$edituser->Firstname = "Admin";
+			$edituser->name = "admin";
+			$edituser->admin = true;
+			$edituser->email = trim($couchdb_user_root);
+			$edituser->Status = 'ENABLE';
+
+			$id = $edituser->update("", 0, "add");
+		} catch (Exception $e) {
+			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+			exit;
+		}
+	}
+
+	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('AdminCreated')));
+
+	// Create first user
 } else if ($action == 'create_user') {
-	$couchdb_user_firstname	= GETPOST('couchdb_user_firstname', 'alpha');
-	$couchdb_user_lastname	= GETPOST('couchdb_user_lastname', 'alpha');
-	$couchdb_user_pseudo	= GETPOST('couchdb_user_pseudo', 'alpha');
-	$couchdb_user_email		= GETPOST('couchdb_user_email', 'alpha');
-	$couchdb_user_pass		= GETPOST('couchdb_user_pass', 'alpha');
-	// $dolibarr_main_couchdb_name
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
 
-	// Create first user
-	sleep(1); // for test
+	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couchdb_user_firstname = GETPOST('couchdb_user_firstname', 'alpha');
+	$couchdb_user_lastname = GETPOST('couchdb_user_lastname', 'alpha');
+	$couchdb_user_pseudo = GETPOST('couchdb_user_pseudo', 'alpha');
+	$couchdb_user_email = GETPOST('couchdb_user_email', 'alpha');
+	$couchdb_user_pass = GETPOST('couchdb_user_pass', 'alpha');
 
-	echo 1;
-} else if ($action == 'create_syncuser') {
-	$couchdb_user_sync	= GETPOST('couchdb_user_sync', 'alpha');
-	$couchdb_pass_sync	= GETPOST('couchdb_pass_sync', 'alpha');
-	// $dolibarr_main_couchdb_name
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
+	$host = substr($main_couchdb_host, 7);
 
-	// Create first user
-	sleep(1); // for test
+	try {
+		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+	} catch (Exception $e) {
+		error_log($e->getMessage());
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
 
-	echo 1;
-} else if ($action == 'create_database') {
-	// $dolibarr_main_couchdb_name
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
+	// create user in login database
+	try {
+		$useradmin = new UserAdmin($db);
 
-	// Create database
-	sleep(1); // for test
+		$useradmin->Lastname = trim($couchdb_user_lastname);
+		$useradmin->Firstname = trim($couchdb_user_firstname);
+		$useradmin->name = trim($couchdb_user_email);
+		$useradmin->pass = trim($couchdb_user_pass);
+		$useradmin->entity = $couchdb_name;
+		$useradmin->admin = false;
+		$useradmin->Status = 'DISABLE';
 
-	echo 1;
-} else if ($action == 'populate_database') {
-	$filename	= GETPOST('filename', 'alpha');
-	$filepath	= GETPOST('filepath');
-	// $dolibarr_main_couchdb_name
-	// $dolibarr_main_couchdb_host
-	// $dolibarr_main_couchdb_port
+		$id = $useradmin->update('', 'add');
+	} catch (Exception $e) {
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
 
-	// Create database
-	sleep(1); // for test
+	// create user in couchdb_name database
+	$edituser = new User($db);
+	$found = false;
+	try {
+		$edituser->load("user:" . trim($couchdb_user_pseudo));
+		$found = true;
+	} catch (Exception $e) {
+		// user not exit
+	}
 
-	echo 1;
-} else if ($action == 'lock_install') {
+	if (!$found) {
+		try {
+			$edituser->Lastname = trim($couchdb_user_lastname);
+			$edituser->Firstname = trim($couchdb_user_firstname);
+			$edituser->name = trim($couchdb_user_pseudo);
+			$edituser->admin = false;
+			$edituser->email = trim($couchdb_user_email);
+
+			$id = $edituser->update("", 0, "add");
+		} catch (Exception $e) {
+			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+			exit;
+		}
+	}
+
+	// Add fisrt user to the database for security database
+	$admin = new couchAdmin($couch);
+	$admin->addDatabaseReaderUser(trim($couchdb_user_email));
+
+	// Add specifiq view in _users database
+	$couch->useDatabase('_users');
+	$filename = array(
+			DOL_DOCUMENT_ROOT . "/useradmin/json/_auth.view.json",
+			DOL_DOCUMENT_ROOT . "/useradmin/json/useradmin.view.json"
+	);
+
+	foreach ($filename as $filepath) {
+		$fp = fopen($filepath, "r");
+		if ($fp) {
+			$json = fread($fp, filesize($filepath));
+			$obj = json_decode($json);
+			unset($obj->_rev);
+			try {
+				$result = $couch->getDoc($obj->_id);
+				$obj->_rev = $result->_rev;
+			} catch (Exception $e) {
+				// not exist
+			}
+
+			$couch->storeDoc($obj);
+			fclose($fp);
+		}
+	}
+
+
+	//remove admin_install
+	try {
+		// delete temporary admin user
+		$admin->deleteAdmin("admin_install");
+	} catch (Exception $e) {
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
+
+	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserCreated')));
+
 	// Install is finished, we create the lock file
-	echo write_lock_file();
+} else if ($action == 'lock_install') {
+	//$ret = write_lock_file();
+	$ret = 1; // for debug
+	if ($ret > 0)
+		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('LockFileCreated')));
+	else
+		echo json_encode(array('status' => 'error', 'value' => $langs->trans('LockFileCouldNotBeCreated')));
 }
 ?>

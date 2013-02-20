@@ -119,25 +119,30 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
 
 // Action ajout user
 if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser)) && !$_POST["cancel"]) {
-    $message = "";
+
+	$error = 0;
+
     if (!$_POST["nom"]) {
-        $message = '<div class="error">' . $langs->trans("NameNotDefined") . '</div>';
+    	setEventMessage($langs->trans("NameNotDefined"), 'errors');
         $action = "create"; // Go back to create page
+        $error++;
     }
     if (!$_POST["login"]) {
-        $message = '<div class="error">' . $langs->trans("LoginNotDefined") . '</div>';
+    	setEventMessage($langs->trans("LoginNotDefined"), 'errors');
         $action = "create"; // Go back to create page
+        $error++;
     }
 
     if (!empty($conf->file->main_limit_users) && $action == 'add') { // If option to limit users is set
         $nb = $edituser->getNbOfUsers("active", 1);
         if ($nb >= $conf->file->main_limit_users) {
-            $message = '<div class="error">' . $langs->trans("YourQuotaOfUsersIsReached") . '</div>';
+        	setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
             $action = "create"; // Go back to create page
+            $error++;
         }
     }
 
-    if (!$message) {
+    if (!$error) {
         $edituser->Lastname = $_POST["nom"];
         $edituser->Firstname = $_POST["prenom"];
         $edituser->name = $_POST["login"];
@@ -145,18 +150,17 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
         $edituser->entity = $_POST["default_entity"];
         $edituser->admin = (bool) $_POST["admin"];
 
-        $id = $edituser->update($user, 0, $action);
+        $id = $edituser->update($user, $action);
 
-        if ($id == $edituser->name) {
-            Header("Location: " . $_SERVER['PHP_SELF'] . '?id=org.couchdb.user:' . $id);
+        if ($id == 'org.couchdb.user:'.$edituser->name) {
+            Header("Location: " . $_SERVER['PHP_SELF'] . '?id=' . $id);
             exit;
         } else {
             $langs->load("errors");
             if (is_array($edituser->errors) && count($edituser->errors))
-                $message = '<div class="error">' . join('<br>', $langs->trans($edituser->errors)) . '</div>';
+            	setEventMessage(join('<br>', $langs->trans($edituser->errors)), 'errors');
             else
-                $message = '<div class="error">' . $langs->trans($edituser->error) . '</div>';
-            print $edituser->error;
+            	setEventMessage($langs->trans($edituser->error), 'errors');
             if ($action == "add")
                 $action = "create"; // Go back to create page
             if ($action == "update")
@@ -212,14 +216,12 @@ if (($action == 'create') || ($action == 'adduserldap')) {
     print "<br>";
     print "<br>";
 
-    dol_htmloutput_errors($message);
-
     print '<form action="' . $_SERVER["PHP_SELF"] . '" method="post" name="createuser">';
     print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
     print '<input type="hidden" name="action" value="add">';
     if ($ldap_sid)
         print '<input type="hidden" name="ldap_sid" value="' . $ldap_sid . '">';
-    print '<input type="hidden" name="entity" value="' . $conf->entity . '">';
+    print '<input type="hidden" name="default_entity" value="' . $conf->Couchdb->name . '">';
 
     print '<table class="border" width="100%">';
 
@@ -357,8 +359,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             if ($ret == 'html')
                 print '<br>';
         }
-
-        dol_htmloutput_mesg($message);
 
         /*
          * Fiche en mode visu

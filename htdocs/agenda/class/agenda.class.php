@@ -325,7 +325,7 @@ class Agenda extends nosqlDocument {
 
         if ($this->Status == "ON" && !$this->userdone->id) {
             $this->userdone->id = $user->id;
-            $this->userdone->name = $user->name;
+            $this->userdone->name = $user->login;
         }
 
         // Check parameters
@@ -333,11 +333,11 @@ class Agenda extends nosqlDocument {
             //$this->error="ErrorCantSaveADoneUserWithZeroPercentage";
             //return -1;
             unset($this->userdone->id);
-            unset($this->userdone->name);
+            unset($this->userdone->login);
         }
         if ($this->Status == "DONE" && !$this->userdone->id) {
             $this->userdone->id = $user->id;
-            $this->userdone->name = $user->name;
+            $this->userdone->name = $user->login;
         }
 
         if ($this->Status == "DONE")
@@ -929,7 +929,7 @@ class Agenda extends nosqlDocument {
         $langs->load("agenda");
 
         $titre = $langs->trans("Actions");
-        print start_box($titre, "six", "16-Mail.png", false, $head);
+        print start_box($titre, "twelve", "16-Mail.png", true, $head);
 
         $i = 0;
         $obj = new stdClass();

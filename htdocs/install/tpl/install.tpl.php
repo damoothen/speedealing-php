@@ -104,6 +104,11 @@
 		<label for="php_memcached" class="label"><b><?php echo $langs->trans("PHPMemcached"); ?></b></label>
 		<div id="php_memcached"></div>
 	</div>
+	
+	<div class="field-block">
+		<label for="couchdb_rewrite" class="label"><b><?php echo $langs->trans("CouchDB"); ?></b></label>
+		<div id="couchdb_rewrite"></div>
+	</div>
 
 	<div class="field-block">
 		<label for="conf_file" class="label"><b><?php echo $langs->trans("ConfigFileStatus"); ?></b></label>

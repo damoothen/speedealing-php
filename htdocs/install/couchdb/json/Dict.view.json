@@ -4,7 +4,7 @@
    "language": "javascript",
    "views": {
        "list": {
-           "map": "function(doc) {\n  if(doc.class==\"Dict\") {\n      emit(doc._id, {_id:doc._id,_rev:doc._rev});\n  }\n}"
+           "map": "function(doc) {\n  if(doc.class==\"Dict\" || doc.class==\"dict\") {\n      emit(doc._id, {_id:doc._id,_rev:doc._rev});\n  }\n}"
        }
    }
 }

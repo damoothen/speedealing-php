@@ -25,7 +25,7 @@
  * \brief      Fichier contenant la classe du modele de numerotation de reference de commande Saphir
  */
 
-require_once DOL_DOCUMENT_ROOT .'/core/modules/commande/modules_commande.php';
+require_once DOL_DOCUMENT_ROOT .'/commande/core/modules/commande/modules_commande.php';
 
 
 /**

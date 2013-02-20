@@ -481,6 +481,7 @@ class Conf extends nosqlDocument {
         $result = dol_getcache("const");
 
         unset($result->values); // reset old values
+		$result->values = new stdClass();
         foreach ($this->global as $key => $value)
             $result->values->$key = $value; // Write New Value
 

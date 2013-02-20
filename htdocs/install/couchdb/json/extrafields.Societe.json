@@ -1,0 +1,339 @@
+{
+   "_id": "extrafields:Societe",
+   "_rev": "120-0916a72ac0e7bcf992d433d56c05278c",
+   "class": "extrafields",
+   "ico": "16-Apartment-Building.png",
+   "langs": [
+       "companies",
+       "bills",
+       "compta"
+   ],
+   "createList": [
+       "name",
+       "Status",
+       "commercial_id",
+       "address",
+       "zip",
+       "town"
+   ],
+   "longList": [
+       "code_client",
+       "zip",
+       "town",
+       "address",
+       "zonegeo",
+       "phone",
+       "idprof3"
+   ],
+   "shortList": [
+       "town",
+       "phone"
+   ],
+   "fields": {
+       "name": {
+           "type": "text",
+           "length": 60,
+           "enable": true,
+           "label": "Company",
+           "validate": {
+               "cssclass": "required",
+               "minlength": 3
+           }
+       },
+       "prefix": {
+           "type": "text",
+           "length": 5,
+           "enable": false,
+           "edit": true
+       },
+       "code_client": {
+           "type": "text",
+           "length": 15,
+           "enable": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": false
+           }
+       },
+       "code_fournisseur": {
+           "type": "text",
+           "length": 15,
+           "enable": false
+       },
+       "barcode": {
+           "type": "text",
+           "enable": false
+       },
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": "ST_NEVER",
+           "status": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "dict": "dict:fk_stcomm"
+       },
+       "address": {
+           "type": "textarea",
+           "label": "Address",
+           "cols": 40,
+           "rows": 3,
+           "enable": true,
+           "aoColumns": {
+               "sClass": "",
+               "bSearchable": true,
+               "bVisible": false
+           }
+       },
+       "zip": {
+           "type": "text",
+           "label": "Zip",
+           "length": 15,
+           "enable": true,
+           "javascript": null,
+           "aoColumns": {
+               "sClass": "center dol_edit",
+               "bSearchable": true,
+               "bVisible": true,
+               "editable": true
+           }
+       },
+       "town": {
+           "type": "text",
+           "label": "Town",
+           "length": 15,
+           "enable": true,
+           "javascript": null,
+           "aoColumns": {
+               "sClass": "dol_edit",
+               "bSearchable": true,
+               "bVisible": true,
+               "editable": true
+           }
+       },
+       "country_id": {
+           "type": "select",
+           "enable": true,
+           "dict": "dict:fk_country",
+           "default": "substr($langs->defaultlang,3,5)",
+           "sort": true
+       },
+       "state_id": {
+           "type": "select",
+           "enable": true,
+           "settype": "int",
+           "dict": "dict:fk_departements",
+           "filters": {
+               "pays_code": "country_id"
+           },
+           "sort": true
+       },
+       "DefaultLang": {
+           "type": "select",
+           "enable": false,
+           "dict": null
+       },
+       "logo": {
+           "type": "image",
+           "width": "130px",
+           "alt": "Logo",
+           "enable": true
+       },
+       "phone": {
+           "type": "text",
+           "ico": "AC_TEL",
+           "label": "Phone",
+           "enable": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": false
+           },
+           "mask": "+99 9 99 99 99 99"
+       },
+       "fax": {
+           "type": "text",
+           "label": "Fax",
+           "ico": "AC_FAX",
+           "enable": true,
+           "mask": "+99 9 99 99 99 99"
+       },
+       "email": {
+           "type": "text",
+           "ico": "AC_EMAIL",
+           "enable": true,
+           "label": "EMail",
+           "validate": {
+               "cssclass": "email"
+           },
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "editable": true
+           }
+       },
+       "url": {
+           "type": "text",
+           "ico": "AC_URL",
+           "site": "www",
+           "enable": true,
+           "validate": {
+               "cssclass": "url"
+           }
+       },
+       "idprof1": {
+           "type": "text",
+           "label": "ProfId1",
+           "length": "25",
+           "enable": true,
+           "aoColumns": {
+               "bSearchable": true,
+               "bVisible": true
+           }
+       },
+       "idprof3": {
+           "type": "text",
+           "length": "12",
+           "enable": true
+       },
+       "typent_id": {
+           "type": "select",
+           "default": "TE_UNKNOWN",
+           "enable": true,
+           "dict": "dict:fk_typent"
+       },
+       "effectif_id": {
+           "type": "select",
+           "enable": true,
+           "default": "EF0",
+           "dict": "dict:fk_effectif"
+       },
+       "capital": {
+           "type": "text",
+           "settype": "int",
+           "length": "20",
+           "label": "Capital",
+           "enable": true,
+           "spinner": "min: 0"
+       },
+       "VATIsUsed": {
+           "type": "checkbox",
+           "settype": "bool",
+           "enable": true,
+           "default": true
+       },
+       "VATIntra": {
+           "type": "text",
+           "length": 25,
+           "javascript": null,
+           "enable": true
+       },
+       "forme_juridique_code": {
+           "type": "select",
+           "label": "JuridicalStatus",
+           "dict": "dict:fk_forme_juridique",
+           "enable": true
+       },
+       "commercial_id": {
+           "type": "select",
+           "label": "SalesRepresentatives",
+           "class": "User",
+           "view": "list",
+           "enable": true
+       },
+       "civilite_id": {
+           "type": "select",
+           "label": "UserTitle",
+           "default": "NO",
+           "dict": "dict:fk_civilite",
+           "enable": true
+       },
+       "price_level": {
+           "type": "select",
+           "enable": true,
+           "default": "base",
+           "values": {
+               "base": {
+                   "enable": true,
+                   "label": "base"
+               },
+               "level1": {
+                   "enable": true,
+                   "label": "level1"
+               },
+               "level2": {
+                   "enable": true,
+                   "label": "level2"
+               },
+               "level3": {
+                   "enable": true,
+                   "label": "level3"
+               },
+               "level4": {
+                   "enable": true,
+                   "label": "level4"
+               }
+           }
+       },
+       "prospectlevel": {
+           "type": "select",
+           "enable": true,
+           "default": "PL_NONE",
+           "status": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "dict": "dict:fk_prospectlevel"
+       },
+       "cond_reglement": {
+           "type": "select",
+           "label": "PaymentConditions",
+           "dict": "dict:fk_payment_term",
+           "enable": true
+       },
+       "mode_reglement": {
+           "type": "select",
+           "label": "PaymentMode",
+           "dict": "dict:fk_paiement",
+           "enable": true
+       },
+       "currency": {
+           "type": "select",
+           "label": "CompanyCurrency",
+           "dict": "dict:fk_currencies",
+           "enable": true
+       },
+       "zonegeo": {
+           "type": "select",
+           "label": "ZoneGeo",
+           "enable": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true,
+               "editable": true
+           },
+           "view": "listZoneGeo",
+           "getkey": true,
+           "params": {
+               "group": true
+           }
+       },
+       "Tag": {
+           "type": "tag",
+           "label": "Categories",
+           "enable": true,
+           "isarray": true
+       },
+       "notes": {
+           "type": "textarea",
+           "enable": true
+       }
+   }
+}

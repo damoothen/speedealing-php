@@ -3588,7 +3588,7 @@ class Facture extends nosqlDocument {
         require_once(DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php');
         $facture = new Facture($this->db);
 
-        print start_box($langs->trans("Bills"), "six", $this->fk_extrafields->ico, false);
+        print start_box($langs->trans("Bills"), "twelve", $this->fk_extrafields->ico);
         print '<table class="display dt_act" id="listfactures" >';
         // Ligne des titres
 

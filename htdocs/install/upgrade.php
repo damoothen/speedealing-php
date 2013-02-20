@@ -47,10 +47,10 @@ function upgrade() {
 	//Update extrafields && Update views
 	$result = $object->getView("list");
 	foreach ($result->rows as $aRow) {
-		if (!empty($modules[$aRow->value->numero]) && $aRow->value->enabled) { // Test if module is present and enabled
-			if ($aRow->id == "module:User")
-				$aRow->value->numero = 0;
+		if ($aRow->id == "module:User")
+			$aRow->value->numero = 0;
 
+		if (!empty($modules[$aRow->value->numero]) && $aRow->value->enabled) { // Test if module is present and enabled
 			$objMod = $modules[$aRow->value->numero];
 
 			foreach ($objMod as $key => $row)
@@ -64,7 +64,7 @@ function upgrade() {
 		}
 	}
 
-	//Upade dict
+	//Update dict
 	$dict = new Dict($db);
 	$result = $dict->getView("list");
 
@@ -75,9 +75,10 @@ function upgrade() {
 		} catch (Exception $e) {
 			// Dict not in db
 		}
-		$fp = fopen($dir . $aRow->key . ".json", "r");
+		$filename = str_replace(':', '.', $aRow->key);
+		$fp = fopen($dir . $filename . ".json", "r");
 		if ($fp) {
-			$json = fread($fp, filesize($dir . $aRow->key . ".json"));
+			$json = fread($fp, filesize($dir . $filename . ".json"));
 			$obj = json_decode($json);
 			unset($obj->_rev);
 		}
@@ -103,8 +104,7 @@ function upgrade() {
 
 	// Put the new version in $conf
 	$conf->global->MAIN_VERSION = DOL_VERSION;
-	$conf->record(true);
-
+	$conf->record();
 	//Flush caches
 	dol_flushcache();
 

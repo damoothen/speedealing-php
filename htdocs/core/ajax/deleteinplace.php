@@ -32,7 +32,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/genericobject.class.php';
 
 $json = GETPOST('json', 'alpha');
 $class = GETPOST('class', 'alpha');
-$id = GETPOST('id', 'alpha');
+$id = GETPOST('id');
 
 /*
  * View
@@ -51,12 +51,31 @@ if (!empty($json) && !empty($id) && !empty($class)) {
 
     if ($json == "delete") {
         try {
-            $object->load($id);
             
-            if (method_exists($object, 'deleteInPlace'))
-                    $object->deleteInPlace();
+            if (preg_match("#^([a-z0-9]+)\#([0-9]+)$#", $id, $matches)) {
+                
+                $idInvoice = $matches[1];
+                $idLine = $matches[2];
+
+                $object->fetch($idInvoice);
+                unset($object->lines[$idLine]);
+                $object->lines = array_merge($object->lines);
+                $object->record();
+                $object->update_price();
+                exit;
             
-            $res = $object->deleteDoc();
+            }
+            
+            else {
+            
+                $object->load($id);
+
+                if (method_exists($object, 'deleteInPlace'))
+                        $object->deleteInPlace();
+
+                $res = $object->deleteDoc();
+
+            }
             exit;
         } catch (Exception $exc) {
             error_log($exc->getMessage());

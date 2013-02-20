@@ -152,7 +152,7 @@ class modCommande extends DolibarrModules {
         $this->menus[$r]->_id = "menu:commandes";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 41;
-        $this->menus[$r]->langs = "commande";
+        $this->menus[$r]->langs = "orders";
         $this->menus[$r]->perms = '$user->rights->commande->lire';
         $this->menus[$r]->enabled = '$conf->commande->enabled';
         $this->menus[$r]->usertype = 2;
@@ -162,7 +162,7 @@ class modCommande extends DolibarrModules {
         $this->menus[$r]->_id = "menu:newcommande";
         $this->menus[$r]->position = 0;
         $this->menus[$r]->url = "/commande/fiche.php?action=create";
-        $this->menus[$r]->langs = "commande";
+        $this->menus[$r]->langs = "orders";
         $this->menus[$r]->perms = '$user->rights->commande->creer';
         $this->menus[$r]->enabled = '$conf->commande->enabled';
         $this->menus[$r]->usertype = 2;
@@ -173,7 +173,7 @@ class modCommande extends DolibarrModules {
         $this->menus[$r]->_id = "menu:orderslist";
         $this->menus[$r]->position = 1;
         $this->menus[$r]->url = "/commande/list.php";
-        $this->menus[$r]->langs = "commande";
+        $this->menus[$r]->langs = "orders";
         $this->menus[$r]->perms = '$user->rights->commande->lire';
         $this->menus[$r]->enabled = '$conf->commande->enabled';
         $this->menus[$r]->usertype = 2;
@@ -184,7 +184,7 @@ class modCommande extends DolibarrModules {
         $this->menus[$r]->_id = "menu:ordersstats";
         $this->menus[$r]->position = 2;
         $this->menus[$r]->url = "/commande/stats/index.php";
-        $this->menus[$r]->langs = "commande";
+        $this->menus[$r]->langs = "orders";
         $this->menus[$r]->perms = '$user->rights->commande->lire';
         $this->menus[$r]->enabled = '$conf->commande->enabled';
         $this->menus[$r]->usertype = 2;

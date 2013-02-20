@@ -2789,7 +2789,7 @@ class Propal extends nosqlDocument {
         require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');
         $propal = new Propal($this->db);
 
-        print start_box($langs->trans("Proposals"), "six", $this->fk_extrafields->ico, false);
+        print start_box($langs->trans("Proposals"), "twelve", $this->fk_extrafields->ico);
         print '<table class="display dt_act" id="listpropals" >';
         // Ligne des titres
 

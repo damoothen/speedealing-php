@@ -54,9 +54,13 @@ $(document).ready(function() {
 		// Called everytime a step (fieldset) becomes the active one
 		var step = $(this).attr('id');
 		if (step == 'database') {
+			// Restore next button
 			$('.wizard-next').show();
 		} else if (step == 'install') {
+			// Restore previous button
 			$('.wizard-prev').show();
+			// Reset progress bar
+			$('#set_conf, #set_database, #set_security').setProgressValue(0, false);
 		}
 	});
 
@@ -130,20 +134,24 @@ $(document).ready(function() {
 	function addConfig() {
 		$.post("install/ajax/install.php", {
     		action: 'create_config',
-    		couchdb_name: $('#couchdb_name').val(),
     		couchdb_host: $('#couchdb_host').val(),
     		couchdb_port: $('#couchdb_port').val(),
     		memcached_host: ($('#memcached_host').prop('disabled') ?  false : $('#memcached_host').val()),
     		memcached_port: ($('#memcached_port').prop('disabled') ? false : $('#memcached_port').val())
 		},
 		function(value) {
-			if (value > 0) {
-				setProgressBar('set_conf', 50);
-				addUsersync();
+			if (value.status == 'ok') {
+				if ($('#couchdb_create_usersync').prop('checked')) {
+					setProgressBar('set_conf', 50);
+					addUsersync();
+				} else {
+					setProgressBar('set_conf', 100);
+					addDatabase();
+				}
 			} else {
 				return false;
 			}
-		});
+		}, 'json');
 	}
 	
 	// Add usersync
@@ -154,28 +162,29 @@ $(document).ready(function() {
     		couchdb_pass_sync: $('#couchdb_pass_sync').val()
 		},
 		function(value) {
-			if (value > 0) {
+			if (value.status == 'ok') {
 				setProgressBar('set_conf', 100);
 				addDatabase();
 			} else {
 				return false
 			}
-		});
+		}, 'json');
 	}
 	
 	// Add database
 	function addDatabase() {
 		$.post("install/ajax/install.php", {
-    		action: 'create_database'
+    		action: 'create_database',
+    		couchdb_name: $('#couchdb_name').val()
 		},
 		function(value) {
-			if (value > 0) {
+			if (value.status == 'ok') {
 				setProgressBar('set_database', 25);
 				populateDatabase();
 			} else {
 				return false;
 			}
-		});
+		}, "json");
 	}
 	
 	// Populate database
@@ -190,12 +199,13 @@ $(document).ready(function() {
 			var files = $.parseJSON(jsonfiles);
 			$.each(files, function(name, path) {
 				$.post("install/ajax/install.php", {
+					couchdb_name: $('#couchdb_name').val(),
 					action: 'populate_database',
 		    		filename: name,
 		    		filepath: path
 				},
 				function(value) {
-					if (value > 0) {
+					if (value.status == 'ok') {
 						progress_value = progress_value + step;
 						progress_value = (progress_value < 100 ? progress_value : 100)
 						setProgressBar('set_database', progress_value);
@@ -203,7 +213,7 @@ $(document).ready(function() {
 						// Break
 						return false;
 					}
-				});
+				}, 'json');
 			});
 			addSuperadmin();
 		}
@@ -214,23 +224,25 @@ $(document).ready(function() {
 		var result;
 		$.post("install/ajax/install.php", {
     		action: 'create_admin',
+    		couchdb_name: $('#couchdb_name').val(),
     		couchdb_user_root: $('#couchdb_user_root').val(),
     		couchdb_pass_root: $('#couchdb_pass_root').val()
 		},
 		function(value) {
-			if (value > 0) {
+			if (value.status == 'ok') {
 				setProgressBar('set_security', 50);
 				addUser();
 			} else {
 				return false;
 			}
-		});
+		}, 'json');
 	}
 	
 	// Create user
 	function addUser() {
 		$.post("install/ajax/install.php", {
     		action: 'create_user',
+			couchdb_name: $('#couchdb_name').val(),
     		couchdb_user_firstname: $('#couchdb_user_firstname').val(),
     		couchdb_user_lastname: $('#couchdb_user_lastname').val(),
     		couchdb_user_pseudo: $('#couchdb_user_pseudo').val(),
@@ -238,13 +250,13 @@ $(document).ready(function() {
     		couchdb_user_pass: $('#couchdb_user_pass').val()
 		},
 		function(value) {
-			if (value > 0) {
+			if (value.status == 'ok') {
 				setProgressBar('set_security', 100);
 				lockInstall();
 			} else {
 				return false;
 			}
-		});
+		}, 'json');
 	}
 	
 	// Add lock file
@@ -253,12 +265,12 @@ $(document).ready(function() {
     		action: 'lock_install'
 		},
 		function(value) {
-			if (value > 0) {
+			if (value.status == 'ok') {
 				$('#start_button').removeAttr('disabled');
 			} else {
 				return false;
 			}
-		});
+		}, 'json');
 	}
 	
 	// Set progress bar
@@ -283,7 +295,7 @@ $(document).ready(function() {
 	// Check pre-requisites
 	function ckeckPrerequisite() {
 		// Add loader
-		$('#php_version, #php_memory, #php_utf8, #php_gd, #php_curl, #php_memcached, #conf_file').html('<span class="loader"></span>');
+		$('#php_version, #php_memory, #php_utf8, #php_gd, #php_curl, #php_memcached, #couchdb_rewrite, #conf_file').html('<span class="loader"></span>');
 		// Check prerequisites
 		$.getJSON('install/ajax/prerequisite.php', { action: 'check_prerequisite', lang: $('#selectlang').val() }, function(data) {
 			if (data) {

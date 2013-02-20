@@ -1,5 +1,6 @@
 <?php
 /* Copyright (C) 2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,10 +57,10 @@
 	<link rel="stylesheet" href="<?php echo DOL_URL_ROOT; ?>/theme/symeos/css/styles/progress-slider.css?v=1">
 
 	<!-- jQuery Form Validation -->
-	<link rel="stylesheet" href="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/libs/formValidator/developr.validationEngine.css?v=1">
+	<link rel="stylesheet" href="<?php echo DOL_URL_ROOT; ?>/includes/lib/formValidator/developr.validationEngine.css?v=1">
 
 	<!-- JavaScript at bottom except for Modernizr -->
-	<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/libs/modernizr.custom.js"></script>
+	<script src="<?php echo DOL_URL_ROOT; ?>/includes/js/modernizr.custom.js"></script>
 
 	<!-- Json files for database -->
 	<script type="text/javascript">

@@ -1,0 +1,10 @@
+{
+   "_id": "_design/User",
+   "_rev": "15-190656aca7ab853b4b09b8725746a010",
+   "language": "javascript",
+   "views": {
+       "login": {
+           "map": "function(doc) {\n  if(doc.class && doc.class == \"User\")\n     emit(doc.email, doc._id);\n}"
+	   }
+   }
+}

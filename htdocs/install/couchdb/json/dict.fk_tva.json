@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_tva",
-   "_rev": "1-b797ab40191a384778a4a1f407e93335",
+   "class": "Dict",
    "values": [
        {
            "enable": true,
@@ -1342,6 +1342,5 @@
            "accountancy_code": null,
            "notes": "VAT 12%"
        }
-   ],
-   "class": "dict"
+   ]
 }

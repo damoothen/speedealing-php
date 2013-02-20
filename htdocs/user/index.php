@@ -23,7 +23,7 @@
  * 		\ingroup	core
  *      \brief      Page of users
  */
-require("../main.inc.php");
+require '../main.inc.php';
 
 if (!$user->rights->user->user->lire && !$user->admin)
     accessforbidden();
@@ -39,50 +39,6 @@ if ($user->societe_id > 0)
 $object = new User($db);
 $companystatic = new Societe($db);
 
-if ($_GET['json'] == "list") {
-    $output = array(
-        "sEcho" => intval($_GET['sEcho']),
-        "iTotalRecords" => 0,
-        "iTotalDisplayRecords" => 0,
-        "aaData" => array()
-    );
-
-    try {
-        $result = $object->getView('list');
-        $admins = $object->getDatabaseAdminUsers();
-        $enabled = $object->getDatabaseReaderUsers();
-    } catch (Exception $exc) {
-        print $exc->getMessage();
-    }
-
-    //print_r ($enabled);
-
-    $iTotal = count($result);
-    $output["iTotalRecords"] = $iTotal;
-    $output["iTotalDisplayRecords"] = $iTotal;
-    $i = 0;
-    foreach ($result->rows as $aRow) {
-        $name = $aRow->value->email;
-        if (in_array($name, $admins)) // Is Localadministrator
-            $aRow->value->admin = true;
-        else
-            $aRow->value->admin = false;
-
-        if (in_array($name, $enabled)) // Is Status = ENABLE
-            $aRow->value->Status = "ENABLE";
-        else {
-            if ($aRow->value->admin)
-                $aRow->value->Status = "ENABLE";
-            else
-                $aRow->value->Status = "DISABLE";
-        }
-        $output["aaData"][] = $aRow->value;
-    }
-
-    header('Content-type: application/json');
-    echo json_encode($output);
-    exit;
-}
 
 /*
  * View
@@ -217,7 +173,7 @@ print'</tbody>';
 print "</table>";
 
 $obj->sDom = 'l<fr>t<\"clear\"rtip>';
-$obj->sAjaxSource = $_SERVER['PHP_SELF'] . '?json=list';
+$obj->sAjaxSource = 'user/ajax/list.php?json=list';
 
 $object->datatablesCreate($obj, "user", true);
 

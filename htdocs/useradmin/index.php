@@ -1,7 +1,7 @@
 <?php
 
 /* Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT . '/useradmin/class/useradmin.class.php';
 
 if (!$user->superadmin)
     accessforbidden();
@@ -34,40 +34,6 @@ if ($user->societe_id > 0)
 $object = new UserAdmin($db);
 $companystatic = new Societe($db);
 
-if ($_GET['json'] == "list") {
-    $output = array(
-        "sEcho" => intval($_GET['sEcho']),
-        "iTotalRecords" => 0,
-        "iTotalDisplayRecords" => 0,
-        "aaData" => array()
-    );
-
-    try {
-        $result = $object->getAllUsers(true);
-        $admins = $object->getUserAdmins();
-    } catch (Exception $exc) {
-        print $exc->getMessage();
-    }
-
-    //print_r ($result);
-
-    $iTotal = count($result);
-    $output["iTotalRecords"] = $iTotal;
-    $output["iTotalDisplayRecords"] = $iTotal;
-    $i = 0;
-    foreach ($result as $aRow) {
-        $name = substr($aRow->doc->_id, 17);
-        if (isset($admins->$name))
-            $aRow->doc->admin = true;
-        else
-            $aRow->doc->admin = false;
-        $output["aaData"][] = $aRow->doc;
-    }
-
-    header('Content-type: application/json');
-    echo json_encode($output);
-    exit;
-}
 
 /*
  * View
@@ -97,11 +63,12 @@ $i = 0;
 $obj = new stdClass();
 
 print '<table class="display dt_act" id="user" >';
-// Ligne des titres 
+// Ligne des titres
 print'<thead>';
 print'<tr>';
 print'<th>';
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "_id";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = false;
@@ -110,6 +77,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("Login");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "name";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
@@ -139,6 +107,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('LastName');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Lastname";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "";
@@ -146,6 +115,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('FirstName');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Firstname";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "";
@@ -153,6 +123,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Database');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "entityList";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "center";
@@ -161,6 +132,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('LastConnexion');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "NewConnection";
 $obj->aoColumns[$i]->sType = "date";
 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -171,6 +143,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Status');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "dol_select center";
 $obj->aoColumns[$i]->sWidth = "100px";
@@ -187,7 +160,7 @@ print'</tbody>';
 print "</table>";
 
 $obj->sDom = 'l<fr>t<\"clear\"rtip>';
-$obj->sAjaxSource = $_SERVER['PHP_SELF'] . '?json=list';
+$obj->sAjaxSource = 'useradmin/ajax/list.php?json=list';
 
 $object->datatablesCreate($obj, "user", true);
 

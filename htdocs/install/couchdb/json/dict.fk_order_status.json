@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_order_status",
-   "_rev": "3-a9282a53a3997aa130dd4bdee438ba1b",
+   "class": "Dict",
    "values": {
        "DRAFT": {
            "enable": true,
@@ -8,7 +8,6 @@
            "cssClass": "grey-gradient"
        },
        "AUTO": {
-           "enable": false,
            "label": "StatusOrderAuto",
            "cssClass": "orange-gradient"
        },
@@ -32,6 +31,5 @@
            "label": "StatusOrderCanceled",
            "cssClass": "black-gradient"
        }
-   },
-   "class": "dict"
+   }
 }

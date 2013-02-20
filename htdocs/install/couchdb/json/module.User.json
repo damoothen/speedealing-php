@@ -1,0 +1,9 @@
+{
+   "_id": "module:User",
+   "enabled": true,
+   "always_enabled": 1,
+   "rights_admin_allowed": 1,
+   "class": "DolibarrModules",
+   "family": "base",
+   "name": "User"
+}
