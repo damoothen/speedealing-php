@@ -21,7 +21,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 
 /**
- * 	Class to manage Dolibarr users
+ * 	Class to manage dictionnaries
  */
 class Dict extends nosqlDocument {
 
