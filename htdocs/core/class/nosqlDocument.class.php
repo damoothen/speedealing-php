@@ -312,7 +312,7 @@ abstract class nosqlDocument extends CommonObject {
 	 *  @return value URL of storeAttachment
 	 */
 	public function getFile($filename) {
-		$url_server = $this->couchdb->getServerUri() . "/" . $this->couchdb->getDatabaseName();
+		$url_server = "db/" . $this->couchdb->getDatabaseName();
 
 		return $url_server . "/" . $this->id . "/" . $filename;
 	}
