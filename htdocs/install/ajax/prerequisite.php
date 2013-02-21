@@ -18,8 +18,8 @@
  */
 
 /**
- *       \file       htdocs/install/ajax/prerequisite.php
- *       \brief      File to get all prerequisites for install process
+ *	\file		/htdocs/install/ajax/prerequisite.php
+ *	\brief		File to get all prerequisites for install process
  */
 require '../inc.php';
 
@@ -51,7 +51,7 @@ if ($action == 'check_prerequisite') {
 		$out['php_version'] = '<span class="icon-tick icon-green">' . $langs->trans("PHPVersion") . " " . versiontostring(versionphparray()) . '</span>';
 	}
 	if (empty($force_install_nophpinfo))
-		$out['php_version'] .= ' (<a href="phpinfo.php" target="_blank">' . $langs->trans("MoreInformation") . '</a>)';
+		$out['php_version'] .= ' (<a href="install/phpinfo.php" target="_blank">' . $langs->trans("MoreInformation") . '</a>)';
 
 	// Check memory
 	$memrequiredorig = '64M';

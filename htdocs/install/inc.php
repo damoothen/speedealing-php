@@ -62,7 +62,7 @@ if (isset($_SERVER["DOCUMENT_URI"]) && $_SERVER["DOCUMENT_URI"]) {
 $conffiletoshowshort = "conf.php";
 // Define localization of conf file
 $conffile = DOL_DOCUMENT_ROOT . '/conf/conf.php';
-$conffiletoshow = "htdocs/conf/conf.php";
+$conffiletoshow = "conf/conf.php";
 
 if (! defined('DONOTLOADCONF') && file_exists($conffile))
 	include_once $conffile;	// Load conf file
