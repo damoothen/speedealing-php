@@ -71,12 +71,12 @@ $install = array(
 		'ConfFileIsWritable' => 'Le fichier <b>%s</b> est modifiable.',
 		'YouMustCreateWithPermission' => 'Vous devez créer un fichier %s et donner les droits d\'écriture dans celui-ci au serveur web durant le processus d\'installation.',
 		// User sync
-		'UserSyncCreated' => 'The replication user was created.',
+		'UserSyncCreated' => 'La réplication de l\'utilisateur a été créé.',
 		// Database
 		'DatabaseCreated' => 'La base de données a été créé.',
 		'WarningDatabaseAlreadyExists' => 'La base de données \'%s\' existe déjà.',
 		// SuperAdmin
-		'AdminCreated' => 'Le superadmin  a été créé.',
+		'AdminCreated' => 'Le superadmin a été créé.',
 		// User
 		'UserCreated' => 'L\'utilisateur a été créé.',
 		// Lock file
