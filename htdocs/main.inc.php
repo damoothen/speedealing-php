@@ -197,6 +197,8 @@ if (!defined('NOREQUIREAJAX'))
 
 
 
+
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -594,6 +596,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 
 
+
+
 		
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
@@ -772,31 +776,30 @@ function left_menu() {
 						matchCase: 1,
 						width: 212
 					}).result(function(event, query_val) {
-						$.fancybox({
-							href: 'search/search_result.php',
+						$.modal({
+							title: 'Result content',
+							minWidth: 200,
+							minHeight: 200,
+							resizable: false,
+							url: 'search/search_result.php',
 							ajax: {
 								type: "POST",
 								data: "search_item=" + query_val
-							},
-							'overlayOpacity': '0.2',
-							'transitionIn': 'elastic',
-							'transitionOut': 'fade',
-							onComplete: function() {
-								$('#query').blur();
 							}
 						});
 					});
 					$('#search_box').submit(function() {
 						var query_val = $("#query").val();
-						$.fancybox({
-							href: 'search/search_result.php',
+						$.modal({
+							title: 'Result content',
+							minWidth: 200,
+							minHeight: 200,
+							resizable: false,
+							url: 'search/search_result.php',
 							ajax: {
 								type: "POST",
 								data: "search_item=" + query_val
-							},
-							'overlayOpacity': '0.2',
-							'transitionIn': 'elastic',
-							'transitionOut': 'fade'
+							}
 						});
 						return false;
 					});
@@ -804,10 +807,10 @@ function left_menu() {
 			</script>
 
 			<div id="profile">
-				<?php if (!empty($user->Photo)) : ?><img alt="User name" src="<?php echo $user->getFile($user->Photo);?>" width="64" class="user-icon">
+				<?php if (!empty($user->Photo)) : ?><img alt="User name" src="<?php echo $user->getFile($user->Photo); ?>" width="64" class="user-icon">
 				<?php else : ?><img src="theme/symeos/img/user.png" width="64" class="user-icon" alt="User name">
-				<?php endif; ?>
-				<?php echo $langs->trans('Hello'); ?><span class="name"><?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b></span>
+	<?php endif; ?>
+	<?php echo $langs->trans('Hello'); ?><span class="name"><?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b></span>
 			</div>
 
 			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
