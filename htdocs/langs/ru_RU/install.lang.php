@@ -100,6 +100,13 @@ $install = array(
 		'ServerAddressMemcachedDesc' => 'Nom ou adresse ip du serveur memcached, généralement \'localhost\' quand le serveur est installé sur la même machine que le serveur web',
 		'ServerPortMemcachedDesc' => 'Port du serveur memcached. Défaut : 11211',
 		'FailedToCreateAdminLogin' => 'Echec de la création du compte administrateur Speedealing.',
+		'Install' => 'Install',
+		'InstallTitle' => 'Speedealing install',
+		'InstallDescription' => 'Install desc',
+		'SystemSetup' => 'System setup',
+		'Database' => 'Database',
+		'Security' => 'Security',
+		'Start' => 'Start',
 		// Upgrade
 		'UpgradeOk' => 'Обновление прошло успешно',
 		'NewInstalledVersion' => 'Ваша новая версия %s',
