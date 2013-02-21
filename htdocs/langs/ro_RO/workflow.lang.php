@@ -18,13 +18,13 @@
 $workflow = array(
 		'CHARSET' => 'UTF-8',
 		'WorkflowSetup' => 'Configurare modul Flux de lucru',
-		'WorkflowDesc' => 'Acest modul este placut in aceleasi nuante pentru a modifica comportamentul de acţiuni automate în aplicare. În mod implicit, fluxul de lucru este deschis (a face ceva în ordinea dorită). Puteţi activat acţiuni automate pe care le sunt interesante inch',
-		'ThereIsNoWorkflowToModify' => 'Nu există nici un flux de lucru se poate modifica pentru modulul care le-aţi activat.',
-		'descWORKFLOW_PROPAL_AUTOCREATE_ORDER' => 'Crearea unui ordin de client în mod automat, după o propunere comercială este semnat',
-		'descWORKFLOW_PROPAL_AUTOCREATE_INVOICE' => 'Creaţi o factură client în mod automat, după o propunere comercială este semnat',
-		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Creaţi o factură client în mod automat după ce un contract este validat',
-		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Creaţi o factură client în mod automat, după un ordin de client este închis',
-		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Classify linked source proposal to billed when customer order is set to paid',
-		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Classify linked source customer order to billed when customer invoice is set to paid'
+		'WorkflowDesc' => 'Acest modul este proiectat pentru  a modifica comportamentul de schimburi  automate în aplicaţie. În mod implicit, fluxul de lucru este deschis (pentru a face ceva  lucruri în ordinea dorită). Puteţi activa acţiuni automate care sunt interesante .',
+		'ThereIsNoWorkflowToModify' => 'Nu există nici un flux de lucru ce se poate modifica pentru modulelel care le-aţi activat.',
+		'descWORKFLOW_PROPAL_AUTOCREATE_ORDER' => 'Creare  comandă  client  automat, după  ce o propunere comercială este semnată',
+		'descWORKFLOW_PROPAL_AUTOCREATE_INVOICE' => 'Creare  factură client  automat, după ce o propunere comercială este semnată',
+		'descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE' => 'Creare  factură client automat după ce un contract este validat',
+		'descWORKFLOW_ORDER_AUTOCREATE_INVOICE' => 'Creare  factură client automat, după ce o comandă client este închisă',
+		'descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL' => 'Clasează facturată propunerea comercială sursă când  comanda derivată este clasată platită',
+		'descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER' => 'Clasează facturată comanda client  sursă când  factura client  derivată este clasată platită'
 );
 ?>

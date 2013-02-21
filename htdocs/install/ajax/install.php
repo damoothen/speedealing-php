@@ -85,7 +85,7 @@ if ($action == 'create_config') {
 			error_log($e->getMessage());
 		}
 	} else {
-		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('DatabaseAlreadyExists'))); // database already exists
+		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('WarningDatabaseAlreadyExists'))); // database already exists
 	}
 
 // Populate database
