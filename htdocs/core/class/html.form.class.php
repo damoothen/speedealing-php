@@ -519,12 +519,6 @@ class Form {
             return 0;
         }
 
-        if ($conf->use_javascript_ajax && $conf->global->COMPANY_USE_SEARCH_TO_SELECT && !$forcecombo) {
-            //$minLength = (is_numeric($conf->global->COMPANY_USE_SEARCH_TO_SELECT)?$conf->global->COMPANY_USE_SEARCH_TO_SELECT:2);
-
-            $out.= ajax_combobox($htmlname, $event);
-        }
-
         $out.= '<select id="' . $htmlname . '" class="flat" name="' . $htmlname . '">';
         if ($showempty)
             $out.= '<option value="0"></option>';
