@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2008-2012	Laurent Destailleur	<eldy@users.sourceforge.net>
- * Copyright (C) 2008-2012	Regis Houssin		<regis.houssin@capnetworks.com>
+ * Copyright (C) 2008-2013	Regis Houssin		<regis.houssin@capnetworks.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -309,15 +309,14 @@ class FormCompany
 	{
 		global $conf;
 
-		include_once (DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php');
-
-		$out='';
+		include_once DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php';
 
 		$size='';
-		if (!empty($fieldsize)) $size='size="'.$fieldsize.'"';
+		if (!empty($fieldsize))
+			$size='size="'.$fieldsize.'"';
 
-		$out.= '<input id="'.$htmlname.'" type="text" name="'.$htmlname.'" '.$size.' value="'.$selected.'" class="input-text" >'."\n";
-                $out.= ajax_multiautocompleter($htmlname,$fields,DOL_URL_ROOT.'/core/ajax/ziptown.php')."\n";
+		$out = '<input id="'.$htmlname.'" type="text" name="'.$htmlname.'" '.$size.' value="'.$selected.'" class="input-text" >'."\n";
+		$out.= ajax_multiautocompleter($htmlname, $fields, 'core/ajax/ziptown.php')."\n";
 
 		return $out;
 	}

@@ -184,10 +184,27 @@ $install = array(
 		'NothingToDelete' => 'Aucune liaison invalide trouvée',
 		'SourceType' => 'Source',
 		'TargetType' => 'Cible',
-                // Upgrade
-                'UpgradeOk' => 'Mise à jour effectuée !',
-                'NewInstalledVersion' => 'La nouvelle version Speedealing est %s',
-                'NeedUpgrade' => 'Nouvelle version Speedealing !',
-                'WarningUpgrade' => 'La version installée est %s, vous devez mettre à jour vers la version %s. <br>Merci de contacter votre administrateur.'
+    'Welcome' => 'Bienvenue',
+    'WelcomeTitle' => 'Bienvenue dans Speedealing',
+    'WelcomeDesc' => 'Installation de Speedealing',
+    'LanguageDesc' => 'Language used on United States',
+    'InstallTypeTitle' => 'Type d\'installation',
+    'InstallTypeDesc' => 'Choisissez votre type d\'installation',
+    'InstallType' => 'Type d\'installation',
+    'InstallTypeServer' => 'Install type server',
+    'InstallTypeServerDesc' => '',
+    'InstallTypeClient' => 'Install type client',
+    'InstallTypeClientDesc' => '',
+    'Prerequisite' => 'Vérification de prérequis',
+    'PrerequisiteTitle' => 'Vérification de prérequis',
+    'PrerequisiteDesc' => 'Test prerequisite',
+    'ConfigFileStatus' => 'Config file status',
+    
+    
+		// Upgrade
+		'UpgradeOk' => 'Mise à jour effectuée !',
+		'NewInstalledVersion' => 'La nouvelle version Speedealing est %s',
+		'NeedUpgrade' => 'Nouvelle version Speedealing !',
+		'WarningUpgrade' => 'La version installée est %s, vous devez mettre à jour vers la version %s. <br>Merci de contacter votre administrateur.'
 );
 ?>
