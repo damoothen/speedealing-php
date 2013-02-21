@@ -62,7 +62,7 @@
 		<input type="radio" name="install_type" id="install_type_client" value="client" class="radio" disabled> <label for="install_type_client"><?php echo $langs->trans("InstallTypeClient"); ?></label>
 		<span class="info-spot on-top">
 			<span class="icon-info-round"></span>
-			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeClientDesc"); ?></span>
+			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeClientDescription"); ?></span>
 		</span>
 	</div>
 
@@ -304,7 +304,7 @@
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("InstallTitle"); ?></h4>
 		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installation.png" alt="Installation"></div>
-		<p><?php echo $langs->trans("InstallDesc"); ?></p>
+		<p><?php echo $langs->trans("InstallDescription"); ?></p>
 	</div>
 
 	<div class="field-block">
