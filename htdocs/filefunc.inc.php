@@ -61,7 +61,6 @@ if (defined('DOL_INC_FOR_VERSION_ERROR'))
 $conffiletoshowshort = "conf.php";
 // Define localization of conf file
 $conffile = "conf/conf.php";
-$conffiletoshow = "htdocs/conf/conf.php";
 // Include configuration
 $result = @include_once $conffile;
 if (!$result && !empty($_SERVER["GATEWAY_INTERFACE"])) {    // If install not done and we are in a web session

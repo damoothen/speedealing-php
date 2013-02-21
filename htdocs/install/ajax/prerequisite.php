@@ -18,8 +18,8 @@
  */
 
 /**
- *       \file       htdocs/install/ajax/prerequisite.php
- *       \brief      File to get all prerequisites for install process
+ *	\file		/htdocs/install/ajax/prerequisite.php
+ *	\brief		File to get all prerequisites for install process
  */
 require '../inc.php';
 
@@ -51,7 +51,7 @@ if ($action == 'check_prerequisite') {
 		$out['php_version'] = '<span class="icon-tick icon-green">' . $langs->trans("PHPVersion") . " " . versiontostring(versionphparray()) . '</span>';
 	}
 	if (empty($force_install_nophpinfo))
-		$out['php_version'] .= ' (<a href="phpinfo.php" target="_blank">' . $langs->trans("MoreInformation") . '</a>)';
+		$out['php_version'] .= ' (<a href="install/phpinfo.php" target="_blank">' . $langs->trans("MoreInformation") . '</a>)';
 
 	// Check memory
 	$memrequiredorig = '64M';
@@ -67,7 +67,7 @@ if ($action == 'check_prerequisite') {
 				$memmax = $reg[1] * 1024;
 		}
 		if ($memmax >= $memrequired)
-			$out['php_memory'] = '<span class="icon-tick icon-green">' . $langs->trans("PHPMemoryOK", $memmaxorig, $memrequiredorig) . '</span>';
+			$out['php_memory'] = '<span class="icon-tick icon-green">' . $langs->trans("PHPMemoryOK", $memmaxorig) . '</span>';
 		else {
 			$out['php_memory'] = '<span class="icon-warning icon-red">' . $langs->trans("PHPMemoryTooLow", $memmaxorig, $memrequiredorig) . '</span>';
 			$continue = false;
@@ -93,7 +93,7 @@ if ($action == 'check_prerequisite') {
 	// Check if memcache or memcached supported
 	if (!class_exists('Memcache') && !class_exists('Memcached')) {
 		$out['php_memcached'] = $langs->trans("ErrorPHPDoesNotSupportMemcached");
-		$out['php_memcached'].= ' <span class="info-spot on-top"><span class="icon-info-round"></span><span class="info-bubble blue-bg">' . $langs->trans("MemcachedDesc") . '</span></span>';
+		$out['php_memcached'].= ' <span class="info-spot on-top"><span class="icon-info-round"></span><span class="info-bubble blue-bg">' . $langs->trans("MemcachedDescription") . '</span></span>';
 	} else {
 		$out['php_memcached'] = '<span class="icon-tick icon-green">' . $langs->trans("PHPSupportMemcached") . '</span>';
 		$memcached = true;
@@ -130,8 +130,8 @@ if ($action == 'check_prerequisite') {
 	}
 
 	if (!$server_found) {
-		$out['couchdb_rewrite'] = $langs->trans("ErrorCouchDBNotProxyPass");
-		$out['couchdb_rewrite'].= ' <span class="info-spot on-top"><span class="icon-info-round"></span><span class="info-bubble blue-bg">' . $langs->trans("CouchDBProxyPassDesc") . '</span></span>';
+		$out['couchdb_rewrite'] = $langs->trans("ErrorCouchDBNotUseProxyPass");
+		$out['couchdb_rewrite'].= ' <span class="info-spot on-top"><span class="icon-info-round"></span><span class="info-bubble blue-bg">' . $langs->trans("CouchDBProxyPassDescription") . '</span></span>';
 		$continue = false;
 	} else {
 		if ($result->version >= '1.2.1') {

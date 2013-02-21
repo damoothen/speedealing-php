@@ -32,8 +32,6 @@ require '../../main.inc.php';
 $callback = GETPOST('callback', 'alpha');
 $filename = GETPOST('filename', 'alpha');
 
-error_log($callback);
-
 top_httphead('json'); // true for json header format
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 

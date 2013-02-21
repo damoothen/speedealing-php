@@ -24,7 +24,7 @@
 	<script src="theme/symeos/js/developr.navigable.js"></script>
 	<script src="theme/symeos/js/developr.scroll.js"></script>
 
-	<script src="theme/symeos/js/s_scripts.js"></script>
+	<!--<script src="theme/symeos/js/s_scripts.js"></script>-->
 
 	<script src="theme/symeos/js/developr.input.js"></script>
 	<script src="theme/symeos/js/developr.message.js"></script>
@@ -53,7 +53,7 @@
 			// Box show/hide/remove
 			prth_box_actions.init();
 			//* jquery tools tabs
-			prth_tabs.init();
+			//prth_tabs.init();
             //* infinite tabs (jquery UI tabs)
             prth_infinite_tabs.init();
 		});
