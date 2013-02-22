@@ -1,11 +1,11 @@
 [submodule "htdocs/core/db/couchdb"]
 	path = htdocs/core/db/couchdb
-	url = git@github.com:symeos/PHP-on-Couch.git
+	url = git://github.com/symeos/PHP-on-Couch.git
 [submodule "htdocs/custom"]
         path = htdocs/custom
 [submodule "htdocs/theme/symeos"]
 	path = htdocs/theme/symeos
-	url = git@github.com:symeos/speedealing-theme.git
+	url = git://github.com/symeos/speedealing-theme.git
 [submodule "htdocs/includes/jquery/plugins/globalize"]
 	path = htdocs/includes/jquery/plugins/globalize
 	url = git://github.com/jquery/globalize.git
