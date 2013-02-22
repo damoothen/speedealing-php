@@ -119,8 +119,11 @@ class User extends nosqlDocument {
 		$login = trim($login);
 
 		if (empty($login)) {
-
-			$login = $this->couchAdmin->getLoginSession();
+			try {
+				$login = $this->couchAdmin->getLoginSession();
+			} catch (Exception $e) {
+				$login = null;
+			}
 			if (empty($login))
 				return 0;
 		}
@@ -616,7 +619,7 @@ class User extends nosqlDocument {
 
 		// Clean parameters
 		$this->name = trim($this->name);
-		$this->Firstname  = trim($this->Firstname);
+		$this->Firstname = trim($this->Firstname);
 		$this->Lastname = trim($this->Lastname);
 
 		dol_syslog(get_class($this) . "::create login=" . $this->name . ", user=" . (is_object($user) ? $user->id : ''), LOG_DEBUG);

@@ -17,14 +17,14 @@
  */
 
 if (!defined('NOTOKENRENEWAL'))
-    define('NOTOKENRENEWAL', '1'); // Disables token renewal
+	define('NOTOKENRENEWAL', '1'); // Disables token renewal
 if (!defined('NOREQUIREMENU'))
-    define('NOREQUIREMENU', '1');
+	define('NOREQUIREMENU', '1');
 //if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
 if (!defined('NOREQUIREAJAX'))
-    define('NOREQUIREAJAX', '1');
+	define('NOREQUIREAJAX', '1');
 if (!defined('NOREQUIRESOC'))
-    define('NOREQUIRESOC', '1');
+	define('NOREQUIRESOC', '1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 require '../../main.inc.php';
@@ -54,90 +54,87 @@ top_httphead();
 error_log(print_r($_POST, true));
 
 if (!empty($key) && !empty($id) && !empty($class)) {
-    dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+	dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
 
-    $object = new $class($db);
+	$object = new $class($db);
 
-    // Load langs files
-    if (count($object->fk_extrafields->langs))
-        foreach ($object->fk_extrafields->langs as $row)
-            $langs->load($row);
+	// Load langs files
+	if (count($object->fk_extrafields->langs))
+		foreach ($object->fk_extrafields->langs as $row)
+			$langs->load($row);
 
-    if ($type == "select" && empty($value))
-        $value = ""; // remove 0
+	if ($type == "select" && empty($value))
+		$value = ""; // remove 0
 
-    if (isset($object->fk_extrafields->fields->$key->class) && $type == "select") {
-        $class_tmp = $object->fk_extrafields->fields->$key->class;
-        $old_value = $value;
-        $value = new stdClass();
-        dol_include_once("/" . strtolower($class_tmp) . "/class/" . strtolower($class_tmp) . ".class.php");
-        $obj_tmp = new $class_tmp($db);
-        try {
-            $obj_tmp->load($old_value);
-            $value->id = $obj_tmp->id;
-            $value->name = $obj_tmp->name;
-        } catch (Exception $e) {
-            $value = new stdClass();
-        }
-    }
+	if (isset($object->fk_extrafields->fields->$key->class) && $type == "select") {
+		$class_tmp = $object->fk_extrafields->fields->$key->class;
+		$old_value = $value;
+		$value = new stdClass();
+		dol_include_once("/" . strtolower($class_tmp) . "/class/" . strtolower($class_tmp) . ".class.php");
+		$obj_tmp = new $class_tmp($db);
+		try {
+			$obj_tmp->load($old_value);
+			$value->id = $obj_tmp->id;
+			$value->name = $obj_tmp->name;
+		} catch (Exception $e) {
+			$value = new stdClass();
+		}
+	}
 
-    if ($type == "date" || $type == "datepicker") {
-        $res = setlocale(LC_TIME, 'fr_FR.UTF8', 'fra'); // FIXME this is too restrictive !
-        $value = str_replace("/", '-', $value); // 01/12/2012 -> 01-12-2012
-        $value = strtotime($value);
-    }
+	if ($type == "date" || $type == "datepicker") {
+		$res = setlocale(LC_TIME, 'fr_FR.UTF8', 'fra'); // FIXME this is too restrictive !
+		$value = str_replace("/", '-', $value); // 01/12/2012 -> 01-12-2012
+		$value = strtotime($value);
+	}
 
-    if($type == "wysiwyg") { // HTML Code
-        $value = str_replace ("\n","",$value);
-        $value = str_replace ("\t","",$value);
-    }
+	if ($type == "wysiwyg") { // HTML Code
+		$value = str_replace("\n", "", $value);
+		$value = str_replace("\t", "", $value);
+	}
 
-    try {
-        
-        if (preg_match("#^([a-z0-9]+)\#([0-9]+)$#", $id, $matches)) {
-        
-            $idInvoice = $matches[1];
-            $idLine = $matches[2];
-                        
-            $object->fetch($idInvoice);
-            $line = $object->lines[$idLine];
-            $tmp = array();
-            foreach ($object->fk_extrafields->createLine as $createLineField) {
-                $tmp[$createLineField] = $line->$createLineField;
-            }
-            $tmp[$key] = $value;
-            extract($tmp);
-            
-            $object->updateline($idLine+1, $description, $pu_ht, $qty, $remise, $tva_tx);        
-            
-            echo $value;
-            
-        }
-        
-        else {
+	try {
+		if (preg_match("#^([a-z0-9]+)\#([0-9]+)$#", $id, $matches)) {
+			$idInvoice = $matches[1];
+			$idLine = $matches[2];
 
-            if (is_object($value) || is_array($value)) {
-                $object->load($id);
-                $object->$key = $value;
-                $object->update_price();
-            } else {
-                $object->id = $id;
-                $res = $object->set($key, $value);
-            }
+			$object->fetch($idInvoice);
+			$line = $object->lines[$idLine];
+			$tmp = array();
+			foreach ($object->fk_extrafields->createLine as $createLineField) {
+				$tmp[$createLineField] = $line->$createLineField;
+			}
+			$tmp[$key] = $value;
+			extract($tmp);
 
-            if ($type == 'numeric')
-                $value = price($value);
-            elseif ($type == 'textarea')
-                $value = dol_nl2br($value);
+			$object->updateline($idLine + 1, $description, $pu_ht, $qty, $remise, $tva_tx);
+			$update_price = true;
 
-            error_log($object->print_fk_extrafields($key));
-            echo $object->print_fk_extrafields($key);
-            
-        }
-    } catch (Exception $exc) {
-        error_log($exc->getMessage());
-    }
+			echo $value;
+		} else {
 
-    exit;
+			if (is_object($value) || is_array($value)) {
+				$object->load($id);
+				$object->$key = $value;
+				if($update_price)
+					$object->update_price();
+				$object->record();
+			} else {
+				$object->id = $id;
+				$res = $object->set($key, $value);
+			}
+
+			if ($type == 'numeric')
+				$value = price($value);
+			elseif ($type == 'textarea')
+				$value = dol_nl2br($value);
+
+			//error_log($object->print_fk_extrafields($key));
+			echo $object->print_fk_extrafields($key);
+		}
+	} catch (Exception $exc) {
+		error_log($exc->getMessage());
+	}
+
+	exit;
 }
 ?>
