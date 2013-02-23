@@ -276,7 +276,7 @@
 
 	<div class="field-block button-height memcached">
 		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
-		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width validate[required]">
+		<input type="text" name="memcached_host" id="memcached_host" value="127.0.0.1" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height memcached">
