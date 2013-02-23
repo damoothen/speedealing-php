@@ -7,7 +7,7 @@
  * Copyright (C) 2005-2013 Regis Houssin        <regis.houssin@capnetworks.com>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2008      Matteli
- * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2013 Herve Prot           <herve.prot@symeos.com>
  * Copyright (C) 2011      Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -776,6 +776,7 @@ function left_menu() {
 						minChars: 2,
 						max: 6,
 						matchCase: 1,
+						indicator : '<img src="theme/<?php echo $conf->theme; ?>/img/working.gif">',
 						width: 212
 					}).result(function(event, query_val) {
 						$.modal({
