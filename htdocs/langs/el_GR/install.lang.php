@@ -31,7 +31,7 @@ $install = array(
 		'InstallTypeClient' => 'Install type client',
 		'InstallTypeClientDescription' => '',
 		// Prerequisite step
-		'Prerequisites' => 'Prerequisites',
+		'Prerequisites' => 'Προαπαιτούμενα',
 		'PrerequisitesTitle' => 'Checking prerequisites',
 		'PrerequisitesDescription' => 'The application requires a few prerequisites on your system to function properly.',
 		'MoreInformation' => 'More information',
@@ -108,7 +108,7 @@ $install = array(
 		'Security' => 'Security',
 		'Start' => 'Start',
 		// Upgrade
-		'UpgradeOk' => 'Upgrade is ok !',
+		'UpgradeOk' => 'Η αναβάθμιση είναι εντάξει!',
 		'NewInstalledVersion' => 'Your new version is %s',
 		'NeedUpgrade' => 'New Speedealing version !',
 		'WarningUpgrade' => 'Installed version is %s, you must upgrade to %s. <br>Please contact your administrator.'
