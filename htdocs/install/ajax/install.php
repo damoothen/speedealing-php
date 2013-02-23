@@ -295,8 +295,7 @@ if ($action == 'create_config') {
 
 	// Install is finished, we create the lock file
 } else if ($action == 'lock_install') {
-	//$ret = write_lock_file();
-	$ret = 1; // for debug
+	$ret = write_lock_file();
 	if ($ret > 0)
 		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('LockFileCreated')));
 	else
