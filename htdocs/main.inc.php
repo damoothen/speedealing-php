@@ -939,6 +939,7 @@ if (!function_exists("llxFooter")) {
 
 		<!-- End main content -->
 		<?php
+
 		left_menu(); // print the left menu
 		main_menu(); // print the right menu
 
