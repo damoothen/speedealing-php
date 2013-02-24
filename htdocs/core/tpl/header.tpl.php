@@ -161,12 +161,12 @@
 	<script type="text/javascript" src="core/js/editinplace.js"></script>
 	<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>
 	<!-- jQuery File Upload -->
-	<script type="text/javascript" src="includes/jquery/plugins/template/tmpl.min.js"></script>
+	<!--  <script type="text/javascript" src="includes/jquery/plugins/template/tmpl.min.js"></script> -->
 	<!-- <script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.iframe-transport.js"></script> -->
-	<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload.js"></script>
-	<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>
-	<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>
-	<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>
+	<!-- <script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload.js"></script> -->
+	<!-- <script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script> -->
+	<!-- <script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script> -->
+	<!-- <script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script> -->
 	<!-- jQuery Timepicker -->
 	<script type="text/javascript" src="includes/jquery/plugins/timepicker/jquery-ui-timepicker-addon.js"></script>
 	<script type="text/javascript" src="includes/jquery/plugins/timepicker/localization/jquery-ui-timepicker-<?php echo substr($langs->getDefaultLang(), 0, 2); ?>.js"></script>

@@ -19,22 +19,22 @@
 ?>
 
 	<!-- Footer -->
-	<script src="theme/symeos/js/setup.js"></script>
+	<script src="theme/symeos/js/setup.min.js"></script>
 
-	<script src="theme/symeos/js/developr.navigable.js"></script>
-	<script src="theme/symeos/js/developr.scroll.js"></script>
+	<script src="theme/symeos/js/developr.navigable.min.js"></script>
+	<script src="theme/symeos/js/developr.scroll.min.js"></script>
 
 	<!--<script src="theme/symeos/js/s_scripts.js"></script>-->
 
-	<script src="theme/symeos/js/developr.input.js"></script>
-	<script src="theme/symeos/js/developr.message.js"></script>
-	<script src="theme/symeos/js/developr.modal.js"></script>
-	<script src="theme/symeos/js/developr.notify.js"></script>
-	<script src="theme/symeos/js/developr.progress-slider.js"></script>
-	<script src="theme/symeos/js/developr.tooltip.js"></script>
-	<script src="theme/symeos/js/developr.confirm.js"></script>
-	<script src="theme/symeos/js/developr.agenda.js"></script>
-	<script src="theme/symeos/js/developr.tabs.js"></script>
+	<script src="theme/symeos/js/developr.input.min.js"></script>
+	<script src="theme/symeos/js/developr.message.min.js"></script>
+	<script src="theme/symeos/js/developr.modal.min.js"></script>
+	<script src="theme/symeos/js/developr.notify.min.js"></script>
+	<script src="theme/symeos/js/developr.progress-slider.min.js"></script>
+	<script src="theme/symeos/js/developr.tooltip.min.js"></script>
+	<script src="theme/symeos/js/developr.confirm.min.js"></script>
+	<script src="theme/symeos/js/developr.agenda.min.js"></script>
+	<script src="theme/symeos/js/developr.tabs.min.js"></script>
 
 	<!-- Includes specific JS of Speedealing -->
 	<script type="text/javascript" src="core/js/lib_head.js"></script>
