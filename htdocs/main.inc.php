@@ -200,7 +200,7 @@ if (!defined('NOREQUIREAJAX'))
 
 
 
-	
+
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
 	Header("Location: " . DOL_URL_ROOT . "/install/index.php");
@@ -600,7 +600,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 
 
-		
+
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 
@@ -676,29 +676,13 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 }
 
 /**
- * Show The top menu bar
+ * Show right menu bar
  *
  * @return	void
  */
-function top_menu() {
+function left_menu() {
 	global $conf, $langs;
-	//global $user, $conf, $langs, $db;
-	//global $dolibarr_main_authentication;
-	$toprightmenu = '';
 
-	$conf->top_menu = 'auguria_backoffice.php';
-
-	/*
-	 * Top menu
-	 */
-	$top_menu = $conf->top_menu;
-
-	// Load the top menu manager
-	// Load the top menu manager (only if not already done)
-	if (!class_exists('MenuTop')) {
-		$top_menu = 'auguria_backoffice.php';
-		include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $top_menu;
-	}
 	?><ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
 		<li class="current">
 			<a href="index.php?idmenu=menu:home" class="shortcut-dashboard" title="<?php echo $langs->trans("Dashboard"); ?>">
@@ -748,9 +732,19 @@ function top_menu() {
  *
  * @return	void
  */
-function left_menu() {
+function main_menu() {
 	global $user, $conf, $langs, $db;
 	global $hookmanager, $count_icon;
+
+
+	/*
+	 * Menu
+	 */
+	$conf->top_menu = 'auguria_backoffice.php';
+
+	// Load the top menu manager (only if not already done)
+	if (!class_exists('MenuTop'))
+		include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $conf->top_menu;
 
 	$searchform = '';
 	$bookmarks = '';
@@ -945,8 +939,8 @@ if (!function_exists("llxFooter")) {
 
 		<!-- End main content -->
 		<?php
-		top_menu(); // print the left menu
-		left_menu(); // print the right menu
+		left_menu(); // print the left menu
+		main_menu(); // print the right menu
 
 		if ($conf->memcached->enabled && get_class($memcache) == 'Memcache')
 			$memcache->close();
