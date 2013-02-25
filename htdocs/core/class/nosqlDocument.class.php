@@ -952,8 +952,10 @@ abstract class nosqlDocument extends CommonObject {
 				$rtr = 'function(obj) {
 	 		var ar = [];
 	 		if(obj.aData.' . $params["id"] . ' === undefined)
-
-	 		return ar.join("");';
+				return ar.join("");
+			else if(obj.aData.' . $key . ' === undefined)
+				obj.aData.'.$key.' = obj.aData.' . $params["id"].';
+			';
 
 				if (!empty($this->fk_extrafields->ico)) {
 					$rtr.= '
@@ -1007,7 +1009,7 @@ abstract class nosqlDocument extends CommonObject {
 			if(obj.aData.' . $key . ')
 			{
 				var date = new Date(obj.aData.' . $key . '*1000);
-	 		return date.toLocaleString()
+	 		return date.toLocaleDateString() +"<br>"+date.toLocaleTimeString();
 			}
 	 		else
 	 		return null;
