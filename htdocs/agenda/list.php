@@ -212,6 +212,7 @@ $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "datep";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sType = "date";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datep", "datetime");
 //$obj->aoColumns[$i]->sClass = "edit";

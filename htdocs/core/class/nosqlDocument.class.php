@@ -1008,7 +1008,7 @@ abstract class nosqlDocument extends CommonObject {
 				$rtr = 'function(obj) {
 			if(obj.aData.' . $key . ')
 			{
-				var date = new Date(obj.aData.' . $key . '*1000);
+				var date = new Date(obj.aData.' . $key . ');
 	 		return date.toLocaleDateString() +"<br>"+date.toLocaleTimeString();
 			}
 	 		else
@@ -1018,7 +1018,7 @@ abstract class nosqlDocument extends CommonObject {
 
 			case "status":
 				$rtr = 'function(obj) {
-			var now = Math.round(+new Date()/1000);
+			var now = Math.round(+new Date());
 			var status = new Array();
 			var expire = new Array();
 			var statusDateEnd = "";
@@ -1041,10 +1041,12 @@ abstract class nosqlDocument extends CommonObject {
 				if (isset($params["dateEnd"])) {
 					$rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' === undefined)
 				obj.aData.' . $params["dateEnd"] . ' = "";';
-					$rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' != "")';
-					$rtr.= 'if(parseInt(obj.aData.' . $params["dateEnd"] . ') < now)';
+					$rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' != ""){';
+					$rtr.= 'var dateEnd = new Date(obj.aData.' . $params["dateEnd"] . ').getTime();';
+					$rtr.= 'if(dateEnd < now)';
 					$rtr.= 'if(expire[stat] !== undefined)
 				stat = expire[stat];';
+					$rtr.= '}';
 				}
 				$rtr.= 'var ar = [];
 		ar[ar.length] = "<span class=\"tag ";

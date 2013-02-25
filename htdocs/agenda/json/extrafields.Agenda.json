@@ -76,13 +76,11 @@
        },
        "datep": {
            "type": "datetime",
-           "enable": true,
-           "settype": "int"
+           "enable": true
        },
        "datef": {
            "type": "datetime",
-           "enable": true,
-           "settype": "int"
+           "enable": true
        },
        "durationp": {
            "type": "input",

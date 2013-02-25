@@ -633,6 +633,7 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 	require_once DOL_DOCUMENT_ROOT . '/includes/adodbtime/adodb-time.inc.php';
 
+	$time = strtotime($time);
 	$to_gmt = false;
 	$offsettz = $offsetdst = 0;
 	if ($tzoutput) {
@@ -701,10 +702,18 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
+
+
+
+
 		
 // If date undefined or "", we return ""
 	if (dol_strlen($time) == 0)
 		return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
+
+
+
+
 
 
 
@@ -894,7 +903,17 @@ function dol_mktime($hour, $minute, $second, $month, $day, $year, $gm = false, $
 			$date = mktime($hour, $minute, $second, $month, $day, $year);
 		}
 	}
-	return $date;
+	echo $hour . "\n";
+	echo $minute . "\n";
+	echo $second . "\n";
+	echo $month . "\n";
+	echo $day . "\n";
+	echo $year . "\n";
+
+	echo $date . "\n";
+
+
+	return date("c", $date);
 }
 
 /**
@@ -914,7 +933,7 @@ function dol_now($mode = 'gmt') {
 	else if ($mode == 'tzserver') {  // Time for now with PHP server timezone added
 		require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
 		$tzsecond = getServerTimeZoneInt('now'); // Contains tz+dayling saving time
-		$ret = dol_now('gmt') + ($tzsecond * 3600);
+		$ret = time() + ($tzsecond * 3600);
 	}
 	/* else if ($mode == 'tzref')				// Time for now with parent company timezone is added
 	  {
@@ -925,9 +944,9 @@ function dol_now($mode = 'gmt') {
 		//print 'eeee'.time().'-'.mktime().'-'.gmmktime();
 		$offsettz = (empty($_SESSION['dol_tz']) ? 0 : $_SESSION['dol_tz']) * 60 * 60;
 		$offsetdst = (empty($_SESSION['dol_dst']) ? 0 : $_SESSION['dol_dst']) * 60 * 60;
-		$ret = dol_now('gmt') + ($offsettz + $offsetdst);
+		$ret = time() + ($offsettz + $offsetdst);
 	}
-	return date("c",$ret); // ISO date format
+	return date("c", $ret); // ISO date format
 }
 
 /**
@@ -2035,7 +2054,7 @@ function dol_print_error($db = '', $error = '') {
 			$out.="<b>" . $langs->trans("ReturnCodeLastAccessInError") . ":</b> " . ($db->lasterrno() ? $db->lasterrno() : $langs->trans("ErrorNoRequestInError")) . "<br>\n";
 			$out.="<b>" . $langs->trans("InformationLastAccessInError") . ":</b> " . ($db->lasterror() ? $db->lasterror() : $langs->trans("ErrorNoRequestInError")) . "<br>\n";
 			$out.="<br>\n";
-		} else {	// Mode CLI
+		} else { // Mode CLI
 			$out.='> ' . $langs->transnoentities("DatabaseTypeManager") . ":\n" . $db->type . "\n";
 			$out.='> ' . $langs->transnoentities("RequestLastAccessInError") . ":\n" . ($db->lastqueryerror() ? $db->lastqueryerror() : $langs->trans("ErrorNoRequestInError")) . "\n";
 			$out.='> ' . $langs->transnoentities("ReturnCodeLastAccessInError") . ":\n" . ($db->lasterrno() ? $db->lasterrno() : $langs->trans("ErrorNoRequestInError")) . "\n";
@@ -2057,7 +2076,7 @@ function dol_print_error($db = '', $error = '') {
 			$msg = $langs->trans($msg);
 			if ($_SERVER['DOCUMENT_ROOT']) {  // Mode web
 				$out.="<b>" . $langs->trans("Message") . ":</b> " . $msg . "<br>\n";
-			} else {	// Mode CLI
+			} else { // Mode CLI
 				$out.='> ' . $langs->transnoentities("Message") . ":\n" . $msg . "\n";
 			}
 			$syslog.=", msg=" . $msg;
@@ -2602,6 +2621,10 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
 
 
 
+
+
+
+
 			
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
 		if (dol_strlen($nbofdectoround))
@@ -2987,6 +3010,10 @@ function dol_mkdir($dir, $dataroot = '') {
 			$ccdir .= $cdir[$i];
 		if (preg_match("/^.:$/", $ccdir, $regs))
 			continue; // Si chemin Windows incomplet, on poursuit par rep suivant
+
+
+
+
 
 
 
@@ -3551,7 +3578,7 @@ function dol_htmloutput_events() {
 					$(document).ready(function() {
 						notify('<?php echo dol_escape_js($row->title); ?>', '<?php echo dol_escape_js($row->message); ?>', {
 							autoClose: true,
-							delay: 2500,
+							delay: 500,
 							closeDelay: <?php echo $closeDelay; ?>,
 							classes : ["<?php echo $color; ?>"],
 							icon: '<?php echo $icon; ?>'
@@ -3584,11 +3611,6 @@ function get_htmloutput_mesg($mesgstring = '', $mesgarray = '', $style = 'ok', $
 	$out = '';
 	$divstart = $divend = '';
 
-	// If inline message with no format, we add it.
-	if ((empty($conf->use_javascript_ajax) || !empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) || $keepembedded) && !preg_match('/<div class=".*">/i', $out)) {
-		$divstart = '<div class="' . $style . '">';
-		$divend = '</div>';
-	}
 
 	if ((is_array($mesgarray) && count($mesgarray)) || $mesgstring) {
 		$langs->load("errors");
@@ -3610,25 +3632,35 @@ function get_htmloutput_mesg($mesgstring = '', $mesgarray = '', $style = 'ok', $
 	}
 
 	if ($out) {
-		if (!empty($conf->use_javascript_ajax) && empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) && empty($keepembedded)) {
-			$return = '<script type="text/javascript">
-					$(document).ready(function() {
-						var block = ' . (!empty($conf->global->MAIN_USE_JQUERY_BLOCKUI) ? "true" : "false") . '
-						if (block) {
-							$.dolEventValid("","' . dol_escape_js($out) . '");
-						} else {
-							$.jnotify("' . dol_escape_js($out) . '",
-							"' . ($style == "ok" ? 3000 : $style) . '",
-							' . ($style == "ok" ? "false" : "true") . ',
-							{ remove: function (){} } );
-						}
-					});
-				</script>';
-		} else {
-			$return = $out;
+		switch ($style) {
+			case "error":
+				$color = "red-gradient";
+				$icon = 'theme/common/emotes/face-sad.png';
+				$closeDelay = 10000;
+				break;
+			case "warning":
+				$color = "orange-gradient";
+				$icon = 'theme/common/emotes/face-uncertain.png';
+				$closeDelay = 10000;
+				break;
+			case "ok":
+				$color = "green-gradient";
+				$icon = 'theme/common/emotes/face-smile.png';
+				$closeDelay = 5000;
+				break;
 		}
+		?><script>
+				$(document).ready(function() {
+					notify('<?php echo dol_escape_js($row->title); ?>', '<?php echo dol_escape_js($out); ?>', {
+						autoClose: true,
+						delay: 500,
+						closeDelay: <?php echo $closeDelay; ?>,
+						classes : ["<?php echo $color; ?>"],
+						icon: '<?php echo $icon; ?>'
+					});
+				});
+		</script><?php
 	}
-
 	return $return;
 }
 

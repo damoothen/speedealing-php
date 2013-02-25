@@ -283,7 +283,7 @@ class Agenda extends nosqlDocument {
 		 *    @return   int     				<0 if KO, >0 if OK
 		 */
 		function update($user, $notrigger = 0) {
-			global $user, $langs, $conf;
+			global $langs, $conf;
 
 			// Clean parameters
 			$this->label = trim($this->label);
