@@ -1,6 +1,6 @@
 {
    "_id": "_design/Agenda",
-   "_rev": "62-0d768537850dcb4fa36b1ca6c07582a2",
+   "_rev": "80-81d942f80ec0497c879fb2705d907f15",
    "language": "javascript",
    "views": {
        "list": {
@@ -14,19 +14,19 @@
        },
        "countTODO": {
            "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status==\"TODO\") {\n if(doc.usertodo.id)\n  emit(doc.usertodo.id, 1);\n}\n}",
-           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+           "reduce": "_sum"
        },
        "countON": {
            "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status==\"ON\") {\n if(doc.userdone.id)\n  emit(doc.userdone.id, 1);\n}\n}",
-           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+           "reduce": "_sum"
        },
        "count": {
            "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status) {\n  emit(doc.datep, 1);\n}\n}",
-           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+           "reduce": "_sum"
        },
        "countByUser": {
            "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status) {\nif(doc.userdone.id)\n  emit([doc.userdone.id,doc.datep], 1);\n}\n}",
-           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+           "reduce": "_sum"
        },
        "listMyTasks": {
            "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status!='DONE') {\nif(doc.usertodo.id)\n  emit([doc.usertodo.id,doc.datep], doc);\n}\n}"
