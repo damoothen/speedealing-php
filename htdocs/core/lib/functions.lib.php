@@ -903,15 +903,6 @@ function dol_mktime($hour, $minute, $second, $month, $day, $year, $gm = false, $
 			$date = mktime($hour, $minute, $second, $month, $day, $year);
 		}
 	}
-	echo $hour . "\n";
-	echo $minute . "\n";
-	echo $second . "\n";
-	echo $month . "\n";
-	echo $day . "\n";
-	echo $year . "\n";
-
-	echo $date . "\n";
-
 
 	return date("c", $date);
 }

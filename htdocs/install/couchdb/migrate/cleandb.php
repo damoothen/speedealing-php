@@ -62,4 +62,49 @@ if($flush)
     exit;
 }
 
+// Convert timestamps to ISO
+$date = $_GET["date"];
+if($date) {
+	$var = array("datec","datep","datef","datevalid","last_subcriptio_date","date_commande",
+		"date","date_livraison","date_lim_reglement","fin_validite","CreateDate",
+		"LastConnection","NewConnection","birthday","tms");
+	
+	$result = $couchdb->getAllDocs();
+    $i=0;
+    
+	//print_r($result);
+	
+    if(count($result->rows)==0)
+    {
+        print "Mise a jour terminé";
+        exit;
+    }
+    
+    foreach ($result->rows AS $aRow)
+    {
+		$found = false;
+		$obj = $couchdb->getDoc($aRow->id);
+		foreach ($var as $key) {
+			if(!empty($obj->$key) && is_int($obj->$key)) {
+				$obj->$key = date("c", $obj->$key);
+				$found = true;
+			}
+		}
+		if($found) {
+			$couchdb->storeDoc($obj);
+		}
+    }
+
+    try {
+        //$couchdb->deleteDocs($obj);
+    } catch (Exception $e) {
+        echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+        exit(1);
+    }
+
+    print "Mise a jour en cours";
+    exit;
+	
+}
+
 ?>

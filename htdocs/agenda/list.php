@@ -122,7 +122,6 @@ if ($socid) {
     $newtitle = $langs->trans($title);
 }
 
-
 print_fiche_titre($newtitle);
 ?>
 <div class="dashboard">
@@ -149,14 +148,14 @@ print_fiche_titre($newtitle);
                     ?>
                 </li>
                 <li><?php
-                    $result = $agenda->getView("countByUser", array("group" => true, "group_level" => "none", "startkey" => array($user->id, mktime(0, 0, 0, 1, 1, date(Y))), "endkey" => array($user->id, new stdClass())));
+                    $result = $agenda->getView("countByUser", array("group" => true, "group_level" => "none", "startkey" => array($user->id, date("c",mktime(0, 0, 0, 1, 1, date(Y)))), "endkey" => array($user->id, new stdClass())));
                     print '<strong>' . (int) $result->rows[0]->value . '</strong>';
                     print $langs->trans('SumMyActions');
                     ?>
                 </li>
                 <li>
                     <?php
-                    $result = $agenda->getView("count", array("group" => true, "group_level" => "none", "startkey" => mktime(0, 0, 0, 1, 1, date(Y)), "endkey" => new stdClass()));
+                    $result = $agenda->getView("count", array("group" => true, "group_level" => "none", "startkey" => date("c",mktime(0, 0, 0, 1, 1, date(Y))), "endkey" => new stdClass()));
                     print '<strong>' . (int) $result->rows[0]->value . '</strong>';
                     print $langs->trans('SumActions');
                     ?>

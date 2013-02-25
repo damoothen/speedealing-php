@@ -203,6 +203,7 @@ abstract class nosqlDocument extends CommonObject {
 			$values->_id = $this->id;
 
 		$values->class = get_class($this);
+		$values->tms = dol_now();
 
 		// Specific for users
 		if ($values->class == "User" || $values->class == "UserAdmin")
