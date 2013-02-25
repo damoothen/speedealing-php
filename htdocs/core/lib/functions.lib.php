@@ -927,7 +927,7 @@ function dol_now($mode = 'gmt') {
 		$offsetdst = (empty($_SESSION['dol_dst']) ? 0 : $_SESSION['dol_dst']) * 60 * 60;
 		$ret = dol_now('gmt') + ($offsettz + $offsetdst);
 	}
-	return $ret;
+	return date("c",$ret); // ISO date format
 }
 
 /**

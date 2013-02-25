@@ -161,7 +161,9 @@ $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "date";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->sType = "date";
+//$obj->aoColumns[$i]->bUseRendered = false;
+
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date", "date");
 $obj->aoColumns[$i]->editable = true;
 $i++;

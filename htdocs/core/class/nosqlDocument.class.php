@@ -994,8 +994,8 @@ abstract class nosqlDocument extends CommonObject {
 				$rtr = 'function(obj) {
 					if(obj.aData.' . $key . ')
 					{
-					var date = new Date(obj.aData.' . $key . '*1000);
-	 		return Globalize.format(date,"d","fr");
+					var date = new Date(Date.parse(obj.aData.' . $key . '));
+			return date.toLocaleDateString();
 			}
 	 		else
 	 		return null;
@@ -1007,7 +1007,7 @@ abstract class nosqlDocument extends CommonObject {
 			if(obj.aData.' . $key . ')
 			{
 				var date = new Date(obj.aData.' . $key . '*1000);
-	 		return Globalize.format(date,"F","fr");
+	 		return date.toLocaleString()
 			}
 	 		else
 	 		return null;

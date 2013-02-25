@@ -34,9 +34,6 @@
 	<script type="text/javascript" src="includes/js/jquery.rwd-table.js" defer></script>
 	<!-- END THEME -->
 
-	<script type="text/javascript" src="includes/jquery/plugins/globalize/lib/globalize.js" async defer></script>
-	<script type="text/javascript" src="includes/jquery/plugins/globalize/lib/cultures/globalize.cultures.js" async defer></script>
-
 	<!-- NOLOGIN section (obsolete?) -->
 
 	<!-- jQuery jeditable -->

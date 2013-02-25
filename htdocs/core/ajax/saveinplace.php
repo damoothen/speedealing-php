@@ -82,9 +82,7 @@ if (!empty($key) && !empty($id) && !empty($class)) {
 	}
 
 	if ($type == "date" || $type == "datepicker") {
-		$res = setlocale(LC_TIME, 'fr_FR.UTF8', 'fra'); // FIXME this is too restrictive !
-		$value = str_replace("/", '-', $value); // 01/12/2012 -> 01-12-2012
-		$value = strtotime($value);
+		$value = date("c",strtotime($value)); //Convert time to ISO
 	}
 
 	if ($type == "wysiwyg") { // HTML Code
@@ -115,7 +113,7 @@ if (!empty($key) && !empty($id) && !empty($class)) {
 			if (is_object($value) || is_array($value)) {
 				$object->load($id);
 				$object->$key = $value;
-				if($update_price)
+				if ($update_price)
 					$object->update_price();
 				$object->record();
 			} else {
