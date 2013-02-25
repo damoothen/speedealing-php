@@ -2268,7 +2268,7 @@ function print_fiche_titre($title, $showDate = false) {
 	<hgroup id="main-title" class="thin">
 		<h1><?php echo $title; ?></h1>
 		<?php if ($showDate): ?>
-			<h2><?php echo strtolower($langs->trans(date('F', $now))); ?> <strong><?php echo date('d', $now); ?></strong></h2>
+			<h2><?php echo strtolower($langs->trans(date('F', strtotime($now)))); ?> <strong><?php echo date('d', strtotime($now)); ?></strong></h2>
 	<?php endif ?>
 	</hgroup>
 	<?php
