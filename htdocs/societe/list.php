@@ -21,6 +21,7 @@
  */
 
 require '../main.inc.php';
+require DOL_DOCUMENT_ROOT . '/core/class/autoloader.php';
 
 $langs->load("companies");
 $langs->load("customers");
@@ -154,6 +155,7 @@ $i++;
   $obj->aoColumns[$i]->bUseRendered = false;
   $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("tms", "date");
   $i++; */
+
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
@@ -211,6 +213,7 @@ print'</tr>';
 print'</thead>';
 print'<tfoot>';
 /* input search view */
+
 $i = 0; //Doesn't work with bServerSide
 print'<tr>';
 print'<th id="' . $i . '"></th>';
@@ -249,8 +252,58 @@ if (!$user->rights->societe->client->voir)
 
 $object->datatablesCreate($obj, "societe", true, true);
 
+echo '<br>';
+
+$test = new UserController();
+
+echo $test->indexAction();
+
+//foreach ($object->fk_extrafields->longList as $aRow) {
+	//echo $aRow;
+	//var_dump($object->fk_extrafields->fields->$aRow);
+//}
+
 //print end_box();
 print '</div>'; // end
 
 llxFooter();
+
+class UserController {
+
+	public function indexAction() {
+		$data_source = "core/ajax/listdatatables.php?json=list&class=Societe&bServerSide=true";
+		$table = new datatables\Datatables(compact('data_source'));
+		$table->setSchema(new datatables\schemas\UserSchema); // schema class you've just created'
+
+		// If json request, fetch data from database and format the data
+		if(1==2) {
+
+			$data = array(0 => array('zip' => '01000', 'town' => 'bourg')); // Fetch data from database (must be an array or Objects that implements SPL's Iterator)
+			$count = '10'; // Num. of total records
+
+			$request = new datatables\Request($table->getSchema(), $_GET);
+			//var_dump($request);
+			//var_dump( $table->getSchema()->adapt($data) );
+			$output = $table->formatJsonOutput($table->getSchema()->adapt($data), $count);
+			//var_dump($output);
+
+			// Will just straight forward here
+			header('Content-Type', 'application/json');
+			echo $output;
+			exit;
+
+		} else {
+			// Add some plugins
+			$table->plug(new datatables\plugins\Localization);
+			$table->plug(new datatables\plugins\RowSelect);
+			$table->plug(new datatables\plugins\DeleteNotification);
+
+			// render view or just output the datatable
+			//var_dump(compact('table'));
+			return $table->render();
+			//return compact('table'); // echo $table;
+		}
+	}
+
+}
 ?>
