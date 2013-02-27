@@ -66,8 +66,9 @@ print_fiche_titre($titre);
 </div>
 <?php
 print '<div class="with-padding">';
+//print '<div class="columns">';
 
-//print start_box($titre,"twelve","16-Companies.png");
+//print start_box($titre,"twelve","16-Companies.png",false);
 
 /*
  * Barre d'actions

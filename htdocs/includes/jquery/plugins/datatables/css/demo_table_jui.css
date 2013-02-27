@@ -5,12 +5,15 @@
 .dataTables_wrapper select {display:inline;margin:2px 0;}
 .dataTables_paginate{width:auto;float:right;text-align:right;position:relative;top:-4px}
 .dataTables_info{float:left}
-table.display thead th,table.display tfoot th{text-align:left;font-size:13px; font-family: 'Terminal Dosis', sans-serif; border:1px solid #ccc;padding:4px 7px 4px;/*text-transform:uppercase;*/vertical-align:middle}
-table.display thead th {cursor:pointer;/*background-color:#e0e0e0;font-weight:700*/}
+table.display thead th,table.display tfoot th{text-align:left; font-family: 'Terminal Dosis', sans-serif; padding:4px 7px 4px;/*text-transform:uppercase;*/vertical-align:middle}
+table.display thead th {cursor:pointer; /*background-color:#e0e0e0;font-weight:700*/}
 table.display thead th.sorting_disabled{cursor:default}
+table.display thead th:hover {color: #0059A0;}
 div.dataTables_wrapper .ui-widget-header{font-weight:400}
-table.display thead th div.DataTables_sort_wrapper{position:relative}
+table.display thead th div.DataTables_sort_wrapper{position:relative; padding-right: 15px;}
 table.display thead th div.DataTables_sort_wrapper span{position:absolute;top:50%;margin-top:-8px;right:0}
+table.display tbody {border-bottom: 2px solid #000; border-top: 2px solid #000;}
+table.display > tbody > tr:hover {background: #F0F0F0;}
 .dataTables_wrapper{position:relative;min-height:132px;clear:both;overflow:hidden}
 .dataTables_length{width:30%;float:left}
 .dataTables_filter{width:50%;float:right;text-align:right}
@@ -21,30 +24,10 @@ table.display thead th div.DataTables_sort_wrapper span{position:absolute;top:50
 .paginate_enabled_previous{background-image:url(../images/back_enabled.gif)}
 .paginate_disabled_next{background-image:url(../images/forward_disabled.gif)}
 .paginate_enabled_next{background-image:url(../images/forward_enabled.gif)}
-table.display{clear:both;border-collapse:collapse;margin:0 auto 24px;background:#fff;position:relative;top:12px;
-width: 99%;
-border-spacing: 0px;
-border-right-width: 0px;
-border-right-color: #DDD;
-border-right-style: solid;
-border-left-width: 1px;
-border-left-color: #DDD;
-border-left-style: solid;
-border-top-width: 1px;
-border-top-color: #DDD;
-border-top-style: solid;
-border-bottom-width: 1px;
-border-bottom-color: #DDD;
-border-bottom-style: solid;
--moz-box-shadow: 3px 3px 3px #CCC;
--webkit-box-shadow: 3px 3px 3px #CCC;
-box-shadow: 3px 3px 3px #CCC;
--moz-border-radius: 0.2em;
--webkit-border-radius: 0.2em;
-border-radius: 0.2em;}
-table.display tfoot th{font-weight:400;padding:2px 8px 2px 5px}
+table.display{clear:both;border-collapse:collapse;margin:0 auto 24px;background:#fff;position:relative;top:12px; width: 100%;}
+table.display tfoot th{font-weight:400;padding:2px 8px 2px 5px;}
 table.display tr.heading2 td{border-bottom:1px solid #aaa}
-table.display td{padding:6px 8px;border:1px solid #ccc;font-size:12px;vertical-align:middle}
+table.display td{padding:6px 8px;border-bottom:1px solid #ccc;font-size:12px;vertical-align:middle}
 table.noborder td{;border:0px;}
 table.display td .fancyImg {display:block;border:1px solid #dcdcdc;padding:2px;background:#fff;float:left}
 table.display td .fancyImg img {display:block}
