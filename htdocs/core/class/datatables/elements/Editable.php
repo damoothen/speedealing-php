@@ -49,6 +49,8 @@ class Editable implements ElementInterface {
 	/* ______________________________________________________________________ */
 
 	public function render() {
+
+		// Type of data
 		$type = '';
 		switch ($this->type) {
 			case "select" :
@@ -65,13 +67,14 @@ class Editable implements ElementInterface {
 				break;
 			case "date" :
 				 $type .= "type: 'datepicker',";
-				 $type .=  "cancel: cancelInPlace,";
+				 $type .= "cancel: cancelInPlace,";
 				 break;
 			default :
-				$type .=  "type: 'text',";
+				$type .= "type: 'text',";
 				break;
 		}
 
+		// Type of validation
 		$validate = '';
 		if (!empty($this->validate)) {
 			$validate .= 'oValidationOptions : { rules:{ value: {';
@@ -85,6 +88,7 @@ class Editable implements ElementInterface {
 				$validate .= 'cssclass: "' . $this->validate->cssclass . '",';
 		}
 
+		// Output
 		$output = "
 			{
 				indicator: indicatorInPlace,

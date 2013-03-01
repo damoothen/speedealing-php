@@ -1226,7 +1226,7 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	public function showList() {
 
-		$data_source = "core/ajax/listdatatables.new.php?json=list&class=" . get_class($this) . "&bServerSide=true";
+		$data_source = "core/ajax/listdatatables.php?json=list&class=" . get_class($this) . "&bServerSide=true";
 		$table = new datatables\Datatables(compact('data_source'));
 		$table->setSchema(new datatables\schemas\DefaultSchema);
 

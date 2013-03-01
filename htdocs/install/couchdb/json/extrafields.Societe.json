@@ -50,6 +50,12 @@
            "label": "Company",
            "length": 60,
            "enable": true,
+           "list": {
+           },
+           "render": {
+               "type": "url",
+               "ico": "16-Apartment-Building.png"
+           },
            "validate": {
                "cssclass": "required",
                "minlength": 3
@@ -63,6 +69,7 @@
        },
        "code_client": {
            "type": "text",
+           "label": "CustomerCode",
            "length": 15,
            "enable": true,
            "list": {

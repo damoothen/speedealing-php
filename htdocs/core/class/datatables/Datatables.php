@@ -41,7 +41,7 @@ class Datatables {
 			'bAutoWidth'        => false,
 			'bStateSave'        => false,
 			'aLengthMenu'       => array(5, 10, 20, 50, 100, 500, 'All'),
-			'aaSorting'         => array(array(0, 'desc')),
+			'aaSorting'         => array(array(0, 'asc')),
 			//'sScrollY'          => '400px',
 			//'sScrollX'          => '100%',
 			//'sScrollXInner'     => '100%',
@@ -251,13 +251,15 @@ class Datatables {
 
 		$i = 0;
 		$cols = array();
+		$render = array();
 		$headers = '';
 		$editable = '';
 		$footers = '';
 		foreach($this->schema->data() as $key => $config) {
 			$cols[] = $config['aoColumns'] + array(
-					//'mData'		=> $key,
-					//'sDefaultContent'	=> $config['default'] ? $config['default'] : '',
+					'mData'				=> $key,
+					'mRender'			=> (!empty($config['render']) ? '{:render_'.$key.'}' : ''),
+					'sDefaultContent'	=> $config['default'] ? $config['default'] : '',
 					'sWidth'			=> $config['width'] ? intval($config['width']) . 'px' : '',
 					'sClass'			=> $config['class'] ? $config['class'] : '',
 					'bSortable'			=> (bool) $config['sortable'],
@@ -274,6 +276,10 @@ class Datatables {
 			} else if($config['visible']) {
 				$editable .= self::insert('null,', $config);
 			}
+
+			// display mRender
+			if (!empty($config['render']))
+				$render['render_'.$key] = self::insert($config['render'], $config);
 
 			// display footer
 			$footer = '';
@@ -295,6 +301,12 @@ class Datatables {
 		$config = json_encode($this->params);
 		$config = preg_replace('/"\{:callback\}"/', $callback, $config);
 		//$config = preg_replace('/"\{:callback\}"/', '{:callback}', $config);
+
+		if (!empty($render)) {
+			foreach($render as $key => $value) {
+				$config = preg_replace('/"\{:'.$key.'\}"/', $value, $config);
+			}
+		}
 
 		$params = compact('var_name', 'container_id', 'container_class', 'chain', 'callback', 'config', 'headers', 'footers');
 		return self::insert($this->htmlTemplate . $this->jsTemplate, $params);

@@ -200,6 +200,7 @@ class Schema {
         		'class'			=> '',
         		'label'			=> '',
         		'default'		=> '',
+        		'render'		=> '',
         		'footer'		=> '',
         		'key_prefix'    => '',
         		'aoColumns'     => array()

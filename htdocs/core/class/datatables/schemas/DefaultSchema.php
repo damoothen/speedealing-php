@@ -26,7 +26,8 @@ class DefaultSchema extends Schema {
 					'visible'		=> (is_bool($field->list->visible) === true ? $field->list->visible : true),
 					'class'			=> (!empty($field->list->cssclass)?$field->list->cssclass:''),
 					'footer'		=> $this->element('FilterInput', array($langs->trans('Search') . ' {:label}')),
-					'editable'		=> (!empty($field->list->editable) ? $this->element('Editable', array($field->type, $aRow, get_class($object), $field->list->validate)) : false)
+					'editable'		=> (!empty($field->list->editable) ? $this->element('Editable', array($field->type, $aRow, get_class($object), $field->list->validate)) : false),
+					'render'		=> (!empty($field->render) ? $this->element('Render', array($field->render, $aRow, get_class($object))) : false)
 			));
 		}
 		//var_dump($this->schema);
