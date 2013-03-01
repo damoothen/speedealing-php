@@ -65,22 +65,28 @@ class Render implements ElementInterface {
 				if (!empty($this->data->ico)) {
 					$title = $langs->trans("Show") . ' ' . $this->classname;
 					$output .= 'ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $this->data->ico . '\" border=\"0\" alt=\"' . $title . ' : ";
-								ar[ar.length] = data.toString();
-								ar[ar.length] = "\" title=\"' . $title . ' : ";
-								ar[ar.length] = data.toString();
-								ar[ar.length] = "\"> ";'."\n";
+								ar[ar.length] = data.toString() + "\" title=\"' . $title . ' : " + data.toString() + "\"> ";'."\n";
 				}
-				$output .= 'ar[ar.length] = "<a href=\"' . $url . '";
-							ar[ar.length] = row._id;
-							ar[ar.length] = "\">";
-							ar[ar.length] = data.toString();
-							ar[ar.length] = "</a>";
+				$output .= 'ar[ar.length] = "<a href=\"' . $url . '" + row._id + "\">" + data.toString() + "</a>";
 							var str = ar.join("");
 							return str;
 						}';
 				break;
+			case "email" :
+				$output .= 'function(data, type, row) {
+								var ar = [];
+								if(data === undefined)
+									return ar.join("");
+
+								ar[ar.length] = "<a href=\"mailto:" + data.toString() + "\">" + data.toString() + "</a>";
+								var str = ar.join("");
+								return str;
+							}';
+				break;
 			default :
-				$output .= "";
+				$output .= 'function(data, type, row) {
+								return data;
+							}';
 				break;
 		}
 
