@@ -181,7 +181,7 @@ class Datatables {
 
 	public function chain($chain) {
 		$chain = rtrim($chain, ';'); // removes semicolon at the end
-		$this->chain[] = "{$chain}{:chain}";
+		$this->chain[] = "{$chain}";
 	}
 
 	/* ______________________________________________________________________ */
@@ -252,6 +252,7 @@ class Datatables {
 		$i = 0;
 		$cols = array();
 		$headers = '';
+		$editable = '';
 		$footers = '';
 		foreach($this->schema->data() as $key => $config) {
 			$cols[] = $config['aoColumns'] + array(
@@ -267,8 +268,16 @@ class Datatables {
 			// display header label
 			$headers .= "<th class=\"{$this->config['headers_th_class']}\">{$config['label']}</th>\n";
 
+			// build editable
+			if(!empty($config['editable'])) {
+				$editable .= self::insert($config['editable'], $config);
+			} else if($config['visible']) {
+				$editable .= self::insert('null,', $config);
+			}
+
+			// display footer
 			$footer = '';
-			if($config['footer']) {
+			if(!empty($config['footer'])) {
 				$footer = self::insert($config['footer'], $config);
 			}
 			$footers .= "<th id=\"{$i}\">{$footer}</th>\n";
@@ -279,6 +288,9 @@ class Datatables {
 
 		// convert 'oLanguage' to object
 		$this->params['oLanguage'] = (object) $this->params['oLanguage'];
+
+		// display editable
+		$chain = preg_replace('/\{:editable\}/', $editable, $chain);
 
 		$config = json_encode($this->params);
 		$config = preg_replace('/"\{:callback\}"/', $callback, $config);

@@ -1,6 +1,5 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "120-0916a72ac0e7bcf992d433d56c05278c",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -23,6 +22,7 @@
        "idprof3"
    ],
    "longList": [
+       "_id",
        "name",
        "code_client",
        "zip",
@@ -38,6 +38,13 @@
        "phone"
    ],
    "fields": {
+       "_id": {
+           "type": "text",
+           "enable": true,
+           "list": {
+               "visible": false
+           }
+       },
        "name": {
            "type": "text",
            "label": "Company",

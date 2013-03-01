@@ -1234,8 +1234,10 @@ abstract class nosqlDocument extends CommonObject {
 		$table->plug(new datatables\plugins\Localization);
 		$table->plug(new datatables\plugins\RowSelect);
 		$table->plug(new datatables\plugins\DeleteNotification);
+		$table->plug(new datatables\plugins\MakeEditable);
 
 		// render view
+		//var_dump(compact('table'));
 		return $table->render();
 	}
 

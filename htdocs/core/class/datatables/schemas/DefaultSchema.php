@@ -26,12 +26,10 @@ class DefaultSchema extends Schema {
 					'visible'		=> (is_bool($field->list->visible) === true ? $field->list->visible : true),
 					'class'			=> (!empty($field->list->cssclass)?$field->list->cssclass:''),
 					'footer'		=> $this->element('FilterInput', array($langs->trans('Search') . ' {:label}')),
-					'outputFilter'	=> function($input, $row) {
-						return $input ? $input : '&mdash;';
-					}
+					'editable'		=> (!empty($field->list->editable) ? $this->element('Editable', array($field->type, $aRow, get_class($object), $field->list->validate)) : false)
 			));
 		}
-		//var_dump($this);
+		//var_dump($this->schema);
 /*
 
         // role
@@ -48,29 +46,29 @@ class DefaultSchema extends Schema {
         ));
 */
 
-        // actions
-        $this->push('action', array(
-        		'type'         => 'static',
-        		'width'        => 35,
-        		'sortable'     => false,
-        		'searchable'   => false,
-        		'outputFilter' => function($input, $row) use($schema) {
-        			return $schema->element('EditLink', array("societe/fiche.php?id={$row['_id']}")) .
-        			$schema->element('DeleteLink', array("societe/fiche.php?id={$row['_id']}"));
-        		}
-        ));
+		// actions
+		$this->push('action', array(
+				'type'			=> 'static',
+				'width'			=> 35,
+				'sortable'		=> false,
+				'searchable'	=> false,
+				'outputFilter'	=> function($input, $row) use($schema) {
+					return $schema->element('EditLink', array("societe/fiche.php?id={$row['_id']}")) .
+					$schema->element('DeleteLink', array("societe/fiche.php?id={$row['_id']}"));
+				}
+		));
 
-        // checkbox
-        $this->push('check', array(
-        		'type'         => 'static',
-        		'label'        => (string) $this->element('Checkbox', array('ca', 1, 'ca')),
-        		'width'        => 8,
-        		'sortable'     => false,
-        		'searchable'   => false,
-        		'outputFilter' => function($input, $row) use($schema) {
-        			return (string) $schema->element('Checkbox', array('id[]', $row['_id']));
-        		}
-        ));
+		// checkbox
+		$this->push('check', array(
+				'type'			=> 'static',
+				'label'			=> (string) $this->element('Checkbox', array('ca', 1, 'ca')),
+				'width'			=> 8,
+				'sortable'		=> false,
+				'searchable'	=> false,
+				'outputFilter'	=> function($input, $row) use($schema) {
+					return (string) $schema->element('Checkbox', array('id[]', $row['_id']));
+				}
+		));
 
         // register another fields
     }

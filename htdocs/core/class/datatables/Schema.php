@@ -195,6 +195,7 @@ class Schema {
         		'visible'		=> true,
         		'sortable'		=> true,
         		'searchable'	=> true,
+        		'editable'		=> false,
         		'width'			=> false,
         		'class'			=> '',
         		'label'			=> '',
