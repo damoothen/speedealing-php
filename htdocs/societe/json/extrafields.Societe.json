@@ -16,7 +16,14 @@
        "zip",
        "town"
    ],
+   "oldList": [
+       "zip",
+       "town",
+       "zonegeo",
+       "idprof3"
+   ],
    "longList": [
+       "name",
        "code_client",
        "zip",
        "town",
@@ -26,15 +33,16 @@
        "idprof3"
    ],
    "shortList": [
+       "name",
        "town",
        "phone"
    ],
    "fields": {
        "name": {
            "type": "text",
+           "label": "Company",
            "length": 60,
            "enable": true,
-           "label": "Company",
            "validate": {
                "cssclass": "required",
                "minlength": 3
@@ -50,10 +58,9 @@
            "type": "text",
            "length": 15,
            "enable": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": false
+           "list": {
+               "cssclass": "center",
+               "visible": false
            }
        },
        "code_fournisseur": {
@@ -70,10 +77,8 @@
            "enable": true,
            "default": "ST_NEVER",
            "status": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": true
+           "list": {
+               "cssclass": "center"
            },
            "dict": "dict:fk_stcomm"
        },
@@ -83,10 +88,8 @@
            "cols": 40,
            "rows": 3,
            "enable": true,
-           "aoColumns": {
-               "sClass": "",
-               "bSearchable": true,
-               "bVisible": false
+           "list": {
+               "visible": false
            }
        },
        "zip": {
@@ -95,10 +98,10 @@
            "length": 15,
            "enable": true,
            "javascript": null,
-           "aoColumns": {
-               "sClass": "center dol_edit",
-               "bSearchable": true,
-               "bVisible": true,
+           "list": {
+               "cssclass": "center dol_edit",
+               "searchable": true,
+               "visible": true,
                "editable": true
            }
        },
@@ -108,10 +111,10 @@
            "length": 15,
            "enable": true,
            "javascript": null,
-           "aoColumns": {
-               "sClass": "dol_edit",
-               "bSearchable": true,
-               "bVisible": true,
+           "list": {
+               "cssclass": "dol_edit",
+               "searchable": true,
+               "visible": true,
                "editable": true
            }
        },
@@ -148,10 +151,10 @@
            "ico": "AC_TEL",
            "label": "Phone",
            "enable": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": false
+           "list": {
+               "cssclass": "center",
+               "searchable": true,
+               "visible": false
            },
            "mask": "+99 9 99 99 99 99"
        },
@@ -170,9 +173,9 @@
            "validate": {
                "cssclass": "email"
            },
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
+           "list": {
+               "cssclass": "center",
+               "searchable": true,
                "editable": true
            }
        },
@@ -190,15 +193,20 @@
            "label": "ProfId1",
            "length": "25",
            "enable": true,
-           "aoColumns": {
-               "bSearchable": true,
-               "bVisible": true
+           "list": {
+               "searchable": true,
+               "visible": false
            }
        },
        "idprof3": {
            "type": "text",
+           "label": "ProfId3",
            "length": "12",
-           "enable": true
+           "enable": true,
+           "list": {
+               "searchable": true,
+               "visible": false
+           }
        },
        "typent_id": {
            "type": "select",
@@ -284,10 +292,10 @@
            "enable": true,
            "default": "PL_NONE",
            "status": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": true
+           "list": {
+               "cssclass": "center",
+               "searchable": true,
+               "visible": true
            },
            "dict": "dict:fk_prospectlevel"
        },
@@ -313,10 +321,10 @@
            "type": "select",
            "label": "ZoneGeo",
            "enable": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": true,
+           "list": {
+               "cssclass": "center",
+               "searchable": true,
+               "visible": true,
                "editable": true
            },
            "view": "listZoneGeo",

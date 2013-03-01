@@ -1222,6 +1222,24 @@ abstract class nosqlDocument extends CommonObject {
 	}
 
 	/**
+	 *
+	 */
+	public function showList() {
+
+		$data_source = "core/ajax/listdatatables.new.php?json=list&class=" . get_class($this) . "&bServerSide=true";
+		$table = new datatables\Datatables(compact('data_source'));
+		$table->setSchema(new datatables\schemas\DefaultSchema);
+
+		// Add some plugins
+		$table->plug(new datatables\plugins\Localization);
+		$table->plug(new datatables\plugins\RowSelect);
+		$table->plug(new datatables\plugins\DeleteNotification);
+
+		// render view
+		return $table->render();
+	}
+
+	/**
 	 *  Return list of tags in an object
 	 *
 	 *  @return 	array	List of types of members

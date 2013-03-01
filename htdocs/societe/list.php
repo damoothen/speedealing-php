@@ -1,10 +1,10 @@
 <?php
-/* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@capnetworks.com>
- * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
- * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
- * Copyright (C) 2011      Patrick Mary         <laube@hotmail.fr>
+/* Copyright (C) 2001-2006	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2013	Regis Houssin			<regis.houssin@capnetworks.com>
+ * Copyright (C) 2011		Philippe Grand			<philippe.grand@atoo-net.com>
+ * Copyright (C) 2011-2013	Herve Prot				<herve.prot@symeos.com>
+ * Copyright (C) 2011		Patrick Mary			<laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@ $langs->load("companies");
 $langs->load("customers");
 $langs->load("suppliers");
 $langs->load("commercial");
+
+$builder = GETPOST('builder', 'int'); // for test use "&builder=1"
 
 // Security check
 $socid = GETPOST("socid");
@@ -80,6 +82,8 @@ print '<p class="button-height right">';
 print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create">' . $langs->trans("NewThirdParty") . '</a>';
 print "</p>";
 
+if (empty($builder)) {
+
 print $object->datatablesEdit("societe", $langs->trans("NewThirdParty"));
 
 $i = 0;
@@ -119,7 +123,7 @@ if ($user->rights->societe->client->voir) {
     $obj->aoColumns[$i]->fnRender = $user->datatablesFnRender("commercial_id.name", "url", array('id' => "commercial_id.id"));
     $i++;
 }
-foreach ($object->fk_extrafields->longList as $aRow) {
+foreach ($object->fk_extrafields->oldList as $aRow) {
     print'<th class="essential">';
     if (isset($object->fk_extrafields->fields->$aRow->label))
         print $langs->transcountry($object->fk_extrafields->fields->$aRow->label, $mysoc->country_id);
@@ -127,7 +131,7 @@ foreach ($object->fk_extrafields->longList as $aRow) {
         print $langs->trans($aRow);
     print'</th>';
     $obj->aoColumns[$i] = new stdClass();
-    $obj->aoColumns[$i] = $object->fk_extrafields->fields->$aRow->aoColumns;
+    $obj->aoColumns[$i] = $object->fk_extrafields->fields->$aRow->list;
     if (isset($object->fk_extrafields->$aRow->default))
         $obj->aoColumns[$i]->sDefaultContent = $object->fk_extrafields->$aRow->default;
 	else {
@@ -224,8 +228,8 @@ if ($user->rights->societe->client->voir) {
     print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Commercial") . '" /></th>';
     $i++;
 }
-foreach ($object->fk_extrafields->longList as $aRow) {
-    if ($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable == true)
+foreach ($object->fk_extrafields->oldList as $aRow) {
+    if ($object->fk_extrafields->fields->$aRow->list->searchable == true)
         print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search " . $aRow) . '" /></th>';
     else
         print'<th id="' . $i . '"></th>';
@@ -252,58 +256,15 @@ if (!$user->rights->societe->client->voir)
 
 $object->datatablesCreate($obj, "societe", true, true);
 
+}
+
 echo '<br>';
 
-$test = new UserController();
-
-echo $test->indexAction();
-
-//foreach ($object->fk_extrafields->longList as $aRow) {
-	//echo $aRow;
-	//var_dump($object->fk_extrafields->fields->$aRow);
-//}
+if (!empty($builder))
+	echo $object->showList();
 
 //print end_box();
 print '</div>'; // end
 
 llxFooter();
-
-class UserController {
-
-	public function indexAction() {
-		$data_source = "core/ajax/listdatatables.php?json=list&class=Societe&bServerSide=true";
-		$table = new datatables\Datatables(compact('data_source'));
-		$table->setSchema(new datatables\schemas\UserSchema); // schema class you've just created'
-
-		// If json request, fetch data from database and format the data
-		if(1==2) {
-
-			$data = array(0 => array('zip' => '01000', 'town' => 'bourg')); // Fetch data from database (must be an array or Objects that implements SPL's Iterator)
-			$count = '10'; // Num. of total records
-
-			$request = new datatables\Request($table->getSchema(), $_GET);
-			//var_dump($request);
-			//var_dump( $table->getSchema()->adapt($data) );
-			$output = $table->formatJsonOutput($table->getSchema()->adapt($data), $count);
-			//var_dump($output);
-
-			// Will just straight forward here
-			header('Content-Type', 'application/json');
-			echo $output;
-			exit;
-
-		} else {
-			// Add some plugins
-			$table->plug(new datatables\plugins\Localization);
-			$table->plug(new datatables\plugins\RowSelect);
-			$table->plug(new datatables\plugins\DeleteNotification);
-
-			// render view or just output the datatable
-			//var_dump(compact('table'));
-			return $table->render();
-			//return compact('table'); // echo $table;
-		}
-	}
-
-}
 ?>
