@@ -56,15 +56,19 @@ class DolibarrModules extends nosqlDocument {
     var $dbversion = "-";
 
     function __construct($db) {
-        global $couch;
+        global $couch, $conf;
 
         parent::__construct($db);
+		
+		$this->useDatabase($conf->Couchdb->name);
 
-        try {
+        /*try {
             $this->global = $couch->getDoc("const", true);
         } catch (Exception $e) {
             dol_print_error('', "Error : no const document in database" . $e->getMessage());
-        }
+        }*/
+		
+		$this->global = $conf->global;
 
         $fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields = $fk_extrafields->load("extrafields:DolibarrModules", true); // load and cache

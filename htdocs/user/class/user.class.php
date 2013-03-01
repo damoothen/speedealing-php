@@ -83,6 +83,8 @@ class User extends nosqlDocument {
 		$this->db = $db;
 
 		parent::__construct($db);
+		
+		$this->useDatabase("_users");
 
 		$this->fk_extrafields = new ExtraFields($db);
 		$this->fk_extrafields->fetch(get_class($this));
@@ -128,7 +130,7 @@ class User extends nosqlDocument {
 				return 0;
 		}
 
-		if ($conf->Couchdb->name == '_users') {
+		/*if ($conf->Couchdb->name == '_users') { // Login phase
 			require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
 
 			$user_config = new UserAdmin($this->db);
@@ -141,7 +143,7 @@ class User extends nosqlDocument {
 			$couch->useDatabase($user_config->entity);
 			$conf->Couchdb->name = $user_config->entity;
 			dol_setcache("dol_entity", $user_config->entity);
-			$this->useDatabase($user_config->entity);
+			//$this->useDatabase($user_config->entity);
 			unset($user_config);
 
 			if (!$conf->urlrewrite) {
@@ -149,15 +151,15 @@ class User extends nosqlDocument {
 				$this->NewConnection = dol_now();
 				//$this->record(true); // FIXME no record method in fetch method
 			}
-		}
+		}*/
 
 		try {
-			if (isValidEmail($login)) {
+			/*if (isValidEmail($login)) {
 				$result = $this->getView("login", array("key" => $login));
 				$login = $result->rows[0]->value;
-			}
+			}*/
 
-			$this->load($login, true);
+			$this->load("org.couchdb.user:" . $login, true);
 		} catch (Exception $e) {
 			return 0;
 		}
@@ -166,7 +168,7 @@ class User extends nosqlDocument {
 		try {
 			$admins = $this->couchAdmin->getUserAdmins();
 			$name = $this->couchAdmin->getLoginSession();
-			if (isset($admins->$name) && $this->email == $name)
+			if (isset($admins->$name) && $this->name == $name)
 				$this->superadmin = true;
 			else
 				$this->superadmin = false;
@@ -639,7 +641,7 @@ class User extends nosqlDocument {
 		if ($action == 'add') {
 			if (empty($this->Status))
 				$this->Status = "DISABLE";
-			$this->_id = "user:" . $this->name;
+			$this->_id = "org.couchdb.user:" . $this->name;
 		}
 
 

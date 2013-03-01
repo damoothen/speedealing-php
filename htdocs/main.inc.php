@@ -434,7 +434,7 @@ $heightforframes = 52;
 if ($conf->urlrewrite) {
 	if (!GETPOST("db")) {
 		$tmp_db = $conf->Couchdb->name; // First connecte using $user->entity for default
-		$user->useDatabase($tmp_db);
+		//$user->useDatabase($tmp_db);
 
 		if (!empty($user->NewConnection))
 			$user->set("LastConnection", $user->NewConnection);
