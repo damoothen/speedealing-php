@@ -108,19 +108,19 @@ class Render implements ElementInterface {
 								return ar.join("");
 							}';
 				break;
-				case "status":
-					$output.= 'function(data, type, row) {
-									var now = Math.round(+new Date());
-									var status = new Array();
-									var expire = new Array();
-									var statusDateEnd = "";';
+			case "status":
+				$output.= 'function(data, type, row) {
+								var now = Math.round(+new Date());
+								var status = new Array();
+								var expire = new Array();
+								var statusDateEnd = "";';
 
 					if (!empty($this->field->values)) {
 						foreach ($this->field->values as $key => $aRow) {
 							if (isset($aRow->label))
 								$output.= 'status["' . $key . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
 							else
-								$output.= 'status["' . $key . '"]= new Array("' . $langs->trans($key1) . '","' . $aRow->cssClass . '");';
+								$output.= 'status["' . $key . '"]= new Array("' . $langs->trans($key) . '","' . $aRow->cssClass . '");';
 							if (isset($aRow->dateEnd))
 								$output.= 'expire["' . $key . '"]="' . $aRow->dateEnd . '";';
 						}
