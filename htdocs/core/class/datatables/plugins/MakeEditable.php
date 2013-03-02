@@ -33,6 +33,7 @@ class MakeEditable implements PluginInterface {
 				"aoColumns": [
 					{:editable}
 				]
+				{:editable_options}
 			});
 		');
 	}
