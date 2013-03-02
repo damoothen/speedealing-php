@@ -30,7 +30,11 @@
        "address",
        "zonegeo",
        "phone",
-       "idprof3"
+       "idprof3",
+       "Tag",
+       "Status",
+       "prospectlevel"
+       
    ],
    "shortList": [
        "name",
@@ -92,7 +96,11 @@
            "default": "ST_NEVER",
            "status": true,
            "list": {
-               "cssclass": "center"
+               "cssclass": "center",
+               "editable": true
+           },
+           "render": {
+               "type": "status"
            },
            "dict": "dict:fk_stcomm"
        },
@@ -114,8 +122,6 @@
            "javascript": null,
            "list": {
                "cssclass": "center dol_edit",
-               "searchable": true,
-               "visible": true,
                "editable": true
            }
        },
@@ -127,8 +133,6 @@
            "javascript": null,
            "list": {
                "cssclass": "dol_edit",
-               "searchable": true,
-               "visible": true,
                "editable": true
            }
        },
@@ -167,7 +171,6 @@
            "enable": true,
            "list": {
                "cssclass": "center",
-               "searchable": true,
                "visible": false
            },
            "mask": "+99 9 99 99 99 99"
@@ -189,7 +192,6 @@
            },
            "list": {
                "cssclass": "center",
-               "searchable": true,
                "editable": true
            }
        },
@@ -208,7 +210,6 @@
            "length": "25",
            "enable": true,
            "list": {
-               "searchable": true,
                "visible": false
            }
        },
@@ -218,8 +219,6 @@
            "length": "12",
            "enable": true,
            "list": {
-               "searchable": true,
-               "visible": false
            }
        },
        "typent_id": {
@@ -307,9 +306,7 @@
            "default": "PL_NONE",
            "status": true,
            "list": {
-               "cssclass": "center",
-               "searchable": true,
-               "visible": true
+               "cssclass": "center"
            },
            "dict": "dict:fk_prospectlevel"
        },
@@ -337,8 +334,6 @@
            "enable": true,
            "list": {
                "cssclass": "center",
-               "searchable": true,
-               "visible": true,
                "editable": true
            },
            "view": "listZoneGeo",
@@ -351,7 +346,12 @@
            "type": "tag",
            "label": "Categories",
            "enable": true,
-           "isarray": true
+           "isarray": true,
+           "list": {
+           },
+           "render": {
+               "cssclass": "tag anthracite-gradient glossy"
+           }
        },
        "notes": {
            "type": "textarea",

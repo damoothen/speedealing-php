@@ -22,15 +22,15 @@ use datatables\ElementInterface;
 
 class Render implements ElementInterface {
 
-	protected $data;
+	protected $field;
 	protected $name;
 	protected $classname;
 	protected $cardname;
 
 	/* ______________________________________________________________________ */
 
-	public function __construct($data = '', $name = '', $classname = '', $cardname = 'fiche') {
-		$this->data = $data;
+	public function __construct($field = '', $name = '', $classname = '', $cardname = 'fiche') {
+		$this->field = $field;
 		$this->name = $name;
 		$this->classname = $classname;
 		$this->cardname = $cardname;
@@ -48,43 +48,88 @@ class Render implements ElementInterface {
 		global $conf, $langs;
 
 		$output = '';
-		switch ($this->data->type) {
+		$type = (!empty($this->field->render->type) ? $this->field->render->type : $this->field->type);
+		$ico = (!empty($this->field->render->ico) ? $this->field->render->ico : (!empty($this->field->ico) ? $this->field->ico : ''));
+
+		switch ($type) {
 			case "url" :
-				if (empty($this->data->url)) // default url
+				if (empty($this->field->render->url)) // default url
 					$url = strtolower($this->classname) . '/'.$this->cardname.'.php?id=';
 				else
-					$url = $this->data->url;
+					$url = $this->field->render->url;
 
-				$output .= 'function(data, type, row) {
+				$output.= 'function(data, type, row) {
 								var ar = [];
 								if(row._id === undefined)
 									return ar.join("");
 								else if(data === undefined)
 									data = row._id;'."\n";
 
-				if (!empty($this->data->ico)) {
+				if (!empty($ico)) {
 					$title = $langs->trans("Show") . ' ' . $this->classname;
-					$output .= 'ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $this->data->ico . '\" border=\"0\" alt=\"' . $title . ' : ";
+					$output.= 'ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $ico . '\" border=\"0\" alt=\"' . $title . ' : ";
 								ar[ar.length] = data.toString() + "\" title=\"' . $title . ' : " + data.toString() + "\"> ";'."\n";
 				}
-				$output .= 'ar[ar.length] = "<a href=\"' . $url . '" + row._id + "\">" + data.toString() + "</a>";
-							var str = ar.join("");
-							return str;
+				$output.= 'ar[ar.length] = "<a href=\"' . $url . '" + row._id + "\">" + data.toString() + "</a>";
+							return ar.join("");
 						}';
 				break;
 			case "email" :
-				$output .= 'function(data, type, row) {
+				$output.= 'function(data, type, row) {
 								var ar = [];
 								if(data === undefined)
 									return ar.join("");
 
 								ar[ar.length] = "<a href=\"mailto:" + data.toString() + "\">" + data.toString() + "</a>";
-								var str = ar.join("");
-								return str;
+								return ar.join("");
 							}';
 				break;
+			case "tag":
+				$output.= 'function(data, type, row) {
+								var ar = [];
+								for (var i in data) {
+									ar[ar.length] = "<span class=\"' . $this->field->render->cssclass . '\">" + data[i].toString() + "</span> ";
+								}
+								return ar.join("");
+							}';
+				break;
+				case "status":
+					$output.= 'function(data, type, row) {
+									var now = Math.round(+new Date());
+									var status = new Array();
+									var expire = new Array();
+									var statusDateEnd = "";';
+
+					if (!empty($this->field->values)) {
+						foreach ($this->field->values as $key => $aRow) {
+							if (isset($aRow->label))
+								$output.= 'status["' . $key . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
+							else
+								$output.= 'status["' . $key . '"]= new Array("' . $langs->trans($key1) . '","' . $aRow->cssClass . '");';
+							if (isset($aRow->dateEnd))
+								$output.= 'expire["' . $key . '"]="' . $aRow->dateEnd . '";';
+						}
+					}
+
+					// TODO show the data structure
+					/*if (isset($params["dateEnd"])) {
+						$rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' === undefined)
+				obj.aData.' . $params["dateEnd"] . ' = "";';
+						$rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' != ""){';
+						$rtr.= 'var dateEnd = new Date(obj.aData.' . $params["dateEnd"] . ').getTime();';
+						$rtr.= 'if(dateEnd < now)';
+						$rtr.= 'if(expire[stat] !== undefined)
+				stat = expire[stat];';
+						$rtr.= '}';
+					}*/
+
+					$output.= 'var ar = [];
+							ar[ar.length] = "<span class=\"tag " + status[data][1] + " glossy\">" + status[data][0] + "</span>";
+							return ar.join("");
+						}';
+				break;
 			default :
-				$output .= 'function(data, type, row) {
+				$output.= 'function(data, type, row) {
 								return data;
 							}';
 				break;
