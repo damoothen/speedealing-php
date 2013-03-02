@@ -1232,7 +1232,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		// Add some plugins
 		$table->plug(new datatables\plugins\Localization);
-		$table->plug(new datatables\plugins\RowSelect);
+		//$table->plug(new datatables\plugins\RowSelect); // used with checkbox
 		$table->plug(new datatables\plugins\DeleteNotification);
 		$table->plug(new datatables\plugins\MakeEditable);
 

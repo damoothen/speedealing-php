@@ -385,7 +385,7 @@
                },
                "delete": {
                    "label": "Delete",
-                   "cssclass": "icon edit"
+                   "cssclass": "icon delete"
                }
            }
        }
