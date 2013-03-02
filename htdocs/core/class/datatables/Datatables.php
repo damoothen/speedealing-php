@@ -297,6 +297,8 @@ class Datatables {
 
 		// display editable
 		$chain = preg_replace('/\{:editable\}/', $editable, $chain);
+		// display editable options
+		$chain = preg_replace('/\{:editable_options\}/', $editable_options, $chain);
 
 		$config = json_encode($this->params);
 		$config = preg_replace('/"\{:callback\}"/', $callback, $config);
