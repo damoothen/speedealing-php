@@ -308,13 +308,18 @@
        },
        "prospectlevel": {
            "type": "select",
+           "label": "ProspectLevelShort",
            "enable": true,
            "default": "PL_NONE",
            "status": true,
+           "dict": "dict:fk_prospectlevel",
            "list": {
-               "cssclass": "center"
+               "cssclass": "center",
+               "editable": true
            },
-           "dict": "dict:fk_prospectlevel"
+           "render": {
+               "type": "status"
+           }
        },
        "cond_reglement": {
            "type": "select",

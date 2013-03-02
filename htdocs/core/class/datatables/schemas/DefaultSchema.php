@@ -21,6 +21,7 @@ class DefaultSchema extends Schema {
 
 			$this->push($aRow, array(
 					'label'			=> (!empty($field->label) ? $langs->trans($field->label) : $langs->trans($aRow)),
+					'default'		=> (!empty($field->default) ? $field->default : ''),
 					'searchable'	=> (is_bool($field->list->searchable) === true ? $field->list->searchable : true),
 					'sortable'		=> (is_bool($field->list->sortable) === true ? $field->list->sortable : true),
 					'visible'		=> (is_bool($field->list->visible) === true ? $field->list->visible : true),
