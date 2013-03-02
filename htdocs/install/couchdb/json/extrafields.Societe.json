@@ -34,8 +34,8 @@
        "idprof3",
        "Tag",
        "Status",
-       "prospectlevel"
-       
+       "prospectlevel",
+       "Action"
    ],
    "shortList": [
        "name",
@@ -216,7 +216,7 @@
        },
        "idprof3": {
            "type": "text",
-           "label": "ProfId3",
+           "label": "ProfId3FR",
            "length": "12",
            "enable": true,
            "list": {
@@ -367,6 +367,27 @@
        "notes": {
            "type": "textarea",
            "enable": true
+       },
+       "Action": {
+           "type": "action",
+           "enable": true,
+           "list": {
+               "width": 35,
+               "cssclass": "center",
+               "sortable": false,
+               "searchable": false,
+               "static": true
+           },
+           "action": {
+               "edit": {
+                   "label": "Edit",
+                   "cssclass": "icon edit"
+               },
+               "delete": {
+                   "label": "Delete",
+                   "cssclass": "icon edit"
+               }
+           }
        }
    }
 }

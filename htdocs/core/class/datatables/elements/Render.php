@@ -50,12 +50,11 @@ class Render implements ElementInterface {
 		$output = '';
 		$type = (!empty($this->field->render->type) ? $this->field->render->type : $this->field->type);
 		$ico = (!empty($this->field->render->ico) ? $this->field->render->ico : (!empty($this->field->ico) ? $this->field->ico : ''));
+		$url = strtolower($this->classname) . '/'.$this->cardname.'.php?id=';
 
 		switch ($type) {
 			case "url" :
-				if (empty($this->field->render->url)) // default url
-					$url = strtolower($this->classname) . '/'.$this->cardname.'.php?id=';
-				else
+				if (!empty($this->field->render->url)) // default url
 					$url = $this->field->render->url;
 
 				$output.= 'function(data, type, row) {
@@ -142,6 +141,20 @@ class Render implements ElementInterface {
 							ar[ar.length] = "<span class=\"tag " + status[data][1] + " glossy\">" + status[data][0] + "</span>";
 							return ar.join("");
 						}';
+				break;
+			case "action":
+				$output.= 'function(data, type, row) {
+								var ar = [];';
+
+				foreach($this->field->action as $action => $param) {
+					if ($action == 'edit')
+				    	$output.= 'ar[ar.length] = \'<a href="' . $url . '\' + row._id + \'&action=' . $action . '&backtopage=' . $_SERVER['PHP_SELF'] . '" class="' . $param->cssclass . '" title="' . $langs->trans($param->label) . '"><img src="theme/' . $conf->theme . '/img/edit.png" alt="" /></a>\';';
+					else if ($action == 'delete')
+						$output.= 'ar[ar.length] = \'<a class="' . $param->cssclass . '" title="' . $langs->trans($param->label) . '"><img src="theme/' . $conf->theme . '/img/delete.png" alt="" /></a>\';';
+				}
+
+				$output.= 'return ar.join("");
+							}';
 				break;
 			default :
 				$output.= 'function(data, type, row) {
