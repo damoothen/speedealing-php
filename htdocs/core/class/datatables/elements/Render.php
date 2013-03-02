@@ -63,7 +63,21 @@ class Render implements ElementInterface {
 								if(row._id === undefined)
 									return ar.join("");
 								else if(data === undefined)
-									data = row._id;'."\n";
+									data = row._id;
+
+								if (typeof data == "object") {
+									if (data.length > 1) {
+										$.each(data, function(key, value) {
+											obj = value.id.split(":");
+											var url = obj[0] + "/'. $this->cardname .'.php?id=" + value.id;
+											ar[ar.length] = "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + "\">" + value.name.toString() + "</a></span> ";
+										});
+									} else {
+										obj = data.id.split(":");
+										var url = obj[0] + "/'. $this->cardname .'.php?id=" + data.id;
+										ar[ar.length] = "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + "\">" + data.name.toString() + "</a></span> ";
+									}
+								} else {'."\n";
 
 				if (!empty($ico)) {
 					$title = $langs->trans("Show") . ' ' . $this->classname;
@@ -71,6 +85,7 @@ class Render implements ElementInterface {
 								ar[ar.length] = data.toString() + "\" title=\"' . $title . ' : " + data.toString() + "\"> ";'."\n";
 				}
 				$output.= 'ar[ar.length] = "<a href=\"' . $url . '" + row._id + "\">" + data.toString() + "</a>";
+							}
 							return ar.join("");
 						}';
 				break;

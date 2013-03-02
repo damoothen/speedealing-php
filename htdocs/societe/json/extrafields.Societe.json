@@ -25,6 +25,7 @@
        "_id",
        "name",
        "code_client",
+       "commercial_id",
        "zip",
        "town",
        "address",
@@ -95,14 +96,14 @@
            "enable": true,
            "default": "ST_NEVER",
            "status": true,
+           "dict": "dict:fk_stcomm",
            "list": {
                "cssclass": "center",
                "editable": true
            },
            "render": {
                "type": "status"
-           },
-           "dict": "dict:fk_stcomm"
+           }
        },
        "address": {
            "type": "textarea",
@@ -264,7 +265,12 @@
            "label": "SalesRepresentatives",
            "class": "User",
            "view": "list",
-           "enable": true
+           "enable": true,
+           "list": {
+           },
+           "render": {
+               "type": "url"
+           }
        },
        "civilite_id": {
            "type": "select",
