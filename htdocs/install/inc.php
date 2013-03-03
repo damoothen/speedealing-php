@@ -35,10 +35,14 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 // For couchdb
 if (!class_exists('couch'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couch.php';
+if (!class_exists('couchAdmin'))
+	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchAdmin.php';
 if (!class_exists('couchClient'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
-if (!class_exists('nosqlDocument'))
-	require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+if (!class_exists('UserAdmin'))
+	require DOL_DOCUMENT_ROOT . '/useradmin/class/useradmin.class.php';
+if (!class_exists('User'))
+	require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
 
 
 // Avoid warnings with strict mode E_STRICT
@@ -58,7 +62,7 @@ if (isset($_SERVER["DOCUMENT_URI"]) && $_SERVER["DOCUMENT_URI"]) {
 $conffiletoshowshort = "conf.php";
 // Define localization of conf file
 $conffile = DOL_DOCUMENT_ROOT . '/conf/conf.php';
-$conffiletoshow = "htdocs/conf/conf.php";
+$conffiletoshow = "conf/conf.php";
 
 if (! defined('DONOTLOADCONF') && file_exists($conffile))
 	include_once $conffile;	// Load conf file
@@ -74,12 +78,12 @@ elseif (isset($_SERVER["SERVER_URL"]) && isset($_SERVER["DOCUMENT_URI"])) {
 }
 // If SCRIPT_URI, SERVER_URL, DOCUMENT_URI not defined (Ie: Apache 2.0.44 for Windows)
 else {
-	$proto = 'http';
+	$scheme = 'http';
 	if (!empty($_SERVER["HTTP_HOST"]))
 		$serverport = $_SERVER["HTTP_HOST"];
 	else
 		$serverport = $_SERVER["SERVER_NAME"];
-	$main_url_root = $proto . "://" . $serverport . $_SERVER["SCRIPT_NAME"];
+	$main_url_root = $scheme . "://" . $serverport . $_SERVER["SCRIPT_NAME"];
 }
 // Clean proposed URL
 $main_url_root = preg_replace('/\/$/', '', $main_url_root);     // Remove the /

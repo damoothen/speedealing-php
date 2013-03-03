@@ -1522,12 +1522,6 @@ if ($action == 'create') {
     }
     $absolute_discount = $soc->getAvailableDiscounts();
 
-
-    if (!empty($conf->use_javascript_ajax)) {
-        print ajax_combobox('fac_replacement');
-        print ajax_combobox('fac_avoir');
-    }
-
     print '<form name="add" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
     print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
     print '<input type="hidden" name="action" value="add">';

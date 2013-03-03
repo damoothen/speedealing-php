@@ -1,6 +1,5 @@
 {
    "_id": "_design/Societe",
-   "_rev": "82-c8e8058057eab0334935fd9c7f20abd1",
    "language": "javascript",
    "views": {
        "list": {

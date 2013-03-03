@@ -1,1 +1,0 @@
-This record cannot be deleted (message returned from the server)

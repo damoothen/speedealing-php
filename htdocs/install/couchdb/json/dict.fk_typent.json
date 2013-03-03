@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_typent",
-   "_rev": "1-f52a57bb0d1fda8ffc7ec3986021d6cf",
+   "class": "Dict",
    "values": {
        "TE_UNKNOWN": {
            "enable": true,
@@ -42,6 +42,5 @@
            "enable": true,
            "label": "TPE"
        }
-   },
-   "class": "dict"
+   }
 }

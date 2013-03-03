@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_paiement",
-   "_rev": "5-109e4b77c38fe0defcc6721eb0118735",
+   "class": "Dict",
    "values": {
        "NONE": {
            "enable": true,
@@ -50,6 +50,5 @@
            "enable": true,
            "label": "Virement"
        }
-   },
-   "class": "dict"
+   }
 }

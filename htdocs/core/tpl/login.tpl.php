@@ -184,13 +184,13 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 
 	<script src="includes/jquery/js/jquery-latest.min.js"></script>
 	<script src="includes/lib/validate/jquery.validate.min.js"></script>
-	<script src="theme/symeos/js/setup.js"></script>
+	<script src="theme/symeos/js/setup.min.js"></script>
 
 	<!-- Template functions -->
-	<script src="theme/symeos/js/developr.input.js"></script>
-	<script src="theme/symeos/js/developr.message.js"></script>
-	<script src="theme/symeos/js/developr.notify.js"></script>
-	<script src="theme/symeos/js/developr.tooltip.js"></script>
+	<script src="theme/symeos/js/developr.input.min.js"></script>
+	<script src="theme/symeos/js/developr.message.min.js"></script>
+	<script src="theme/symeos/js/developr.notify.min.js"></script>
+	<script src="theme/symeos/js/developr.tooltip.min.js"></script>
 
 	<script>
 		$(document).ready(function() {

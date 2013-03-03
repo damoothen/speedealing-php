@@ -1,6 +1,6 @@
 {
    "_id": "_design/Facture",
-   "_rev": "3-bdc8df241cb42a169fc484354b4891c7",
+   "_rev": "34-02117e8b006b953fecba3f3c6ca97c92",
    "language": "javascript",
    "views": {
        "list": {
@@ -8,7 +8,7 @@
        },
        "count": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\")\n  emit(doc.ref, 1);\n}",
-           "reduce": "function(keys, values){\n\treturn sum(values);\n}"
+           "reduce": "_sum"
        },
        "listByRef": {
            "map": "function(doc) {\nif (doc.class && doc.class == 'Facture')\n  emit(doc.ref, doc);\n}"
@@ -55,7 +55,7 @@
        },
        "countByDate": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.type == \"INVOICE_STANDARD\"){\nemit(doc.date, 1);\n}\n}",
-           "reduce": "function(keys, values){\nreturn sum(values);\n}"
+           "reduce": "_sum"
        },
        "listNotPaidPerSociete": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Facture\" && doc.Status == \"NOT_PAID\")\n  emit(doc.socid, doc);\n}"

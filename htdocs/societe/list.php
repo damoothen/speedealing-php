@@ -1,10 +1,10 @@
 <?php
-/* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@capnetworks.com>
- * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
- * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
- * Copyright (C) 2011      Patrick Mary         <laube@hotmail.fr>
+/* Copyright (C) 2001-2006	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2013	Regis Houssin			<regis.houssin@capnetworks.com>
+ * Copyright (C) 2011		Philippe Grand			<philippe.grand@atoo-net.com>
+ * Copyright (C) 2011-2013	Herve Prot				<herve.prot@symeos.com>
+ * Copyright (C) 2011		Patrick Mary			<laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,14 @@
  */
 
 require '../main.inc.php';
+require DOL_DOCUMENT_ROOT . '/core/class/autoloader.php';
 
 $langs->load("companies");
 $langs->load("customers");
 $langs->load("suppliers");
 $langs->load("commercial");
+
+$builder = GETPOST('builder', 'int'); // for test use "&builder=1"
 
 // Security check
 $socid = GETPOST("socid");
@@ -66,8 +69,9 @@ print_fiche_titre($titre);
 </div>
 <?php
 print '<div class="with-padding">';
+//print '<div class="columns">';
 
-//print start_box($titre,"twelve","16-Companies.png");
+//print start_box($titre,"twelve","16-Companies.png",false);
 
 /*
  * Barre d'actions
@@ -77,6 +81,8 @@ print '<div class="with-padding">';
 print '<p class="button-height right">';
 print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create">' . $langs->trans("NewThirdParty") . '</a>';
 print "</p>";
+
+if (empty($builder)) {
 
 print $object->datatablesEdit("societe", $langs->trans("NewThirdParty"));
 
@@ -117,7 +123,7 @@ if ($user->rights->societe->client->voir) {
     $obj->aoColumns[$i]->fnRender = $user->datatablesFnRender("commercial_id.name", "url", array('id' => "commercial_id.id"));
     $i++;
 }
-foreach ($object->fk_extrafields->longList as $aRow) {
+foreach ($object->fk_extrafields->oldList as $aRow) {
     print'<th class="essential">';
     if (isset($object->fk_extrafields->fields->$aRow->label))
         print $langs->transcountry($object->fk_extrafields->fields->$aRow->label, $mysoc->country_id);
@@ -125,7 +131,7 @@ foreach ($object->fk_extrafields->longList as $aRow) {
         print $langs->trans($aRow);
     print'</th>';
     $obj->aoColumns[$i] = new stdClass();
-    $obj->aoColumns[$i] = $object->fk_extrafields->fields->$aRow->aoColumns;
+    $obj->aoColumns[$i] = $object->fk_extrafields->fields->$aRow->list;
     if (isset($object->fk_extrafields->$aRow->default))
         $obj->aoColumns[$i]->sDefaultContent = $object->fk_extrafields->$aRow->default;
 	else {
@@ -153,6 +159,7 @@ $i++;
   $obj->aoColumns[$i]->bUseRendered = false;
   $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("tms", "date");
   $i++; */
+
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
@@ -210,6 +217,7 @@ print'</tr>';
 print'</thead>';
 print'<tfoot>';
 /* input search view */
+
 $i = 0; //Doesn't work with bServerSide
 print'<tr>';
 print'<th id="' . $i . '"></th>';
@@ -220,8 +228,8 @@ if ($user->rights->societe->client->voir) {
     print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Commercial") . '" /></th>';
     $i++;
 }
-foreach ($object->fk_extrafields->longList as $aRow) {
-    if ($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable == true)
+foreach ($object->fk_extrafields->oldList as $aRow) {
+    if ($object->fk_extrafields->fields->$aRow->list->searchable == true)
         print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search " . $aRow) . '" /></th>';
     else
         print'<th id="' . $i . '"></th>';
@@ -247,6 +255,13 @@ if (!$user->rights->societe->client->voir)
     $obj->sAjaxSource = "core/ajax/listdatatables.php?json=listByCommercial&key=" . $user->id . "&class=" . get_class($object);
 
 $object->datatablesCreate($obj, "societe", true, true);
+
+}
+
+echo '<br>';
+
+if (!empty($builder))
+	echo $object->showList();
 
 //print end_box();
 print '</div>'; // end

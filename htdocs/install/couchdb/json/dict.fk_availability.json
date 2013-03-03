@@ -1,5 +1,6 @@
 {
    "_id": "dict:fk_availability",
+   "class": "Dict",
    "values": {
        "AV_NOW": {
            "enable": true,
@@ -17,6 +18,5 @@
            "enable": true,
            "label": "3 weeks"
        }
-   },
-   "class": "dict"
+   }
 }

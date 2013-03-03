@@ -374,7 +374,7 @@ function dol_stringtotime($string, $gm=1, $tz='')
     {
         $date=dol_time_plus_timezone($date,$tz);
     }
-    return $date;
+    return date("c",$date);
 }
 
 

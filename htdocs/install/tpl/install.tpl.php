@@ -33,7 +33,7 @@
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("WelcomeTitle"); ?></h4>
 		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/welcome.png" alt="Welcome"></div>
-		<p><?php echo $langs->trans("WelcomeDesc"); ?></p>
+		<p><?php echo $langs->trans("WelcomeDescription"); ?></p>
 	</div>
 
 	<div class="field-block button-height">
@@ -42,13 +42,13 @@
 	</div>
 
 	<div class="field-drop button-height black-inputs">
-		<p><?php echo $langs->trans("LanguageDesc"); ?></p>
+		<p><?php echo $langs->trans("LanguageDescription"); ?></p>
 	</div>
 
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("InstallTypeTitle"); ?></h4>
 		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installtype.png" alt="Install"></div>
-		<p><?php echo $langs->trans("InstallTypeDesc"); ?></p>
+		<p><?php echo $langs->trans("InstallTypeDescription"); ?></p>
 	</div>
 
 	<div class="field-block button-height">
@@ -56,13 +56,13 @@
 		<input type="radio" name="install_type" id="install_type_server" value="server" class="radio" checked> <label for="install_type_server"><?php echo $langs->trans("InstallTypeServer"); ?></label>
 		<span class="info-spot on-top">
 			<span class="icon-info-round"></span>
-			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeServerDesc"); ?></span>
+			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeServerDescription"); ?></span>
 		</span>
 		<br>
 		<input type="radio" name="install_type" id="install_type_client" value="client" class="radio" disabled> <label for="install_type_client"><?php echo $langs->trans("InstallTypeClient"); ?></label>
 		<span class="info-spot on-top">
 			<span class="icon-info-round"></span>
-			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeClientDesc"); ?></span>
+			<span class="info-bubble blue-bg"><?php echo $langs->trans("InstallTypeClientDescription"); ?></span>
 		</span>
 	</div>
 
@@ -72,12 +72,12 @@
 
 <fieldset id="prerequisite" class="wizard-fieldset fields-list">
 
-	<legend class="legend"><?php echo $langs->trans("Prerequisite"); ?></legend>
+	<legend class="legend"><?php echo $langs->trans("Prerequisites"); ?></legend>
 
 	<div class="field-block">
-		<h4 class="blue"><?php echo $langs->trans("PrerequisiteTitle"); ?></h4>
-		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/prerequisite.png" alt="Prerequisite"></div>
-		<p><?php echo $langs->trans("PrerequisiteDesc"); ?></p>
+		<h4 class="blue"><?php echo $langs->trans("PrerequisitesTitle"); ?></h4>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/prerequisite.png" alt="Prerequisites"></div>
+		<p><?php echo $langs->trans("PrerequisitesDescription"); ?></p>
 	</div>
 
 	<div class="field-block">
@@ -106,7 +106,12 @@
 	</div>
 
 	<div class="field-block">
-		<label for="conf_file" class="label"><b><?php echo $langs->trans("ConfigFileStatus"); ?></b></label>
+		<label for="couchdb_rewrite" class="label"><b><?php echo $langs->trans("CouchDB"); ?></b></label>
+		<div id="couchdb_rewrite"></div>
+	</div>
+
+	<div class="field-block">
+		<label for="conf_file" class="label"><b><?php echo $langs->trans("ConfFileStatus"); ?></b></label>
 		<div id="conf_file"></div>
 	</div>
 
@@ -271,7 +276,7 @@
 
 	<div class="field-block button-height memcached">
 		<label for="memcached_host" class="label"><b><?php echo $langs->trans("Server"); ?></b></label>
-		<input type="text" name="memcached_host" id="memcached_host" value="localhost" class="input full-width validate[required]">
+		<input type="text" name="memcached_host" id="memcached_host" value="127.0.0.1" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height memcached">
@@ -299,7 +304,7 @@
 	<div class="field-block">
 		<h4 class="blue"><?php echo $langs->trans("InstallTitle"); ?></h4>
 		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/installation.png" alt="Installation"></div>
-		<p><?php echo $langs->trans("InstallDesc"); ?></p>
+		<p><?php echo $langs->trans("InstallDescription"); ?></p>
 	</div>
 
 	<div class="field-block">

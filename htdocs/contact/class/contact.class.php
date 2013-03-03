@@ -839,7 +839,7 @@ class Contact extends nosqlDocument {
         global $langs, $conf, $user, $db, $bc;
 
         $titre = $langs->trans("ContactsForCompany");
-        print start_box($titre, "six", "16-Users.png");
+        print start_box($titre, "twelve", "16-Users.png");
 
         $i = 0;
         $obj = new stdClass();

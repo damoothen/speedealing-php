@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_actioncomm",
-   "_rev": "3-5cf2250e49e2f7901b548c5402e7d4ce",
+   "class": "Dict",
    "values": {
        "AC_NEWSUS": {
            "enable": false,
@@ -149,6 +149,5 @@
            "type": "task",
            "order": 10
        }
-   },
-   "class": "dict"
+   }
 }

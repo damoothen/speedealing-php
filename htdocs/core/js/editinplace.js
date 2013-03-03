@@ -288,7 +288,7 @@ $(document).ready(function() {
 	
     $('.editval_datepicker').editable(urlSaveInPlace, {
         type		: 'datepicker',
-        id		: 'key',
+        id			: 'key',
         onblur		: 'ignore',
         tooltip		: tooltipInPlace,
         placeholder	: '&nbsp;',

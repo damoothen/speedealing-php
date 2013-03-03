@@ -7,7 +7,7 @@
  * Copyright (C) 2005-2013 Regis Houssin        <regis.houssin@capnetworks.com>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2008      Matteli
- * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2013 Herve Prot           <herve.prot@symeos.com>
  * Copyright (C) 2011      Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -184,6 +184,23 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX'))
 	require DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'; // Need 22ko memory
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
 	Header("Location: " . DOL_URL_ROOT . "/install/index.php");
@@ -280,7 +297,6 @@ if (!defined('NOLOGIN')) {
 			$user->trigger_mesg = 'SessionExpire - login=' . $login;
 			$_SESSION["dol_loginmesg"] = $langs->trans("Session expired", $login); // TODO Session Expire
 			setcookie('AuthSession', '', 1, '/'); // Reset auth cookie
-
 			// Call triggers
 			if (!class_exists('Interfaces'))
 				include DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
@@ -347,9 +363,9 @@ if (!defined('NOLOGIN')) {
 	 * Overwrite configs global by personal configs
 	 */
 	// Set liste_limit
-	if (isset($user->conf->MAIN_SIZE_LISTE_LIMIT))	// Can be 0
+	if (isset($user->conf->MAIN_SIZE_LISTE_LIMIT)) // Can be 0
 		$conf->liste_limit = $user->conf->MAIN_SIZE_LISTE_LIMIT;
-	if (isset($user->conf->PRODUIT_LIMIT_SIZE))		// Can be 0
+	if (isset($user->conf->PRODUIT_LIMIT_SIZE))  // Can be 0
 		$conf->product->limit_size = $user->conf->PRODUIT_LIMIT_SIZE;
 
 	// Replace conf->css by personalized value
@@ -432,20 +448,20 @@ if ($conf->urlrewrite) {
 
 	$_SERVER['PHP_SELF'] = '/' . $conf->Couchdb->name . $_SERVER['PHP_SELF']; // Add Entity in the url
 	// Switch to another entity
-	/*if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT, $tmp_db) == 0) {
-		dol_flushcache(); // reset cache
-		dol_setcache("dol_db", $tmp_db);
+	/* if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT, $tmp_db) == 0) {
+	  dol_flushcache(); // reset cache
+	  dol_setcache("dol_db", $tmp_db);
 
-		//$user->useDatabase($tmp_db);
+	  //$user->useDatabase($tmp_db);
 
-		if (!empty($user->NewConnection))
-			$user->set("LastConnection", $user->NewConnection);
-		$user->set("NewConnection", dol_now());
+	  if (!empty($user->NewConnection))
+	  $user->set("LastConnection", $user->NewConnection);
+	  $user->set("NewConnection", dol_now());
 
-		//Header("Location: /" . $tmp_db . '/');
-		//unset($tmp_db);
-		//exit;
-	}*/
+	  //Header("Location: /" . $tmp_db . '/');
+	  //unset($tmp_db);
+	  //exit;
+	  } */
 }
 
 
@@ -476,9 +492,13 @@ if (!function_exists("llxHeader")) {
 		else
 			print '<body class="fullW" style="background: white;">';
 
+		/**
+		 * Upgrade Speedealing
+		 */
 		// If an upgrade process is required, we call the install page.
 		if (empty($conf->global->MAIN_VERSION) || ($conf->global->MAIN_VERSION != DOL_VERSION)) {
 			$langs->load("install");
+			error_log("upgrade started");
 			if (!empty($user->admin) && (empty($conf->global->MAIN_VERSION) || DOL_VERSION > $conf->global->MAIN_VERSION)) {
 				include_once DOL_DOCUMENT_ROOT . '/install/upgrade.php';
 				upgrade(); // Auto-upgrade
@@ -522,15 +542,16 @@ if (!function_exists("llxHeader")) {
 		<?php
 		main_area($title);
 	}
+
 }
 
 /**
  * Show HTTP header
  *
- *	@param	$type	Header type
- *	@return	void
+ * 	@param	$type	Header type
+ * 	@return	void
  */
-function top_httphead($type=false) {
+function top_httphead($type = false) {
 	global $conf;
 
 	if ($type == 'json')
@@ -563,7 +584,24 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 	if (empty($conf->css))
 		$conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
 
-	// DOCTYPE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 
 	if (empty($disablehead)) {
@@ -572,7 +610,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		$name = 'Speedealing';
 		if (!empty($mysoc->name))
 			$name = $mysoc->name;
-		$title = $name . (!empty($title)?$title:'');
+		$title = $name . (!empty($title) ? $title : '');
 
 		// Base href
 		$base_href = MAIN_PROTOCOL . '://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/';
@@ -591,34 +629,26 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 		// CSS forced by modules (relative url starting with /)
 		/*
-		if (is_array($conf->css_modules)) {
-			foreach ($conf->css_modules as $key => $cssfile) {
-				// cssfile is an absolute path
-				print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
-				// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters, so browser cache is not used.
-				if (!preg_match('/\.css$/i', $cssfile))
-					print $themeparam;
-				print '"><!-- Added by module ' . $key . '-->' . "\n";
-			}
-		}
-		// CSS forced by page in top_htmlhead call (relative url starting with /)
-		if (is_array($arrayofcss)) {
-			foreach ($arrayofcss as $cssfile) {
-				print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
-				// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
-				if (!preg_match('/\.css$/i', $cssfile))
-					print $themeparam;
-				print '"><!-- Added by page -->' . "\n";
-			}
-		}*/
-
-		// For new theme TODO script init A revoir
-		print '<script>
-			$(document).ready(function() {
-                prth_stickyFooter.resize();
-				//prth_common.init();
-			});
-		</script>';
+		  if (is_array($conf->css_modules)) {
+		  foreach ($conf->css_modules as $key => $cssfile) {
+		  // cssfile is an absolute path
+		  print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
+		  // We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters, so browser cache is not used.
+		  if (!preg_match('/\.css$/i', $cssfile))
+		  print $themeparam;
+		  print '"><!-- Added by module ' . $key . '-->' . "\n";
+		  }
+		  }
+		  // CSS forced by page in top_htmlhead call (relative url starting with /)
+		  if (is_array($arrayofcss)) {
+		  foreach ($arrayofcss as $cssfile) {
+		  print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
+		  // We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
+		  if (!preg_match('/\.css$/i', $cssfile))
+		  print $themeparam;
+		  print '"><!-- Added by page -->' . "\n";
+		  }
+		  } */
 
 		// Output module javascript
 		if (is_array($arrayofjs)) {
@@ -646,83 +676,55 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 }
 
 /**
- * Show The top menu bar
+ * Show right menu bar
  *
  * @return	void
  */
-function top_menu() {
+function left_menu() {
 	global $conf, $langs;
-	//global $user, $conf, $langs, $db;
-	//global $dolibarr_main_authentication;
-	$toprightmenu = '';
 
-	$conf->top_menu = 'auguria_backoffice.php';
-
-	/*
-	 * Top menu
-	 */
-	$top_menu = $conf->top_menu;
-
-	// Load the top menu manager
-	// Load the top menu manager (only if not already done)
-	if (!class_exists('MenuTop')) {
-		$top_menu = 'auguria_backoffice.php';
-		include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $top_menu;
-	}
-	?>
-
-	<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
+	?><ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
 		<li class="current">
-			<a href="index.php?idmenu=menu:home" title="<?php echo $langs->trans("Dashboard"); ?>">
-				<img src="theme/common/modules/Maps.png" />
-				<?php echo $langs->trans("Dashboard"); ?>
+			<a href="index.php?idmenu=menu:home" class="shortcut-dashboard" title="<?php echo $langs->trans("Dashboard"); ?>">
+	<?php echo $langs->trans("Dashboard"); ?>
 			</a>
 		</li>
 		<li>
-			<span href="inbox.html" title="<?php echo $langs->trans("Messages"); ?>">
-				<img src="theme/common/modules/Mail_alt.png" />
-				<?php echo $langs->trans("Messages"); ?>
+			<span href="inbox.html" class="shortcut-messages" title="<?php echo $langs->trans("Messages"); ?>">
+	<?php echo $langs->trans("Messages"); ?>
 			</span>
 		</li>
 		<li>
-			<a href="agenda/list.php?idmenu=menu:agendaList" title="<?php echo $langs->trans("Agenda"); ?>">
-				<img src="theme/common/modules/Calendar.png" />
-				<?php echo $langs->trans("Agenda"); ?>
+			<a href="agenda/list.php?idmenu=menu:agendaList" class="shortcut-agenda" title="<?php echo $langs->trans("Agenda"); ?>">
+	<?php echo $langs->trans("Agenda"); ?>
 			</a>
 		</li>
 		<li>
-			<span href="tables.html" title="<?php echo $langs->trans("Contacts"); ?>">
-				<img src="theme/common/modules/Contacts.png" />
-				<?php echo $langs->trans("Contacts"); ?>
+			<span href="tables.html" class="shortcut-contacts" title="<?php echo $langs->trans("Contacts"); ?>">
+	<?php echo $langs->trans("Contacts"); ?>
 			</span>
 		</li>
 		<li>
-			<span href="explorer.html" title="<?php echo $langs->trans("Medias"); ?>">
-				<img src="theme/common/modules/Photos.png" />
-				<?php echo $langs->trans("Medias"); ?>
+			<span href="explorer.html" class="shortcut-medias" title="<?php echo $langs->trans("Medias"); ?>">
+	<?php echo $langs->trans("Medias"); ?>
 			</span>
 		</li>
 		<li>
-			<span href="sliders.html" title="<?php echo $langs->trans("Stats"); ?>">
-				<img src="theme/common/modules/Stocks.png" />
-				<?php echo $langs->trans("Stats"); ?>
+			<span href="sliders.html" class="shortcut-stats" title="<?php echo $langs->trans("Stats"); ?>">
+	<?php echo $langs->trans("Stats"); ?>
+			</span>
+		</li>
+		<li class="at-bottom">
+			<span href="form.html" class="shortcut-settings" title="<?php echo $langs->trans("Settings"); ?>">
+	<?php echo $langs->trans("Settings"); ?>
 			</span>
 		</li>
 		<li>
-			<span href="form.html" title="<?php echo $langs->trans("Settings"); ?>">
-				<img src="theme/common/modules/Settings.png" />
-				<?php echo $langs->trans("Settings"); ?>
-			<span>
-		</li>
-		<li>
-			<span title="<?php echo $langs->trans("Notes"); ?>">
-				<img src="theme/common/modules/Notes.png" />
-				<?php echo $langs->trans("Notes"); ?>
+			<span class="shortcut-notes" title="<?php echo $langs->trans("Notes"); ?>">
+	<?php echo $langs->trans("Notes"); ?>
 			</span>
 		</li>
-	</ul>
-
-	<?php
+	</ul><?php
 }
 
 /**
@@ -730,9 +732,19 @@ function top_menu() {
  *
  * @return	void
  */
-function left_menu() {
+function main_menu() {
 	global $user, $conf, $langs, $db;
 	global $hookmanager, $count_icon;
+
+
+	/*
+	 * Menu
+	 */
+	$conf->top_menu = 'auguria_backoffice.php';
+
+	// Load the top menu manager (only if not already done)
+	//if (!class_exists('MenuTop'))
+		include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $conf->top_menu;
 
 	$searchform = '';
 	$bookmarks = '';
@@ -741,163 +753,155 @@ function left_menu() {
 	$hookmanager->initHooks(array('searchform', 'leftblock'));
 
 	print "\n";
-	?>
-
-	<!-- Sidebar/drop-down menu -->
+	?><!-- Sidebar/drop-down menu -->
 	<section id="menu" role="complementary">
 
-	<!-- This wrapper is used by several responsive layouts -->
-	<div id="menu-content">
-		<header>
-			<form action="search.php" id="search_box" method="post">
-				<input name="query" id="query" type="text" size="40" placeholder="<?php echo $langs->trans("SearchOf"); ?>..." autocomplete="off" />
-			</form>
-		</header>
-		<script>
-		$(document).ready(function() {
-			$('#query').sautocomplete('search/data.php', {
-				delay: 10,
-				minChars: 2,
-				max: 6,
-				matchCase: 1,
-				width: 212
-			}).result(function(event, query_val) {
-				$.fancybox({
-					href: 'search/search_result.php',
-					ajax: {
-						type: "POST",
-						data: "search_item=" + query_val
-					},
-					'overlayOpacity': '0.2',
-					'transitionIn': 'elastic',
-					'transitionOut': 'fade',
-					onComplete: function() {
-						$('#query').blur();
-					}
+		<!-- This wrapper is used by several responsive layouts -->
+		<div id="menu-content">
+			<header>
+				<form action="search.php" id="search_box" method="post">
+					<input name="query" id="query" type="text" size="40" placeholder="<?php echo $langs->trans("SearchOf"); ?>..." autocomplete="off" />
+				</form>
+			</header>
+			<script>
+				$(document).ready(function() {
+					$('#query').sautocomplete('search/data.php', {
+						delay: 10,
+						minChars: 2,
+						max: 6,
+						matchCase: 1,
+						indicator : '<img src="theme/<?php echo $conf->theme; ?>/img/working.gif">',
+						width: 212
+					}).result(function(event, query_val) {
+						$.modal({
+							title: 'Result content',
+							minWidth: 200,
+							minHeight: 200,
+							resizable: false,
+							url: 'search/search_result.php',
+							ajax: {
+								type: "POST",
+								data: "search_item=" + query_val
+							}
+						});
+					});
+					$('#search_box').submit(function() {
+						var query_val = $("#query").val();
+						$.modal({
+							title: 'Result content',
+							minWidth: 200,
+							minHeight: 200,
+							resizable: false,
+							url: 'search/search_result.php',
+							ajax: {
+								type: "POST",
+								data: "search_item=" + query_val
+							}
+						});
+						return false;
+					});
 				});
-			});
-			$('#search_box').submit(function() {
-				var query_val = $("#query").val();
-				$.fancybox({
-					href: 'search/search_result.php',
-					ajax: {
-						type: "POST",
-						data: "search_item=" + query_val
-					},
-					'overlayOpacity': '0.2',
-					'transitionIn': 'elastic',
-					'transitionOut': 'fade'
-				});
-				return false;
-			});
-		});
-		</script>
+			</script>
 
-		<div id="profile" class="with-mid-padding">
-			<div class="columns">
-				<div class="five-columns">
-					<div class="ego-icon big">
-					<?php if (!empty($user->Photo)) : ?>
-						<img alt="User name" class="ego-icon-inner" src="<?php echo $user->getFile($user->Photo); ?>">
-					<?php else : ?>
-						<img src="theme/symeos/img/user.png" alt="User name" class="ego-icon-inner">
-					<?php endif; ?>
-						<img class="ego-icon-outer" src="theme/symeos/img/timbrebase90x100.png">
-					</div>
-				</div>
-				<div class="seven-columns">
-					<?php echo $langs->trans('Hello'); ?>
-					<span class="name">
-						<?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b>
-					</span>
-				</div>
+			<div id="profile">
+				<?php if (!empty($user->Photo)) : ?><img alt="User name" src="<?php echo $user->getFile($user->Photo); ?>" width="64" class="user-icon">
+				<?php else : ?><img src="theme/symeos/img/user.png" width="64" class="user-icon" alt="User name">
+	<?php endif; ?>
+	<?php echo $langs->trans('Hello'); ?><span class="name"><?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b></span>
 			</div>
-		</div>
 
-		<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
-		<ul id="access" class="children-tooltip">
-			<li style="width: 20%;">
-				<a href="index.php?idmenu=menu:home" title="<?php echo $langs->trans("Home"); ?>">
-					<span class="icon-home"></span>
-				</a>
-			</li>
-			<li style="width: 20%;">
-				<span href="inbox.html" title="Messages">
-					<span class="icon-inbox"></span>
-				</span>
-			</li>
-			<li style="width: 20%;">
-				<a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>">
-					<span class="icon-calendar"></span>
-					<?php
-					require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
-					$agenda = new Agenda($db);
-					$result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
-					//print_r($user->id);
-					if ($result->rows[0]->value) {
-						print '<span class="count">' . $result->rows[0]->value . '</span>';
-						$count_icon+=$result->rows[0]->value;
-					}
-					?>
-				</a>
-			</li>
-			<li style="width: 20%;">
-				<a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile">
-					<span class="icon-gear"></span>
-				</a>
-			</li>
-			<li style="width: 20%;">
-				<a href="user/logout.php" title="Log out">
-					<span class="icon-unlock"></span>
-				</a>
-			</li>
-		</ul>
+			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
+			<ul id="access" class="children-tooltip">
+				<li style="width: 20%;">
+					<a href="index.php?idmenu=menu:home" title="<?php echo $langs->trans("Home"); ?>">
+						<span class="icon-home"></span>
+					</a>
+				</li>
+				<li style="width: 20%;">
+					<span href="inbox.html" title="Messages">
+						<span class="icon-inbox"></span>
+					</span>
+				</li>
+				<li style="width: 20%;">
+						<?php if ($conf->agenda->enabled) : ?>
+						<a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>">
+							<span class="icon-calendar"></span>
+							<?php
+							require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
+							$agenda = new Agenda($db);
+							$result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
+							//print_r($user->id);
+							if ($result->rows[0]->value) {
+								print '<span class="count">' . $result->rows[0]->value . '</span>';
+								$count_icon+=$result->rows[0]->value;
+							}
+							?>
+						</a>
+	<?php else: ?>
+						<span href="agenda/list.php" title="<?php echo $langs->trans("Agenda"); ?>">
+							<span class="icon-calendar"></span>
+						</span>
+	<?php endif; ?>
+				</li>
+				<li style="width: 20%;">
+					<a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile">
+						<span class="icon-gear"></span>
+					</a>
+				</li>
+				<li style="width: 20%;">
+					<a href="user/logout.php" title="Log out">
+						<span class="icon-unlock"></span>
+					</a>
+				</li>
+			</ul>
 
-		<?php
-		// Show menu
-		$menu = new MenuAuguria($db);
-		$menu->atarget = $target;
-		$menu->showmenuTop();
+			<?php
+			// Show menu
+			$menu = new MenuAuguria($db);
+			$menu->atarget = $target;
+			$menu->showmenuTop();
 
-		$agenda = new Agenda($db);
-		$params = array(
-						'startkey' => array($user->id, mktime(0, 0, 0, date("m"), date("d"), date("Y"))),
-						'endkey' => array($user->id, mktime(23, 59, 59, date("m"), date("d"), date("Y")))
-		);
-		$result = $agenda->getView("listMyTasks", $params);
-		if (count($result->rows)) :
-		?>
-		<ul class="unstyled-list">
-			<li class="title-menu">Today's event</li>
-			<li>
-				<ul class="calendar-menu">
-				<?php
-				foreach ($result->rows as $aRow) {
-					print '<li><a href="agenda/fiche.php?id=' . $aRow->value->_id . '" title="' . $aRow->value->societe->name . '"> <time datetime="' . dol_print_date($aRow->value->datep, "day") . '">';
-					print '<b>' . date("d", $aRow->value->datep) . '</b> ' . date("M", $aRow->value->datep);
-					print '</time> <small class="green">' . dol_print_date($aRow->value->datep, "hour") . '</small> ' . $aRow->value->label;
-					print '</a></li>';
-				}
+			if ($conf->agenda->enabled) {
+				$agenda = new Agenda($db);
+				$params = array(
+					'startkey' => array($user->id, mktime(0, 0, 0, date("m"), date("d"), date("Y"))),
+					'endkey' => array($user->id, mktime(23, 59, 59, date("m"), date("d"), date("Y")))
+				);
+				$result = $agenda->getView("listMyTasks", $params);
+			}
+			if (count($result->rows)) :
 				?>
+				<ul class="unstyled-list">
+					<li class="title-menu">Today's event</li>
+					<li>
+						<ul class="calendar-menu">
+							<?php
+							foreach ($result->rows as $aRow) {
+								print '<li><a href="agenda/fiche.php?id=' . $aRow->value->_id . '" title="' . $aRow->value->societe->name . '"> <time datetime="' . dol_print_date($aRow->value->datep, "day") . '">';
+								print '<b>' . date("d", $aRow->value->datep) . '</b> ' . date("M", $aRow->value->datep);
+								print '</time> <small class="green">' . dol_print_date($aRow->value->datep, "hour") . '</small> ' . $aRow->value->label;
+								print '</a></li>';
+							}
+							?>
+						</ul>
+					</li>
 				</ul>
-			</li>
-		</ul>
-		<?php endif; ?>
-	</div>
-	<!-- End content wrapper -->
-
-	<!-- This is optional -->
-	<footer id="menu-footer">
-		<div>
-			<p>Speedealing v.<?php echo DOL_VERSION; ?></p>
+	<?php endif; ?>
 		</div>
-	</footer>
+		<!-- End content wrapper -->
+
+		<!-- This is optional -->
+		<footer id="menu-footer">
+			<div>
+				<p>Speedealing v.<?php echo DOL_VERSION; ?></p>
+			</div>
+		</footer>
 
 	</section>
 	<!-- End sidebar/drop-down menu -->
 	<?php
-        // Left column
-        print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
+	// Left column
+	print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
 }
 
 /**
@@ -935,8 +939,9 @@ if (!function_exists("llxFooter")) {
 
 		<!-- End main content -->
 		<?php
-		top_menu(); // print the left menu
-		left_menu(); // print the right menu
+
+		left_menu(); // print the left menu
+		main_menu(); // print the right menu
 
 		if ($conf->memcached->enabled && get_class($memcache) == 'Memcache')
 			$memcache->close();
@@ -954,11 +959,12 @@ if (!function_exists("llxFooter")) {
 			// Footer template
 			include DOL_DOCUMENT_ROOT . '/core/tpl/footer.tpl.php';
 
-            printCommonFooter();
+			printCommonFooter();
 		}
 
-        print "</body>\n";
-        print "</html>\n";
-    }
+		print "</body>\n";
+		print "</html>\n";
+	}
+
 }
 ?>

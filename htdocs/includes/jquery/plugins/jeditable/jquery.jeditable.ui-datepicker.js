@@ -10,7 +10,7 @@ jQuery.editable.addInputType('datepicker', {
         };
         
         input.datepicker({
-            //dateFormat: 'dd/mm/yy',
+            dateFormat: 'dd-mm-yy',
             onSelect: function(dateText, inst) {
                 // you may want to remove this or
                 // change it to

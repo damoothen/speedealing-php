@@ -169,7 +169,7 @@ class Societe extends nosqlDocument {
 		// Check more parameters
 		// If error, this->errors[] is filled
 		$result = $this->verify();
-		
+
 		$staticuser = new User($db);
 
 		if ($result >= 0) {
@@ -178,12 +178,12 @@ class Societe extends nosqlDocument {
 			if ($this->commercial_id->id != '' && $this->commercial_id->id != "-1") {
 				$this->commercial_id->id = trim($this->commercial_id->id);
 				$staticuser->load($this->commercial_id->id);
-				$this->commercial_id->name = $staticuser->login;
+				$this->commercial_id->name = $staticuser->name;
 			}
 			// si un commercial cree un client il lui est affecte automatiquement
 			else {
 				$this->commercial_id->id = $user->id;
-				$this->commercial_id->name = $user->login;
+				$this->commercial_id->name = $user->name;
 			}
 
 			$ret = $this->update('', $user, 0, 1, 1, 'add'); // Record
@@ -299,7 +299,7 @@ class Societe extends nosqlDocument {
 			curl_close($c);
 			if ($response->status == "OK") {
 				$this->gps = array($response->results[0]->geometry->location->lat,
-					$response->results[0]->geometry->location->lng);
+						$response->results[0]->geometry->location->lng);
 			} else {
 				unset($this->gps);
 			}
@@ -522,38 +522,38 @@ class Societe extends nosqlDocument {
 			}
 
 			return parent::delete();
-/*
-			// TODO Supprimer les contacts
+			/*
+			 // TODO Supprimer les contacts
 			// Remove contacts
 			if (!$error) {
-				$sql = "DELETE FROM " . MAIN_DB_PREFIX . "socpeople";
-				$sql.= " WHERE fk_soc = " . $id;
-				if (!$this->db->query($sql)) {
-					$error++;
-					$this->error .= $this->db->lasterror();
-				}
+			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "socpeople";
+			$sql.= " WHERE fk_soc = " . $id;
+			if (!$this->db->query($sql)) {
+			$error++;
+			$this->error .= $this->db->lasterror();
+			}
 			}
 
 			// Update link in member table
 			if (!$error) {
-				$sql = "UPDATE " . MAIN_DB_PREFIX . "adherent";
-				$sql.= " SET fk_soc = NULL WHERE fk_soc = " . $id;
-				if (!$this->db->query($sql)) {
-					$error++;
-					$this->error .= $this->db->lasterror();
-				}
+			$sql = "UPDATE " . MAIN_DB_PREFIX . "adherent";
+			$sql.= " SET fk_soc = NULL WHERE fk_soc = " . $id;
+			if (!$this->db->query($sql)) {
+			$error++;
+			$this->error .= $this->db->lasterror();
+			}
 			}
 
 			// Remove ban
 			if (!$error) {
-				$sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe_rib";
-				$sql.= " WHERE fk_soc = " . $id;
-				if (!$this->db->query($sql)) {
-					$error++;
-					$this->error = $this->db->lasterror();
-				}
+			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe_rib";
+			$sql.= " WHERE fk_soc = " . $id;
+			if (!$this->db->query($sql)) {
+			$error++;
+			$this->error = $this->db->lasterror();
 			}
-*/
+			}
+			*/
 			// Removed extrafields
 			//$result=$this->deleteExtraFields($this);
 			//if ($result < 0) $error++;
@@ -569,17 +569,17 @@ class Societe extends nosqlDocument {
 					$this->error = $hookmanager->error;
 				}
 			}
-/*
-			// Remove third party
+			/*
+			 // Remove third party
 			if (!$error) {
-				$sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe";
-				$sql.= " WHERE rowid = " . $id;
-				if (!$this->db->query($sql)) {
-					$error++;
-					$this->error = $this->db->lasterror();
-				}
+			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe";
+			$sql.= " WHERE rowid = " . $id;
+			if (!$this->db->query($sql)) {
+			$error++;
+			$this->error = $this->db->lasterror();
 			}
-*/
+			}
+			*/
 			if (!$error) {
 				// Appel des triggers
 				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
@@ -772,9 +772,9 @@ class Societe extends nosqlDocument {
 		$i = 0;
 		if ($num > 0)
 			foreach ($this->commerciaux as $aRow) {
-				$reparray[$i]['id'] = $aRow;
-				$i++;
-			}
+			$reparray[$i]['id'] = $aRow;
+			$i++;
+		}
 		return $reparray;
 	}
 
@@ -1456,9 +1456,9 @@ class Societe extends nosqlDocument {
 			//Check NIF
 			if (preg_match('/(^[0-9]{8}[A-Z]{1}$)/', $string))
 				if ($num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr($string, 0, 8) % 23, 1))
-					return 1;
-				else
-					return -1;
+				return 1;
+			else
+				return -1;
 
 			//algorithm checking type code CIF
 			$sum = $num[2] + $num[4] + $num[6];
@@ -1469,30 +1469,30 @@ class Societe extends nosqlDocument {
 			//Chek special NIF
 			if (preg_match('/^[KLM]{1}/', $string))
 				if ($num[8] == chr(64 + $n) || $num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr($string, 1, 8) % 23, 1))
-					return 1;
-				else
-					return -1;
+				return 1;
+			else
+				return -1;
 
 			//Check CIF
 			if (preg_match('/^[ABCDEFGHJNPQRSUVW]{1}/', $string))
 				if ($num[8] == chr(64 + $n) || $num[8] == substr($n, strlen($n) - 1, 1))
-					return 2;
-				else
-					return -2;
+				return 2;
+			else
+				return -2;
 
 			//Check NIE T
 			if (preg_match('/^[T]{1}/', $string))
 				if ($num[8] == preg_match('/^[T]{1}[A-Z0-9]{8}$/', $string))
-					return 3;
-				else
-					return -3;
+				return 3;
+			else
+				return -3;
 
 			//Check NIE XYZ
 			if (preg_match('/^[XYZ]{1}/', $string))
 				if ($num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr(str_replace(array('X', 'Y', 'Z'), array('0', '1', '2'), $string), 0, 8) % 23, 1))
-					return 3;
-				else
-					return -3;
+				return 3;
+			else
+				return -3;
 
 			//Can not be verified
 			return -4;
@@ -1851,8 +1851,8 @@ class Societe extends nosqlDocument {
 
 	/*
 	 * Graph comptes by status
-	 *
-	 */
+	*
+	*/
 
 	function graphPieStatus($json = false) {
 		global $user, $conf, $langs;
@@ -1901,8 +1901,10 @@ class Societe extends nosqlDocument {
 			$total = 0;
 			$i = 0;
 			?>
-			<div id="pie-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
-			<script type="text/javascript">
+<div
+	id="pie-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
+<script type="text/javascript">
+			$(document).ready(function() {
 				(function($){ // encapsulate jQuery
 
 					$(function() {
@@ -1975,15 +1977,16 @@ class Societe extends nosqlDocument {
 
 					});
 				})(jQuery);
+			});
 			</script>
-			<?php
+<?php
 		}
 	}
 
 	/*
 	 * Graph comptes by status
-	 *
-	 */
+	*
+	*/
 
 	function graphBarStatus($json = false) {
 		global $user, $conf, $langs;
@@ -2024,8 +2027,10 @@ class Societe extends nosqlDocument {
 			$total = 0;
 			$i = 0;
 			?>
-			<div id="bar-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
-			<script type="text/javascript">
+<div
+	id="bar-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
+<script type="text/javascript">
+			$(document).ready(function() {
 				(function($){ // encapsulate jQuery
 
 					$(function() {
@@ -2140,8 +2145,9 @@ class Societe extends nosqlDocument {
 
 							});
 						})(jQuery);
+			});
 			</script>
-			<?php
+<?php
 		}
 	}
 

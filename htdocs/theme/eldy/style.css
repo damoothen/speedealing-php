@@ -244,23 +244,6 @@
 		#breadcrumbs li:first-child {color:#999;padding:3px 4px 3px 10px}
 		#breadcrumbs li:first-child:after,#breadcrumbs li:last-child:after {content:""}
 
-	/* search top*/
-		#search_box {position:relative}
-		#search_box input[type="text"] {font-size:13px;/*margin-top:27px;*/background: url(img/mag_glass.png) no-repeat 10px center #fff;border: 1px solid #d1d1d1;color: #888;padding: 4px 15px 4px 35px;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;width:150px;box-shadow: 2px 2px 0px rgba(0,0,0,.08)}
-		#search_box input[type="text"]:focus {color:#222}
-
-	/* autocomplete */
-		.ac_results {padding: 0px;background-color: Window;overflow-x: hidden;box-shadow:0 5px 12px #ccc;z-index:9999;}
-		.ac_results ul {width: 100%;list-style-position: outside;list-style: none;padding: 0;margin: 0;overflow:hidden !important}
-		.ac_results li {margin: 0px;padding: 2px 5px;cursor: pointer;display: block;width: 100%;font-size: 12px;overflow: hidden}
-		.ac_results strong {color:#fe6001}
-		.ac_loading {background : url('lib/autocomplete/css/indicator.gif') right center no-repeat}
-		.ac_over {background-color: Highlight;color: HighlightText}
-		.ac_over strong {color:#fff}
-		.search_results {padding:10px}
-		.search_pop {max-width:600px}
-		.search_results mark {background: #f5f2a6;padding:0 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px}
-
 	/* user box */
 		.user_box {float:right;background:#fff;border:1px solid #dcdcdc;padding:10px;line-height:1.2;font-size:11px;margin-top:10px}
 		.user_box .user_avatar {float:left;padding:6px 0 4px 6px}
