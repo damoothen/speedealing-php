@@ -94,6 +94,7 @@
        },
        "Status": {
            "type": "select",
+           "label": "Status",
            "enable": true,
            "default": "ST_NEVER",
            "status": true,
