@@ -25,6 +25,7 @@ class Datatables {
 
 	protected $schema;
 	protected $callbacks = array();
+	protected $tabletools = array();
 	protected $plugins = array();
 	protected $config = array();
 	protected $chain = array();
@@ -37,7 +38,7 @@ class Datatables {
 			'bLengthChange'     => true,
 			'bFilter'           => true,
 			'bSort'             => true,
-			'bInfo'             => true,
+			'bInfo'             => false,
 			'bAutoWidth'        => false,
 			'bStateSave'        => false,
 			'aLengthMenu'       => array(5, 10, 20, 50, 100, 500, 'All'),
@@ -50,8 +51,7 @@ class Datatables {
 			'bJQueryUI'         => true,
 			'iDisplayLength'    => 20,
 			'oLanguage'         => array(),
-			'sDom'              => '<"dataTables_header"lfr>t<"dataTables_footer"ip>'
-			// 'fnDrawCallback' => ''
+			'sDom'              => '<"dataTables_header"lfr>t<"dataTables_footer"p>'
 	);
 
 	protected $htmlTemplate = "
@@ -137,6 +137,9 @@ class Datatables {
 		if($name == 'fnDrawCallback') {
 			$this->params['fnDrawCallback'] = '{:callback}';
 			return $this->callbacks[] = $value;
+		} else if($name == 'oTableTools') {
+			$this->params['oTableTools'] = '{:tabletools}';
+			return $this->callbacks[] = $value;
 		}
 		return $this->params[$name] = $value;
 	}
@@ -146,6 +149,8 @@ class Datatables {
 	public function unsetParam($name) {
 		if($name == 'fnDrawCallback') {
 			$this->callbacks = array();
+		} else if($name == 'oTableTools') {
+			$this->tabletools = array();
 		}
 		unset($this->params[$name]);
 	}
@@ -155,6 +160,8 @@ class Datatables {
 	public function getParam($name) {
 		if($name == 'fnDrawCallback') {
 			return $this->callbacks;
+		} else if($name == 'oTableTools') {
+			return $this->tabletools;
 		}
 		return (isset($this->params[$name])) ? $this->params[$name] : null;
 	}
@@ -189,6 +196,13 @@ class Datatables {
 	public function callback($callback) {
 		$this->callbacks[] = $callback;
 		$this->params['fnDrawCallback'] = '{:callback}';
+	}
+
+	/* ______________________________________________________________________ */
+
+	public function tabletools($tabletools) {
+		$this->tabletools[] = $tabletools;
+		$this->params['oTableTools'] = '{:tabletools}';
 	}
 
 	/* ______________________________________________________________________ */
@@ -248,6 +262,7 @@ class Datatables {
 		$container_class = $this->config['container_class'];
 		$chain = empty($this->chain) ? null : '.' . implode('.', $this->chain);
 		$callback = "function(oSettings) {\n" . implode("\n", $this->callbacks) . "}\n";
+		$tabletools = "{\n" . implode("\n", $this->tabletools) . "}\n";
 
 		$i = 0;
 		$cols = array();
@@ -301,16 +316,19 @@ class Datatables {
 		$chain = preg_replace('/\{:editable_options\}/', $editable_options, $chain);
 
 		$config = json_encode($this->params);
+		// display callback
 		$config = preg_replace('/"\{:callback\}"/', $callback, $config);
-		//$config = preg_replace('/"\{:callback\}"/', '{:callback}', $config);
+		// display tabletools
+		$config = preg_replace('/"\{:tabletools\}"/', $tabletools, $config);
 
+		// display render
 		if (!empty($render)) {
 			foreach($render as $key => $value) {
 				$config = preg_replace('/"\{:'.$key.'\}"/', $value, $config);
 			}
 		}
 
-		$params = compact('var_name', 'container_id', 'container_class', 'chain', 'callback', 'config', 'headers', 'footers');
+		$params = compact('var_name', 'container_id', 'container_class', 'chain', 'config', 'headers', 'footers');
 		return self::insert($this->htmlTemplate . $this->jsTemplate, $params);
 	}
 

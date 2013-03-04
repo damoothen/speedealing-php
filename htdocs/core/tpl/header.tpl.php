@@ -115,7 +115,7 @@
 	<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />
 	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" /> -->
 	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" /> -->
-	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" /> -->
+	<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" />
 	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" /> -->
 	<!-- jQuery Multiselect -->
 	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/multiselect/css/ui.multiselect.css" /> -->
