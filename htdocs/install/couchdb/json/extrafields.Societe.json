@@ -35,7 +35,8 @@
        "Tag",
        "Status",
        "prospectlevel",
-       "Action"
+       "Action",
+       "Checkbox"
    ],
    "shortList": [
        "name",
@@ -387,6 +388,19 @@
                    "label": "Delete",
                    "cssclass": "icon delete"
                }
+           }
+       },
+       "Checkbox": {
+           "type": "checkbox",
+           "label": false,
+           "enable": true,
+           "list": {
+               "width": 8,
+               "sortable": false,
+               "searchable": false,
+               "static": true
+           },
+           "render": {
            }
        }
    }
