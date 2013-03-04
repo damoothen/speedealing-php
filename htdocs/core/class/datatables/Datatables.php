@@ -51,7 +51,7 @@ class Datatables {
 			'bJQueryUI'         => true,
 			'iDisplayLength'    => 20,
 			'oLanguage'         => array(),
-			'sDom'              => '<"dataTables_header"lfr>t<"dataTables_footer"p>'
+			'sDom'              => '<"dataTables_header"lfr>t<"dataTables_footer"p><"dataTables_actions">'
 	);
 
 	protected $htmlTemplate = "

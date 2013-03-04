@@ -374,7 +374,7 @@
            "type": "action",
            "enable": true,
            "list": {
-               "width": 8,
+               "width": 35,
                "cssclass": "center",
                "sortable": false,
                "searchable": false,
@@ -384,6 +384,10 @@
                "edit": {
                    "label": "Edit",
                    "cssclass": "icon edit"
+               },
+               "delete": {
+                   "label": "Delete",
+                   "cssclass": "icon delete"
                }
            }
        },

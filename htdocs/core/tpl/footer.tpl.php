@@ -80,7 +80,7 @@
 	<!-- <script type="text/javascript" src="includes/jquery/plugins/datatables/js/dataTables.plugins.js"></script> -->
 	<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColReorder/media/js/ColReorder.min.js" defer></script>
 	<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColVis/media/js/ColVis.min.js" defer></script>
-	<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/TableTools/media/js/TableTools.min.js" defer></script>
+	<!-- <script type="text/javascript" src="includes/jquery/plugins/datatables/extras/TableTools/media/js/TableTools.min.js" defer></script> -->
 	<!-- <script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AutoFill/media/js/AutoFill.min.js" defer></script> -->
 	<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AjaxReload/media/js/fnReloadAjax.js" defer></script>
 	<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/DataTables-Editable/media/js/jquery.dataTables.editable.min.js" defer></script>

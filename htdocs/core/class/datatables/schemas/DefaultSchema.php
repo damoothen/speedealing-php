@@ -37,9 +37,21 @@ class DefaultSchema extends Schema {
 			if (empty($field->enable)) continue;
 
 			$classname = get_class($object);
+
+			// Render element
 			$rendertype = 'Text'; // Render by default
 			if (!empty($field->render) || !empty($field->action))
 				$rendertype = (!empty($field->render->type) ? $field->render->type : $field->type);
+
+			// Footer element
+			$footer = ''; // Footer by default
+			if ($field->list->searchable !== false) {
+				if (1==2 && !empty($field->values)) {
+					$footer = $this->element('FilterSelect', array(object2array($field->values)));
+				} else {
+					$footer = $this->element('FilterInput', array($langs->trans('Search') . ' {:label}'));
+				}
+			}
 
 			$this->push($aRow, array(
 					'label'			=> (!empty($field->label) ? $langs->trans($field->label) : ($field->label === false ? (string) $this->element($rendertype, array('checkall', 1, 'checkall')) : '')), //no label by default
@@ -52,7 +64,7 @@ class DefaultSchema extends Schema {
 					'visible'		=> (is_bool($field->list->visible) === true ? $field->list->visible : true),		// True by default
 					'editable'		=> (!empty($field->list->editable) ? $this->element('Editable', array($field->type, $aRow, $classname, $field->list->validate)) : false),
 					'render'		=> (isset($rendertype) ? $this->element('Render' . ucfirst($rendertype), array($field, $aRow, $classname)) : false),
-					'footer'		=> ($field->list->searchable !== false ? $this->element('FilterInput', array($langs->trans('Search') . ' {:label}')) : '')
+					'footer'		=> $footer
 			));
 		}
 	}
