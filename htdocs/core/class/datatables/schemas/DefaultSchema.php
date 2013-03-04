@@ -42,7 +42,7 @@ class DefaultSchema extends Schema {
 				$rendertype = (!empty($field->render->type) ? $field->render->type : $field->type);
 
 			$this->push($aRow, array(
-					'label'			=> (!empty($field->label) ? $langs->trans($field->label) : ($field->label === false ? (string) $this->element($rendertype, array('checkall', 1, 'checkall')) : $langs->trans($aRow))),
+					'label'			=> (!empty($field->label) ? $langs->trans($field->label) : ($field->label === false ? (string) $this->element($rendertype, array('checkall', 1, 'checkall')) : '')), //no label by default
 					'default'		=> (!empty($field->default) ? $field->default : ''),
 					'class'			=> (!empty($field->list->cssclass) ? $field->list->cssclass : ''),
 					'width'			=> (!empty($field->list->width) ? $field->list->width : false),

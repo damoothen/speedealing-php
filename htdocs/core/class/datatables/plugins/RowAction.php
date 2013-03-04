@@ -16,37 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace datatables\elements;
+namespace datatables\plugins;
 
-use datatables\ElementInterface;
+use datatables\Datatables,
+datatables\PluginInterface;
 
-class RenderCheckbox implements ElementInterface {
-
-	protected $field;
-	protected $name;
-	protected $classname;
+class RowAction implements PluginInterface {
 
 	/* ______________________________________________________________________ */
 
-	public function __construct($field = '', $name = '', $classname = '') {
-		$this->field = $field;
-		$this->name = $name;
-		$this->classname = $classname;
-	}
-
-	/* ______________________________________________________________________ */
-
-	public function __toString() {
-		return (string) $this->render();
-	}
-
-	/* ______________________________________________________________________ */
-
-	public function render() {
-		return 'function(data, type, row) {
-					var ar = [];
-					ar[ar.length] = \'<input type="checkbox" class="checkbox" id="\' + row._id + \'" name="id[]" value="\' + row._id + \'" />\';
-					return ar.join("");
-				}';
+	public function apply(Datatables $table) {
+		$table->callback('
+			// check/uncheck all
+			$("#checkall").click(function() {
+				if ($(this).is(":checked")) {
+					$(".dataTables_wrapper table tbody tr").each(function() {
+						chk = $(this).children("td").find(":checkbox").attr("checked", true);
+					})
+				} else {
+					$(".dataTables_wrapper table tbody tr").each(function() {
+						$(this).children("td").find(":checkbox").attr("checked", false);
+					})
+				}
+			});
+			// uncheck menu checkbox
+			$(".checkbox").click(function() {
+				if (!$(this).is(":checked")) {
+					$("#checkall").attr("checked", false);
+				}
+			});
+		');
 	}
 }
