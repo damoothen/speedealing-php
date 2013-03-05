@@ -37,6 +37,7 @@
        "address",
        "zonegeo",
        "phone",
+       "email',
        "idprof3",
        "Tag",
        "Status",
@@ -194,7 +195,7 @@
            "mask": "+99 9 99 99 99 99"
        },
        "email": {
-           "type": "text",
+           "type": "email",
            "ico": "AC_EMAIL",
            "enable": true,
            "label": "EMail",
@@ -203,7 +204,11 @@
            },
            "list": {
                "cssclass": "center",
-               "editable": true
+               "editable": true,
+               "visible": false
+           },
+           "render": {
+               "type": "email"
            }
        },
        "url": {

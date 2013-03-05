@@ -1523,6 +1523,9 @@ abstract class nosqlDocument extends CommonObject {
 			case "textarea":
 				$out.= $value;
 				break;
+			case "email":
+				$out.= '<a href="mailto:' . $value .'">' . $value .'</a>';
+				break;
 			case "date":
 				$out .= dol_print_date($value, "%d/%m/%Y");
 				break;

@@ -305,6 +305,7 @@ class Datatables {
 					'bSortable'			=> (bool) $config['sortable'],
 					'bSearchable'		=> (bool) $config['searchable'],
 					'bVisible'			=> (bool) $config['visible']
+					//'sType'				=> 'html'
 			);
 
 			// display header label

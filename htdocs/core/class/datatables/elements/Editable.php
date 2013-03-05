@@ -57,18 +57,26 @@ class Editable implements ElementInterface {
 				$type .= "type: 'select',\n";
 				$type .= "loadurl: urlLoadInPlace,\n";
 				$type .= "loaddata: function ( value, settings ) {
-								return {
-									'id': oTable.fnGetData( this.parentNode, 0),
-									'element_class': '{$this->classname}',
-									'type': 'select',
-									'key': 'editval_{$this->name}',
-								};
+							return {
+								'id': oTable.fnGetData( this.parentNode, 0),
+								'element_class': '{$this->classname}',
+								'type': 'select',
+								'key': 'editval_{$this->name}',
+							};
 						},";
 				break;
 			case "date" :
-				 $type .= "type: 'datepicker',";
-				 $type .= "cancel: cancelInPlace,";
-				 break;
+				$type .= "type: 'datepicker',";
+				$type .= "cancel: cancelInPlace,";
+				break;
+			case "email" :
+				$type .= "type: 'text',";
+				$type .= 'data: function ( value, settings ) {
+							// remove html tag
+							value = $(value).html();
+							return value;
+						},';
+				break;
 			default :
 				$type .= "type: 'text',";
 				break;
