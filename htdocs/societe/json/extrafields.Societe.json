@@ -8,6 +8,8 @@
        "compta"
    ],
    "pluginsList": [
+       "RowAction",
+       "RowShowHide",
        "DeleteNotification",
        "MakeEditable"
    ],
@@ -52,7 +54,8 @@
            "type": "text",
            "enable": true,
            "list": {
-               "visible": false
+               "visible": false,
+               "static": true
            }
        },
        "name": {
@@ -61,6 +64,7 @@
            "length": 60,
            "enable": true,
            "list": {
+               "static": true
            },
            "render": {
                "type": "url",
