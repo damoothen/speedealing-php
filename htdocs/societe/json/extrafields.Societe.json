@@ -7,6 +7,10 @@
        "bills",
        "compta"
    ],
+   "pluginsList": [
+       "DeleteNotification",
+       "MakeEditable"
+   ],
    "createList": [
        "name",
        "Status",

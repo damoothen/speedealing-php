@@ -1230,13 +1230,17 @@ abstract class nosqlDocument extends CommonObject {
 		$table = new datatables\Datatables(compact('data_source'));
 		$table->setSchema(new datatables\schemas\DefaultSchema);
 
-		// Add some plugins
+		// Add default plugins
 		$table->plug(new datatables\plugins\Localization);
-		//$table->plug(new datatables\plugins\RowSelect);	// for check a row
-		//$table->plug(new datatables\plugins\ActionsMenu);	// for add actions menu
-		$table->plug(new datatables\plugins\RowAction);		// for manage actions with checkbox
-		$table->plug(new datatables\plugins\DeleteNotification);
-		$table->plug(new datatables\plugins\MakeEditable);
+
+		// Add plugins defined in database
+		if (!empty($this->fk_extrafields->pluginsList)) {
+			foreach($this->fk_extrafields->pluginsList as $plugin) {
+				$classname = 'datatables\plugins\\' . $plugin;
+				if (class_exists($classname))
+					$table->plug(new $classname);
+			}
+		}
 
 		// render view
 		//var_dump(compact('table'));
