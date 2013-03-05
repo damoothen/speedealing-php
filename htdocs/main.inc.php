@@ -437,8 +437,9 @@ if ($conf->urlrewrite) {
 		//$user->useDatabase($tmp_db);
 
 		if (!empty($user->NewConnection))
-			$user->set("LastConnection", $user->NewConnection);
-		$user->set("NewConnection", dol_now());
+			$user->LastConnection = $user->NewConnection;
+		$user->NewConnection = dol_now();
+		$user->record(true);
 
 		Header("Location: /" . $tmp_db . '/');
 		exit;

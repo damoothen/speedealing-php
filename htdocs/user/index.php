@@ -101,8 +101,8 @@ $obj->aoColumns[$i]->fnRender = 'function(obj) {
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "</a> ";
 				if(obj.aData.admin) {
-					ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/star.png\" border=\"0\" ";
-					ar[ar.length] = "\" title=\"' . $langs->trans("Administrator") . '";
+					ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/redstar.png\" border=\"0\" ";
+					ar[ar.length] = "\" title=\"' . $langs->trans("SuperAdmin") . '";
 					ar[ar.length] = "\">";
 				}
 				var str = ar.join("");
@@ -134,13 +134,22 @@ $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "";
 $i++;
 print'<th class="essential">';
-print $langs->trans('Services');
+print $langs->trans('Groups');
 print'</th>';
 $obj->aoColumns[$i] = new stdClass();
-$obj->aoColumns[$i]->mDataProp = "group";
+$obj->aoColumns[$i]->mDataProp = "roles";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "center";
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("group", "tag");
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("roles", "tag");
+$i++;
+print'<th class="essential">';
+print $langs->trans('Database');
+print'</th>';
+$obj->aoColumns[$i] = new stdClass();
+$obj->aoColumns[$i]->mDataProp = "entityList";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("entityList", "tag");
 $i++;
 print'<th class="essential">';
 print $langs->trans('LastConnexion');
@@ -150,7 +159,6 @@ $obj->aoColumns[$i]->mDataProp = "NewConnection";
 $obj->aoColumns[$i]->sType = "date";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "center";
-$obj->aoColumns[$i]->sWidth = "200px";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("NewConnection", "datetime");
 $i++;
 print'<th class="essential">';
@@ -158,9 +166,9 @@ print $langs->trans('Status');
 print'</th>';
 $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Status";
-$obj->aoColumns[$i]->sClass = "dol_select center";
-$obj->aoColumns[$i]->sWidth = "100px";
+$obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "DISABLE";
+$obj->aoColumns[$i]->editable = true;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
 $i++;
 print'</tr>';
@@ -176,8 +184,6 @@ $obj->sDom = 'l<fr>t<\"clear\"rtip>';
 $obj->sAjaxSource = 'user/ajax/list.php?json=list';
 
 $object->datatablesCreate($obj, "user", true);
-
-
 
 print end_box();
 print '<div>';

@@ -177,8 +177,8 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 		$nb = $edituser->getNbOfUsers("active", 1);
 		if ($nb >= $conf->file->main_limit_users) {
 			setEventMessage($langs->trans("YourQuotaOfUsersIsReached"), 'errors');
-			$error++;
 			$action = "create"; // Go back to create page
+			$error++;
 		}
 	}
 
@@ -189,6 +189,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 		$edituser->Lastname = $_POST["nom"];
 		$edituser->Firstname = $_POST["prenom"];
 		$edituser->name = $_POST["login"];
+		$edituser->pass = $_POST["password"];
 		$edituser->admin = (bool) $_POST["admin"];
 		$edituser->PhonePro = $_POST["PhonePro"];
 		$edituser->Fax = $_POST["Fax"];
@@ -330,42 +331,25 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 	}
 	print '</td></tr>';
 
+	$generated_password = '';
+	if (!$ldap_sid) { // ldap_sid is for activedirectory
+		require_once(DOL_DOCUMENT_ROOT . "/core/lib/security2.lib.php");
+		$generated_password = getRandomPassword('');
+	}
+	$password = $generated_password;
+
+	// Mot de passe
+	print '<tr><td valign="top">' . $langs->trans("Password") . '</td>';
+	print '<td>';
+	// We do not use a field password but a field text to show new password to use.
+	print '<input size="30" maxsize="32" type="text" name="password" value="' . $password . '">';
+	print '</td></tr>';
+
 	// Administrateur
 	if ($user->admin) {
 		print '<tr><td valign="top">' . $langs->trans("Administrator") . '</td>';
 		print '<td>';
 		print $form->selectyesno('admin', $_POST["admin"], 1);
-		?>
-		<script type="text/javascript">
-			$(function() {
-				$("select[name=admin]").change(function() {
-					if ( $(this).val() == 0 ) {
-						$("input[name=superadmin]")
-						.attr("disabled", true)
-						.attr("checked", false);
-						$("select[name=entity]")
-						.attr("disabled", false);
-					} else {
-						$("input[name=superadmin]")
-						.attr("disabled", false);
-					}
-				});
-				$("input[name=superadmin]").change(function() {
-					if ( $(this).attr("checked") == "checked" ) {
-						$("select[name=entity]")
-						.attr("disabled", true);
-					} else {
-						$("select[name=entity]")
-						.attr("disabled", false);
-					}
-				});
-			});
-		</script>
-		<?php
-
-		$checked = ($_POST["superadmin"] ? ' checked' : '');
-		$disabled = ($_POST["superadmin"] ? '' : ' disabled');
-		print '<input type="checkbox" name="superadmin" value="1"' . $checked . $disabled . ' /> ' . $langs->trans("SuperAdministrator");
 		print "</td></tr>\n";
 	}
 
@@ -521,23 +505,26 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 			}
 			print '</tr>' . "\n";
 
+			// Password
+			print '<tr><td valign="top">' . $langs->trans("Password") . '</td>';
+			print '<td>';
+			print $langs->trans("Hidden");
+			print "</td>";
+			print '</tr>' . "\n";
+
 			// Administrator
+			$name = $fuser->name;
+			$admins = $fuser->getUserAdmins();
+			if (isset($admins->$name))
+				$fuser->admin = true;
+			else
+				$fuser->admin = false;
+
 			print '<tr><td valign="top">' . $langs->trans("Administrator") . '</td><td>';
 			if ($fuser->admin) {
 				print $form->textwithpicto(yn($fuser->admin), $langs->trans("AdministratorDesc"), 1, "admin");
 			} else {
 				print yn($fuser->admin);
-			}
-			print '</td></tr>' . "\n";
-
-			// Type
-			print '<tr><td valign="top">' . $langs->trans("Type") . '</td><td>';
-			if ($fuser->societe_id) {
-				print $form->textwithpicto($langs->trans("External"), $langs->trans("InternalExternalDesc"));
-			} else if ($fuser->ldap_sid) {
-				print $langs->trans("DomainUser", $ldap->domainFQDN);
-			} else {
-				print $form->textwithpicto($langs->trans("Internal"), $langs->trans("InternalExternalDesc"));
 			}
 			print '</td></tr>' . "\n";
 
@@ -648,11 +635,11 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 
 			// Activer
 			if ($candisableuser && $fuser->Status != "ENABLE") {
-				print '<a class="button icon-unlock" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=enable">' . $langs->trans("Reactivate") . '</a>';
+				print '<a class="button icon-lock" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=enable">' . $langs->trans("Reactivate") . '</a>';
 			}
 			// Desactiver
 			if ($candisableuser && $fuser->Status == "ENABLE") {
-				print '<a class="button icon-lock" href="' . $_SERVER["PHP_SELF"] . '?action=disable&amp;id=' . $fuser->id . '">' . $langs->trans("DisableUser") . '</a>';
+				print '<a class="button icon-unlock" href="' . $_SERVER["PHP_SELF"] . '?action=disable&amp;id=' . $fuser->id . '">' . $langs->trans("DisableUser") . '</a>';
 			}
 			// Delete
 			if ($user->id <> $id && $candisableuser) {
@@ -984,37 +971,43 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 			print '</td>';
 			print '</tr>';
 
+			// Pass
+			print '<tr><td valign="top">' . $langs->trans("Password") . '</td>';
+			print '<td>';
+			if ($caneditpassword) {
+				$text = '<input size="12" maxlength="32" type="password" class="flat" name="password" value="' . $fuser->pass . '">';
+				if ($dolibarr_main_authentication && $dolibarr_main_authentication == 'http') {
+					$text = $form->textwithpicto($text, $langs->trans("SpeedealingInHttpAuthenticationSoPasswordUseless", $dolibarr_main_authentication), 1, 'warning');
+				}
+			} else {
+				$text = preg_replace('/./i', '*', $fuser->password_sha);
+			}
+			print $text;
+			print "</td></tr>\n";
+
 			// Administrator
+			$name = $fuser->name;
+			$admins = $fuser->getUserAdmins();
+			if (isset($admins->$name))
+				$fuser->admin = true;
+			else
+				$fuser->admin = false;
 			print '<tr><td valign="top">' . $langs->trans("Administrator") . '</td>';
 			print '<td>';
-			if ($user->admin
-					&& $user->id != $fuser->id) {  // Don't downgrade ourself
-				print $form->selectyesno('admin', $fuser->admin, 1);
-			} else {
-				$yn = yn($fuser->admin);
-				print '<input type="hidden" name="admin" value="' . $fuser->admin . '">';
-				print $yn;
-			}
-			print '</td></tr>';
-
-
-			// Type
-			print '<tr><td width="25%" valign="top">' . $langs->trans("Type") . '</td>';
-			print '<td>';
-			if ($fuser->societe_id) {
-				print $langs->trans("External");
-			} else if ($fuser->ldap_sid) {
-				print $langs->trans("DomainUser");
-			} else {
-				print $langs->trans("Internal");
-			}
+			/* if ($user->admin
+			  && $user->id != $fuser->id) {  // Don't downgrade ourself
+			  print $form->selectyesno('admin', $fuser->admin, 1);
+			  } else { */
+			$yn = yn($fuser->admin);
+			print '<input type="hidden" name="admin" value="' . $fuser->admin . '">';
+			print $yn;
+			//}
 			print '</td></tr>';
 
 			// Entity by default
 			print '<tr><td width="25%" valign="top">' . $langs->trans("Entity") . '</td>';
 			print '<td>';
-			print $fuser->entity;
-			print '<input type="hidden" name="default_entity" value="' . $conf->Couchdb->name . '">';
+			print '<input type="text" name="default_entity" value="' . $conf->Couchdb->name . '">';
 			print '</td></tr>';
 
 			// Tel pro
@@ -1072,19 +1065,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 			print '<td>';
 			print $fuser->getLibStatus();
 			print '</td></tr>';
-
-			// Autres caracteristiques issus des autres modules
-			// Module Webcalendar
-			if ($conf->webcalendar->enabled) {
-				$langs->load("other");
-				print '<tr><td valign="top">' . $langs->trans("LoginWebcal") . '</td>';
-				print '<td>';
-				if ($caneditfield)
-					print '<input size="30" type="text" class="flat" name="webcal_login" value="' . $fuser->webcal_login . '">';
-				else
-					print $fuser->webcal_login;
-				print '</td></tr>';
-			}
 
 			// Company / Contact
 			if ($conf->societe->enabled) {

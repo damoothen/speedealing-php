@@ -83,7 +83,7 @@ class User extends nosqlDocument {
 		$this->db = $db;
 
 		parent::__construct($db);
-		
+
 		$this->useDatabase("_users");
 
 		$this->fk_extrafields = new ExtraFields($db);
@@ -130,37 +130,40 @@ class User extends nosqlDocument {
 				return 0;
 		}
 
-		/*if ($conf->Couchdb->name == '_users') { // Login phase
-			require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
+		/* if ($conf->Couchdb->name == '_users') { // Login phase
+		  require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
 
-			$user_config = new UserAdmin($this->db);
-			$user_config->fetch("org.couchdb.user:" . $login); // Load for default entity
-			$user_config->LastConnection = $user_config->NewConnection;
-			$user_config->NewConnection = dol_now();
-			//$user_config->record(); // FIXME no record method in fetch method
-			//print_r($login);
-			//exit;
-			$couch->useDatabase($user_config->entity);
-			$conf->Couchdb->name = $user_config->entity;
-			dol_setcache("dol_entity", $user_config->entity);
-			//$this->useDatabase($user_config->entity);
-			unset($user_config);
+		  $user_config = new UserAdmin($this->db);
+		  $user_config->fetch("org.couchdb.user:" . $login); // Load for default entity
+		  $user_config->LastConnection = $user_config->NewConnection;
+		  $user_config->NewConnection = dol_now();
+		  //$user_config->record(); // FIXME no record method in fetch method
+		  //print_r($login);
+		  //exit;
+		  $couch->useDatabase($user_config->entity);
+		  $conf->Couchdb->name = $user_config->entity;
+		  dol_setcache("dol_entity", $user_config->entity);
+		  //$this->useDatabase($user_config->entity);
+		  unset($user_config);
 
-			if (!$conf->urlrewrite) {
-				$this->LastConnection = $this->NewConnection;
-				$this->NewConnection = dol_now();
-				//$this->record(true); // FIXME no record method in fetch method
-			}
-		}*/
+		  if (!$conf->urlrewrite) {
+		  $this->LastConnection = $this->NewConnection;
+		  $this->NewConnection = dol_now();
+		  //$this->record(true); // FIXME no record method in fetch method
+		  }
+		  } */
 
 		try {
-			/*if (isValidEmail($login)) {
-				$result = $this->getView("login", array("key" => $login));
-				$login = $result->rows[0]->value;
-			}*/
+			/* if (isValidEmail($login)) {
+			  $result = $this->getView("login", array("key" => $login));
+			  $login = $result->rows[0]->value;
+			  } */
 
+			//$result = $this->couchAdmin->getUser($login);
+			//print_r($result);exit;
 			$this->load("org.couchdb.user:" . $login, true);
 		} catch (Exception $e) {
+			error_log("Login error : " . $login . " " . $e->getMessage());
 			return 0;
 		}
 
@@ -617,10 +620,10 @@ class User extends nosqlDocument {
 	 */
 	function update($user, $notrigger = 0, $action) {
 		global $conf, $langs;
-		global $mysoc;
 
 		// Clean parameters
 		$this->name = trim($this->name);
+		$this->pass = trim($this->pass);
 		$this->Firstname = trim($this->Firstname);
 		$this->Lastname = trim($this->Lastname);
 
@@ -633,28 +636,64 @@ class User extends nosqlDocument {
 			return -1;
 		}
 
-		$this->CreateDate = dol_now();
-		trim($this->pass);
-
 		$error = 0;
 
-		if ($action == 'add') {
-			if (empty($this->Status))
-				$this->Status = "DISABLE";
-			$this->_id = "org.couchdb.user:" . $this->name;
+		try {
+			$result = $this->couchAdmin->getUser($this->name);
+		} catch (Exception $e) {
+			// User doesn-t exist
 		}
 
+		if (isset($result->name) && $action == 'add') {
+			$this->error = 'ErrorLoginAlreadyExists';
+			return -6;
+		} else {
+			if ($action == 'add') {
+				try {
+					if ($this->admin)
+						$this->couchAdmin->createAdmin($this->name, $this->pass);
+					else
+						$this->couchAdmin->createUser($this->name, $this->pass);
+				} catch (Exception $e) {
+					$this->error = $e->getMessage();
+					error_log($this->error);
+					return -4;
+				}
+			}
+		}
 
 		try {
-			//print_r($this);
-			if (!empty($user) && $user->login == $this->name)
-				$result = $this->record(true); // Save all specific parameters
+			$user_tmp = $this->couchAdmin->getUser($this->name);
+
+			$this->salt = $user_tmp->salt;
+			$this->password_sha = $user_tmp->password_sha;
+			$this->type = $user_tmp->type;
+			$this->roles = $user_tmp->roles;
+			$this->_id = $user_tmp->_id;
+			$this->_rev = $user_tmp->_rev;
+
+			if ($action == 'add' && empty($this->Status))
+				$this->Status = "DISABLE";
+			if ($action == 'add')
+				$this->CreateDate = dol_now();
+
+			if (empty($user)) //install process
+				$caneditpassword = 1;
 			else
-				$result = $this->record();
+				$caneditpassword = ((($user->login == $this->name) && $user->rights->user->self->password)
+						|| (($user->login != $this->name) && $user->rights->user->user->password)) || $user->admin;
+
+			if ($caneditpassword && !empty($this->pass)) { // Case we can edit only password
+				$this->password_sha = sha1($this->pass . $this->salt, false);
+			}
+
+			unset($this->pass);
+
+			//print_r($this);exit;
+			$result = $this->record(); // Save all specific parameters
 		} catch (Exception $e) {
 			$this->error = $e->getMessage();
 			error_log($this->error);
-
 			return -3;
 		}
 
@@ -1510,7 +1549,7 @@ class User extends nosqlDocument {
 	}
 
 	function getAllUsers($include_docs) {
-		return $this->getView('list');
+		return $this->couchAdmin->getAllUsers($include_docs);
 	}
 
 	function getUserAdmins() {
@@ -1527,43 +1566,6 @@ class User extends nosqlDocument {
 
 	function getLibStatus() {
 		return $this->LibStatus($this->Status);
-	}
-
-	/**
-	 *    Return label of status (activity, closed)
-	 *
-	 *    @return   string        		Libelle
-	 */
-	function LibStatus($status) {
-		global $langs;
-
-		$admins = $this->getDatabaseAdminUsers();
-		$enabled = $this->getDatabaseReaderUsers();
-
-		//print_r($enabled);
-		//print_r($admins);
-
-		$name = $this->email;
-		if (in_array($name, $admins)) // Is Localadministrator
-			$this->admin = true;
-		else
-			$this->admin = false;
-
-		if (in_array($name, $enabled)) // Is Status = ENABLE
-			$status = "ENABLE";
-		else {
-			if ($this->admin)
-				$status = "ENABLE";
-			else
-				$status = "DISABLE";
-		}
-
-		$this->Status = $status;
-
-		if ($this->admin)
-			$out = img_picto($langs->trans("Administrator"), 'star');
-
-		return parent::LibStatus($status) . " " . $out;
 	}
 
 }
