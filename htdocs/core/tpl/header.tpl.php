@@ -110,15 +110,15 @@
 	<!-- jQuery FileUpload -->
 	<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />
 	<!-- jQuery Datatables -->
-	<!-- <link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" /> -->
-	<!-- <link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" /> -->
 	<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />
-	<!-- print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" /> -->
-	<!-- print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" /> -->
-	<!-- print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" /> -->
-	<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" />
+	<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" />
+	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" /> -->
 	<!-- jQuery Multiselect -->
-	<!-- print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/multiselect/css/ui.multiselect.css" /> -->
 	<!-- jQuery Wysiwyg -->
 	<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />
 	<!-- jQuery Taghandler -->

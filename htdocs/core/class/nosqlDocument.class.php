@@ -1222,6 +1222,32 @@ abstract class nosqlDocument extends CommonObject {
 	}
 
 	/**
+	 *
+	 */
+	public function showList() {
+
+		$data_source = "core/ajax/listdatatables.php?json=list&class=" . get_class($this) . "&bServerSide=true";
+		$table = new datatables\Datatables(compact('data_source'));
+		$table->setSchema(new datatables\schemas\DefaultSchema);
+
+		// Add default plugins
+		$table->plug(new datatables\plugins\Localization);
+
+		// Add plugins defined in database
+		if (!empty($this->fk_extrafields->pluginsList)) {
+			foreach($this->fk_extrafields->pluginsList as $plugin) {
+				$classname = 'datatables\plugins\\' . $plugin;
+				if (class_exists($classname))
+					$table->plug(new $classname);
+			}
+		}
+
+		// render view
+		//var_dump(compact('table'));
+		return $table->render();
+	}
+
+	/**
 	 *  Return list of tags in an object
 	 *
 	 *  @return 	array	List of types of members
@@ -1496,6 +1522,9 @@ abstract class nosqlDocument extends CommonObject {
 				break;
 			case "textarea":
 				$out.= $value;
+				break;
+			case "email":
+				$out.= '<a href="mailto:' . $value .'">' . $value .'</a>';
 				break;
 			case "date":
 				$out .= dol_print_date($value, "%d/%m/%Y");

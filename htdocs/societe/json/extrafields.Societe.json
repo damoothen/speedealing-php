@@ -1,12 +1,17 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "120-0916a72ac0e7bcf992d433d56c05278c",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
        "companies",
        "bills",
        "compta"
+   ],
+   "pluginsList": [
+       "RowAction",
+       "RowShowHide",
+       "DeleteNotification",
+       "MakeEditable"
    ],
    "createList": [
        "name",
@@ -16,25 +21,56 @@
        "zip",
        "town"
    ],
+   "oldList": [
+       "zip",
+       "town",
+       "zonegeo",
+       "idprof3"
+   ],
    "longList": [
+       "_id",
+       "name",
        "code_client",
+       "commercial_id",
        "zip",
        "town",
        "address",
        "zonegeo",
        "phone",
-       "idprof3"
+       "email",
+       "idprof3",
+       "Tag",
+       "Status",
+       "prospectlevel",
+       "Action",
+       "Checkbox"
    ],
    "shortList": [
+       "name",
        "town",
        "phone"
    ],
    "fields": {
+       "_id": {
+           "type": "text",
+           "enable": true,
+           "list": {
+               "visible": false,
+               "static": true
+           }
+       },
        "name": {
            "type": "text",
+           "label": "Company",
            "length": 60,
            "enable": true,
-           "label": "Company",
+           "list": {
+               "static": true
+           },
+           "render": {
+               "type": "url",
+               "ico": "16-Apartment-Building.png"
+           },
            "validate": {
                "cssclass": "required",
                "minlength": 3
@@ -48,12 +84,12 @@
        },
        "code_client": {
            "type": "text",
+           "label": "CustomerCode",
            "length": 15,
            "enable": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": false
+           "list": {
+               "cssclass": "center",
+               "visible": false
            }
        },
        "code_fournisseur": {
@@ -67,15 +103,18 @@
        },
        "Status": {
            "type": "select",
+           "label": "Status",
            "enable": true,
            "default": "ST_NEVER",
            "status": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": true
+           "dict": "dict:fk_stcomm",
+           "list": {
+               "cssclass": "center",
+               "editable": true
            },
-           "dict": "dict:fk_stcomm"
+           "render": {
+               "type": "status"
+           }
        },
        "address": {
            "type": "textarea",
@@ -83,10 +122,8 @@
            "cols": 40,
            "rows": 3,
            "enable": true,
-           "aoColumns": {
-               "sClass": "",
-               "bSearchable": true,
-               "bVisible": false
+           "list": {
+               "visible": false
            }
        },
        "zip": {
@@ -95,10 +132,8 @@
            "length": 15,
            "enable": true,
            "javascript": null,
-           "aoColumns": {
-               "sClass": "center dol_edit",
-               "bSearchable": true,
-               "bVisible": true,
+           "list": {
+               "cssclass": "center dol_edit",
                "editable": true
            }
        },
@@ -108,10 +143,8 @@
            "length": 15,
            "enable": true,
            "javascript": null,
-           "aoColumns": {
-               "sClass": "dol_edit",
-               "bSearchable": true,
-               "bVisible": true,
+           "list": {
+               "cssclass": "dol_edit",
                "editable": true
            }
        },
@@ -148,10 +181,9 @@
            "ico": "AC_TEL",
            "label": "Phone",
            "enable": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": false
+           "list": {
+               "cssclass": "center",
+               "visible": false
            },
            "mask": "+99 9 99 99 99 99"
        },
@@ -163,17 +195,20 @@
            "mask": "+99 9 99 99 99 99"
        },
        "email": {
-           "type": "text",
+           "type": "email",
            "ico": "AC_EMAIL",
            "enable": true,
            "label": "EMail",
            "validate": {
                "cssclass": "email"
            },
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "editable": true
+           "list": {
+               "cssclass": "center",
+               "editable": true,
+               "visible": false
+           },
+           "render": {
+               "type": "email"
            }
        },
        "url": {
@@ -190,15 +225,17 @@
            "label": "ProfId1",
            "length": "25",
            "enable": true,
-           "aoColumns": {
-               "bSearchable": true,
-               "bVisible": true
+           "list": {
+               "visible": false
            }
        },
        "idprof3": {
            "type": "text",
+           "label": "ProfId3FR",
            "length": "12",
-           "enable": true
+           "enable": true,
+           "list": {
+           }
        },
        "typent_id": {
            "type": "select",
@@ -243,7 +280,12 @@
            "label": "SalesRepresentatives",
            "class": "User",
            "view": "list",
-           "enable": true
+           "enable": true,
+           "list": {
+           },
+           "render": {
+               "type": "url"
+           }
        },
        "civilite_id": {
            "type": "select",
@@ -281,15 +323,18 @@
        },
        "prospectlevel": {
            "type": "select",
+           "label": "ProspectLevelShort",
            "enable": true,
            "default": "PL_NONE",
            "status": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": true
+           "dict": "dict:fk_prospectlevel",
+           "list": {
+               "cssclass": "center",
+               "editable": true
            },
-           "dict": "dict:fk_prospectlevel"
+           "render": {
+               "type": "status"
+           }
        },
        "cond_reglement": {
            "type": "select",
@@ -313,10 +358,8 @@
            "type": "select",
            "label": "ZoneGeo",
            "enable": true,
-           "aoColumns": {
-               "sClass": "center",
-               "bSearchable": true,
-               "bVisible": true,
+           "list": {
+               "cssclass": "center",
                "editable": true
            },
            "view": "listZoneGeo",
@@ -329,11 +372,50 @@
            "type": "tag",
            "label": "Categories",
            "enable": true,
-           "isarray": true
+           "isarray": true,
+           "list": {
+           },
+           "render": {
+               "cssclass": "tag anthracite-gradient glossy"
+           }
        },
        "notes": {
            "type": "textarea",
            "enable": true
+       },
+       "Action": {
+           "type": "action",
+           "enable": true,
+           "list": {
+               "width": 35,
+               "cssclass": "center",
+               "sortable": false,
+               "searchable": false,
+               "static": true
+           },
+           "action": {
+               "edit": {
+                   "label": "Edit",
+                   "cssclass": "icon edit"
+               },
+               "delete": {
+                   "label": "Delete",
+                   "cssclass": "icon delete"
+               }
+           }
+       },
+       "Checkbox": {
+           "type": "checkbox",
+           "label": false,
+           "enable": true,
+           "list": {
+               "width": 8,
+               "sortable": false,
+               "searchable": false,
+               "static": true
+           },
+           "render": {
+           }
        }
    }
 }

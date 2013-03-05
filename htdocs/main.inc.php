@@ -744,7 +744,7 @@ function main_menu() {
 	$conf->top_menu = 'auguria_backoffice.php';
 
 	// Load the top menu manager (only if not already done)
-	if (!class_exists('MenuTop'))
+	//if (!class_exists('MenuTop'))
 		include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $conf->top_menu;
 
 	$searchform = '';

@@ -1,13 +1,13 @@
 <?php
-/* Copyright (C) 2000-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
- * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
- * Copyright (C) 2004      Christophe Combelles <ccomb@free.fr>
- * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@capnetworks.com>
- * Copyright (C) 2008      Raphael Bertrand (Resultic)       <raphael.bertrand@resultic.fr>
- * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
+/* Copyright (C) 2000-2007	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2003		Jean-Louis Bergamo		<jlb@j1b.org>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2004		Sebastien Di Cintio		<sdicintio@ressource-toi.org>
+ * Copyright (C) 2004		Benoit Mortier			<benoit.mortier@opensides.be>
+ * Copyright (C) 2004		Christophe Combelles	<ccomb@free.fr>
+ * Copyright (C) 2005-2013	Regis Houssin			<regis.houssin@capnetworks.com>
+ * Copyright (C) 2008		Raphael Bertrand		<raphael.bertrand@resultic.fr>
+ * Copyright (C) 2010-2011	Juanjo Menent			<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -706,7 +706,7 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
-		
+
 // If date undefined or "", we return ""
 	if (dol_strlen($time) == 0)
 		return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
@@ -725,7 +725,7 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
-		
+
 //print 'x'.$time;
 
 	if (preg_match('/%b/i', $format)) {  // There is some text to translate
@@ -2616,7 +2616,7 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
 
 
 
-			
+
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
 		if (dol_strlen($nbofdectoround))
 			$amount = round($amount, $nbofdectoround); // $nbofdectoround can be 0.
@@ -3016,7 +3016,7 @@ function dol_mkdir($dir, $dataroot = '') {
 
 
 
-			
+
 // Attention, le is_dir() peut echouer bien que le rep existe.
 		// (ex selon config de open_basedir)
 		if ($ccdir) {
@@ -4124,6 +4124,20 @@ function colorArrayToHex($arraycolor, $colorifnotfound = '888888') {
 	if (!is_array($arraycolor))
 		return $colorifnotfound;
 	return dechex($arraycolor[0]) . dechex($arraycolor[1]) . dechex($arraycolor[2]);
+}
+
+/**
+ * Convert an object to an array
+ *
+ * @param	object	$data	Object to convert
+ * @return	array			Object converted
+ */
+function object2array($data){
+	if(!is_object($data) && !is_array($data))
+		return $data;
+	if(is_object($data))
+		$data = get_object_vars($data);
+	return array_map('object2array', $data);
 }
 
 if (!function_exists('getmypid')) {
