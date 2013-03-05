@@ -87,6 +87,16 @@ class Schema {
         return $data;
 	}
 
+	/* ______________________________________________________________________ */
+
+	public function getType() {
+		$data = array();
+		foreach($this->schema as $field => $config) {
+			$data[$field] = $config['type'];
+		}
+		return $data;
+	}
+
     /* ______________________________________________________________________ */
 
 	public function getLabels() {

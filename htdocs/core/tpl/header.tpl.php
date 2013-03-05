@@ -113,7 +113,7 @@
 	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" /> -->
 	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" /> -->
 	<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />
-	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" /> -->
+	<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" />
 	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" /> -->
 	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" /> -->
 	<!-- <link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" /> -->
