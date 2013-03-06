@@ -27,6 +27,7 @@ class FieldEditable implements PluginInterface {
 
 	public function apply(Datatables $table) {
 
+		$var_name = $table->getConfig('var_name');
 		$fields = $table->getFieldEditable();
 
 		foreach($fields as $key => $values) {
@@ -39,7 +40,7 @@ class FieldEditable implements PluginInterface {
 					$type .= "loadurl: urlLoadInPlace,\n";
 					$type .= "loaddata: function ( value, settings ) {
 								return {
-									'id': oTable.fnGetData( this.parentNode, 0),
+									'id': {$var_name}.fnGetData( this.parentNode, 0),
 									'element_class': '{$values['classname']}',
 									'type': 'select',
 									'key': 'editval_{$values['name']}',
@@ -89,7 +90,7 @@ class FieldEditable implements PluginInterface {
 					{$type}
 					submitdata: function ( value, settings ) {
 						return {
-							'id': oTable.fnGetData( this.parentNode, 0),
+							'id': {$var_name}.fnGetData( this.parentNode, 0),
 							'element_class' : '{$values['classname']}',
 							'type': '{$values['type']}',
 							'key': 'editval_{$values['name']}'
