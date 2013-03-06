@@ -63,7 +63,7 @@ class DefaultSchema extends Schema {
 					'sortable'		=> (is_bool($field->list->sortable) === true ? $field->list->sortable : true),		// True by default
 					'visible'		=> (is_bool($field->list->visible) === true ? $field->list->visible : true),		// True by default
 					'editable'		=> (!empty($field->list->editable) ? $this->element('Editable', array($field->type, $aRow, $classname, $field->list->validate)) : false),
-					'render'		=> (isset($rendertype) ? $this->element('Render' . ucfirst($rendertype), array($field, $aRow, $classname)) : false),
+					'render'		=> (isset($rendertype) && $rendertype != 'Text' ? $this->element('Render' . ucfirst($rendertype), array($field, $aRow, $classname)) : false),
 					'footer'		=> $footer
 			));
 		}

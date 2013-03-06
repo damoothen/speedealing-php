@@ -9,7 +9,6 @@
    ],
    "pluginsList": [
        "RowAction",
-       "RowShowHide",
        "DeleteNotification",
        "MakeEditable"
    ],
