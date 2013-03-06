@@ -1,5 +1,6 @@
 {
    "_id": "_design/Contact",
+   "_rev": "50-8f62eb49e933b6a7205ce95678038556",
    "language": "javascript",
    "views": {
        "list": {
@@ -15,5 +16,8 @@
        "target_id": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Contact\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
        }
+   },
+   "updates": {
+       "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
    }
 }

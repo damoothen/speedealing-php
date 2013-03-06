@@ -30,7 +30,8 @@ abstract class nosqlDocument extends CommonObject {
 	public $fk_extrafields;
 	public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "couchdb", "db",
 		"error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
-		"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin", "right");
+		"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin",
+		"all_permissions_are_loaded","right");
 
 	/**
 	 * 	class constructor
@@ -59,8 +60,8 @@ abstract class nosqlDocument extends CommonObject {
 
 		if (!empty($dbname))
 			$this->couchdb->useDatabase($dbname);
-		//else
-		//	$this->couchdb->useDatabase($conf->Couchdb->name);
+		else
+			$this->couchdb->useDatabase($conf->Couchdb->name);
 	}
 
 	function fetch($rowid) { // old dolibarr rowid
@@ -476,7 +477,7 @@ abstract class nosqlDocument extends CommonObject {
 		else
 			$color = "anthracite-gradient";
 
-		return '<span class="tag ' . $color . ' glossy">' . $label . '</span>';
+		return '<span class="tag ' . $color . ' glossy">' . $label . '</span> ';
 	}
 
 	/**

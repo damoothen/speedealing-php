@@ -184,23 +184,23 @@ class User extends nosqlDocument {
 			$this->admin = true;
 		} else {
 			$membersAdmin = $this->couchAdmin->getDatabaseAdminUsers();
-			if (in_array($this->email, $membersAdmin))
+			if (in_array($this->name, $membersAdmin))
 				$this->admin = true;
 			else
 				$this->admin = false;
 		}
 
-		/* try {
-		  $database = new UserDatabase($this->db);
-		  $database->fetch($conf->Couchdb->name);
-		  $result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
+		try {
+			$database = new UserDatabase($this->db);
+			$database->fetch($conf->Couchdb->name);
+			$result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
 
-		  if (in_array($this->name, $result)) {
-		  $this->admin = true;
-		  }
-		  } catch (Exception $e) {
-
-		  } */
+			if (in_array($this->name, $result)) {
+				$this->admin = true;
+			}
+		} catch (Exception $e) {
+			
+		}
 
 		$this->id = $this->_id;
 
@@ -413,7 +413,7 @@ class User extends nosqlDocument {
 	 */
 	function getrights($moduletag = '') {
 		global $conf;
-
+		
 		if ($moduletag && isset($this->_tab_loaded[$moduletag]) && $this->_tab_loaded[$moduletag]) {
 			// Le fichier de ce module est deja charge
 			return;
@@ -423,8 +423,9 @@ class User extends nosqlDocument {
 			// Si les permissions ont deja ete charge pour ce user, on quitte
 			return;
 		}
-
+		
 		$object = new DolibarrModules($this->db);
+		$object->useDatabase();
 
 		try {
 			$result = $object->getView("default_right", '', true);
@@ -680,8 +681,7 @@ class User extends nosqlDocument {
 			if (empty($user)) //install process
 				$caneditpassword = 1;
 			else
-				$caneditpassword = ((($user->login == $this->name) && $user->rights->user->self->password)
-						|| (($user->login != $this->name) && $user->rights->user->user->password)) || $user->admin;
+				$caneditpassword = ((($user->login == $this->name) && $user->rights->user->self->password) || (($user->login != $this->name) && $user->rights->user->user->password)) || $user->admin;
 
 			if ($caneditpassword && !empty($this->pass)) { // Case we can edit only password
 				$this->password_sha = sha1($this->pass . $this->salt, false);
@@ -1030,8 +1030,7 @@ class User extends nosqlDocument {
 		$mesg = '';
 
 		$outputlangs = new Translate();
-		if (isset($this->conf->MAIN_LANG_DEFAULT)
-				&& $this->conf->MAIN_LANG_DEFAULT != 'auto') { // If user has defined its own language (rare because in most cases, auto is used)
+		if (isset($this->conf->MAIN_LANG_DEFAULT) && $this->conf->MAIN_LANG_DEFAULT != 'auto') { // If user has defined its own language (rare because in most cases, auto is used)
 			$outputlangs->getDefaultLang($this->conf->MAIN_LANG_DEFAULT);
 		} else { // If user has not defined its own language, we used current language
 			$outputlangs = $langs;
@@ -1070,17 +1069,7 @@ class User extends nosqlDocument {
 			dol_syslog(get_class($this) . "::send_password url=" . $url);
 		}
 		$mailfile = new CMailFile(
-						$subject,
-						$this->email,
-						$conf->notification->email_from,
-						$mesg,
-						array(),
-						array(),
-						array(),
-						'',
-						'',
-						0,
-						$msgishtml
+				$subject, $this->email, $conf->notification->email_from, $mesg, array(), array(), array(), '', '', 0, $msgishtml
 		);
 
 		if ($mailfile->sendfile()) {
