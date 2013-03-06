@@ -62,7 +62,7 @@ class DefaultSchema extends Schema {
 					'searchable'	=> (is_bool($field->list->searchable) === true ? $field->list->searchable : true),	// True by default
 					'sortable'		=> (is_bool($field->list->sortable) === true ? $field->list->sortable : true),		// True by default
 					'visible'		=> (is_bool($field->list->visible) === true ? $field->list->visible : true),		// True by default
-					'editable'		=> (!empty($field->list->editable) ? $this->element('Editable', array($field->type, $aRow, $classname, $field->list->validate)) : false),
+					'editable'		=> (!empty($field->list->editable) ? $this->element('Editable', array($field->type, $aRow, $classname, $field->validate)) : false),
 					'render'		=> (isset($rendertype) && $rendertype != 'Text' ? $this->element('Render' . ucfirst($rendertype), array($field, $aRow, $classname)) : false),
 					'footer'		=> $footer
 			));

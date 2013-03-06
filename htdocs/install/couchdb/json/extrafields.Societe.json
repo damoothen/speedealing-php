@@ -10,7 +10,8 @@
    "pluginsList": [
        "RowAction",
        "DeleteNotification",
-       "MakeEditable"
+       "RowShowHide",
+       "FieldEditable"
    ],
    "createList": [
        "name",
@@ -182,6 +183,7 @@
            "enable": true,
            "list": {
                "cssclass": "center",
+               "editable": true,
                "visible": false
            },
            "mask": "+99 9 99 99 99 99"

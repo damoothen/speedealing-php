@@ -97,6 +97,42 @@ class Schema {
 		return $data;
 	}
 
+	/* ______________________________________________________________________ */
+
+	public function getEditable() {
+		$data = array();
+		foreach($this->schema as $field => $config) {
+			if(!empty($config['editable'])) {
+				$refl = new \ReflectionObject($config['editable']);
+
+				$prop = $refl->getProperty('type');
+				$prop->setAccessible(true);
+				$data[$field]['type'] = $prop->getValue($config['editable']);
+
+				$prop = $refl->getProperty('name');
+				$prop->setAccessible(true);
+				$data[$field]['name'] = $prop->getValue($config['editable']);
+
+				$prop = $refl->getProperty('classname');
+				$prop->setAccessible(true);
+				$data[$field]['classname'] = $prop->getValue($config['editable']);
+
+				$prop = $refl->getProperty('validate');
+				$prop->setAccessible(true);
+				$data[$field]['validate'] = $prop->getValue($config['editable']);
+
+				$prop = $refl->getProperty('width');
+				$prop->setAccessible(true);
+				$data[$field]['width'] = $prop->getValue($config['editable']);
+
+				$prop = $refl->getProperty('height');
+				$prop->setAccessible(true);
+				$data[$field]['height'] = $prop->getValue($config['editable']);
+			}
+		}
+		return $data;
+	}
+
     /* ______________________________________________________________________ */
 
 	public function getLabels() {

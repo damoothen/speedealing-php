@@ -247,6 +247,15 @@ class Datatables {
 
 	/* ______________________________________________________________________ */
 
+	public function getFieldEditable() {
+		if( ! ($this->schema instanceof Schema)) {
+			throw new \RuntimeException("Datatables schema is not set.");
+		}
+		return $this->schema->getEditable();
+	}
+
+	/* ______________________________________________________________________ */
+
 	public function formatJsonOutput(array $data, $totalRecords = null) {
 		if(is_null($totalRecords)) {
 			$totalRecords = count($data);
@@ -317,6 +326,9 @@ class Datatables {
 
 			if (!empty($config['width']))
 				$def['sWidth'][$config['width']][] = $i;
+
+			if (!empty($config['editable']))
+				$config['class'] = $config['class'] . ' editfield_' . $key;
 
 			if (!empty($config['class']))
 				$def['sClass'][$config['class']][] = $i;
