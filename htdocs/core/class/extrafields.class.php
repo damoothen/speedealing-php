@@ -185,7 +185,11 @@ class ExtraFields extends nosqlDocument {
 			foreach ($this->fields as $aRow) {
 				if (isset($aRow->dict)) {
 					$dict = new Dict($this->db);
-					$values = $dict->load($aRow->dict, true);
+					try {
+						$values = $dict->load($aRow->dict, true);
+					} catch (Exception $e) {
+						error_log($aRow->dict . " : Not found");
+					}
 					$aRow->values = clone $values->values;
 				}
 			}
