@@ -104,7 +104,7 @@ if ($date) {
 // Transfert specific class to system database
 $system = $_GET["system"];
 if ($system) {
-	$var = array("extrafields", "Dict", "system");
+	$var = array("extrafields", "Dict", "system", "DolibarrModules", "UserGroup");
 	$var_id = array("_design/Dict");
 
 	$result = $couchdb->getAllDocs();

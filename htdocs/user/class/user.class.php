@@ -425,7 +425,6 @@ class User extends nosqlDocument {
 		}
 		
 		$object = new DolibarrModules($this->db);
-		$object->useDatabase();
 
 		try {
 			$result = $object->getView("default_right", '', true);

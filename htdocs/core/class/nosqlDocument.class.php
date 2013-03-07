@@ -60,8 +60,8 @@ abstract class nosqlDocument extends CommonObject {
 
 		if (!empty($dbname))
 			$this->couchdb->useDatabase($dbname);
-		else
-			$this->couchdb->useDatabase($conf->Couchdb->name);
+		//else
+		//	$this->couchdb->useDatabase($conf->Couchdb->name);
 	}
 
 	function fetch($rowid) { // old dolibarr rowid
