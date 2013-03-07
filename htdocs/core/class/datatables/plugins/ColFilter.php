@@ -21,17 +21,18 @@ namespace datatables\plugins;
 use datatables\Datatables,
 	datatables\PluginInterface;
 
-class DeleteNotification implements PluginInterface {
+class ColFilter implements PluginInterface {
 
 	/* ______________________________________________________________________ */
 
 	public function apply(Datatables $table) {
-		$table->callback('
-			$(".dataTables_wrapper a.delete").each(function(){
-				$(this).click(function(e) {
-					return confirm("Are you sure?");
-				})
+		$var_name = $table->getConfig('var_name');
+		$table->method("
+			$('tfoot input').keyup( function () {
+				/* Filter on the column */
+				var id = $(this).parent().attr('id');
+				{$var_name}.fnFilter( this.value, id);
 			});
-		');
+		");
 	}
 }

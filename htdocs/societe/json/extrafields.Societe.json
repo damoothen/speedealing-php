@@ -11,7 +11,8 @@
        "RowAction",
        "DeleteNotification",
        "RowShowHide",
-       "FieldEditable"
+       "FieldEditable",
+       "ColFilter"
    ],
    "createList": [
        "name",

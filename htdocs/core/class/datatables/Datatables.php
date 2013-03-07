@@ -79,11 +79,6 @@ class Datatables {
 				$(document).ready(function() {
 				<!-- // <![CDATA[
 					var {:var_name} = jQuery('#{:container_id}').dataTable({:config}){:chain};
-					$('tfoot input').keyup( function () {
-						/* Filter on the column */
-						var id = $(this).parent().attr('id');
-						{:var_name}.fnFilter( this.value, id);
-					});
 					{:method}
 				// ]]> -->
 				});
