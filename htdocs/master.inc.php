@@ -34,7 +34,7 @@
  * Create $conf object
  */
 if (!class_exists('Conf'))
-    require DOL_DOCUMENT_ROOT . '/core/class/conf.class.php';
+	require DOL_DOCUMENT_ROOT . '/core/class/conf.class.php';
 
 $conf = new Conf();
 // Identifiant propres au serveur couchdb
@@ -71,39 +71,39 @@ $conf->file->cookie_cryptkey = empty($dolibarr_main_cookie_cryptkey) ? '' : $dol
 // Define array of document root directories
 $conf->file->dol_document_root = array('main' => DOL_DOCUMENT_ROOT);
 if (!empty($dolibarr_main_document_root_alt)) {
-    // dolibarr_main_document_root_alt contains several directories
-    $values = preg_split('/[;,]/', $dolibarr_main_document_root_alt);
-    foreach ($values as $value) {
-        $conf->file->dol_document_root['alt'] = $value;
-    }
+	// dolibarr_main_document_root_alt contains several directories
+	$values = preg_split('/[;,]/', $dolibarr_main_document_root_alt);
+	foreach ($values as $value) {
+		$conf->file->dol_document_root['alt'] = $value;
+	}
 }
 
 // Chargement des includes principaux de librairies communes
 if (!defined('NOREQUIREUSER')) {
-    if (!class_exists('User'))
-        require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';  // Need 500ko memory
+	if (!class_exists('User'))
+		require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';  // Need 500ko memory
 }
 
 
 // For couchdb
 if (!class_exists('couch'))
-    require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couch.php';
+	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couch.php';
 if (!class_exists('couchClient'))
-    require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
+	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
 if (!class_exists('nosqlDocument'))
-    require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+	require DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
 
 // Load Memcache configuration
 if (!empty($conf->memcached->host) && class_exists('Memcached')) {
-    $memcache = new Memcached();
-    $result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
-    if ($result)
-        $conf->memcached->enabled = true;
+	$memcache = new Memcached();
+	$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
+	if ($result)
+		$conf->memcached->enabled = true;
 } elseif (!empty($conf->memcached->host) && class_exists('Memcache')) {
-    $memcache = new Memcache();
-    $result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
-    if ($result)
-        $conf->memcached->enabled = true;
+	$memcache = new Memcache();
+	$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
+	if ($result)
+		$conf->memcached->enabled = true;
 }
 
 // Creation objet $langs (must be before all other code)
@@ -118,7 +118,7 @@ if (!defined('NOREQUIRETRAN')) {
  */
 if (!defined('NOREQUIREDB')) {
 	if (!empty($conf->db->host)) {
-	//var_dump($conf->db);
+		//var_dump($conf->db);
 		$db = getDoliDBInstance($conf->db->type, $conf->db->host, $conf->db->user, $conf->db->pass, $conf->db->name, $conf->db->port);
 
 		if ($db->error) {
@@ -130,32 +130,47 @@ if (!defined('NOREQUIREDB')) {
 		$db = new stdClass();
 	}
 
-    // By default conf->entity is 1, but we change this if we ask another value
-    if ($conf->urlrewrite && GETPOST("db")) // Value pass from url for the name of the database : need url rewrite
-        $conf->Couchdb->name = strtolower(GETPOST("db", 'alpha'));
-    else { //Query standard
-        if (session_id()) {   // Entity inside an opened session
-            $conf->Couchdb->name = dol_getcache("dol_entity");
-            if (is_int($conf->Couchdb->name))
-                $conf->Couchdb->name = null;
-        }
-        if (empty($conf->Couchdb->name) && !empty($_ENV["dol_entity"])) {    // Entity inside a CLI script
-            $conf->Couchdb->name = strtolower($_ENV["dol_entity"]);
-            dol_setcache("dol_entity", $conf->Couchdb->name);
-        }
-        if (GETPOST("entity", 'alpha')) { // Just after a login page
-            $conf->Couchdb->name = strtolower(GETPOST("entity", 'alpha'));
-            dol_setcache("dol_entity", $conf->Couchdb->name);
-            //} else if (defined('DOLENTITY') && is_int(DOLENTITY)) { // For public page with MultiCompany module
-            //    $conf->entity = DOLENTITY;
-        }
-    }
+	// By default conf->entity is 1, but we change this if we ask another value
+	if ($conf->urlrewrite && GETPOST("db")) // Value pass from url for the name of the database : need url rewrite
+		$conf->Couchdb->name = strtolower(GETPOST("db", 'alpha'));
+	else { //Query standard
+		if (session_id()) {   // Entity inside an opened session
+			$conf->Couchdb->name = dol_getcache("dol_entity");
+			if (is_int($conf->Couchdb->name))
+				$conf->Couchdb->name = null;
+		}
+		if (empty($conf->Couchdb->name) && !empty($_ENV["dol_entity"])) { // Entity inside a CLI script
+			$conf->Couchdb->name = strtolower($_ENV["dol_entity"]);
+			dol_setcache("dol_entity", $conf->Couchdb->name);
+		}
+		if (GETPOST("entity", 'alpha')) { // Just after a login page
+			$conf->Couchdb->name = strtolower(GETPOST("entity", 'alpha'));
+			dol_setcache("dol_entity", $conf->Couchdb->name);
+			//} else if (defined('DOLENTITY') && is_int(DOLENTITY)) { // For public page with MultiCompany module
+			//    $conf->entity = DOLENTITY;
+		}
+	}
 
-    if (empty($conf->Couchdb->name))
-        $conf->Couchdb->name = "_users"; // login phase
+	if (empty($conf->Couchdb->name))
+		$conf->Couchdb->name = "_users"; // login phase
 
-    $couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
-    $couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
+	if (!empty($dolibarr_main_resolver)) {
+		$conf->Couchdb->host = dol_getcache("couchdb_host");
+		if ($conf->Couchdb->host < 0) {
+			require_once(DOL_DOCUMENT_ROOT . '/includes/net/dns2.php');
+			$r = new Net_DNS2_Resolver(array('nameservers' => array($dolibarr_main_resolver)));
+			try {
+				$result = $r->query($_SERVER["HTTP_HOST"], 'A');
+				$conf->Couchdb->host = "http://" . $result->answer[0]->address;
+				dol_setcache("couchdb_host", $conf->Couchdb->host);
+			} catch (Net_DNS2_Exception $e) {
+				echo "::query() failed: ", $e->getMessage(), "\n";
+			}
+		}
+	}
+
+	$couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
+	$couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
 }
 
 // Create the global $hookmanager object
@@ -167,11 +182,10 @@ if (!defined('NOREQUIREHOOK')) {
 
 // Now database connexion is known, so we can forget password
 unset($dolibarr_main_db_pass);  // We comment this because this constant is used in a lot of pages
-unset($conf->db->pass);    // This is to avoid password to be shown in memory/swap dump
-
+unset($conf->db->pass); // This is to avoid password to be shown in memory/swap dump
 // TODO move this parameter in database
 if (!defined('MAIN_LABEL_MENTION_NPR'))
-    define('MAIN_LABEL_MENTION_NPR', 'NPR');
+	define('MAIN_LABEL_MENTION_NPR', 'NPR');
 
 // We force feature to help debug
 // TODO move this parameter in database

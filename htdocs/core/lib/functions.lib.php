@@ -248,7 +248,7 @@ function GETPOST($paramname, $check = '', $method = 0) {
  *  @return	string      		A calculated prefix
  */
 function dol_getprefix() {
-	return dol_hash($_SERVER["SERVER_NAME"] . $_SERVER["DOCUMENT_ROOT"] . DOL_DOCUMENT_ROOT . DOL_URL_ROOT);
+	return dol_hash($_SERVER["SERVER_NAME"] . $_SERVER["HTTP_HOST"] . $_SERVER["DOCUMENT_ROOT"] . DOL_DOCUMENT_ROOT . DOL_URL_ROOT);
 }
 
 /**

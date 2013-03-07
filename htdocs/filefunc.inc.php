@@ -122,11 +122,11 @@ if (!defined('NOCSRFCHECK') && empty($dolibarr_nocsrfcheck) && !empty($_SERVER['
     print "If you access your server behind a proxy using url rewriting, you might add the line \$dolibarr_nocsrfcheck=1 into your conf.php file.\n";
     die;
 }
-if (empty($dolibarr_main_couchdb_host)) {
+/*if (empty($dolibarr_main_couchdb_host)) {
     print '<div align="center">Speedealing setup is not yet complete.<br><br>' . "\n";
     print '<a href="install/index.php">Click here to finish Speedealing install process</a> ...</div>' . "\n";
     die;
-}
+}*/
 
 // Define some constants
 define('DOL_CLASS_PATH', 'class/');         // Filesystem path to class dir (defined only for some code that want to be compatible with old versions without this parameter)
