@@ -42,6 +42,7 @@ class Datatables {
 			'bInfo'             => false,
 			'bAutoWidth'        => false,
 			'bStateSave'        => false,
+			'bDeferRender'		=> true,
 			'aLengthMenu'       => array(5, 10, 20, 50, 100, 500, 'All'),
 			'aaSorting'         => array(array(1, 'asc')),
 			//'sScrollY'          => '400px',
@@ -246,6 +247,15 @@ class Datatables {
 
 	/* ______________________________________________________________________ */
 
+	public function getFieldEditable() {
+		if( ! ($this->schema instanceof Schema)) {
+			throw new \RuntimeException("Datatables schema is not set.");
+		}
+		return $this->schema->getEditable();
+	}
+
+	/* ______________________________________________________________________ */
+
 	public function formatJsonOutput(array $data, $totalRecords = null) {
 		if(is_null($totalRecords)) {
 			$totalRecords = count($data);
@@ -291,11 +301,13 @@ class Datatables {
 
 		$i = 0;
 		$cols = array();
+		$def = array();
 		$render = array();
 		$headers = '';
 		$editable = '';
 		$footers = '';
 		foreach($this->schema->data() as $key => $config) {
+			/*
 			$cols[] = $config['aoColumns'] + array(
 					'mData'				=> $key,
 					'mRender'			=> (!empty($config['render']) ? '{:render_'.$key.'}' : ''),
@@ -306,15 +318,40 @@ class Datatables {
 					'bSearchable'		=> (bool) $config['searchable'],
 					'bVisible'			=> (bool) $config['visible']
 					//'sType'				=> 'html'
-			);
+			);*/
+
+			$def['mData'][$key][] = $i;
+			$def['sName'][$key][] = $i;
+			$def['sDefaultContent'][$config['default']][] = $i;
+
+			if (!empty($config['width']))
+				$def['sWidth'][$config['width']][] = $i;
+
+			if (!empty($config['editable']))
+				$config['class'] = $config['class'] . ' editfield_' . $key;
+
+			if (!empty($config['class']))
+				$def['sClass'][$config['class']][] = $i;
+
+			if ($config['sortable'] === false)
+				$def['bSortable'][] = $i;
+
+			if ($config['searchable'] === false)
+				$def['bSearchable'][] = $i;
+
+			if ($config['visible'] === false)
+				$def['bVisible'][] = $i;
+
+			if (!empty($config['render']))
+				$def['mRender'][$i] = '{:render_'.$key.'}';
 
 			// display header label
 			$headers .= "<th class=\"{$this->config['headers_th_class']}\">{$config['label']}</th>\n";
 
 			// build editable
-			if(!empty($config['editable'])) {
+			if(!empty($config['visible']) && !empty($config['editable'])) {
 				$editable .= self::insert($config['editable'], $config);
-			} else if($config['visible']) {
+			} else if(!empty($config['visible'])) {
 				$editable .= self::insert('null,', $config);
 			}
 
@@ -331,7 +368,55 @@ class Datatables {
 
 			$i++;
 		}
-		$this->params['aoColumns'] = $cols;
+		//$this->params['aoColumns'] = $cols;
+
+		// start
+
+		foreach($def['mData'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('mData' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['mData']);
+
+		foreach($def['sName'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('sName' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['sName']);
+
+		foreach($def['sDefaultContent'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('sDefaultContent' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['sDefaultContent']);
+
+		foreach($def['sWidth'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('sWidth' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['sWidth']);
+
+		foreach($def['sClass'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('sClass' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['sClass']);
+
+		foreach($def['mRender'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('mRender' => $value, 'aTargets' => array($key));
+		}
+
+		unset($def['mRender']);
+
+		foreach($def as $key => $value) {
+			$this->params['aoColumnDefs'][] = array($key => false, 'aTargets' => $value);
+		}
+
+		/*echo json_encode($this->params['aoColumns']);
+		echo '<br><br>';
+		echo json_encode($this->params['aoColumnDefs']);*/
+
+		// end
 
 		// convert 'oLanguage' to object
 		$this->params['oLanguage'] = (object) $this->params['oLanguage'];
@@ -341,7 +426,9 @@ class Datatables {
 		// display editable options
 		$chain = preg_replace('/\{:editable_options\}/', $editable_options, $chain);
 
+		// params json encode
 		$config = json_encode($this->params);
+
 		// display callback
 		$config = preg_replace('/"\{:callback\}"/', $callback, $config);
 		// display tabletools
