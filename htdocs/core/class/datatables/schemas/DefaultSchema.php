@@ -36,7 +36,7 @@ class DefaultSchema extends Schema {
 
 			if (empty($field->enable)) continue;
 
-			$classname = get_class($object);
+			$classname = (!empty($field->class) ? $field->class : get_class($object));
 
 			// Render element
 			$rendertype = 'Text'; // Render by default

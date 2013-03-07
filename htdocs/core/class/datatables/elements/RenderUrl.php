@@ -55,6 +55,7 @@ class RenderUrl implements ElementInterface {
 
 		return 'function(data, type, row) {
 					var ar = [];
+					var url = "' . $url . '";
 					var img, ico = "'.(!empty($ico) ? $ico : false).'";
 
 					if(row._id === undefined)
@@ -70,17 +71,13 @@ class RenderUrl implements ElementInterface {
 					if (typeof data == "object") {
 						if (data.length > 1) {
 							$.each(data, function(key, value) {
-								obj = value.id.split(":");
-								var url = obj[0] + "/'. $this->cardname .'.php?id=" + value.id;
-								ar[ar.length] = img + "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + "\">" + value.name.toString() + "</a></span> ";
+								ar[ar.length] = img + "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + value.id + "\">" + value.name.toString() + "</a></span> ";
 							});
 						} else if (data.id) {
-							obj = data.id.split(":");
-							var url = obj[0] + "/'. $this->cardname .'.php?id=" + data.id;
-							ar[ar.length] = img + "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + "\">" + data.name.toString() + "</a></span> ";
+							ar[ar.length] = img + "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + data.id + "\">" + data.name.toString() + "</a></span> ";
 						}
 					} else {
-						ar[ar.length] = img + "<a href=\"' . $url . '" + row._id + "\">" + data.toString() + "</a>";
+						ar[ar.length] = img + "<a href=\"" + url + row._id + "\">" + data.toString() + "</a>";
 					}
 					return ar.join("");
 				}';
