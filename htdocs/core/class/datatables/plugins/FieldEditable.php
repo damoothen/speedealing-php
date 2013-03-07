@@ -85,6 +85,7 @@ class FieldEditable implements PluginInterface {
 					placeholder: '',
 					submit: submitInPlace,
 					onblur: 'cancel',
+					event     : 'dblclick',
 					width: '{$values['width']}',
 					height: '{$values['height']}',
 					{$type}

@@ -44,7 +44,7 @@ class Datatables {
 			'bStateSave'        => false,
 			'bDeferRender'		=> true,
 			'aLengthMenu'       => array(5, 10, 20, 50, 100, 500, 'All'),
-			'aaSorting'         => array(array(1, 'asc')),
+			'aaSorting'         => array(array(2, 'asc')),
 			//'sScrollY'          => '400px',
 			//'sScrollX'          => '100%',
 			//'sScrollXInner'     => '100%',
@@ -96,8 +96,7 @@ class Datatables {
 				'data_source'		=> null,
 				'var_name'			=> 'oTable',
 				'container_id'		=> 'datatableTable',
-				'container_class'	=> 'display dt_act',
-				'headers_th_class'	=> 'essential'
+				'container_class'	=> 'display dt_act'
 		);
 		$this->config = $config + $defaults;
 	}
@@ -346,7 +345,7 @@ class Datatables {
 				$def['mRender'][$i] = '{:render_'.$key.'}';
 
 			// display header label
-			$headers .= "<th class=\"{$this->config['headers_th_class']}\">{$config['label']}</th>\n";
+			$headers .= "<th>{$config['label']}</th>\n";
 
 			// build editable
 			if(!empty($config['visible']) && !empty($config['editable'])) {

@@ -53,37 +53,36 @@ class RenderUrl implements ElementInterface {
 		if (!empty($this->field->render->url))
 			$url = $this->field->render->url;
 
-		$output = 'function(data, type, row) {
-						var ar = [];
-						if(row._id === undefined)
-							return ar.join("");
-						else if(data === undefined)
-							data = row._id;
+		return 'function(data, type, row) {
+					var ar = [];
+					var img, ico = "'.(!empty($ico) ? $ico : false).'";
 
-						if (typeof data == "object") {
-							if (data.length > 1) {
-								$.each(data, function(key, value) {
-									obj = value.id.split(":");
-									var url = obj[0] + "/'. $this->cardname .'.php?id=" + value.id;
-									ar[ar.length] = "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + "\">" + value.name.toString() + "</a></span> ";
-								});
-							} else {
-								obj = data.id.split(":");
-								var url = obj[0] + "/'. $this->cardname .'.php?id=" + data.id;
-								ar[ar.length] = "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + "\">" + data.name.toString() + "</a></span> ";
-							}
-						} else {'."\n";
+					if(row._id === undefined)
+						return ar.join("");
+					else if(data === undefined)
+						data = row._id;
 
-		if (!empty($ico)) {
-			$title = $langs->trans("Show") . ' ' . $this->classname;
-			$output.= 'ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $ico . '\" border=\"0\" alt=\"' . $title . ' : ";
-						ar[ar.length] = data.toString() + "\" title=\"' . $title . ' : " + data.toString() + "\"> ";'."\n";
-		}
-		$output.= 'ar[ar.length] = "<a href=\"' . $url . '" + row._id + "\">" + data.toString() + "</a>";
+					if (ico) {
+						var title = "' . $langs->trans("Show") . ' ' . $this->classname . '";
+						img = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/" + ico + "\" border=\"0\" alt=\"" + title + " : " + data.toString() + "\" title=\"" + title + " : " + data.toString() + "\"> ";
+					}
+
+					if (typeof data == "object") {
+						if (data.length > 1) {
+							$.each(data, function(key, value) {
+								obj = value.id.split(":");
+								var url = obj[0] + "/'. $this->cardname .'.php?id=" + value.id;
+								ar[ar.length] = img + "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + "\">" + value.name.toString() + "</a></span> ";
+							});
+						} else if (data.id) {
+							obj = data.id.split(":");
+							var url = obj[0] + "/'. $this->cardname .'.php?id=" + data.id;
+							ar[ar.length] = img + "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + "\">" + data.name.toString() + "</a></span> ";
+						}
+					} else {
+						ar[ar.length] = img + "<a href=\"' . $url . '" + row._id + "\">" + data.toString() + "</a>";
 					}
 					return ar.join("");
 				}';
-
-		return $output;
 	}
 }
