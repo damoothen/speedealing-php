@@ -348,11 +348,12 @@ class Datatables {
 			$headers .= "<th>{$config['label']}</th>\n";
 
 			// build editable
+			/*
 			if(!empty($config['visible']) && !empty($config['editable'])) {
 				$editable .= self::insert($config['editable'], $config);
 			} else if(!empty($config['visible'])) {
 				$editable .= self::insert('null,', $config);
-			}
+			}*/
 
 			// display mRender
 			if (!empty($config['render']))
@@ -421,7 +422,7 @@ class Datatables {
 		$this->params['oLanguage'] = (object) $this->params['oLanguage'];
 
 		// display editable
-		$chain = preg_replace('/\{:editable\}/', $editable, $chain);
+		//$chain = preg_replace('/\{:editable\}/', $editable, $chain);
 		// display editable options
 		$chain = preg_replace('/\{:editable_options\}/', $editable_options, $chain);
 

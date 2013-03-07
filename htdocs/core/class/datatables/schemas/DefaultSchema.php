@@ -38,10 +38,26 @@ class DefaultSchema extends Schema {
 
 			$classname = (!empty($field->class) ? $field->class : get_class($object));
 
+			// Editable element
+			$editable = false; // Editable by default
+			if (!empty($field->list->editable)) {
+				$editable = array(
+						"type" => $field->type,
+						"name" => $aRow,
+						"classname" => $classname,
+						"validate" => $field->validate,
+						"width" => (!empty($field->list->editable->width) ? $field->list->editable->width : '150px'),
+						"height" => (!empty($field->list->editable->height) ? $field->list->editable->height : '14px')
+				);
+			}
+
 			// Render element
-			$rendertype = 'Text'; // Render by default
-			if (!empty($field->render) || !empty($field->action))
+			$render = false; // Render by default
+			if (!empty($field->render) || !empty($field->action)) {
 				$rendertype = (!empty($field->render->type) ? $field->render->type : $field->type);
+				if ($rendertype != 'Text')
+					$render = $this->element('Render' . ucfirst($rendertype), array($field, $aRow, $classname));
+			}
 
 			// Footer element
 			$footer = ''; // Footer by default
@@ -62,8 +78,8 @@ class DefaultSchema extends Schema {
 					'searchable'	=> (is_bool($field->list->searchable) === true ? $field->list->searchable : true),	// True by default
 					'sortable'		=> (is_bool($field->list->sortable) === true ? $field->list->sortable : true),		// True by default
 					'visible'		=> (is_bool($field->list->visible) === true ? $field->list->visible : true),		// True by default
-					'editable'		=> (!empty($field->list->editable) ? $this->element('Editable', array($field->type, $aRow, $classname, $field->validate)) : false),
-					'render'		=> (isset($rendertype) && $rendertype != 'Text' ? $this->element('Render' . ucfirst($rendertype), array($field, $aRow, $classname)) : false),
+					'editable'		=> $editable,
+					'render'		=> $render,
 					'footer'		=> $footer
 			));
 		}
