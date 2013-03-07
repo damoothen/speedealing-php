@@ -30,7 +30,8 @@ abstract class nosqlDocument extends CommonObject {
 	public $fk_extrafields;
 	public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "couchdb", "db",
 		"error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
-		"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin", "right");
+		"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin",
+		"all_permissions_are_loaded","right");
 
 	/**
 	 * 	class constructor
@@ -476,7 +477,7 @@ abstract class nosqlDocument extends CommonObject {
 		else
 			$color = "anthracite-gradient";
 
-		return '<span class="tag ' . $color . ' glossy">' . $label . '</span>';
+		return '<span class="tag ' . $color . ' glossy">' . $label . '</span> ';
 	}
 
 	/**
@@ -648,7 +649,7 @@ abstract class nosqlDocument extends CommonObject {
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
 			<?php endif; ?>
 		<?php endif; ?>
-		<?php if ($user->rights->$class->edit || $user->rights->$class->creer) : ?>
+		<?php if ($user->rights->$class->edit || $user->rights->$class->creer || $user->admin) : ?>
 						}).makeEditable({
 							sUpdateURL: urlSaveInPlace,
 							sAddURL: urlAddInPlace,

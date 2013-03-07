@@ -119,8 +119,7 @@ class Conf extends nosqlDocument {
      * 	@return     int					< 0 if KO, >= 0 if OK
      */
     function setValues() {
-
-        // Avoid warning if not defined
+		// Avoid warning if not defined
         if (empty($this->db->dolibarr_main_db_encryption))
             $this->db->dolibarr_main_db_encryption = 0;
         if (empty($this->db->dolibarr_main_db_cryptkey))
@@ -198,9 +197,12 @@ class Conf extends nosqlDocument {
             }
             $i++;
         }
-
+		
+		// Load default DB if needed : only after login
+		if($this->Couchdb->name == "_users")
+			$this->Couchdb->name = $this->global->DEFAULT_DB;
+		
         // load configuration module
-
         $object = new DolibarrModules($this->db);
 
         $result = $object->getView("list", array(), true);

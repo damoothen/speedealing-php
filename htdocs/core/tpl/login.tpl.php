@@ -139,20 +139,6 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 		</form>
 	</div>
 
-	<?php if (!empty($_SESSION['dol_loginmesg'])) { ?>
-	<center>
-		<table width="60%">
-			<tr>
-				<td align="center">
-					<div class="error">
-						<?php echo $_SESSION['dol_loginmesg']; ?>
-					</div>
-				</td>
-			</tr>
-		</table>
-	</center>
-	<?php } ?>
-
 	<?php if ($main_home) { ?>
 	<center>
 		<table summary="info" cellpadding="0" cellspacing="0" border="0" align="center" width="750">
@@ -191,6 +177,10 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 	<script src="theme/symeos/js/developr.message.min.js"></script>
 	<script src="theme/symeos/js/developr.notify.min.js"></script>
 	<script src="theme/symeos/js/developr.tooltip.min.js"></script>
+	
+	<?php if (!empty($_SESSION['dol_loginmesg']))
+		dol_htmloutput_errors($_SESSION['dol_loginmesg']);
+	?>
 
 	<script>
 		$(document).ready(function() {
@@ -202,20 +192,15 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 			// If layout is centered
 			centered;
 
-			function isValidEmailAddress(emailAddress) {
-				var pattern = new RegExp(/^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i);
-				return pattern.test(emailAddress);
-			};
-
 			formLogin.submit(function(event) {
 				// Values
 				var login = $.trim($('#login').val()).toLowerCase(),
 				pass = $.trim($('#pass').val());
 
 				// Check inputs
-				if (!isValidEmailAddress(login)) {
+				if (login.length === 0) {
 					// Display message
-					displayError('Please check your login must be a mail');
+					displayError('Please check your login');
 					return false;
 				} else if (pass.length === 0) {
 					// Remove empty login message if displayed
@@ -364,12 +349,6 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 				event.preventDefault();
 			});
 
-			// What about a notification?
-			notify('Bienvenue sur Speedealing', 'Votre CRM/ERP.', {
-				autoClose: true,
-				delay: 2500,
-				icon: 'theme/common/emotes/face-smile.png'
-			});
 		});
 	</script>
 </body>
