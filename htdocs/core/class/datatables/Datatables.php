@@ -30,6 +30,7 @@ class Datatables {
 	protected $plugins = array();
 	protected $config = array();
 	protected $chain = array();
+	protected $method = array();
 	protected $params = array(
 			'bProcessing'       => true,
 			'bServerSide'       => false,
@@ -83,6 +84,7 @@ class Datatables {
 						var id = $(this).parent().attr('id');
 						{:var_name}.fnFilter( this.value, id);
 					});
+					{:method}
 				// ]]> -->
 				});
 			</script>
@@ -201,6 +203,12 @@ class Datatables {
 
 	/* ______________________________________________________________________ */
 
+	public function method($method) {
+		$this->method[] = $method;
+	}
+
+	/* ______________________________________________________________________ */
+
 	public function callback($callback) {
 		$this->callbacks[] = $callback;
 		$this->params['fnDrawCallback'] = '{:callback}';
@@ -294,6 +302,7 @@ class Datatables {
 		$container_id = $this->config['container_id'];
 		$container_class = $this->config['container_class'];
 		$chain = empty($this->chain) ? null : '.' . implode('.', $this->chain);
+		$method = empty($this->method) ? null : implode("\n", $this->method);
 		$callback = "function(oSettings) {\n" . implode("\n", $this->callbacks) . "}\n";
 		$tabletools = "{\n" . implode("\n", $this->tabletools) . "}\n";
 		$colvis = "{\n" . implode("\n", $this->colvis) . "}\n";
@@ -443,7 +452,7 @@ class Datatables {
 			}
 		}
 
-		$params = compact('var_name', 'container_id', 'container_class', 'chain', 'config', 'headers', 'footers');
+		$params = compact('var_name', 'container_id', 'container_class', 'chain', 'config', 'method', 'headers', 'footers');
 		return self::insert($this->htmlTemplate . $this->jsTemplate, $params);
 	}
 
