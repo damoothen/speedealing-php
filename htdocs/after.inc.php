@@ -37,7 +37,8 @@ if (!defined('NOREQUIREDB')) {
 
 	$conf->useDatabase("system");
 	$conf->setValues();
-	$couch->useDatabase($user->entity); // Refresh default database of user if needed
+	$database = (!empty($conf->Couchdb->name)?$conf->Couchdb->name:$user->entity); // for avoid error
+	$couch->useDatabase($database); //Refresh default dababase if needed
 }
 
 // Overwrite database value
