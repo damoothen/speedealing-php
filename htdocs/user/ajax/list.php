@@ -84,7 +84,7 @@ if ($json == "list") {
 
 			$aRow->value->entityList = array();
 			foreach ($list_db as $db) {
-				if (in_array($name, $listEntity->$db, true))
+				if (is_array($listEntity->$db) && in_array($name, $listEntity->$db, true))
 					$aRow->value->entityList[] = $db;
 			}
 
@@ -107,7 +107,7 @@ if ($json == "list") {
 
 			$aRow->doc->entityList = array();
 			foreach ($list_db as $db) {
-				if (in_array($name, $listEntity->$db, true))
+				if (is_array($listEntity->$db) && in_array($name, $listEntity->$db, true))
 					$aRow->doc->entityList[] = $db;
 			}
 
