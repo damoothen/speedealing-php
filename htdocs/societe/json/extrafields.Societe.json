@@ -11,7 +11,8 @@
        "RowAction",
        "DeleteNotification",
        "RowShowHide",
-       "FieldEditable"
+       "FieldEditable",
+       "ColFilter"
    ],
    "createList": [
        "name",
@@ -283,9 +284,11 @@
            "view": "list",
            "enable": true,
            "list": {
+               "editable": true
            },
            "render": {
-               "type": "url"
+               "type": "url",
+               "ico": "16-User.png"
            }
        },
        "civilite_id": {

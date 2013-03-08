@@ -116,9 +116,6 @@ class Editable implements ElementInterface {
 					};
 				},
 				callback: function(sValue, y) {
-					//var aPos = oTable.fnGetPosition( this );
-					//oTable.fnAddData( sValue, aPos[0], aPos[1] ); // doesn't work with server-side
-					//oTable.fnDraw();
 					$(this).html(sValue);
 				},
 				{$validate}

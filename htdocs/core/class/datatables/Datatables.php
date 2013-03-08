@@ -30,6 +30,7 @@ class Datatables {
 	protected $plugins = array();
 	protected $config = array();
 	protected $chain = array();
+	protected $method = array();
 	protected $params = array(
 			'bProcessing'       => true,
 			'bServerSide'       => false,
@@ -44,7 +45,7 @@ class Datatables {
 			'bStateSave'        => false,
 			'bDeferRender'		=> true,
 			'aLengthMenu'       => array(5, 10, 20, 50, 100, 500, 'All'),
-			'aaSorting'         => array(array(1, 'asc')),
+			'aaSorting'         => array(array(2, 'asc')),
 			//'sScrollY'          => '400px',
 			//'sScrollX'          => '100%',
 			//'sScrollXInner'     => '100%',
@@ -78,11 +79,7 @@ class Datatables {
 				$(document).ready(function() {
 				<!-- // <![CDATA[
 					var {:var_name} = jQuery('#{:container_id}').dataTable({:config}){:chain};
-					$('tfoot input').keyup( function () {
-						/* Filter on the column */
-						var id = $(this).parent().attr('id');
-						{:var_name}.fnFilter( this.value, id);
-					});
+					{:method}
 				// ]]> -->
 				});
 			</script>
@@ -96,8 +93,7 @@ class Datatables {
 				'data_source'		=> null,
 				'var_name'			=> 'oTable',
 				'container_id'		=> 'datatableTable',
-				'container_class'	=> 'display dt_act',
-				'headers_th_class'	=> 'essential'
+				'container_class'	=> 'display dt_act'
 		);
 		$this->config = $config + $defaults;
 	}
@@ -202,6 +198,12 @@ class Datatables {
 
 	/* ______________________________________________________________________ */
 
+	public function method($method) {
+		$this->method[] = $method;
+	}
+
+	/* ______________________________________________________________________ */
+
 	public function callback($callback) {
 		$this->callbacks[] = $callback;
 		$this->params['fnDrawCallback'] = '{:callback}';
@@ -295,6 +297,7 @@ class Datatables {
 		$container_id = $this->config['container_id'];
 		$container_class = $this->config['container_class'];
 		$chain = empty($this->chain) ? null : '.' . implode('.', $this->chain);
+		$method = empty($this->method) ? null : implode("\n", $this->method);
 		$callback = "function(oSettings) {\n" . implode("\n", $this->callbacks) . "}\n";
 		$tabletools = "{\n" . implode("\n", $this->tabletools) . "}\n";
 		$colvis = "{\n" . implode("\n", $this->colvis) . "}\n";
@@ -346,14 +349,15 @@ class Datatables {
 				$def['mRender'][$i] = '{:render_'.$key.'}';
 
 			// display header label
-			$headers .= "<th class=\"{$this->config['headers_th_class']}\">{$config['label']}</th>\n";
+			$headers .= "<th>{$config['label']}</th>\n";
 
 			// build editable
+			/*
 			if(!empty($config['visible']) && !empty($config['editable'])) {
 				$editable .= self::insert($config['editable'], $config);
 			} else if(!empty($config['visible'])) {
 				$editable .= self::insert('null,', $config);
-			}
+			}*/
 
 			// display mRender
 			if (!empty($config['render']))
@@ -422,7 +426,7 @@ class Datatables {
 		$this->params['oLanguage'] = (object) $this->params['oLanguage'];
 
 		// display editable
-		$chain = preg_replace('/\{:editable\}/', $editable, $chain);
+		//$chain = preg_replace('/\{:editable\}/', $editable, $chain);
 		// display editable options
 		$chain = preg_replace('/\{:editable_options\}/', $editable_options, $chain);
 
@@ -443,7 +447,7 @@ class Datatables {
 			}
 		}
 
-		$params = compact('var_name', 'container_id', 'container_class', 'chain', 'config', 'headers', 'footers');
+		$params = compact('var_name', 'container_id', 'container_class', 'chain', 'config', 'method', 'headers', 'footers');
 		return self::insert($this->htmlTemplate . $this->jsTemplate, $params);
 	}
 
