@@ -90,24 +90,28 @@ class modProduct extends DolibarrModules {
         $this->rights_class = 'produit';
         $r = 0;
 
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 31; // id de la permission
         $this->rights[$r]->desc = 'Lire les produits'; // libelle de la permission
         $this->rights[$r]->default = 1; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('lire');
         $r++;
 
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 32; // id de la permission
         $this->rights[$r]->desc = 'Creer/modifier les produits'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('creer');
         $r++;
 
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 34; // id de la permission
         $this->rights[$r]->desc = 'Supprimer les produits'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('supprimer');
         $r++;
 
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 38; // Must be same permission than in service module
         $this->rights[$r]->desc = 'Exporter les produits';
         $this->rights[$r]->default = 0;
@@ -118,6 +122,7 @@ class modProduct extends DolibarrModules {
         //--------
         $r = 0;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:products";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->langs = "products";
@@ -128,6 +133,7 @@ class modProduct extends DolibarrModules {
         $this->menus[$r]->title = "Products/Services";
         $r++;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:productlist";
         $this->menus[$r]->url = "/product/list.php?type=PRODUCT";
         $this->menus[$r]->langs = "products";
@@ -138,7 +144,8 @@ class modProduct extends DolibarrModules {
         $this->menus[$r]->title = "ListProducts";
         $this->menus[$r]->fk_menu = "menu:products";
         $r++;
-        
+		
+        $this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:prodservlistall";
         $this->menus[$r]->url = "/product/list.php";
         $this->menus[$r]->langs = "products";

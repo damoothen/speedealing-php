@@ -66,12 +66,14 @@ class modExport extends DolibarrModules {
         $this->rights_class = 'export';
         $r = 0;
 
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 1201; // id de la permission
         $this->rights[$r]->desc = 'Lire les exports'; // libelle de la permission
         $this->rights[$r]->default = true;
         $this->rights[$r]->perm = array('lire');
         $r++;
         
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 1202; // id de la permission
         $this->rights[$r]->desc = 'Creer/modifier un export'; // libelle de la permission
         $this->rights[$r]->default = false;
@@ -81,6 +83,7 @@ class modExport extends DolibarrModules {
         // Menus
         $r = 0;
         
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:formatedexport";
         $this->menus[$r]->position = 2;
         $this->menus[$r]->url = "/export/index.php";

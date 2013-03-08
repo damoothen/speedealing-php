@@ -110,6 +110,7 @@ function upgrade() {
 
 
 	// All is ok;
+	$error = new stdClass();
 	$error->title = $langs->trans("UpgradeOk");
 
 	$error->message = $langs->trans("NewInstalledVersion", $conf->global->MAIN_VERSION);

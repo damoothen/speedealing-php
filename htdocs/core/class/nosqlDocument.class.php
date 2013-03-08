@@ -207,7 +207,7 @@ abstract class nosqlDocument extends CommonObject {
 		$values->tms = dol_now();
 
 		// Specific for users
-		if ($values->class == "User" || $values->class == "UserAdmin")
+		if ($values->class == "User")
 			unset($values->rights);
 		else
 			$values->entity = $conf->Couchdb->name;

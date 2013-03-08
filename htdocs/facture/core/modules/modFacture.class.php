@@ -97,12 +97,14 @@ class modFacture extends DolibarrModules {
         $this->rights_class = 'facture';
         $r = 0;
 
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 11;
         $this->rights[$r]->desc = 'Lire les factures';
         $this->rights[$r]->default = 1;
         $this->rights[$r]->perm = array('lire');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 12;
         $this->rights[$r]->desc = 'Creer/modifier les factures';
         $this->rights[$r]->default = 0;
@@ -110,35 +112,42 @@ class modFacture extends DolibarrModules {
 
         // There is a particular permission for unvalidate because this may be not forbidden by some laws
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 13;
         $this->rights[$r]->desc = 'Dévalider les factures';
         $this->rights[$r]->default = 0;
         $this->rights[$r]->perm = array('invoice_advance', 'unvalidate');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 14;
         $this->rights[$r]->desc = 'Valider les factures';
         $this->rights[$r]->default = 0;
         $this->rights[$r]->perm = array('valider');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 15;
         $this->rights[$r]->desc = 'Envoyer les factures par mail';
         $this->rights[$r]->default = 0;
         $this->rights[$r]->perm = array('invoice_advance', 'send');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 16;
         $this->rights[$r]->desc = 'Emettre des paiements sur les factures';
         $this->rights[$r]->default = 0;
         $this->rights[$r]->perm = array('paiement');
         $r++;
+		
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 19;
         $this->rights[$r]->desc = 'Supprimer les factures';
         $this->rights[$r]->default = 0;
         $this->rights[$r]->perm = array('supprimer');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 1321;
         $this->rights[$r]->desc = 'Exporter les factures clients, attributs et reglements';
         $this->rights[$r]->default = 0;
@@ -148,6 +157,7 @@ class modFacture extends DolibarrModules {
         //-------
 
         $r = 0;
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:factures";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 42;
@@ -158,6 +168,7 @@ class modFacture extends DolibarrModules {
         $this->menus[$r]->title = "Bills";
         $r++;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:newfacture";
         $this->menus[$r]->position = 0;
         $this->menus[$r]->url = "/facture/fiche.php?action=create";
@@ -169,6 +180,7 @@ class modFacture extends DolibarrModules {
         $this->menus[$r]->fk_menu = "menu:factures";
         $r++;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:billslist";
         $this->menus[$r]->position = 1;
         $this->menus[$r]->url = "/facture/list.php";
@@ -180,6 +192,7 @@ class modFacture extends DolibarrModules {
         $this->menus[$r]->fk_menu = "menu:factures";
         $r++;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:billsstats";
         $this->menus[$r]->position = 2;
         $this->menus[$r]->url = "/facture/stats/index.php";

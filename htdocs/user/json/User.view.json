@@ -1,16 +1,19 @@
 {
    "_id": "_design/User",
-   "_rev": "2-461af6cda8fa24f24044c3399e99f50d",
+   "_rev": "26-3cc7820bc8a039d269c409b130e5d41b",
    "language": "javascript",
    "views": {
        "list": {
            "map": "function(doc) {\n  if(doc.class && doc.class == \"User\" && doc.Status==\"ENABLE\")\n     emit(doc.name, doc);\n}"
        },
        "group": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"User\" && doc.group.length > 0) {\n    for(var idx in doc.group) {\n      emit(doc.group[idx], doc);\n    }\n  }\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"User\" && doc.roles.length > 0) {\n    for(var idx in doc.roles) {\n      emit(doc.roles[idx], doc);\n    }\n  }\n}"
        },
        "target_id": {
            "map": "function(doc) {\n  if(doc.class && (doc.class==\"User\" || doc.class==\"UserGroup\") && (doc._id != \"user:admin\"))\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
+       },
+       "listAll": {
+           "map": "function(doc) {\n  if(doc.class && doc.class == \"User\")\n     emit(doc.name, doc);\n}"
        }
    },
    "updates": {

@@ -290,7 +290,7 @@ class Net_DNS2 {
 		//
         if (strncmp($name, 'Net_DNS2', 8) == 0) {
 
-			include 'includes/' . str_replace('_', '/', strtolower($name)) . '.php';
+			include_once DOL_DOCUMENT_ROOT . '/includes/' . str_replace('_', '/', strtolower($name)) . '.php';
 		}
 
 		return;

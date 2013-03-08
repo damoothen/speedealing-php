@@ -131,12 +131,14 @@ class modSociete extends DolibarrModules {
         $this->rights = array();
         $this->rights_class = 'societe';
         $r = 0;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 121; // id de la permission
         $this->rights[$r]->desc = 'Lire les societes'; // libelle de la permission
         $this->rights[$r]->default = true;
         $this->rights[$r]->perm = array('lire');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 122; // id de la permission
         $this->rights[$r]->desc = 'Creer modifier les societes'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
@@ -160,6 +162,7 @@ class modSociete extends DolibarrModules {
          */
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 125; // id de la permission
         $this->rights[$r]->desc = 'Supprimer les societes'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
@@ -183,6 +186,7 @@ class modSociete extends DolibarrModules {
          */
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 126; // id de la permission
         $this->rights[$r]->desc = 'Exporter les societes'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
@@ -190,6 +194,7 @@ class modSociete extends DolibarrModules {
 
         // 262 : Resteindre l'acces des commerciaux
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 262;
         $this->rights[$r]->desc = 'Consulter tous les tiers par utilisateurs internes (sinon uniquement si contact commercial). Non effectif pour utilisateurs externes (tjs limités à eux-meme).';
         $this->rights[$r]->default = 1;
@@ -197,24 +202,28 @@ class modSociete extends DolibarrModules {
 
         // 262 : Resteindre l'acces des commerciaux
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 281; // id de la permission
         $this->rights[$r]->desc = 'Lire les contacts'; // libelle de la permission
         $this->rights[$r]->default = 1; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('contact', 'lire');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 282; // id de la permission
         $this->rights[$r]->desc = 'Creer modifier les contacts'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('contact', 'creer');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 283; // id de la permission
         $this->rights[$r]->desc = 'Supprimer les contacts'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('contact', 'supprimer');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 286; // id de la permission
         $this->rights[$r]->desc = 'Exporter les contacts'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
@@ -222,6 +231,7 @@ class modSociete extends DolibarrModules {
 
         // Menus
         $r = 0;
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:companies";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 2;
@@ -232,6 +242,7 @@ class modSociete extends DolibarrModules {
         $this->menus[$r]->title = "ThirdParties";
         $r++;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:newcompany";
         $this->menus[$r]->position = 1;
         $this->menus[$r]->url = "/societe/fiche.php?action=create";
@@ -242,6 +253,8 @@ class modSociete extends DolibarrModules {
         $this->menus[$r]->title = "MenuNewThirdParty";
         $this->menus[$r]->fk_menu = "menu:companies";
         $r++;
+		
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:thirdparty";
         $this->menus[$r]->position = 2;
         $this->menus[$r]->url = "/societe/list.php";
@@ -253,6 +266,7 @@ class modSociete extends DolibarrModules {
         $this->menus[$r]->fk_menu = "menu:companies";
         $r++;
         
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:newcontact";
         $this->menus[$r]->position = 10;
         $this->menus[$r]->url = "/contact/fiche.php?action=create";
@@ -263,6 +277,8 @@ class modSociete extends DolibarrModules {
         $this->menus[$r]->title = "NewContact";
         $this->menus[$r]->fk_menu = "menu:companies";
         $r++;
+		
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:contactsaddresses";
         $this->menus[$r]->position = 11;
         $this->menus[$r]->url = "/contact/list.php";
@@ -279,6 +295,7 @@ class modSociete extends DolibarrModules {
         $r = 0;
 
         // Export list of third parties and attributes
+		$this->export[$r] = new stdClass();
         $this->export[$r]->code = $this->rights_class . '_' . $r;
         $this->export[$r]->label = 'ExportDataset_company_1';
         $this->export[$r]->icon = 'company';
@@ -286,6 +303,7 @@ class modSociete extends DolibarrModules {
 
         // Export list of contacts and attributes
         $r++;
+		$this->export[$r] = new stdClass();
         $this->export[$r]->code = $this->rights_class . '_' . $r;
         $this->export[$r]->label = 'ExportDataset_company_2';
         $this->export[$r]->icon = 'contact';
@@ -297,12 +315,14 @@ class modSociete extends DolibarrModules {
         $r = 0;
 
         // Import list of third parties and attributes
+		$this->import[$r] = new stdClass();
         $this->import[$r]->code = $this->rights_class . '_' . $r;
         $this->import[$r]->label = 'ImportDataset_company_1';
         $this->import[$r]->icon = 'company';
 
         // Import list of contact and attributes
         $r++;
+		$this->import[$r] = new stdClass();
         $this->import[$r]->code = $this->rights_class . '_' . $r;
         $this->import[$r]->label = 'ImportDataset_company_2';
         $this->import[$r]->icon = 'contact';

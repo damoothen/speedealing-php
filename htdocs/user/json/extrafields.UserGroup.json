@@ -1,7 +1,15 @@
 {
    "_id": "extrafields:UserGroup",
+   "_rev": "42-f9fdf9b596bc8bea7b7202a3473fdf0f",
    "class": "extrafields",
    "ico": "16-Users-2.png",
    "fields": {
+       "user": {
+           "enable": true,
+           "type": "select",
+           "label": "User",
+           "class": "User",
+           "view": "list"
+       }
    }
 }

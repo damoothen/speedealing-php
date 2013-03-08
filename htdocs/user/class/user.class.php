@@ -84,7 +84,7 @@ class User extends nosqlDocument {
 
 		parent::__construct($db);
 
-		$this->useDatabase("_users");
+		$this->useDatabase("system");
 
 		$this->fk_extrafields = new ExtraFields($db);
 		$this->fk_extrafields->fetch(get_class($this));
@@ -114,7 +114,7 @@ class User extends nosqlDocument {
 	 * 	@param	int		$loadpersonalconf	Also load personal conf of user (in $user->conf->xxx)
 	 * 	@return	int							<0 if KO, 0 not found, >0 if OK
 	 */
-	function fetch($login = "") {
+	function fetch($login = "", $cache = false) {
 		global $conf, $couch;
 
 		// Clean parametersadmin
@@ -161,7 +161,7 @@ class User extends nosqlDocument {
 
 			//$result = $this->couchAdmin->getUser($login);
 			//print_r($result);exit;
-			$this->load("org.couchdb.user:" . $login, true);
+			$this->load("user:" . $login, $cache);
 		} catch (Exception $e) {
 			error_log("Login error : " . $login . " " . $e->getMessage());
 			return 0;
@@ -413,7 +413,7 @@ class User extends nosqlDocument {
 	 */
 	function getrights($moduletag = '') {
 		global $conf;
-		
+
 		if ($moduletag && isset($this->_tab_loaded[$moduletag]) && $this->_tab_loaded[$moduletag]) {
 			// Le fichier de ce module est deja charge
 			return;
@@ -423,7 +423,7 @@ class User extends nosqlDocument {
 			// Si les permissions ont deja ete charge pour ce user, on quitte
 			return;
 		}
-		
+
 		$object = new DolibarrModules($this->db);
 
 		try {
@@ -650,10 +650,8 @@ class User extends nosqlDocument {
 		} else {
 			if ($action == 'add') {
 				try {
-					if ($this->admin)
-						$this->couchAdmin->createAdmin($this->name, $this->pass);
-					else
-						$this->couchAdmin->createUser($this->name, $this->pass);
+					$this->couchAdmin->createUser($this->name, $this->pass);
+					unset($this->pass);
 				} catch (Exception $e) {
 					$this->error = $e->getMessage();
 					error_log($this->error);
@@ -663,33 +661,33 @@ class User extends nosqlDocument {
 		}
 
 		try {
-			$user_tmp = $this->couchAdmin->getUser($this->name);
+			/* $user_tmp = $this->couchAdmin->getUser($this->name);
 
-			$this->salt = $user_tmp->salt;
-			$this->password_sha = $user_tmp->password_sha;
-			$this->type = $user_tmp->type;
-			$this->roles = $user_tmp->roles;
-			$this->_id = $user_tmp->_id;
-			$this->_rev = $user_tmp->_rev;
+			  $this->salt = $user_tmp->salt;
+			  $this->password_sha = $user_tmp->password_sha;
+			  $this->type = $user_tmp->type;
+			  $this->roles = $user_tmp->roles;
+			  $this->_id = $user_tmp->_id;
+			  $this->_rev = $user_tmp->_rev; */
 
 			if ($action == 'add' && empty($this->Status))
 				$this->Status = "DISABLE";
 			if ($action == 'add')
 				$this->CreateDate = dol_now();
 
+			$pass = $this->pass;
+			unset($this->pass);
+			//print_r($this);exit;
+			$result = $this->record(); // Save all specific parameters
+
 			if (empty($user)) //install process
 				$caneditpassword = 1;
 			else
 				$caneditpassword = ((($user->login == $this->name) && $user->rights->user->self->password) || (($user->login != $this->name) && $user->rights->user->user->password)) || $user->admin;
 
-			if ($caneditpassword && !empty($this->pass)) { // Case we can edit only password
-				$this->password_sha = sha1($this->pass . $this->salt, false);
+			if ($caneditpassword && !empty($pass)) { // Case we can edit only password
+				$this->couchAdmin->setPassword($this->name, $pass);
 			}
-
-			unset($this->pass);
-
-			//print_r($this);exit;
-			$result = $this->record(); // Save all specific parameters
 		} catch (Exception $e) {
 			$this->error = $e->getMessage();
 			error_log($this->error);
@@ -1554,6 +1552,14 @@ class User extends nosqlDocument {
 
 	function getLibStatus() {
 		return $this->LibStatus($this->Status);
+	}
+	
+	function addRoleToUser($role) {
+		return $this->couchAdmin->addRoleToUser($this->name, $role);
+	}
+	
+	function removeRoleFromUser($role) {
+		return $this->couchAdmin->removeRoleFromUser($this->name, $role);
 	}
 
 }

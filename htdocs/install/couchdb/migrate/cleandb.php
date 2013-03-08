@@ -104,7 +104,7 @@ if ($date) {
 // Transfert specific class to system database
 $system = $_GET["system"];
 if ($system) {
-	$var = array("extrafields", "Dict", "system", "DolibarrModules", "UserGroup");
+	$var = array("extrafields", "Dict", "system", "DolibarrModules", "UserGroup", "User");
 	$var_id = array("_design/Dict");
 
 	$result = $couchdb->getAllDocs();
@@ -114,6 +114,12 @@ if ($system) {
 
 	$couch_temp = clone $couchdb;
 	$couch_temp->useDatabase("system");
+
+	if (!$couch_temp->databaseExists())
+		$couch_temp->createDatabase();
+	
+	$couchAdmin = new couchAdmin($couch_temp);
+	$couchAdmin->addDatabaseReaderRole("speedealing");
 
 	$found = false;
 	foreach ($result->rows AS $aRow) {
@@ -154,8 +160,8 @@ if ($id_user) {
 
 //print_r($result);
 
-	$couch_temp = clone $couchdb;
-	$couch_temp->useDatabase("_users");
+	/* $couch_temp = clone $couchdb;
+	  $couch_temp->useDatabase("_users"); */
 
 	$found = false;
 	$modify = false;
@@ -163,34 +169,34 @@ if ($id_user) {
 		$obj = $couchdb->getDoc($aRow->id);
 		foreach ($var as $key) {
 			if (isset($obj->$key) && !empty($obj->$key->id)) {
-				$obj->$key->id = "org.couchdb.user:" . $obj->$key->name;
+				$obj->$key->id = "user:" . $obj->$key->name;
 
 				$found = true;
 				$modify = true;
 			}
 		}
-		if ($obj->class == "User" && $obj->email != "admin@speedealing.com") {
-			try {
-				$obj_temp = $couch_temp->getDoc("org.couchdb.user:" . $obj->email);
-				$couch_temp->deleteDoc($obj_temp);
-			} catch (Exception $e) {
-// User doesn't exist
-			}
+		/* if ($obj->class == "User" && $obj->email != "admin@speedealing.com") {
+		  try {
+		  $obj_temp = $couch_temp->getDoc("org.couchdb.user:" . $obj->email);
+		  $couch_temp->deleteDoc($obj_temp);
+		  } catch (Exception $e) {
+		  // User doesn't exist
+		  }
 
-			$obj_temp->_id = "org.couchdb.user:" . $obj->name;
-			unset($obj_temp->_rev);
+		  $obj_temp->_id = "org.couchdb.user:" . $obj->name;
+		  unset($obj_temp->_rev);
 
-			foreach ($var_user as $key) {
-				if ($key == "group") {
-					$obj_temp->roles = $obj->group;
-				} elseif (!empty($obj->$key)) {
-					$obj_temp->$key = $obj->$key;
-				}
-			}
+		  foreach ($var_user as $key) {
+		  if ($key == "group") {
+		  $obj_temp->roles = $obj->group;
+		  } elseif (!empty($obj->$key)) {
+		  $obj_temp->$key = $obj->$key;
+		  }
+		  }
 
-			$couchdb->deleteDoc($obj); // Delete old user:xxxxx document
-			$couch_temp->storeDoc($obj_temp); // Create new document user
-		}
+		  $couchdb->deleteDoc($obj); // Delete old user:xxxxx document
+		  $couch_temp->storeDoc($obj_temp); // Create new document user
+		  } */
 		if ($modify) {
 			$couchdb->storeDoc($obj);
 			$modify = false;

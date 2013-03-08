@@ -83,6 +83,7 @@ class modMap extends DolibarrModules {
 		// $this->rights[$r][4]     Niveau 1 pour nommer permission dans code
 		// $this->rights[$r][5]     Niveau 2 pour nommer permission dans code
 
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 451;
 		$this->rights[$r]->desc = 'See map';
 		$this->rights[$r]->default = true;

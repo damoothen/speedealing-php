@@ -326,7 +326,7 @@ class Agenda extends nosqlDocument {
 
 		if ($this->Status == "ON" && !$this->userdone->id) {
 			$this->userdone->id = $user->id;
-			$this->userdone->name = $user->login;
+			$this->userdone->name = $user->name;
 		}
 
 		// Check parameters
@@ -334,11 +334,11 @@ class Agenda extends nosqlDocument {
 			//$this->error="ErrorCantSaveADoneUserWithZeroPercentage";
 			//return -1;
 			unset($this->userdone->id);
-			unset($this->userdone->login);
+			unset($this->userdone->name);
 		}
 		if ($this->Status == "DONE" && !$this->userdone->id) {
 			$this->userdone->id = $user->id;
-			$this->userdone->name = $user->login;
+			$this->userdone->name = $user->name;
 		}
 
 		if ($this->Status == "DONE")
@@ -355,21 +355,23 @@ class Agenda extends nosqlDocument {
 		}
 		if (!empty($this->contact->id)) {
 			$object = new Contact($this->db);
-			$object->fetch($this->contact->id);
+			$object->load($this->contact->id);
 			$this->contact->name = $object->name;
 		} else {
 			unset($this->contact->name);
 		}
+		
 		if (!empty($this->usertodo->id)) {
 			$object = new User($this->db);
-			$object->fetch($this->usertodo->id);
+			$object->load($this->usertodo->id);
 			$this->usertodo->name = $object->name;
 		} else {
 			unset($this->usertodo->name);
 		}
+		
 		if (!empty($this->userdone->id)) {
 			$object = new User($this->db);
-			$object->fetch($this->userdone->id);
+			$object->load($this->userdone->id);
 			$this->userdone->name = $object->name;
 		} else {
 			unset($this->userdone->name);

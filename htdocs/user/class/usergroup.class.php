@@ -62,6 +62,8 @@ class UserGroup extends nosqlDocument {
 
         parent::__construct($db);
 
+		$this->useDatabase("system");
+		
         $fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
 

@@ -51,10 +51,8 @@ $caneditgroup = $canedituser;
 // Define value to know what current user can do on properties of edited user
 if ($id) {
 	// $user est le user qui edite, $_GET["id"] est l'id de l'utilisateur edite
-	$caneditfield = ((($user->id == $id) && $user->rights->user->self->creer)
-			|| (($user->id != $id) && $user->rights->user->user->creer));
-	$caneditpassword = ((($user->id == $id) && $user->rights->user->self->password)
-			|| (($user->id != $id) && $user->rights->user->user->password));
+	$caneditfield = ((($user->id == $id) && $user->rights->user->self->creer) || (($user->id != $id) && $user->rights->user->user->creer));
+	$caneditpassword = ((($user->id == $id) && $user->rights->user->self->password) || (($user->id != $id) && $user->rights->user->user->password));
 }
 
 // Security check
@@ -207,7 +205,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 		$id = $edituser->update($user, 0, $action);
 
 		if ($id == $user->name)
-			dol_delcache("org.couchdb.user:" . $id);
+			dol_delcache("user:" . $id);
 
 		//print $id;
 
@@ -225,7 +223,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 					$errmsgs[] = "ErrorBadImageFormat";
 				}
 			}
-			Header("Location: " . $_SERVER['PHP_SELF'] . '?id=org.couchdb.user:' . $id);
+			Header("Location: " . $_SERVER['PHP_SELF'] . '?id=user:' . $id);
 			exit;
 		} else {
 			$langs->load("errors");
@@ -248,13 +246,15 @@ if (($action == 'addgroup' || $action == 'removegroup') && $caneditfield) {
 		$edituser->load($id);
 
 		if ($action == 'addgroup') {
-			$edituser->group[] = $group;
+			$edituser->roles[] = $group;
+			$edituser->addRoleToUser($group);
 		}
 		if ($action == 'removegroup') {
-			unset($edituser->group[array_search($group, $edituser->group)]);
-			$edituser->group = array_merge($edituser->group);
+			unset($edituser->roles[array_search($group, $edituser->roles)]);
+			$edituser->roles = array_merge($edituser->roles);
+			$edituser->removeRoleFromUser($group);
 		}
-		$edituser->record(true);
+		$edituser->record($edituser->id == $user->id);
 
 		header("Location: fiche.php?id=" . $id);
 		exit;
@@ -514,9 +514,13 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 
 			// Administrator
 			$name = $fuser->name;
-			$admins = $fuser->getUserAdmins();
-			if (isset($admins->$name))
-				$fuser->admin = true;
+			if ($user->admin) {
+				$admins = $fuser->getUserAdmins();
+				if (isset($admins->$name))
+					$fuser->admin = true;
+				else
+					$fuser->admin = false;
+			}
 			else
 				$fuser->admin = false;
 
@@ -706,10 +710,10 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 				print '</thead>';
 
 				print '<tbody>';
-				if (!empty($fuser->group)) {
+				if (!empty($fuser->roles)) {
 					$var = True;
 
-					foreach ($fuser->group as $aRow) {
+					foreach ($fuser->roles as $aRow) {
 						$var = !$var;
 
 						$useringroup = new UserGroup($db);

@@ -53,9 +53,11 @@ if ($json == "list") {
 
 	$var_exclude_db = array("_users", "_replicator", "mips", "system");
 
+	$listEntity = new stdClass();
+
 	try {
-		//$result = $object->getView('list');
-		$result = $object->getAllUsers(true);
+		$result = $object->getView('listAll');
+		$result_all = $object->getAllUsers(true);
 		$admins = $object->getUserAdmins();
 
 		$list_db = array_diff($couch->listDatabases(), $var_exclude_db);
@@ -69,14 +71,33 @@ if ($json == "list") {
 		print $exc->getMessage();
 	}
 
-	//print_r($listEntity);
+	//print_r($result_all);
 
-	$iTotal = count($result);
-	$output["iTotalRecords"] = $iTotal;
-	$output["iTotalDisplayRecords"] = $iTotal;
+
 	$i = 0;
-	foreach ($result as $aRow) {
+	foreach ($result->rows as $aRow) {
+		$name = substr($aRow->value->_id, 5);
+		if (isset($admins->$name))
+			$aRow->value->admin = true;
+		else
+			$aRow->value->admin = false;
+
+		$aRow->value->entityList = array();
+		foreach ($list_db as $db) {
+			if (in_array($name, $listEntity->$db, true))
+				$aRow->value->entityList[] = $db;
+		}
+
+		$output["aaData"][] = $aRow->value;
+		$user_in[] = $name;
+	}
+
+	foreach ($result_all as $aRow) {
 		$name = substr($aRow->doc->_id, 17);
+
+		if (in_array($name, $user_in))
+			continue;
+
 		if (isset($admins->$name))
 			$aRow->doc->admin = true;
 		else
@@ -90,6 +111,10 @@ if ($json == "list") {
 
 		$output["aaData"][] = $aRow->doc;
 	}
+
+	$iTotal = count($output["aaData"]);
+	$output["iTotalRecords"] = $iTotal;
+	$output["iTotalDisplayRecords"] = $iTotal;
 
 	echo json_encode($output);
 }

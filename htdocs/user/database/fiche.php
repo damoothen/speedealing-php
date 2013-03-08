@@ -20,7 +20,7 @@
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/user/class/userdatabase.class.php';
 require_once DOL_DOCUMENT_ROOT . '/user/class/usergroup.class.php';
-require_once DOL_DOCUMENT_ROOT . '/useradmin/class/useradmin.class.php';
+require_once DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
 
 // Defini si peux lire/modifier utilisateurs et permisssions
 $canreadperms = ($user->admin );
@@ -75,7 +75,7 @@ if ($action == 'adduser' || $action == 'removeuser') {
         if ($userid) {
             $object->fetch($id);
 
-            $userid = $name = substr($userid, 17); // suppress org.couchdb.user:
+            $userid = $name = substr($userid, 5); // suppress org.couchdb.user:
 
             if ($action == 'adduser') {
                 if ($_POST['admin'] == true)
@@ -235,7 +235,7 @@ if ($action == 'create') {
 
                 foreach ($object->members as $aRow) {
 
-                    $useringroup = new UserAdmin($db);
+                    $useringroup = new User($db);
                     $useringroup->values = $aRow;
                     $useringroup->admin = $useringroup->values->admin;
                     $useringroup->id = $useringroup->values->_id;

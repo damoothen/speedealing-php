@@ -549,7 +549,9 @@ class DolibarrModules extends nosqlDocument {
 	function _load_documents() {
 		global $db, $conf;
 
-		$var_dbuser = array("_design/User", "_design/_auth");
+		$var_dbuser = array("_design/_auth");
+
+		$var_dbsystem = array("_design/User", "_desgin/UserGroup");
 
 		$list_db = $this->couchdb->listDatabases();
 		$no_upgradeDB = array("_users", "system", "_replicator", "mips");
@@ -577,7 +579,9 @@ class DolibarrModules extends nosqlDocument {
 								$nbDB = 1;
 								if (in_array($obj->_id, $var_dbuser))
 									$this->couchdb->useDatabase("_users");
-								else if (substr($obj->_id,0,7) == "_design")
+								else if (in_array($obj->_id, $var_dbsystem))
+									$this->couchdb->useDatabase("system");
+								else if (substr($obj->_id, 0, 7) == "_design")
 									$nbDB = count($list_db);
 								else
 									$this->couchdb->useDatabase("system");
@@ -607,7 +611,7 @@ class DolibarrModules extends nosqlDocument {
 
 											foreach ($result->fields as $key => $aRow) {
 												if ($aRow->optional) //specific extrafields
-													$obj->fields->$key = $aRow;
+													$obj->fields->$key = clone $aRow;
 
 												if ($aRow->enable) // Test if fields was enable or disable
 													$obj->fields->$key->enable = true;

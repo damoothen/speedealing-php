@@ -98,14 +98,15 @@ class modMargin extends DolibarrModules
 		$r = 0;
 
 		// left menu entry
-		$this->menus[$r]->_id = "menu:margin";
-		$this->menus[$r]->type = "left";
-		$this->menus[$r]->position = 100;
-		$this->menus[$r]->url = "/margin/index.php";
-		$this->menus[$r]->enabled = '$conf->margin->enabled';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Margins";
-		$this->menus[$r]->fk_menu = "menu:accountancy";
+		$this->menu[$r] = new stdClass();
+		$this->menu[$r]->_id = "menu:margin";
+		$this->menu[$r]->type = "left";
+		$this->menu[$r]->position = 100;
+		$this->menu[$r]->url = "/margin/index.php";
+		$this->menu[$r]->enabled = '$conf->margin->enabled';
+		$this->menu[$r]->usertype = 2;
+		$this->menu[$r]->title = "Margins";
+		$this->menu[$r]->fk_menu = "menu:accountancy";
 		$r++;
 	}
 

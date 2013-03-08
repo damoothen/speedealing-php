@@ -184,6 +184,7 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX'))
 	require DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'; // Need 22ko memory
 
+	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
 	Header("Location: " . DOL_URL_ROOT . "/install/index.php");
@@ -585,6 +586,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 
 
+		
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 
@@ -666,7 +668,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
  */
 function left_menu() {
 	global $conf, $langs;
-
 	?><ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
 		<li class="current">
 			<a href="index.php?idmenu=menu:home" class="shortcut-dashboard" title="<?php echo $langs->trans("Dashboard"); ?>">
@@ -728,7 +729,7 @@ function main_menu() {
 
 	// Load the top menu manager (only if not already done)
 	//if (!class_exists('MenuTop'))
-		include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $conf->top_menu;
+	include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $conf->top_menu;
 
 	$searchform = '';
 	$bookmarks = '';
@@ -754,7 +755,7 @@ function main_menu() {
 						minChars: 2,
 						max: 6,
 						matchCase: 1,
-						indicator : '<img src="theme/<?php echo $conf->theme; ?>/img/working.gif">',
+						indicator: '<img src="theme/<?php echo $conf->theme; ?>/img/working.gif">',
 						width: 212
 					}).result(function(event, query_val) {
 						$.modal({
@@ -790,7 +791,7 @@ function main_menu() {
 			<div id="profile">
 				<?php if (!empty($user->Photo)) : ?><img alt="User name" src="<?php echo $user->getFile($user->Photo); ?>" width="64" class="user-icon">
 				<?php else : ?><img src="theme/symeos/img/user.png" width="64" class="user-icon" alt="User name">
-	<?php endif; ?>
+				<?php endif; ?>
 	<?php echo $langs->trans('Hello'); ?><span class="name"><?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b></span>
 			</div>
 
@@ -807,7 +808,7 @@ function main_menu() {
 					</span>
 				</li>
 				<li style="width: 20%;">
-						<?php if ($conf->agenda->enabled) : ?>
+	<?php if ($conf->agenda->enabled) : ?>
 						<a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>">
 							<span class="icon-calendar"></span>
 							<?php
@@ -923,7 +924,6 @@ if (!function_exists("llxFooter")) {
 
 		<!-- End main content -->
 		<?php
-
 		left_menu(); // print the left menu
 		main_menu(); // print the right menu
 

@@ -85,25 +85,28 @@ class modPlanning extends DolibarrModules {
         // $this->rights[$r][5]     Niveau 2 pour nommer permission dans code
         // $r++;
 
-
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 1001;
         $this->rights[$r]->desc = 'Read actions/tasks linked to his account';
         $this->rights[$r]->default = 1;
         $this->rights[$r]->perm = array('tasks', 'read');
         $r++;
 
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 1002;
         $this->rights[$r]->desc = 'Create/modify actions/tasks linked to his account';
         $this->rights[$r]->default = 0;
         $this->rights[$r]->perm = array('tasks', 'create');
         $r++;
 
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 1003;
         $this->rights[$r]->desc = 'Delete actions/tasks linked to his account';
         $this->rights[$r]->default = 0;
         $this->rights[$r]->perm = array('tasks', 'delete');
         $r++;
         
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 1004;
         $this->rights[$r]->desc = 'Export actions/tasks linked to his account';
         $this->rights[$r]->default = 0;
@@ -114,6 +117,7 @@ class modPlanning extends DolibarrModules {
         $this->menu = array();   // List of menus to add
         $r = 0;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:planning";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 20;
@@ -128,6 +132,7 @@ class modPlanning extends DolibarrModules {
         // Exports
         //--------
         $r = 0;
+		$this->export[$r] = new stdClass();
         $this->export[$r]->code = $this->rights_class . '_' . $r;
         $this->export[$r]->label = 'ExportDataset_planning';
         $this->export[$r]->icon = 'action';
@@ -138,6 +143,7 @@ class modPlanning extends DolibarrModules {
         //--------
         $r = 0;
         // Import list of third parties and attributes
+		$this->import[$r] = new stdClass();
         $this->import[$r]->code = $this->rights_class . '_' . $r;
         $this->import[$r]->label = 'ImportDataset_planning';
         $this->import[$r]->icon = 'action';
