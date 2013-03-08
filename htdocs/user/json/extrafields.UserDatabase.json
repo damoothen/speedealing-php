@@ -31,7 +31,7 @@
        "user": {
            "type": "select",
            "label": "NonAffectedUsers",
-           "class": "UserAdmin",
+           "class": "User",
            "view": "list"
        }
    }

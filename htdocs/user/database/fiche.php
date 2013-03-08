@@ -75,8 +75,6 @@ if ($action == 'adduser' || $action == 'removeuser') {
         if ($userid) {
             $object->fetch($id);
 
-            $userid = $name = substr($userid, 5); // suppress org.couchdb.user:
-
             if ($action == 'adduser') {
                 if ($_POST['admin'] == true)
                     $object->couchAdmin->addDatabaseAdminUser($userid);
@@ -251,7 +249,7 @@ if ($action == 'create') {
                     print '<td>' . $useringroup->LibStatus($useringroup->values->Status) . '</td>';
                     print '<td>';
                     if ($user->admin) {
-                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->id . '">';
+                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';
                         print img_delete($langs->trans("RemoveFromGroup"));
                     } else {
                         print "-";
