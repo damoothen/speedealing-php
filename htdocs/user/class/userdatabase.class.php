@@ -95,8 +95,8 @@ class UserDatabase extends nosqlDocument {
 					$user->email = $aRow;
 					$user->name = $aRow;
 					$user->_id = "org.couchdb.user:" . $aRow;
-					$user->Firstname = $langs->trans("Unknown");
-					$user->Lastname = $langs->trans("Unknown");
+					$user->Firstname = "Unknown";
+					$user->Lastname = "Unknown";
 					$user->Status = "DISABLE";
 				}
 				$this->members[] = clone $user;
@@ -104,7 +104,7 @@ class UserDatabase extends nosqlDocument {
 		}
 
 		$group = new stdClass();
-		
+
 		if (!empty($membersRoles)) {
 			foreach ($membersRoles as $aRow) {
 				$group->id = $aRow;
@@ -125,8 +125,8 @@ class UserDatabase extends nosqlDocument {
 					$user->email = $aRow;
 					$user->name = $aRow;
 					$user->_id = "org.couchdb.user:" . $aRow;
-					$user->Firstname = $langs->trans("Unknown");
-					$user->Lastname = $langs->trans("Unknown");
+					$user->Firstname = "Unknown";
+					$user->Lastname = "Unknown";
 					$user->Status = "DISABLE";
 					$user->admin = true;
 				}
