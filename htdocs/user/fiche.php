@@ -701,7 +701,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 				$obj->aoColumns[$i] = new stdClass();
 				$obj->aoColumns[$i]->mDataProp = "";
 				$i++;
-				print '<th></th>';
+				print '<th>' . $langs->trans("Action") . '</th>';
 				$obj->aoColumns[$i] = new stdClass();
 				$obj->aoColumns[$i]->mDataProp = "";
 				$obj->aoColumns[$i]->sClass = "fright content_actions";
@@ -717,7 +717,11 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 						$var = !$var;
 
 						$useringroup = new UserGroup($db);
-						$useringroup->load("group:" . $aRow);
+						try {
+							$useringroup->load("group:" . $aRow);
+						} catch(Exception $e) {
+							$useringroup->name = "Deleted";
+						}
 
 						print "<tr $bc[$var]>";
 						print '<td>';

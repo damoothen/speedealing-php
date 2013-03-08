@@ -642,16 +642,20 @@ class User extends nosqlDocument {
 			$result = $this->couchAdmin->getUser($this->name);
 		} catch (Exception $e) {
 			// User doesn-t exist
+			
 		}
 
 		if (isset($result->name) && $action == 'add') {
 			$this->error = 'ErrorLoginAlreadyExists';
 			return -6;
 		} else {
-			if ($action == 'add') {
+			if ($action == 'add' || empty($result->name)) {
 				try {
 					$this->couchAdmin->createUser($this->name, $this->pass);
 					unset($this->pass);
+					if(count($this->roles))
+						foreach ($this->roles as $group)
+							$this->couchAdmin->addRoleToUser($this->name, $group);
 				} catch (Exception $e) {
 					$this->error = $e->getMessage();
 					error_log($this->error);
