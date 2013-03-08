@@ -73,6 +73,9 @@ if ($action == 'add') {
 if ($action == 'adduser' || $action == 'removeuser') {
     if ($caneditperms) {
         if ($userid) {
+			
+			$userid = substr($userid, 5);
+			
             $object->fetch($id);
 
             if ($action == 'adduser') {
@@ -249,7 +252,7 @@ if ($action == 'create') {
                     print '<td>' . $useringroup->LibStatus($useringroup->values->Status) . '</td>';
                     print '<td>';
                     if ($user->admin) {
-                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';
+                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=user:' . $useringroup->values->name . '">';
                         print img_delete($langs->trans("RemoveFromGroup"));
                     } else {
                         print "-";
