@@ -110,7 +110,10 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 		<div id="container">
 			<hgroup id="login-title" class="large-margin-bottom">
 				<h1 class="login-title-image">Speedealing</h1>
-				<h5><?php echo $langs->trans("Entity") . " : " . substr($_SERVER["HTTP_HOST"], 0, strpos($_SERVER["HTTP_HOST"], ".")); ?></h5>
+				<h5><?php
+					if (!empty($conf->main_resolver))
+						echo $langs->trans("Entity") . " : " . substr($_SERVER["HTTP_HOST"], 0, strpos($_SERVER["HTTP_HOST"], "."));
+					?></h5>
 			</hgroup>
 			<form name="login" action="<?php echo $php_self; ?>" method="post" id="form-login">
 				<input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>" />
@@ -139,7 +142,7 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 			</form>
 		</div>
 
-		<?php if ($main_home) { ?>
+<?php if ($main_home) { ?>
 		<center>
 			<table summary="info" cellpadding="0" cellspacing="0" border="0" align="center" width="750">
 				<tr>
@@ -149,7 +152,7 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 		</center>
 	<?php } ?>
 
-	<?php if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_GOOGLE_AD_SLOT)) { ?>
+<?php if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_GOOGLE_AD_SLOT)) { ?>
 		<div align="center"><br>
 			<script type="text/javascript"><!--
 				google_ad_client = "<?php echo $conf->global->MAIN_GOOGLE_AD_CLIENT ?>";
@@ -160,13 +163,13 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 			</script>
 			<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 		</div>
-	<?php } ?>
+<?php } ?>
 
 	<!-- authentication mode = <?php echo $main_authentication ?> -->
 	<!-- cookie name used for this session = <?php echo $session_name ?> -->
 	<!-- urlfrom in this session = <?php echo $_SESSION["urlfrom"] ?> -->
 
-	<?php if (!empty($conf->global->MAIN_HTML_FOOTER)) print $conf->global->MAIN_HTML_FOOTER; ?>
+<?php if (!empty($conf->global->MAIN_HTML_FOOTER)) print $conf->global->MAIN_HTML_FOOTER; ?>
 
 	<script src="includes/jquery/js/jquery-latest.min.js"></script>
 	<script src="includes/lib/validate/jquery.validate.min.js"></script>

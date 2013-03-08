@@ -155,6 +155,7 @@ if (!defined('NOREQUIREDB')) {
 		$conf->Couchdb->name = "_users"; // login phase
 
 	if (!empty($dolibarr_main_resolver)) {
+		$conf->main_resolver = $dolibarr_main_resolver;
 		$conf->Couchdb->host = dol_getcache("couchdb_host");
 		if ($conf->Couchdb->host < 0) {
 			require_once(DOL_DOCUMENT_ROOT . '/includes/net/dns2.php');
