@@ -78,7 +78,7 @@ if ($action == 'adduser' || $action == 'removeuser') {
             $object->load($id);
 
             $edituser = new User($db);
-            $edituser->fetch($userid);
+            $edituser->load($userid);
 
             if ($action == 'adduser') {
                 $edituser->roles[] = $object->name;
