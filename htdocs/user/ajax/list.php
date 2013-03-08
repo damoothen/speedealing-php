@@ -51,6 +51,7 @@ if ($json == "list") {
 		"aaData" => array()
 	);
 
+	$user_in = array();
 	$var_exclude_db = array("_users", "_replicator", "mips", "system");
 
 	$listEntity = new stdClass();
@@ -73,43 +74,45 @@ if ($json == "list") {
 
 	//print_r($result_all);
 
+	if (!empty($result->rows)) {
+		foreach ($result->rows as $aRow) {
+			$name = substr($aRow->value->_id, 5);
+			if (isset($admins->$name))
+				$aRow->value->admin = true;
+			else
+				$aRow->value->admin = false;
 
-	$i = 0;
-	foreach ($result->rows as $aRow) {
-		$name = substr($aRow->value->_id, 5);
-		if (isset($admins->$name))
-			$aRow->value->admin = true;
-		else
-			$aRow->value->admin = false;
+			$aRow->value->entityList = array();
+			foreach ($list_db as $db) {
+				if (in_array($name, $listEntity->$db, true))
+					$aRow->value->entityList[] = $db;
+			}
 
-		$aRow->value->entityList = array();
-		foreach ($list_db as $db) {
-			if (in_array($name, $listEntity->$db, true))
-				$aRow->value->entityList[] = $db;
+			$output["aaData"][] = $aRow->value;
+			$user_in[] = $name;
 		}
-
-		$output["aaData"][] = $aRow->value;
-		$user_in[] = $name;
 	}
 
-	foreach ($result_all as $aRow) {
-		$name = substr($aRow->doc->_id, 17);
+	if ($result_all) {
+		foreach ($result_all as $aRow) {
+			$name = substr($aRow->doc->_id, 17);
 
-		if (in_array($name, $user_in))
-			continue;
+			if (in_array($name, $user_in))
+				continue;
 
-		if (isset($admins->$name))
-			$aRow->doc->admin = true;
-		else
-			$aRow->doc->admin = false;
+			if (isset($admins->$name))
+				$aRow->doc->admin = true;
+			else
+				$aRow->doc->admin = false;
 
-		$aRow->doc->entityList = array();
-		foreach ($list_db as $db) {
-			if (in_array($name, $listEntity->$db, true))
-				$aRow->doc->entityList[] = $db;
+			$aRow->doc->entityList = array();
+			foreach ($list_db as $db) {
+				if (in_array($name, $listEntity->$db, true))
+					$aRow->doc->entityList[] = $db;
+			}
+
+			$output["aaData"][] = $aRow->doc;
 		}
-
-		$output["aaData"][] = $aRow->doc;
 	}
 
 	$iTotal = count($output["aaData"]);
