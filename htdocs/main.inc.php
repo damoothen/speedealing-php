@@ -716,8 +716,8 @@ function left_menu() {
 			</span>
 		</li>
 		<li class="at-bottom-trash">
-			<span class="shortcut-trash" title="<?php echo $langs->trans("Trash"); ?>">
-				<?php echo $langs->trans("Trash"); ?>
+			<span class="shortcut-trash-empty" title="<?php echo $langs->trans("RecycleBin"); ?>">
+				<?php echo $langs->trans("RecycleBin"); ?>
 			</span>
 		</li>
 	</ul><?php
