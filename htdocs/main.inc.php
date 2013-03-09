@@ -705,14 +705,19 @@ function left_menu() {
 				<?php echo $langs->trans("Stats"); ?>
 			</span>
 		</li>
+		<li>
+			<span class="shortcut-notes" title="<?php echo $langs->trans("Notes"); ?>">
+				<?php echo $langs->trans("Notes"); ?>
+			</span>
+		</li>
 		<li class="at-bottom">
 			<span class="shortcut-settings" title="<?php echo $langs->trans("Settings"); ?>">
 				<?php echo $langs->trans("Settings"); ?>
 			</span>
 		</li>
-		<li>
-			<span class="shortcut-notes" title="<?php echo $langs->trans("Notes"); ?>">
-				<?php echo $langs->trans("Notes"); ?>
+		<li class="at-bottom-trash">
+			<span class="shortcut-trash" title="<?php echo $langs->trans("Trash"); ?>">
+				<?php echo $langs->trans("Trash"); ?>
 			</span>
 		</li>
 	</ul><?php
