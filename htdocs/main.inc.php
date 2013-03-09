@@ -184,7 +184,7 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX'))
 	require DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'; // Need 22ko memory
 
-	
+
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
 	Header("Location: " . DOL_URL_ROOT . "/install/index.php");
@@ -586,7 +586,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 
 
-		
+
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 
@@ -671,42 +671,48 @@ function left_menu() {
 	?><ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
 		<li class="current">
 			<a href="index.php?idmenu=menu:home" class="shortcut-dashboard" title="<?php echo $langs->trans("Dashboard"); ?>">
-	<?php echo $langs->trans("Dashboard"); ?>
+				<?php echo $langs->trans("Dashboard"); ?>
 			</a>
 		</li>
 		<li>
 			<span href="inbox.html" class="shortcut-messages" title="<?php echo $langs->trans("Messages"); ?>">
-	<?php echo $langs->trans("Messages"); ?>
+				<?php echo $langs->trans("Messages"); ?>
 			</span>
 		</li>
 		<li>
+			<?php if ($conf->agenda->enabled) : ?>
 			<a href="agenda/list.php?idmenu=menu:agendaList" class="shortcut-agenda" title="<?php echo $langs->trans("Agenda"); ?>">
-	<?php echo $langs->trans("Agenda"); ?>
+				<?php echo $langs->trans("Agenda"); ?>
 			</a>
+			<?php else: ?>
+			<span href="agenda.html" class="shortcut-agenda" title="<?php echo $langs->trans("Agenda"); ?>">
+				<?php echo $langs->trans("Agenda"); ?>
+			</span>
+			<?php endif; ?>
 		</li>
 		<li>
 			<span href="tables.html" class="shortcut-contacts" title="<?php echo $langs->trans("Contacts"); ?>">
-	<?php echo $langs->trans("Contacts"); ?>
+				<?php echo $langs->trans("Contacts"); ?>
 			</span>
 		</li>
 		<li>
 			<span href="explorer.html" class="shortcut-medias" title="<?php echo $langs->trans("Medias"); ?>">
-	<?php echo $langs->trans("Medias"); ?>
+				<?php echo $langs->trans("Medias"); ?>
 			</span>
 		</li>
 		<li>
 			<span href="sliders.html" class="shortcut-stats" title="<?php echo $langs->trans("Stats"); ?>">
-	<?php echo $langs->trans("Stats"); ?>
+				<?php echo $langs->trans("Stats"); ?>
 			</span>
 		</li>
 		<li class="at-bottom">
 			<span href="form.html" class="shortcut-settings" title="<?php echo $langs->trans("Settings"); ?>">
-	<?php echo $langs->trans("Settings"); ?>
+				<?php echo $langs->trans("Settings"); ?>
 			</span>
 		</li>
 		<li>
 			<span class="shortcut-notes" title="<?php echo $langs->trans("Notes"); ?>">
-	<?php echo $langs->trans("Notes"); ?>
+				<?php echo $langs->trans("Notes"); ?>
 			</span>
 		</li>
 	</ul><?php
