@@ -31,6 +31,7 @@ class DeleteNotification implements PluginInterface {
 		$var_name = $table->getConfig('var_name');
 		$object_class = $table->getConfig('object_class');
 
+		// TODO: add translation for recycle bin
 		$table->method("
 			$('tbody tr td .delEnqBtn').live('click', function(){
 				var aPos = {$var_name}.fnGetPosition(this.parentNode);
@@ -40,7 +41,7 @@ class DeleteNotification implements PluginInterface {
 				else
 					var text = aData['name'];
 
-				$.modal.confirm('" . $langs->trans("Delete") . " ' + text + ' ?',
+				$.modal.confirm('" . $langs->trans("ConfirmDeleteCompany") . "',
 					function() {
 						$.ajax({
 							type: 'POST',
@@ -55,6 +56,11 @@ class DeleteNotification implements PluginInterface {
 					},
 					function() {
 						return false;
+					},
+					{
+						title: '" . $langs->trans("Delete") . " ' + text,
+						textCancel: '" . $langs->trans("Cancel") . "',
+						textConfirm: '" . $langs->trans("Delete") . "'
 					}
 				);
 			});
