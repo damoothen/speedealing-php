@@ -36,7 +36,7 @@ class DefaultSchema extends Schema {
 
 			if (empty($field->enable)) continue;
 
-			$classname = (!empty($field->class) ? $field->class : get_class($object));
+			$classname = get_class($object);
 
 			// Editable element
 			$editable = false; // Editable by default

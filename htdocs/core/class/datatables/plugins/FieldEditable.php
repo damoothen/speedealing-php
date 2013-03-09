@@ -39,10 +39,7 @@ class FieldEditable implements PluginInterface {
 					$type .= "type: 'select',\n";
 					$type .= "loadurl: urlLoadInPlace,\n";
 					$type .= "loaddata: function ( value, settings ) {
-								if ({$var_name}.fnGetData( this ).id)
-									var id = {$var_name}.fnGetData( this ).id;
-								else
-									var id = {$var_name}.fnGetData( this.parentNode )._id;
+								var id = {$var_name}.fnGetData( this.parentNode )._id;
 								return {
 									'id': id,
 									'element_class': '{$values['classname']}',
@@ -94,10 +91,7 @@ class FieldEditable implements PluginInterface {
 					height: '{$values['height']}',
 					{$type}
 					submitdata: function ( value, settings ) {
-						if ({$var_name}.fnGetData( this ).id)
-							var id = {$var_name}.fnGetData( this ).id;
-						else
-							var id = {$var_name}.fnGetData( this.parentNode )._id;
+						var id = {$var_name}.fnGetData( this.parentNode )._id;
 						return {
 							'id': id,
 							'element_class' : '{$values['classname']}',
