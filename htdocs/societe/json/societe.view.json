@@ -3,38 +3,38 @@
    "language": "javascript",
    "views": {
        "list": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\")\n  emit(doc.name, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true)\n  emit(doc.name, doc);\n}"
        },
        "target_id": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true)\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
        },
        "rowid": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  emit(doc.rowid, doc._id);\n}"
        },
        "count_status": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\")\n  emit(doc.Status, 1);\n}",
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true)\n  emit(doc.Status, 1);\n}",
            "reduce": "function(keys, values) {\n  return sum(values)\n}"
        },
        "list_customer_id": {
-           "map": "function(doc) {\n  if(doc.class && doc.code_client && doc.class==\"Societe\")\n  emit(doc.code_client, doc._id);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.code_client && doc.class==\"Societe\" && doc.trash != true)\n  emit(doc.code_client, doc._id);\n}"
        },
        "tag": {
            "map": "function(doc) {\nif(doc.class==\"Societe\" && doc.Tag.length > 0) {\n    for(var idx in doc.Tag) {\n      emit(doc.Tag[idx], 1);\n    }\n  }\n}",
            "reduce": "function(keys, values) {\n  return sum(values)\n}"
        },
        "commercial_status": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.commercial_id.id && doc._id != \"societe:mysoc\")\n  emit([doc.commercial_id.name,doc.Status], 1);\n}",
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.commercial_id.id && doc._id != \"societe:mysoc\" && doc.trash != true)\n  emit([doc.commercial_id.name,doc.Status], 1);\n}",
            "reduce": "function(keys, values) {\n  return sum(values)\n}"
        },
        "listByCommercial": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.commercial_id.id && doc._id != \"societe:mysoc\")\n  emit(doc.commercial_id.id, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.commercial_id.id && doc._id != \"societe:mysoc\" && doc.trash != true)\n  emit(doc.commercial_id.id, doc);\n}"
        },
        "listZoneGeo": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.zonegeo)\n  emit(doc.zonegeo, doc);\n}",
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\"  && doc.trash != true && doc.zonegeo)\n  emit(doc.zonegeo, doc);\n}",
            "reduce": "_counts"
        },
        "listGPS": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.gps && doc.Status!=\"ST_NEVER\" && doc.Status!=\"ST_NO\")\n  emit(doc.name, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true && doc.gps && doc.Status!=\"ST_NEVER\" && doc.Status!=\"ST_NO\")\n  emit(doc.name, doc);\n}"
        }
    },
    "updates": {
@@ -42,7 +42,7 @@
    },
    "fulltext": {
        "list": {
-           "index": "function(doc) {\n if(doc.class != \"Societe\"){ return null;} var result = new Document(); result.add(doc.ThirdPartyName);  result.add(doc.CustomerCode);  result.add(doc.Zip); result.add(doc.Town);  return result;}"
+           "index": "function(doc) {\n if(doc.class != \"Societe\" && doc._id != \"societe:mysoc\"){ return null;} var result = new Document(); result.add(doc.ThirdPartyName);  result.add(doc.CustomerCode);  result.add(doc.Zip); result.add(doc.Town);  return result;}"
        }
    }
 }

@@ -26,12 +26,31 @@ class DeleteNotification implements PluginInterface {
 	/* ______________________________________________________________________ */
 
 	public function apply(Datatables $table) {
-		$table->callback('
-			$(".dataTables_wrapper a.delete").each(function(){
-				$(this).click(function(e) {
-					return confirm("Are you sure?");
-				})
+		global $langs, $object;
+
+		$var_name = $table->getConfig('var_name');
+
+		$table->method("
+			$('tbody tr td .delEnqBtn').live('click', function(){
+				var aPos = {$var_name}.fnGetPosition(this.parentNode);
+				var aData = oTable.fnGetData(aPos[0]);
+				if(aData['name'] === undefined)
+					var text = aData['label'];
+				else
+					var text = aData['name'];
+				var answer = confirm('" . $langs->trans("Delete") . " ' + text + ' ?');
+				if(answer) {
+					$.ajax({
+						type: 'POST',
+						url: '/core/ajax/deleteinplace.php',
+						data: 'json=trash&class=" . get_class($object) . "&id=' + aData['_id'],
+						success: function(msg){
+							oTable.fnDeleteRow(aPos[0]);
+						}
+					});
+				}
+				return false;
 			});
-		');
+		");
 	}
 }
