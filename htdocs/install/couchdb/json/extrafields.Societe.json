@@ -401,7 +401,7 @@
                },
                "delete": {
                    "label": "Delete",
-                   "cssclass": "icon delete"
+                   "cssclass": "icon delete delEnqBtn"
                }
            }
        },
