@@ -39,20 +39,24 @@ class DeleteNotification implements PluginInterface {
 					var text = aData['label'];
 				else
 					var text = aData['name'];
-				var answer = confirm('" . $langs->trans("Delete") . " ' + text + ' ?');
-				if(answer) {
-					$.ajax({
-						type: 'POST',
-						url: '/core/ajax/deleteinplace.php',
-						data: 'json=trash&class={$object_class}&id=' + aData['_id'],
-						success: function(msg){
-							{$var_name}.fnDeleteRow(aPos[0]);
-							// for test
-							$('span.shortcut-trash-empty').removeClass('shortcut-trash-empty').addClass('shortcut-trash-full');
-						}
-					});
-				}
-				return false;
+
+				$.modal.confirm('" . $langs->trans("Delete") . " ' + text + ' ?',
+					function() {
+						$.ajax({
+							type: 'POST',
+							url: '/core/ajax/deleteinplace.php',
+							data: 'json=trash&class={$object_class}&id=' + aData['_id'],
+							success: function(msg){
+								{$var_name}.fnDeleteRow(aPos[0]);
+								// for test
+								$('span.shortcut-trash-empty').removeClass('shortcut-trash-empty').addClass('shortcut-trash-full');
+							}
+						});
+					},
+					function() {
+						return false;
+					}
+				);
 			});
 		");
 	}
