@@ -171,7 +171,8 @@ class User extends nosqlDocument {
 		try {
 			$admins = $this->couchAdmin->getUserAdmins();
 			$name = $this->couchAdmin->getLoginSession();
-			if (isset($admins->$name) && $this->name == $name)
+			
+			if ((isset($admins->$name) || in_array("_admin", $this->roles, true)) && $this->name == $name)
 				$this->superadmin = true;
 			else
 				$this->superadmin = false;
@@ -692,6 +693,13 @@ class User extends nosqlDocument {
 			if ($caneditpassword && !empty($pass)) { // Case we can edit only password
 				$this->couchAdmin->setPassword($this->name, $pass);
 			}
+			
+			if($this->admin)
+				$this->couchAdmin->addRoleToUser($this->name, "_admin");
+			else
+				$this->couchAdmin->removeRoleFromUser($this->name, "_admin");
+			
+			
 		} catch (Exception $e) {
 			$this->error = $e->getMessage();
 			error_log($this->error);
@@ -1543,7 +1551,16 @@ class User extends nosqlDocument {
 	}
 
 	function getUserAdmins() {
-		return $this->couchAdmin->getUserAdmins();
+		$result = $this->couchAdmin->getUserAdmins();
+		
+		$result_roles = $this->couchAdmin->getAllUsers(true);
+		foreach ($result_roles as $aRow) {
+			if(in_array("_admin",$aRow->doc->roles,true)){
+				$name = $aRow->doc->name;
+				$result->$name = true;
+			}
+		}
+		return $result;
 	}
 
 	function getDatabaseAdminUsers() {

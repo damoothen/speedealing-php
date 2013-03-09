@@ -719,7 +719,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 						$useringroup = new UserGroup($db);
 						try {
 							$useringroup->load("group:" . $aRow);
-						} catch(Exception $e) {
+						} catch (Exception $e) {
 							$useringroup->name = "Deleted";
 						}
 
@@ -996,20 +996,20 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 			// Administrator
 			$name = $fuser->name;
 			$admins = $fuser->getUserAdmins();
+			
 			if (isset($admins->$name))
 				$fuser->admin = true;
 			else
 				$fuser->admin = false;
 			print '<tr><td valign="top">' . $langs->trans("Administrator") . '</td>';
 			print '<td>';
-			/* if ($user->admin
-			  && $user->id != $fuser->id) {  // Don't downgrade ourself
-			  print $form->selectyesno('admin', $fuser->admin, 1);
-			  } else { */
-			$yn = yn($fuser->admin);
-			print '<input type="hidden" name="admin" value="' . $fuser->admin . '">';
-			print $yn;
-			//}
+			if ($user->admin && $user->id != $fuser->id) {  // Don't downgrade ourself
+				print $form->selectyesno('admin', $fuser->admin, 1);
+			} else {
+				$yn = yn($fuser->admin);
+				print '<input type="hidden" name="admin" value="' . $fuser->admin . '">';
+				print $yn;
+			}
 			print '</td></tr>';
 
 			// Entity by default
