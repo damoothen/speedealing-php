@@ -164,11 +164,26 @@ $(document).ready(function() {
 		function(value) {
 			if (value.status == 'ok') {
 				setProgressBar('set_conf', 100);
-				addDatabase();
+				addSystemDatabase();
 			} else {
 				return false
 			}
 		}, 'json');
+	}
+	
+	// Add system database
+	function addSystemDatabase() {
+		$.post("install/ajax/install.php", {
+    		action: 'create_system_database'
+		},
+		function(value) {
+			if (value.status == 'ok') {
+				setProgressBar('set_database', 15);
+				addDatabase();
+			} else {
+				return false;
+			}
+		}, "json");
 	}
 	
 	// Add database
@@ -179,7 +194,7 @@ $(document).ready(function() {
 		},
 		function(value) {
 			if (value.status == 'ok') {
-				setProgressBar('set_database', 25);
+				setProgressBar('set_database', 30);
 				populateDatabase();
 			} else {
 				return false;
@@ -194,7 +209,7 @@ $(document).ready(function() {
 			// TODO add sync progress here
 		} else {
 			// Populate local database
-			var progress_value = 25;
+			var progress_value = 30;
 			var step = Math.round((75 / numfiles) + 1);
 			var files = $.parseJSON(jsonfiles);
 			$.each(files, function(name, path) {
