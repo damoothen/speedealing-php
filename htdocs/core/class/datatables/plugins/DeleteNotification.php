@@ -26,9 +26,10 @@ class DeleteNotification implements PluginInterface {
 	/* ______________________________________________________________________ */
 
 	public function apply(Datatables $table) {
-		global $langs, $object;
+		global $langs;
 
 		$var_name = $table->getConfig('var_name');
+		$object_class = $table->getConfig('object_class');
 
 		$table->method("
 			$('tbody tr td .delEnqBtn').live('click', function(){
@@ -43,7 +44,7 @@ class DeleteNotification implements PluginInterface {
 					$.ajax({
 						type: 'POST',
 						url: '/core/ajax/deleteinplace.php',
-						data: 'json=trash&class=" . get_class($object) . "&id=' + aData['_id'],
+						data: 'json=trash&class={$object_class}&id=' + aData['_id'],
 						success: function(msg){
 							oTable.fnDeleteRow(aPos[0]);
 						}

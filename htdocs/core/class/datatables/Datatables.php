@@ -90,6 +90,7 @@ class Datatables {
 	public function __construct(array $config = array()) {
 		$defaults = array(
 				'request_method'	=> self::REQUEST_GET,
+				'object_class'		=> null,
 				'data_source'		=> null,
 				'var_name'			=> 'oTable',
 				'container_id'		=> 'datatableTable',

@@ -1231,6 +1231,7 @@ abstract class nosqlDocument extends CommonObject {
 		$data_source = "core/ajax/listdatatables.php?json=list&class=" . get_class($this);
 		$table = new datatables\Datatables(compact('data_source'));
 		$table->setSchema(new datatables\schemas\DefaultSchema);
+		$table->setConfig('object_class', get_class($this));
 
 		// Add default plugins
 		$table->plug(new datatables\plugins\Localization);
