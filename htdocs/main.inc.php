@@ -675,7 +675,7 @@ function left_menu() {
 			</a>
 		</li>
 		<li>
-			<span href="inbox.html" class="shortcut-messages" title="<?php echo $langs->trans("Messages"); ?>">
+			<span class="shortcut-messages" title="<?php echo $langs->trans("Messages"); ?>">
 				<?php echo $langs->trans("Messages"); ?>
 			</span>
 		</li>
@@ -685,28 +685,28 @@ function left_menu() {
 				<?php echo $langs->trans("Agenda"); ?>
 			</a>
 			<?php else: ?>
-			<span href="agenda.html" class="shortcut-agenda" title="<?php echo $langs->trans("Agenda"); ?>">
+			<span class="shortcut-agenda" title="<?php echo $langs->trans("Agenda"); ?>">
 				<?php echo $langs->trans("Agenda"); ?>
 			</span>
 			<?php endif; ?>
 		</li>
 		<li>
-			<span href="tables.html" class="shortcut-contacts" title="<?php echo $langs->trans("Contacts"); ?>">
+			<span class="shortcut-contacts" title="<?php echo $langs->trans("Contacts"); ?>">
 				<?php echo $langs->trans("Contacts"); ?>
 			</span>
 		</li>
 		<li>
-			<span href="explorer.html" class="shortcut-medias" title="<?php echo $langs->trans("Medias"); ?>">
+			<span class="shortcut-medias" title="<?php echo $langs->trans("Medias"); ?>">
 				<?php echo $langs->trans("Medias"); ?>
 			</span>
 		</li>
 		<li>
-			<span href="sliders.html" class="shortcut-stats" title="<?php echo $langs->trans("Stats"); ?>">
+			<span class="shortcut-stats" title="<?php echo $langs->trans("Stats"); ?>">
 				<?php echo $langs->trans("Stats"); ?>
 			</span>
 		</li>
 		<li class="at-bottom">
-			<span href="form.html" class="shortcut-settings" title="<?php echo $langs->trans("Settings"); ?>">
+			<span class="shortcut-settings" title="<?php echo $langs->trans("Settings"); ?>">
 				<?php echo $langs->trans("Settings"); ?>
 			</span>
 		</li>
