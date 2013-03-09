@@ -34,7 +34,7 @@ class DeleteNotification implements PluginInterface {
 		$table->method("
 			$('tbody tr td .delEnqBtn').live('click', function(){
 				var aPos = {$var_name}.fnGetPosition(this.parentNode);
-				var aData = oTable.fnGetData(aPos[0]);
+				var aData = {$var_name}.fnGetData(aPos[0]);
 				if(aData['name'] === undefined)
 					var text = aData['label'];
 				else
@@ -46,7 +46,9 @@ class DeleteNotification implements PluginInterface {
 						url: '/core/ajax/deleteinplace.php',
 						data: 'json=trash&class={$object_class}&id=' + aData['_id'],
 						success: function(msg){
-							oTable.fnDeleteRow(aPos[0]);
+							{$var_name}.fnDeleteRow(aPos[0]);
+							// for test
+							$('span.shortcut-trash-empty').removeClass('shortcut-trash-empty').addClass('shortcut-trash-full');
 						}
 					});
 				}
