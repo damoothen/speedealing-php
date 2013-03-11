@@ -38,7 +38,7 @@ abstract class nosqlDocument extends CommonObject {
 	 *
 	 * 	@param	couchClient	$db		Database handler
 	 */
-	function __construct($db) {
+	function __construct($db = null) {
 		$this->class = get_class($this);
 		$this->db = $db;
 

@@ -668,8 +668,18 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
  */
 function left_menu() {
 	global $conf, $langs;
+
+	// For show the current shortcuts menu
+	$shortcut = 'home';
+	$idmenu = GETPOST('idmenu', 'alpha');
+	if (!empty($idmenu)) {
+		$idmenu = str_replace('menu:', '', $idmenu, $num);
+		if (!empty($num))
+			$shortcut = $idmenu;
+	}
+
 	?><ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
-		<li class="current">
+		<li class="home">
 			<a href="index.php?idmenu=menu:home" class="shortcut-dashboard" title="<?php echo $langs->trans("Dashboard"); ?>">
 				<?php echo $langs->trans("Dashboard"); ?>
 			</a>
@@ -679,7 +689,7 @@ function left_menu() {
 				<?php echo $langs->trans("Messages"); ?>
 			</span>
 		</li>
-		<li>
+		<li class="agendaList">
 			<?php if ($conf->agenda->enabled) : ?>
 			<a href="agenda/list.php?idmenu=menu:agendaList" class="shortcut-agenda" title="<?php echo $langs->trans("Agenda"); ?>">
 				<?php echo $langs->trans("Agenda"); ?>
@@ -715,12 +725,24 @@ function left_menu() {
 				<?php echo $langs->trans("Settings"); ?>
 			</span>
 		</li>
-		<li class="at-bottom-trash">
+		<li class="trashList at-bottom-trash">
+			<?php if (1==1 || $conf->trash->enabled) : ?>
+			<a href="trash/list.php?idmenu=menu:trashList" class="shortcut-trash-empty" title="<?php echo $langs->trans("RecycleBin"); ?>">
+				<?php echo $langs->trans("RecycleBin"); ?>
+			</a>
+			<?php else: ?>
 			<span class="shortcut-trash-empty" title="<?php echo $langs->trans("RecycleBin"); ?>">
 				<?php echo $langs->trans("RecycleBin"); ?>
 			</span>
+			<?php endif; ?>
 		</li>
-	</ul><?php
+	</ul>
+	<script>
+		$(document).ready(function() {
+			$('#shortcuts li.<?php echo $shortcut; ?>').addClass('current');
+		});
+	</script>
+	<?php
 }
 
 /**
@@ -909,9 +931,9 @@ function main_menu() {
 function main_area($title = '') {
 	global $conf, $langs;
 
-	print '<!-- Main content -->';
-	print '<section role="main" id="main">';
-	print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>';
+	print '<!-- Main content -->'."\n";
+	print '<section role="main" id="main">'."\n";
+	print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>'."\n";
 
 	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 		print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
