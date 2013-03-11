@@ -119,7 +119,7 @@ class Societe extends nosqlDocument {
 	 *
 	 *    @param	DoliDB		$db		Database handler
 	 */
-	public function __construct($db) {
+	public function __construct($db = null) {
 		parent::__construct($db);
 
 		$this->fk_extrafields = new ExtraFields($db);
@@ -809,32 +809,25 @@ class Societe extends nosqlDocument {
 	}
 
 	/**
-	 *    	Return a link on thirdparty (with picto)
+	 *	Return a link on thirdparty (with picto)
 	 *
-	 * 		@param	int		$withpicto		Add picto into link (0=No picto, 1=Include picto with link, 2=Picto only)
-	 * 		@param	string	$option			Target of link ('', 'customer', 'prospect', 'supplier')
-	 * 		@param	int		$maxlen			Max length of text
-	 * 		@return	string					String with URL
+	 * 	@param	int		$withpicto		Add picto into link (0=No picto, 1=Include picto with link, 2=Picto only)
+	 * 	@param	string	$picto			Picto name
+	 * 	@return	string					String with URL
 	 */
-	function getNomUrl($withpicto = 0, $option = '', $maxlen = 0) {
+	function getNomUrl($withpicto = 0, $picto = null) {
 		global $conf, $langs;
 
-		$name = $this->name;
-
-		$result = '';
-		$lien = $lienfin = '';
-
-		$lien = '<a href="' . DOL_URL_ROOT . '/societe/fiche.php?id=' . $this->id();
-
-		// Add type of canvas
-		$lien.=(!empty($this->canvas) ? '&amp;canvas=' . $this->canvas : '') . '">';
-		$lienfin = '</a>';
+		$result	= '';
+		$name	= $this->name;
+		$slink	= '<a href="societe/fiche.php?id=' . $this->id(). '">';
+		$elink	= '</a>';
 
 		if ($withpicto)
-			$result.=($lien . img_object($langs->trans("ShowCompany") . ': ' . $name, 'company') . $lienfin);
+			$result.= ($slink . img_object($langs->trans("ShowCompany") . ': ' . $name, 'company') . $elink);
 		if ($withpicto && $withpicto != 2)
 			$result.=' ';
-		$result.=$lien . ($maxlen ? dol_trunc($name, $maxlen) : $name) . $lienfin;
+		$result.=$slink . $name . $elink;
 
 		return $result;
 	}

@@ -960,12 +960,7 @@ abstract class nosqlDocument extends CommonObject {
 			';
 
 				if (!empty($this->fk_extrafields->ico)) {
-					$rtr.= '
-				ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
-					ar[ar.length] = obj.aData.' . $key . '.toString();
-						ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
-					ar[ar.length] = obj.aData.' . $key . '.toString();
-					ar[ar.length] = "\"> "';
+					$rtr.= 'ar[ar.length] = "<span class=\"' . $this->fk_extrafields->ico . '\" title=\"' . $langs->trans("See " . get_class($this)) . ' : " + obj.aData.' . $key . '.toString() + "\">";';
 				}
 				$rtr.= '
 						ar[ar.length] = "<a href=\"' . $url . '";

@@ -54,6 +54,7 @@ class DefaultSchema extends Schema {
 			// Render element
 			$render = false; // Render by default
 			if (!empty($field->render) || !empty($field->action)) {
+				$classname = (!empty($field->class) ? $field->class : $classname);
 				$rendertype = (!empty($field->render->type) ? $field->render->type : $field->type);
 				if ($rendertype != 'Text')
 					$render = $this->element('Render' . ucfirst($rendertype), array($field, $aRow, $classname));

@@ -1,8 +1,7 @@
 {
    "_id": "extrafields:Product",
-   "_rev": "21-d5115de96f68e33c5c6bf3266fe48728",
    "class": "extrafields",
-   "ico": "16-Shopping-Cart.png",
+   "ico": "icon-object-product",
    "langs": [
        "products",
        "bills"

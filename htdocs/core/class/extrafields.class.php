@@ -43,10 +43,10 @@ class ExtraFields extends nosqlDocument {
 	 *
 	 *  @param		DoliDB		$db      Database handler
 	 */
-	function __construct($db) {
+	function __construct($db = null) {
 
 		parent::__construct($db);
-		
+
 		$this->useDatabase("system");
 
 		$this->type2label = array(
@@ -178,7 +178,7 @@ class ExtraFields extends nosqlDocument {
 			$this->load("extrafields:" . $class, true); // load and cache
 			//print_r($this->fields->Status);
 		} catch (Exception $e) {
-			
+
 		}
 
 		if (isset($this->fields) && count($this->fields))
