@@ -20,6 +20,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ *	\file       societe/list.php
+ *	\brief      List of all thirdparties
+ *	\ingroup    thirdparty
+ */
+
 require '../main.inc.php';
 require DOL_DOCUMENT_ROOT . '/core/class/autoloader.php';
 

@@ -107,6 +107,7 @@ class modCommissions extends DolibarrModules
 
 		// left menu entry
 		$r = 0;
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:commission";
 		$this->menus[$r]->type = "left";
 		$this->menus[$r]->position = 200;

@@ -71,6 +71,23 @@ if ($action == 'create_config') {
 	sleep(1); // for test
 	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserSyncCreated')));
 
+// Create system database
+} else if ($action == 'create_system_database') {
+	$couchdb_name = 'system';
+	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
+
+	if (!$couch->databaseExists()) {
+		try {
+			$couch->createDatabase();
+			echo json_encode(array('status' => 'ok', 'value' => $langs->trans('SystemDatabaseCreated')));
+		} catch (Exception $e) {
+			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+			error_log($e->getMessage());
+		}
+	} else {
+		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('WarningSystemDatabaseAlreadyExists'))); // system database already exists
+	}
+
 // Create database
 } else if ($action == 'create_database') {
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
@@ -88,7 +105,7 @@ if ($action == 'create_config') {
 		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('WarningDatabaseAlreadyExists'))); // database already exists
 	}
 
-// Populate database
+// Populate all databases
 } else if ($action == 'populate_database') {
 	$filename = GETPOST('filename', 'alpha');
 	$filepath = GETPOST('filepath');

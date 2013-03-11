@@ -30,6 +30,7 @@ class Datatables {
 	protected $plugins = array();
 	protected $config = array();
 	protected $chain = array();
+	protected $method = array();
 	protected $params = array(
 			'bProcessing'       => true,
 			'bServerSide'       => false,
@@ -42,8 +43,9 @@ class Datatables {
 			'bInfo'             => false,
 			'bAutoWidth'        => false,
 			'bStateSave'        => false,
+			'bDeferRender'		=> true,
 			'aLengthMenu'       => array(5, 10, 20, 50, 100, 500, 'All'),
-			'aaSorting'         => array(array(1, 'asc')),
+			'aaSorting'         => array(array(2, 'asc')),
 			//'sScrollY'          => '400px',
 			//'sScrollX'          => '100%',
 			//'sScrollXInner'     => '100%',
@@ -77,11 +79,7 @@ class Datatables {
 				$(document).ready(function() {
 				<!-- // <![CDATA[
 					var {:var_name} = jQuery('#{:container_id}').dataTable({:config}){:chain};
-					$('tfoot input').keyup( function () {
-						/* Filter on the column */
-						var id = $(this).parent().attr('id');
-						{:var_name}.fnFilter( this.value, id);
-					});
+					{:method}
 				// ]]> -->
 				});
 			</script>
@@ -92,11 +90,11 @@ class Datatables {
 	public function __construct(array $config = array()) {
 		$defaults = array(
 				'request_method'	=> self::REQUEST_GET,
+				'object_class'		=> null,
 				'data_source'		=> null,
 				'var_name'			=> 'oTable',
 				'container_id'		=> 'datatableTable',
-				'container_class'	=> 'display dt_act',
-				'headers_th_class'	=> 'essential'
+				'container_class'	=> 'display dt_act'
 		);
 		$this->config = $config + $defaults;
 	}
@@ -201,6 +199,12 @@ class Datatables {
 
 	/* ______________________________________________________________________ */
 
+	public function method($method) {
+		$this->method[] = $method;
+	}
+
+	/* ______________________________________________________________________ */
+
 	public function callback($callback) {
 		$this->callbacks[] = $callback;
 		$this->params['fnDrawCallback'] = '{:callback}';
@@ -246,6 +250,15 @@ class Datatables {
 
 	/* ______________________________________________________________________ */
 
+	public function getFieldEditable() {
+		if( ! ($this->schema instanceof Schema)) {
+			throw new \RuntimeException("Datatables schema is not set.");
+		}
+		return $this->schema->getEditable();
+	}
+
+	/* ______________________________________________________________________ */
+
 	public function formatJsonOutput(array $data, $totalRecords = null) {
 		if(is_null($totalRecords)) {
 			$totalRecords = count($data);
@@ -285,17 +298,20 @@ class Datatables {
 		$container_id = $this->config['container_id'];
 		$container_class = $this->config['container_class'];
 		$chain = empty($this->chain) ? null : '.' . implode('.', $this->chain);
+		$method = empty($this->method) ? null : implode("\n", $this->method);
 		$callback = "function(oSettings) {\n" . implode("\n", $this->callbacks) . "}\n";
 		$tabletools = "{\n" . implode("\n", $this->tabletools) . "}\n";
 		$colvis = "{\n" . implode("\n", $this->colvis) . "}\n";
 
 		$i = 0;
 		$cols = array();
+		$def = array();
 		$render = array();
 		$headers = '';
 		$editable = '';
 		$footers = '';
 		foreach($this->schema->data() as $key => $config) {
+			/*
 			$cols[] = $config['aoColumns'] + array(
 					'mData'				=> $key,
 					'mRender'			=> (!empty($config['render']) ? '{:render_'.$key.'}' : ''),
@@ -306,17 +322,43 @@ class Datatables {
 					'bSearchable'		=> (bool) $config['searchable'],
 					'bVisible'			=> (bool) $config['visible']
 					//'sType'				=> 'html'
-			);
+			);*/
+
+			$def['mData'][$key][] = $i;
+			$def['sName'][$key][] = $i;
+			$def['sDefaultContent'][$config['default']][] = $i;
+
+			if (!empty($config['width']))
+				$def['sWidth'][$config['width']][] = $i;
+
+			if (!empty($config['editable']))
+				$config['class'] = $config['class'] . ' editfield_' . $key;
+
+			if (!empty($config['class']))
+				$def['sClass'][$config['class']][] = $i;
+
+			if ($config['sortable'] === false)
+				$def['bSortable'][] = $i;
+
+			if ($config['searchable'] === false)
+				$def['bSearchable'][] = $i;
+
+			if ($config['visible'] === false)
+				$def['bVisible'][] = $i;
+
+			if (!empty($config['render']))
+				$def['mRender'][$i] = '{:render_'.$key.'}';
 
 			// display header label
-			$headers .= "<th class=\"{$this->config['headers_th_class']}\">{$config['label']}</th>\n";
+			$headers .= "<th>{$config['label']}</th>\n";
 
 			// build editable
-			if(!empty($config['editable'])) {
+			/*
+			if(!empty($config['visible']) && !empty($config['editable'])) {
 				$editable .= self::insert($config['editable'], $config);
-			} else if($config['visible']) {
+			} else if(!empty($config['visible'])) {
 				$editable .= self::insert('null,', $config);
-			}
+			}*/
 
 			// display mRender
 			if (!empty($config['render']))
@@ -331,17 +373,67 @@ class Datatables {
 
 			$i++;
 		}
-		$this->params['aoColumns'] = $cols;
+		//$this->params['aoColumns'] = $cols;
+
+		// start
+
+		foreach($def['mData'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('mData' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['mData']);
+
+		foreach($def['sName'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('sName' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['sName']);
+
+		foreach($def['sDefaultContent'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('sDefaultContent' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['sDefaultContent']);
+
+		foreach($def['sWidth'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('sWidth' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['sWidth']);
+
+		foreach($def['sClass'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('sClass' => $key, 'aTargets' => $value);
+		}
+
+		unset($def['sClass']);
+
+		foreach($def['mRender'] as $key => $value) {
+			$this->params['aoColumnDefs'][] = array('mRender' => $value, 'aTargets' => array($key));
+		}
+
+		unset($def['mRender']);
+
+		foreach($def as $key => $value) {
+			$this->params['aoColumnDefs'][] = array($key => false, 'aTargets' => $value);
+		}
+
+		/*echo json_encode($this->params['aoColumns']);
+		echo '<br><br>';
+		echo json_encode($this->params['aoColumnDefs']);*/
+
+		// end
 
 		// convert 'oLanguage' to object
 		$this->params['oLanguage'] = (object) $this->params['oLanguage'];
 
 		// display editable
-		$chain = preg_replace('/\{:editable\}/', $editable, $chain);
+		//$chain = preg_replace('/\{:editable\}/', $editable, $chain);
 		// display editable options
 		$chain = preg_replace('/\{:editable_options\}/', $editable_options, $chain);
 
+		// params json encode
 		$config = json_encode($this->params);
+
 		// display callback
 		$config = preg_replace('/"\{:callback\}"/', $callback, $config);
 		// display tabletools
@@ -356,7 +448,7 @@ class Datatables {
 			}
 		}
 
-		$params = compact('var_name', 'container_id', 'container_class', 'chain', 'config', 'headers', 'footers');
+		$params = compact('var_name', 'container_id', 'container_class', 'chain', 'config', 'method', 'headers', 'footers');
 		return self::insert($this->htmlTemplate . $this->jsTemplate, $params);
 	}
 

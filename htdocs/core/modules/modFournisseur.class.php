@@ -238,6 +238,7 @@ class modFournisseur extends DolibarrModules
 		// Menus
 		//--------
 		$r = 0;
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:listsuppliersshort";
 		$this->menus[$r]->position = 5;
 		$this->menus[$r]->url = "/fourn/liste.php";

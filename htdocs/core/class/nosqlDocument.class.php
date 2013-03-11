@@ -30,14 +30,15 @@ abstract class nosqlDocument extends CommonObject {
 	public $fk_extrafields;
 	public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "couchdb", "db",
 		"error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
-		"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin", "right");
+		"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin",
+		"all_permissions_are_loaded","right");
 
 	/**
 	 * 	class constructor
 	 *
 	 * 	@param	couchClient	$db		Database handler
 	 */
-	function __construct($db) {
+	function __construct($db = null) {
 		$this->class = get_class($this);
 		$this->db = $db;
 
@@ -206,7 +207,7 @@ abstract class nosqlDocument extends CommonObject {
 		$values->tms = dol_now();
 
 		// Specific for users
-		if ($values->class == "User" || $values->class == "UserAdmin")
+		if ($values->class == "User")
 			unset($values->rights);
 		else
 			$values->entity = $conf->Couchdb->name;
@@ -476,7 +477,7 @@ abstract class nosqlDocument extends CommonObject {
 		else
 			$color = "anthracite-gradient";
 
-		return '<span class="tag ' . $color . ' glossy">' . $label . '</span>';
+		return '<span class="tag ' . $color . ' glossy">' . $label . '</span> ';
 	}
 
 	/**
@@ -648,7 +649,7 @@ abstract class nosqlDocument extends CommonObject {
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
 			<?php endif; ?>
 		<?php endif; ?>
-		<?php if ($user->rights->$class->edit || $user->rights->$class->creer) : ?>
+		<?php if ($user->rights->$class->edit || $user->rights->$class->creer || $user->admin) : ?>
 						}).makeEditable({
 							sUpdateURL: urlSaveInPlace,
 							sAddURL: urlAddInPlace,
@@ -1226,9 +1227,11 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	public function showList() {
 
-		$data_source = "core/ajax/listdatatables.php?json=list&class=" . get_class($this) . "&bServerSide=true";
+		//$data_source = "core/ajax/listdatatables.php?json=list&class=" . get_class($this) . "&bServerSide=true";
+		$data_source = "core/ajax/listdatatables.php?json=list&class=" . get_class($this);
 		$table = new datatables\Datatables(compact('data_source'));
 		$table->setSchema(new datatables\schemas\DefaultSchema);
+		$table->setConfig('object_class', get_class($this));
 
 		// Add default plugins
 		$table->plug(new datatables\plugins\Localization);

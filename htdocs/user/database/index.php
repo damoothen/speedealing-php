@@ -52,13 +52,10 @@ if ($_GET['json'] == "list") {
     $output["iTotalDisplayRecords"] = $iTotal;
 
     foreach ($result as $aRow) {
-        if ($aRow[0] != "_") { // Not _users and _replicator
+        if ($aRow != "_replicator") { // Not _replicator
             try {
-                try {
-                    $object->fetch($aRow);
-                } catch (Exception $e) {
-
-                }
+                $object->fetch($aRow);
+                
                 $info = $object->values;
                 $secu = $object->couchAdmin->getSecurity();
 

@@ -20,7 +20,7 @@
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/user/class/userdatabase.class.php';
 require_once DOL_DOCUMENT_ROOT . '/user/class/usergroup.class.php';
-require_once DOL_DOCUMENT_ROOT . '/useradmin/class/useradmin.class.php';
+require_once DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
 
 // Defini si peux lire/modifier utilisateurs et permisssions
 $canreadperms = ($user->admin );
@@ -73,9 +73,10 @@ if ($action == 'add') {
 if ($action == 'adduser' || $action == 'removeuser') {
     if ($caneditperms) {
         if ($userid) {
+			
+			$userid = substr($userid, 5);
+			
             $object->fetch($id);
-
-            $userid = $name = substr($userid, 17); // suppress org.couchdb.user:
 
             if ($action == 'adduser') {
                 if ($_POST['admin'] == true)
@@ -235,7 +236,7 @@ if ($action == 'create') {
 
                 foreach ($object->members as $aRow) {
 
-                    $useringroup = new UserAdmin($db);
+                    $useringroup = new User($db);
                     $useringroup->values = $aRow;
                     $useringroup->admin = $useringroup->values->admin;
                     $useringroup->id = $useringroup->values->_id;
@@ -251,7 +252,7 @@ if ($action == 'create') {
                     print '<td>' . $useringroup->LibStatus($useringroup->values->Status) . '</td>';
                     print '<td>';
                     if ($user->admin) {
-                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->id . '">';
+                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=user:' . $useringroup->values->name . '">';
                         print img_delete($langs->trans("RemoveFromGroup"));
                     } else {
                         print "-";

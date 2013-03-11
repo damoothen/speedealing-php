@@ -101,24 +101,28 @@ class modPropal extends DolibarrModules {
         $this->rights_class = 'propal';
         $r = 0;
 
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 21; // id de la permission
         $this->rights[$r]->desc = 'Lire les propositions commerciales'; // libelle de la permission
         $this->rights[$r]->default = 1; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('lire');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 22; // id de la permission
         $this->rights[$r]->desc = 'Creer/modifier les propositions commerciales'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('creer');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 24; // id de la permission
         $this->rights[$r]->desc = 'Valider les propositions commerciales'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('valider');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 25; // id de la permission
         $this->rights[$r]->desc = 'Envoyer les propositions commerciales aux clients'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
@@ -126,18 +130,21 @@ class modPropal extends DolibarrModules {
 //        $this->rights[$r][5] = 'send';
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 26; // id de la permission
         $this->rights[$r]->desc = 'Cloturer les propositions commerciales'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('cloturer');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 27; // id de la permission
         $this->rights[$r]->desc = 'Supprimer les propositions commerciales'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
         $this->rights[$r]->perm = array('supprimer');
 
         $r++;
+		$this->rights[$r] = new stdClass();
         $this->rights[$r]->id = 28; // id de la permission
         $this->rights[$r]->desc = 'Exporter les propositions commerciales et attributs'; // libelle de la permission
         $this->rights[$r]->default = 0; // La permission est-elle une permission par defaut
@@ -147,6 +154,7 @@ class modPropal extends DolibarrModules {
         $this->menu = array();   // List of menus to add
         $r = 0;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:propals";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 40;
@@ -157,6 +165,7 @@ class modPropal extends DolibarrModules {
         $this->menus[$r]->title = "Proposals";
         $r++;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:newpropal";
         $this->menus[$r]->position = 0;
         $this->menus[$r]->url = "/propal/addpropal.php?action=create";
@@ -168,6 +177,7 @@ class modPropal extends DolibarrModules {
         $this->menus[$r]->fk_menu = "menu:propals";
         $r++;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:propalslist";
         $this->menus[$r]->position = 1;
         $this->menus[$r]->url = "/propal/list.php";
@@ -179,6 +189,7 @@ class modPropal extends DolibarrModules {
         $this->menus[$r]->fk_menu = "menu:propals";
         $r++;
 
+		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:propalsstats";
         $this->menus[$r]->position = 2;
         $this->menus[$r]->url = "/propal/stats/index.php";

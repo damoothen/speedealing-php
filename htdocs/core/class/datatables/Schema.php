@@ -1,90 +1,107 @@
 <?php
+/* Copyright (C) 2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2013	Herve Prot		<herve.prot@symeos.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 namespace datatables;
 
 class Schema {
 
-    protected $schema = array();
+	protected $schema = array();
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
-    public function __construct(array $schema = array()) {
-        foreach($schema as $field => $config) {
-            $this->push($field, $config);
-        }
-        $this->init();
-    }
+	public function __construct(array $schema = array()) {
+		foreach($schema as $field => $config) {
+			$this->push($field, $config);
+		}
+		$this->init();
+	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
-    public function init() {}
+	public function init() {
+	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
 	public function getConfig($field, $key) {
 		return isset($this->schema[$field][$key]) ? $this->schema[$field][$key] : null;
 	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
 	public function setConfig($field, $key, $value = null) {
-        if(isset($this->schema[$field])) {
-            $this->schema[$field][$key] = $value;
-            return true;
-        }
+		if(isset($this->schema[$field])) {
+			$this->schema[$field][$key] = $value;
+			return true;
+		}
 		return false;
 	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
 	public function push($field, array $config) {
 		$this->schema[$field] = $this->_formatConfig($config);
 		return $this;
 	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
 	public function unshift($field, array $config) {
 		$data = array($field => $this->_formatConfig($config));
-        array_unshift($this->schema, $data);
+		array_unshift($this->schema, $data);
 		return $this;
 	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
 	public function data() {
-        return $this->schema;
+		return $this->schema;
 	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
 	public function isSortable($field) {
 		if( ! isset($this->schema[$field])) {
-            return false;
-        }
+			return false;
+		}
 		return (
-            $this->schema[$field]['sortable'] == true &&
-            $this->schema[$field]['type'] == 'dynamic'
-        ) ? true : false;
+				$this->schema[$field]['sortable'] == true &&
+				$this->schema[$field]['type'] == 'dynamic'
+		) ? true : false;
 	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
 	public function isSearchable($field) {
 		if( ! isset($this->schema[$field])) {
-            return false;
-        }
+			return false;
+		}
 		return ($this->schema[$field]['searchable'] == true) ? true : false;
 	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
 	public function getDefaultValues() {
-        $data = array();
-        foreach($this->schema as $field => $config) {
-            $data[$field] = $config['default'];
-        }
-        return $data;
+		$data = array();
+		foreach($this->schema as $field => $config) {
+			$data[$field] = $config['default'];
+		}
+		return $data;
 	}
 
 	/* ______________________________________________________________________ */
@@ -97,125 +114,137 @@ class Schema {
 		return $data;
 	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
+
+	public function getEditable() {
+		$data = array();
+		foreach($this->schema as $field => $config) {
+			if(!empty($config['editable'])) {
+				$data[$field] = $config['editable'];
+			}
+		}
+		return $data;
+	}
+
+	/* ______________________________________________________________________ */
 
 	public function getLabels() {
-        $data = array();
-        foreach($this->schema as $field => $config) {
-            $data[$field] = $config['label'];
-        }
-        return $data;
+		$data = array();
+		foreach($this->schema as $field => $config) {
+			$data[$field] = $config['label'];
+		}
+		return $data;
 	}
 
-    /* ______________________________________________________________________ */
-    /** @todo use array_filter instead of foreach iteration */
+	/* ______________________________________________________________________ */
+	/** @todo use array_filter instead of foreach iteration */
 	public function getVisibleColumns() {
-        $data = array();
-        foreach($this->schema as $field => $config) {
-            if($config['visible'] === true) {
-                $data[] = $field;
-            }
-        }
-        return $data;
+		$data = array();
+		foreach($this->schema as $field => $config) {
+			if($config['visible'] === true) {
+				$data[] = $field;
+			}
+		}
+		return $data;
 	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
-    public function adapt($data, \Closure $rowFilter = null) {
-        if(is_array($data) OR (is_object($data) && $data instanceof \Iterator)) {
-            $defaults = $this->getDefaultValues();
+	public function adapt($data, \Closure $rowFilter = null) {
+		if(is_array($data) OR (is_object($data) && $data instanceof \Iterator)) {
+			$defaults = $this->getDefaultValues();
 
-            $newData = array();
-            foreach($data as $key => $value) {
-                if($rowFilter) {
-                    $value = $rowFilter($value);
-                }
+			$newData = array();
+			foreach($data as $key => $value) {
+				if($rowFilter) {
+					$value = $rowFilter($value);
+				}
 
-                $temp = array_merge($defaults, array_intersect_key($value, $this->schema));
+				$temp = array_merge($defaults, array_intersect_key($value, $this->schema));
 
-                foreach($temp as $key => $cell) {
-                    $callback = $this->schema[$key]['outputFilter'];
-                    if(is_callable($callback)) {
-                        $temp[$key] = $callback($cell, $value);
-                    }
-                }
+				foreach($temp as $key => $cell) {
+					$callback = $this->schema[$key]['outputFilter'];
+					if(is_callable($callback)) {
+						$temp[$key] = $callback($cell, $value);
+					}
+				}
 
-                $newData[] = array_values($temp);
-            }
+				$newData[] = array_values($temp);
+			}
 
-            return $newData;
-        }
+			return $newData;
+		}
 
-        throw new \UnexpectedValueException(
-            "Could not adapt data into schema. Data must be an array or an Iterator."
-        );
-    }
+		throw new \UnexpectedValueException(
+				"Could not adapt data into schema. Data must be an array or an Iterator."
+		);
+	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
-    protected function filter($name, array $config = array()) {
-        return $this->createInstanceOf(
-            $name, __NAMESPACE__ . '\\filters\\', __NAMESPACE__ . '\\FilterInterface', $config);
-    }
+	protected function filter($name, array $config = array()) {
+		return $this->createInstanceOf(
+				$name, __NAMESPACE__ . '\\filters\\', __NAMESPACE__ . '\\FilterInterface', $config);
+	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
-    public function element($name, array $config = array()) {
-        return $this->createInstanceOf(
-            $name, __NAMESPACE__ . '\\elements\\', __NAMESPACE__ . '\\ElementInterface', $config);
-    }
+	public function element($name, array $config = array()) {
+		return $this->createInstanceOf(
+				$name, __NAMESPACE__ . '\\elements\\', __NAMESPACE__ . '\\ElementInterface', $config);
+	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
-    private function createInstanceOf($name, $prefix, $interface, array $config = array()) {
-        if (is_string($name) && ($name = ucwords(str_replace(array("_", '-'), " ", $name)))) {
-            $class = $prefix . $name;
+	private function createInstanceOf($name, $prefix, $interface, array $config = array()) {
+		if (is_string($name) && ($name = ucwords(str_replace(array("_", '-'), " ", $name)))) {
+			$class = $prefix . $name;
 
-            if ( ! class_exists($class)) {
-                $class = $name;
-                if ( ! class_exists($class)) {
-                    throw new RuntimeException('Class not found: ' . $class);
-                }
-            }
+			if ( ! class_exists($class)) {
+				$class = $name;
+				if ( ! class_exists($class)) {
+					throw new RuntimeException('Class not found: ' . $class);
+				}
+			}
 
-            $rc = new \ReflectionClass($class);
-            if ( ! $rc->implementsInterface($interface)) {
-                throw new DomainException(sprintf('`%s` must implements `%s`.', $class, $interface));
-            }
+			$rc = new \ReflectionClass($class);
+			if ( ! $rc->implementsInterface($interface)) {
+				throw new DomainException(sprintf('`%s` must implements `%s`.', $class, $interface));
+			}
 
-            $obj = $rc->newInstanceArgs($config);
-            return $obj;
-        } elseif ($name instanceof $name) {
-            return $name;
-        }
+			$obj = $rc->newInstanceArgs($config);
+			return $obj;
+		} elseif ($name instanceof $name) {
+			return $name;
+		}
 
-        $type = is_object($name) ? get_class($name) : gettype($name);
-        throw new InvalidArgumentException(
-            sprintf('%s expects args #1 to be string or `%s`, %s given.', __METHOD__, $interface, $type)
-        );
-    }
+		$type = is_object($name) ? get_class($name) : gettype($name);
+		throw new InvalidArgumentException(
+				sprintf('%s expects args #1 to be string or `%s`, %s given.', __METHOD__, $interface, $type)
+		);
+	}
 
-    /* ______________________________________________________________________ */
+	/* ______________________________________________________________________ */
 
-    protected function _formatConfig(array $config) {
-        $defaults = array(
-        		'outputFilter'	=> null,        # Usually a closure object to format output
-        		'inputFilter'	=> null,        # Usually a closure object to format output
-        		'type'			=> 'dynamic',   # Define column type. Either `dynamic` or `static`
-        		'visible'		=> true,
-        		'sortable'		=> true,
-        		'searchable'	=> true,
-        		'editable'		=> false,
-        		'width'			=> false,
-        		'class'			=> '',
-        		'label'			=> '',
-        		'default'		=> '',
-        		'render'		=> '',
-        		'footer'		=> '',
-        		'key_prefix'    => '',
-        		'aoColumns'     => array()
+	protected function _formatConfig(array $config) {
+		$defaults = array(
+				'outputFilter'	=> null,        # Usually a closure object to format output
+				'inputFilter'	=> null,        # Usually a closure object to format output
+				'type'			=> 'dynamic',   # Define column type. Either `dynamic` or `static`
+				'visible'		=> true,
+				'sortable'		=> true,
+				'searchable'	=> true,
+				'editable'		=> false,
+				'width'			=> false,
+				'class'			=> '',
+				'label'			=> '',
+				'default'		=> '',
+				'render'		=> '',
+				'footer'		=> '',
+				'key_prefix'    => '',
+				'aoColumns'     => array()
 		);
 
-        return $config + $defaults;
-    }
+		return $config + $defaults;
+	}
 }

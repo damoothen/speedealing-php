@@ -52,7 +52,7 @@ class UserDatabase extends nosqlDocument {
 	 *    Constructor de la classe
 	 *
 	 *    @param   DoliDb  $db     Database handler
-	*/
+	 */
 
 	function __construct($db) {
 		$this->db = $db;
@@ -88,19 +88,22 @@ class UserDatabase extends nosqlDocument {
 		if (!empty($members)) {
 			foreach ($members as $aRow) {
 				try {
-					$user = $this->couchAdmin->getUser($aRow);
+					$user = new User($this->db);
+					$user->load("user:" . $aRow);
 				} catch (Exception $e) {
 					// User NOT FOUND
 					$user->email = $aRow;
 					$user->name = $aRow;
 					$user->_id = "org.couchdb.user:" . $aRow;
-					$user->Firstname = $langs->trans("Unknown");
-					$user->Lastname = $langs->trans("Unknown");
+					$user->Firstname = "Unknown";
+					$user->Lastname = "Unknown";
 					$user->Status = "DISABLE";
 				}
 				$this->members[] = clone $user;
 			}
 		}
+
+		$group = new stdClass();
 
 		if (!empty($membersRoles)) {
 			foreach ($membersRoles as $aRow) {
@@ -122,8 +125,8 @@ class UserDatabase extends nosqlDocument {
 					$user->email = $aRow;
 					$user->name = $aRow;
 					$user->_id = "org.couchdb.user:" . $aRow;
-					$user->Firstname = $langs->trans("Unknown");
-					$user->Lastname = $langs->trans("Unknown");
+					$user->Firstname = "Unknown";
+					$user->Lastname = "Unknown";
 					$user->Status = "DISABLE";
 					$user->admin = true;
 				}
@@ -133,10 +136,10 @@ class UserDatabase extends nosqlDocument {
 		}
 
 		/* foreach ($membersRolesAdmin as $aRow) {
-		 $group->Administrator = true;
-		$group->id = $aRow;
-		$this->membersRoles[] = clone $group;
-		} */
+		  $group->Administrator = true;
+		  $group->id = $aRow;
+		  $this->membersRoles[] = clone $group;
+		  } */
 
 		$this->id = $this->values->db_name;
 		return 1;
@@ -441,7 +444,7 @@ class UserDatabase extends nosqlDocument {
 
 		/*
 		 * Recuperation des droits
-		*/
+		 */
 		$sql = "SELECT r.module, r.perms, r.subperms ";
 		$sql.= " FROM " . MAIN_DB_PREFIX . "usergroup_rights as u, " . MAIN_DB_PREFIX . "rights_def as r";
 		$sql.= " WHERE r.id = u.fk_id";

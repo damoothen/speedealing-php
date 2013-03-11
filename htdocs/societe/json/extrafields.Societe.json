@@ -9,9 +9,10 @@
    ],
    "pluginsList": [
        "RowAction",
-       "RowShowHide",
        "DeleteNotification",
-       "MakeEditable"
+       "RowShowHide",
+       "FieldEditable",
+       "ColFilter"
    ],
    "createList": [
        "name",
@@ -183,6 +184,7 @@
            "enable": true,
            "list": {
                "cssclass": "center",
+               "editable": true,
                "visible": false
            },
            "mask": "+99 9 99 99 99 99"
@@ -282,9 +284,11 @@
            "view": "list",
            "enable": true,
            "list": {
+               "editable": true
            },
            "render": {
-               "type": "url"
+               "type": "url",
+               "ico": "16-User.png"
            }
        },
        "civilite_id": {

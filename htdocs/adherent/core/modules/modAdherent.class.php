@@ -103,42 +103,49 @@ class modAdherent extends DolibarrModules {
 		//$this->rights[$r]->default = true;
 		//$this->rights[$r]->perm = array('lire');
 		
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 71;
 		$this->rights[$r]->desc = 'Read members\' card';
 		$this->rights[$r]->default = 1;
 		$this->rights[$r]->perm = array('lire');
 
         $r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 72;
 		$this->rights[$r]->desc = 'Create/modify members (need also user module permissions if member linked to a user)';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('creer');
 
         $r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 74;
 		$this->rights[$r]->desc = 'Remove members';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('supprimer');
 
         $r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 76;
 		$this->rights[$r]->desc = 'Export members';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('export');
 
         $r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 75;
 		$this->rights[$r]->desc = 'Setup types and attributes of members';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('configurer');
 
         $r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 78;
 		$this->rights[$r]->desc = 'Read subscriptions';
 		$this->rights[$r]->default = 1;
 		$this->rights[$r]->perm = array('cotisation','lire');
 
         $r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 79;
 		$this->rights[$r]->desc = 'Create/modify/remove subscriptions';
 		$this->rights[$r]->default = 0;
@@ -148,6 +155,7 @@ class modAdherent extends DolibarrModules {
 		//--------
 		
 		$r = 0;
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:members";
 		$this->menus[$r]->type = "top";
 		$this->menus[$r]->position = 15;
@@ -159,6 +167,7 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "Members";
 
 		$r++;
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:members0";
 		$this->menus[$r]->position = 0;
 		$this->menus[$r]->url = "/adherent/list.php";
@@ -169,6 +178,8 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "Members";
 		$this->menus[$r]->fk_menu = "menu:members";
 		$r++;
+		
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:subscriptions";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/adherent/index.php";
@@ -179,6 +190,8 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "Subscriptions";
 		$this->menus[$r]->fk_menu = "menu:members";
 		$r++;
+		
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:memberstatic";
 		$this->menus[$r]->position = 2;
 		$this->menus[$r]->url = "/adherent/index.php";
@@ -189,6 +202,8 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "Statistics";
 		$this->menus[$r]->fk_menu = "menu:subscriptions";
 		$r++;
+		
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:subscriptionslist";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/adherent/cotisations.php";
@@ -199,6 +214,8 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "List";
 		$this->menus[$r]->fk_menu = "menu:subscriptions";
 		$r++;
+		
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:memberscategoriesshort";
 		$this->menus[$r]->position = 3;
 		$this->menus[$r]->url = "/categories/index.php?type=3";
@@ -209,6 +226,8 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "MembersCategoriesShort";
 		$this->menus[$r]->fk_menu = "menu:members";
 		$r++;
+		
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:memberstypes";
 		$this->menus[$r]->position = 5;
 		$this->menus[$r]->url = "/adherent/type.php";
@@ -219,6 +238,8 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "MembersTypes";
 		$this->menus[$r]->fk_menu = "menu:members";
 		$r++;
+		
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:newmember";
 		$this->menus[$r]->position = 0;
 		$this->menus[$r]->url = "/adherent/fiche.php?action=create";
@@ -229,6 +250,8 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "NewMember";
 		$this->menus[$r]->fk_menu = "menu:members0";
 		$r++;
+		
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:list18";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/adherent/list.php";
@@ -239,6 +262,8 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "List";
 		$this->menus[$r]->fk_menu = "menu:members0";
 		$r++;
+		
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:cardmemberedit";
 		$this->menus[$r]->position = 10;
 		$this->menus[$r]->url = "/adherent/card.php";

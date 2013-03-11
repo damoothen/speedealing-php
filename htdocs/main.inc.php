@@ -185,22 +185,6 @@ if (!defined('NOREQUIREAJAX'))
 	require DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'; // Need 22ko memory
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
 	Header("Location: " . DOL_URL_ROOT . "/install/index.php");
@@ -434,11 +418,12 @@ $heightforframes = 52;
 if ($conf->urlrewrite) {
 	if (!GETPOST("db")) {
 		$tmp_db = $conf->Couchdb->name; // First connecte using $user->entity for default
-		$user->useDatabase($tmp_db);
+		//$user->useDatabase($tmp_db);
 
 		if (!empty($user->NewConnection))
-			$user->set("LastConnection", $user->NewConnection);
-		$user->set("NewConnection", dol_now());
+			$user->LastConnection = $user->NewConnection;
+		$user->NewConnection = dol_now();
+		$user->record(true);
 
 		Header("Location: /" . $tmp_db . '/');
 		exit;
@@ -601,6 +586,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 
 
+
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 
@@ -683,48 +669,80 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 function left_menu() {
 	global $conf, $langs;
 
+	// For show the current shortcuts menu
+	$shortcut = 'home';
+	$idmenu = GETPOST('idmenu', 'alpha');
+	if (!empty($idmenu)) {
+		$idmenu = str_replace('menu:', '', $idmenu, $num);
+		if (!empty($num))
+			$shortcut = $idmenu;
+	}
+
 	?><ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
-		<li class="current">
+		<li class="home">
 			<a href="index.php?idmenu=menu:home" class="shortcut-dashboard" title="<?php echo $langs->trans("Dashboard"); ?>">
-	<?php echo $langs->trans("Dashboard"); ?>
+				<?php echo $langs->trans("Dashboard"); ?>
 			</a>
 		</li>
 		<li>
-			<span href="inbox.html" class="shortcut-messages" title="<?php echo $langs->trans("Messages"); ?>">
-	<?php echo $langs->trans("Messages"); ?>
+			<span class="shortcut-messages" title="<?php echo $langs->trans("Messages"); ?>">
+				<?php echo $langs->trans("Messages"); ?>
 			</span>
 		</li>
-		<li>
+		<li class="agendaList">
+			<?php if ($conf->agenda->enabled) : ?>
 			<a href="agenda/list.php?idmenu=menu:agendaList" class="shortcut-agenda" title="<?php echo $langs->trans("Agenda"); ?>">
-	<?php echo $langs->trans("Agenda"); ?>
+				<?php echo $langs->trans("Agenda"); ?>
 			</a>
+			<?php else: ?>
+			<span class="shortcut-agenda" title="<?php echo $langs->trans("Agenda"); ?>">
+				<?php echo $langs->trans("Agenda"); ?>
+			</span>
+			<?php endif; ?>
 		</li>
 		<li>
-			<span href="tables.html" class="shortcut-contacts" title="<?php echo $langs->trans("Contacts"); ?>">
-	<?php echo $langs->trans("Contacts"); ?>
+			<span class="shortcut-contacts" title="<?php echo $langs->trans("Contacts"); ?>">
+				<?php echo $langs->trans("Contacts"); ?>
 			</span>
 		</li>
 		<li>
-			<span href="explorer.html" class="shortcut-medias" title="<?php echo $langs->trans("Medias"); ?>">
-	<?php echo $langs->trans("Medias"); ?>
+			<span class="shortcut-medias" title="<?php echo $langs->trans("Medias"); ?>">
+				<?php echo $langs->trans("Medias"); ?>
 			</span>
 		</li>
 		<li>
-			<span href="sliders.html" class="shortcut-stats" title="<?php echo $langs->trans("Stats"); ?>">
-	<?php echo $langs->trans("Stats"); ?>
-			</span>
-		</li>
-		<li class="at-bottom">
-			<span href="form.html" class="shortcut-settings" title="<?php echo $langs->trans("Settings"); ?>">
-	<?php echo $langs->trans("Settings"); ?>
+			<span class="shortcut-stats" title="<?php echo $langs->trans("Stats"); ?>">
+				<?php echo $langs->trans("Stats"); ?>
 			</span>
 		</li>
 		<li>
 			<span class="shortcut-notes" title="<?php echo $langs->trans("Notes"); ?>">
-	<?php echo $langs->trans("Notes"); ?>
+				<?php echo $langs->trans("Notes"); ?>
 			</span>
 		</li>
-	</ul><?php
+		<li class="at-bottom">
+			<span class="shortcut-settings" title="<?php echo $langs->trans("Settings"); ?>">
+				<?php echo $langs->trans("Settings"); ?>
+			</span>
+		</li>
+		<li class="trashList at-bottom-trash">
+			<?php if (1==1 || $conf->trash->enabled) : ?>
+			<a href="trash/list.php?idmenu=menu:trashList" class="shortcut-trash-empty" title="<?php echo $langs->trans("RecycleBin"); ?>">
+				<?php echo $langs->trans("RecycleBin"); ?>
+			</a>
+			<?php else: ?>
+			<span class="shortcut-trash-empty" title="<?php echo $langs->trans("RecycleBin"); ?>">
+				<?php echo $langs->trans("RecycleBin"); ?>
+			</span>
+			<?php endif; ?>
+		</li>
+	</ul>
+	<script>
+		$(document).ready(function() {
+			$('#shortcuts li.<?php echo $shortcut; ?>').addClass('current');
+		});
+	</script>
+	<?php
 }
 
 /**
@@ -744,7 +762,7 @@ function main_menu() {
 
 	// Load the top menu manager (only if not already done)
 	//if (!class_exists('MenuTop'))
-		include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $conf->top_menu;
+	include DOL_DOCUMENT_ROOT . '/core/menus/standard/' . $conf->top_menu;
 
 	$searchform = '';
 	$bookmarks = '';
@@ -770,7 +788,7 @@ function main_menu() {
 						minChars: 2,
 						max: 6,
 						matchCase: 1,
-						indicator : '<img src="theme/<?php echo $conf->theme; ?>/img/working.gif">',
+						indicator: '<img src="theme/<?php echo $conf->theme; ?>/img/working.gif">',
 						width: 212
 					}).result(function(event, query_val) {
 						$.modal({
@@ -806,7 +824,7 @@ function main_menu() {
 			<div id="profile">
 				<?php if (!empty($user->Photo)) : ?><img alt="User name" src="<?php echo $user->getFile($user->Photo); ?>" width="64" class="user-icon">
 				<?php else : ?><img src="theme/symeos/img/user.png" width="64" class="user-icon" alt="User name">
-	<?php endif; ?>
+				<?php endif; ?>
 	<?php echo $langs->trans('Hello'); ?><span class="name"><?php echo $user->Firstname; ?> <b><?php echo $user->Lastname; ?></b></span>
 			</div>
 
@@ -823,7 +841,7 @@ function main_menu() {
 					</span>
 				</li>
 				<li style="width: 20%;">
-						<?php if ($conf->agenda->enabled) : ?>
+	<?php if ($conf->agenda->enabled) : ?>
 						<a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>">
 							<span class="icon-calendar"></span>
 							<?php
@@ -913,9 +931,9 @@ function main_menu() {
 function main_area($title = '') {
 	global $conf, $langs;
 
-	print '<!-- Main content -->';
-	print '<section role="main" id="main">';
-	print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>';
+	print '<!-- Main content -->'."\n";
+	print '<section role="main" id="main">'."\n";
+	print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>'."\n";
 
 	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 		print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
@@ -939,7 +957,6 @@ if (!function_exists("llxFooter")) {
 
 		<!-- End main content -->
 		<?php
-
 		left_menu(); // print the left menu
 		main_menu(); // print the right menu
 

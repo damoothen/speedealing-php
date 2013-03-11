@@ -103,10 +103,10 @@ if (file_exists($lockfile)) {
 	exit;
 }
 
-// Defini objet langs
+// $langs object
 $langs = new TranslateStandalone(DOL_DOCUMENT_ROOT);
 if (GETPOST('lang'))
-    $langs->setDefaultLang(GETPOST('lang'));
+    $langs->setDefaultLang(GETPOST('lang', 'alpha'));
 else
     $langs->setDefaultLang('auto');
 
@@ -116,6 +116,15 @@ $fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json', 'files');
 foreach($fileslist as $file) {
 	$jsonfiles[$file['name']] = $file['fullname'];
 }
+
+// Now we load forced value from install.forced.php file.
+$useforcedwizard=false;
+$forcedfile = DOL_DOCUMENT_ROOT . '/install/install.forced.php';
+if (@file_exists($forcedfile)) {
+	$useforcedwizard=true;
+	include $forcedfile;
+}
+
 
 /**
  * Show HTML header of install pages
@@ -151,7 +160,7 @@ function pFooter() {
 function write_conf_file() {
 	global $conf, $langs;
 	global $couchdb_host, $couchdb_port, $force_https;
-	global $memcached_host, $memcached_port;
+	global $memcached_host, $memcached_port, $force_install_urlrewrite;
 	global $conffile, $conffiletoshowshort;
 
 	$key = md5(uniqid(mt_rand(), TRUE)); // Generate random hash
@@ -221,6 +230,34 @@ function write_conf_file() {
 			fputs($fp, "\n");
 
 			fputs($fp, '$dolibarr_main_memcached_port=\'' . str_replace("'", "\'", $memcached_port) . '\';');
+			fputs($fp, "\n\n");
+		}
+
+		/* URL rewriting (multicompany) */
+
+		if (!empty($force_install_urlrewrite)) {
+			fputs($fp, '// URL rewriting');
+			fputs($fp, "\n");
+
+			fputs($fp, '$main_urlrewrite=\'1\';');
+			fputs($fp, "\n");
+
+			fputs($fp, '// URL rewriting for backward compatibility');
+			fputs($fp, "\n");
+
+			fputs($fp, '$dolibarr_urlrewrite=\'1\';');
+			fputs($fp, "\n\n");
+		} else {
+			fputs($fp, '// URL rewriting');
+			fputs($fp, "\n");
+
+			fputs($fp, '$main_urlrewrite=\'0\';');
+			fputs($fp, "\n");
+
+			fputs($fp, '// URL rewriting for backward compatibility');
+			fputs($fp, "\n");
+
+			fputs($fp, '$dolibarr_urlrewrite=\'0\';');
 			fputs($fp, "\n\n");
 		}
 

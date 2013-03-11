@@ -51,9 +51,9 @@ if (!empty($json) && !empty($id) && !empty($class)) {
 
     if ($json == "delete") {
         try {
-            
+
             if (preg_match("#^([a-z0-9]+)\#([0-9]+)$#", $id, $matches)) {
-                
+
                 $idInvoice = $matches[1];
                 $idLine = $matches[2];
 
@@ -63,11 +63,11 @@ if (!empty($json) && !empty($id) && !empty($class)) {
                 $object->record();
                 $object->update_price();
                 exit;
-            
+
             }
-            
+
             else {
-            
+
                 $object->load($id);
 
                 if (method_exists($object, 'deleteInPlace'))
@@ -81,6 +81,8 @@ if (!empty($json) && !empty($id) && !empty($class)) {
             error_log($exc->getMessage());
             exit;
         }
+    } else if ($json == "trash") {
+    	// TODO add trash method
     }
 }
 

@@ -46,6 +46,8 @@ class ExtraFields extends nosqlDocument {
 	function __construct($db) {
 
 		parent::__construct($db);
+		
+		$this->useDatabase("system");
 
 		$this->type2label = array(
 			'text' => 'TextLong',
@@ -183,7 +185,11 @@ class ExtraFields extends nosqlDocument {
 			foreach ($this->fields as $aRow) {
 				if (isset($aRow->dict)) {
 					$dict = new Dict($this->db);
-					$values = $dict->load($aRow->dict, true);
+					try {
+						$values = $dict->load($aRow->dict, true);
+					} catch (Exception $e) {
+						error_log($aRow->dict . " : Not found");
+					}
 					$aRow->values = clone $values->values;
 				}
 			}

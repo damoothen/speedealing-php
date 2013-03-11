@@ -21,15 +21,15 @@
 
 <!-- Scripts -->
 <script src="<?php echo DOL_URL_ROOT; ?>/includes/jquery/js/jquery-latest.min.js"></script>
-<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/setup.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/setup.min.js"></script>
 
 <!-- Template functions -->
-<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.input.js"></script>
-<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.message.js"></script>
-<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.notify.js"></script>
-<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.progress-slider.js"></script>
-<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.scroll.js"></script>
-<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.tooltip.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.input.min.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.message.min.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.notify.min.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.progress-slider.min.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.scroll.min.js"></script>
+<script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.tooltip.min.js"></script>
 <script src="<?php echo DOL_URL_ROOT; ?>/theme/symeos/js/developr.wizard.js"></script>
 
 <!-- jQuery Form Validation -->

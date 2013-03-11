@@ -78,16 +78,18 @@ if ($action == 'adduser' || $action == 'removeuser') {
             $object->load($id);
 
             $edituser = new User($db);
-            $edituser->fetch($userid);
+            $edituser->load($userid);
 
             if ($action == 'adduser') {
-                $edituser->group[] = $object->name;
+                $edituser->roles[] = $object->name;
+				$edituser->addRoleToUser($object->name);
             }
             if ($action == 'removeuser') {
-                unset($edituser->group[array_search($object->name, $edituser->group)]);
-                $edituser->group = array_merge($edituser->group);
+                unset($edituser->roles[array_search($object->name, $edituser->roles)]);
+                $edituser->roles = array_merge($edituser->roles);
+				$edituser->removeRoleFromUser($object->name);
             }
-            $edituser->record(true);
+            $edituser->record($edituser->id == $user->id);
 
             header("Location: fiche.php?id=" . $object->id);
             exit;
@@ -282,7 +284,7 @@ if ($action == 'create') {
                     print '</td>';
                     print '<td>' . $useringroup->values->Lastname . '</td>';
                     print '<td>' . $useringroup->values->Firstname . '</td>';
-                    print '<td>' . $useringroup->LibStatus($useringroup->Status) . '</td>';
+                    print '<td>' . $useringroup->LibStatus($useringroup->values->Status) . '</td>';
                     print '<td>';
                     if ($user->admin) {
                         print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->_id . '">';

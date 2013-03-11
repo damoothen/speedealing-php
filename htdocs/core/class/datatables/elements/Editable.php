@@ -58,7 +58,7 @@ class Editable implements ElementInterface {
 				$type .= "loadurl: urlLoadInPlace,\n";
 				$type .= "loaddata: function ( value, settings ) {
 							return {
-								'id': oTable.fnGetData( this.parentNode, 0),
+								'id': oTable.fnGetData( this.parentNode )._id,
 								'element_class': '{$this->classname}',
 								'type': 'select',
 								'key': 'editval_{$this->name}',
@@ -109,16 +109,13 @@ class Editable implements ElementInterface {
 				{$type}
 				submitdata: function ( value, settings ) {
 					return {
-						'id': oTable.fnGetData( this.parentNode, 0),
+						'id': oTable.fnGetData( this.parentNode )._id,
 						'element_class' : '{$this->classname}',
 						'type': '{$this->type}',
 						'key': 'editval_{$this->name}'
 					};
 				},
 				callback: function(sValue, y) {
-					//var aPos = oTable.fnGetPosition( this );
-					//oTable.fnAddData( sValue, aPos[0], aPos[1] ); // doesn't work with server-side
-					//oTable.fnDraw();
 					$(this).html(sValue);
 				},
 				{$validate}

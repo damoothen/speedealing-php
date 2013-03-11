@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis.houssin@capnetworks.com>
@@ -18,37 +19,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 
 /**
- *	Classe de description et activation du module User
+ * 	Classe de description et activation du module User
  */
-class modUser extends DolibarrModules
-{
+class modUser extends DolibarrModules {
 
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function __construct($db)
-	{
+	function __construct($db) {
 		global $conf;
 
 		//$this->couchdb = $db; // Just for first install
 		parent::__construct($db);
 		$this->numero = 0;
 
-		$this->family = "base";		// Family for module (or "base" if core module)
+		$this->family = "base";  // Family for module (or "base" if core module)
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i','',get_class($this));
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
 		$this->description = "Gestion des utilisateurs (requis)";
 		$this->always_enabled = 1; // Can't be disabled
 		// Possible values for version are: 'development', 'experimental', 'speedealing' or version
 		$this->version = 'speedealing';
 
 		$this->special = 0;
-		$this->picto='group';
+		$this->picto = 'group';
 
 		// Data directories to create when module is enabled
 		$this->dirs = array("/users/temp");
@@ -59,7 +58,7 @@ class modUser extends DolibarrModules
 		// Dependancies
 		$this->depends = array();
 		$this->requiredby = array();
-		$this->langfiles = array("main","users","companies");
+		$this->langfiles = array("main", "users", "companies");
 
 		// Constants
 		$this->const = array();
@@ -73,90 +72,105 @@ class modUser extends DolibarrModules
 		$this->rights_admin_allowed = 1; // Admin is always granted of permission (even when module is disabled)
 		$r = 0;
 
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 251;
 		$this->rights[$r]->desc = 'Consulter les autres utilisateurs';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('user', 'lire');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 252;
 		$this->rights[$r]->desc = 'Consulter les permissions des autres utilisateurs';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('user_advance', 'readperms');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 253;
 		$this->rights[$r]->desc = 'Creer/modifier utilisateurs internes et externes';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('user', 'creer');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 254;
 		$this->rights[$r]->desc = 'Creer/modifier utilisateurs externes seulement';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('user_advance', 'write');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 255;
 		$this->rights[$r]->desc = 'Modifier le mot de passe des autres utilisateurs';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('user', 'password');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 256;
 		$this->rights[$r]->desc = 'Supprimer ou desactiver les autres utilisateurs';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('user', 'supprimer');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 341;
 		$this->rights[$r]->desc = 'Consulter ses propres permissions';
 		$this->rights[$r]->default = 1;
 		$this->rights[$r]->perm = array('self_advance', 'readperms');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 342;
 		$this->rights[$r]->desc = 'Creer/modifier ses propres infos utilisateur';
 		$this->rights[$r]->default = 1;
 		$this->rights[$r]->perm = array('self', 'creer');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 343;
 		$this->rights[$r]->desc = 'Modifier son propre mot de passe';
 		$this->rights[$r]->default = 1;
 		$this->rights[$r]->perm = array('self', 'password');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 344;
 		$this->rights[$r]->desc = 'Modifier ses propres permissions';
 		$this->rights[$r]->default = 1;
 		$this->rights[$r]->perm = array('self_advance', 'writeperms');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 351;
 		$this->rights[$r]->desc = 'Consulter les groupes';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('group_advance', 'read');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 352;
 		$this->rights[$r]->desc = 'Consulter les permissions des groupes';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('group_advance', 'readperms');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 353;
 		$this->rights[$r]->desc = 'Creer/modifier les groupes et leurs permissions';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('group_advance', 'write');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 354;
 		$this->rights[$r]->desc = 'Supprimer ou desactiver les groupes';
 		$this->rights[$r]->default = 0;
 		$this->rights[$r]->perm = array('group_advance', 'delete');
 
 		$r++;
+		$this->rights[$r] = new stdClass();
 		$this->rights[$r]->id = 358;
 		$this->rights[$r]->desc = 'Exporter les utilisateurs';
 		$this->rights[$r]->default = 0;
@@ -164,6 +178,7 @@ class modUser extends DolibarrModules
 
 		// Menus
 		$r = 0;
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:parameters";
 		$this->menus[$r]->type = "top";
 		$this->menus[$r]->position = 1000;
@@ -173,6 +188,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->title = "Parameters";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:setup";
 		$this->menus[$r]->url = "/admin/index.php";
 		$this->menus[$r]->langs = "admin";
@@ -183,6 +199,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:systeminfo";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->langs = "admin";
@@ -192,6 +209,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:systemtools";
 		$this->menus[$r]->position = 2;
 		$this->menus[$r]->langs = "admin";
@@ -201,6 +219,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:menucompanysetup";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/admin/company.php";
@@ -210,6 +229,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:modules";
 		$this->menus[$r]->position = 2;
 		$this->menus[$r]->url = "/admin/modules.php";
@@ -219,6 +239,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:menus";
 		$this->menus[$r]->position = 3;
 		$this->menus[$r]->url = "/admin/menus.php";
@@ -228,6 +249,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:guisetup";
 		$this->menus[$r]->position = 4;
 		$this->menus[$r]->url = "/admin/ihm.php";
@@ -237,6 +259,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:boxes";
 		$this->menus[$r]->position = 5;
 		$this->menus[$r]->url = "/admin/boxes.php";
@@ -246,6 +269,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:alerts";
 		$this->menus[$r]->position = 6;
 		$this->menus[$r]->url = "/admin/delais.php";
@@ -255,6 +279,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:security";
 		$this->menus[$r]->position = 7;
 		$this->menus[$r]->url = "/admin/proxy.php";
@@ -264,6 +289,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:menulimits";
 		$this->menus[$r]->position = 8;
 		$this->menus[$r]->url = "/admin/limits.php";
@@ -273,6 +299,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:pdf";
 		$this->menus[$r]->position = 9;
 		$this->menus[$r]->url = "/admin/pdf.php";
@@ -282,6 +309,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:emails";
 		$this->menus[$r]->position = 10;
 		$this->menus[$r]->url = "/admin/mails.php";
@@ -291,6 +319,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:sms";
 		$this->menus[$r]->position = 11;
 		$this->menus[$r]->url = "/admin/sms.php";
@@ -300,6 +329,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:dictionnarysetup";
 		$this->menus[$r]->position = 12;
 		$this->menus[$r]->url = "/admin/dict.php";
@@ -309,6 +339,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:othersetup";
 		$this->menus[$r]->position = 13;
 		$this->menus[$r]->url = "/admin/const.php";
@@ -318,6 +349,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:params";
 		$this->menus[$r]->url = "/admin/system/dolibarr.php";
 		$this->menus[$r]->position = 0;
@@ -327,6 +359,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:memcached";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/memcached/admin/memcached.php";
@@ -337,6 +370,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:phpinfo";
 		$this->menus[$r]->position = 3;
 		$this->menus[$r]->url = "/admin/system/phpinfo.php";
@@ -346,6 +380,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:allparameters";
 		$this->menus[$r]->position = 4;
 		$this->menus[$r]->url = "/admin/system/constall.php";
@@ -355,6 +390,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:modules0";
 		$this->menus[$r]->position = 5;
 		$this->menus[$r]->url = "/admin/system/modules.php";
@@ -364,6 +400,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:triggers";
 		$this->menus[$r]->position = 6;
 		$this->menus[$r]->url = "/admin/triggers.php";
@@ -373,6 +410,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:about";
 		$this->menus[$r]->position = 7;
 		$this->menus[$r]->url = "/admin/system/about.php";
@@ -382,6 +420,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:backup";
 		$this->menus[$r]->url = "/admin/tools/dolibarr_export.php";
 		$this->menus[$r]->langs = "admin";
@@ -390,6 +429,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systemtools";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:restore";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/admin/tools/dolibarr_import.php";
@@ -399,6 +439,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systemtools";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:menuupgrade";
 		$this->menus[$r]->position = 2;
 		$this->menus[$r]->url = "/admin/tools/update.php";
@@ -408,6 +449,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systemtools";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:audit";
 		$this->menus[$r]->position = 4;
 		$this->menus[$r]->url = "/admin/tools/listevents.php";
@@ -417,6 +459,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systemtools";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:sessions";
 		$this->menus[$r]->position = 5;
 		$this->menus[$r]->url = "/admin/tools/listsessions.php";
@@ -426,6 +469,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systemtools";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:purge";
 		$this->menus[$r]->position = 6;
 		$this->menus[$r]->url = "/admin/tools/purge.php";
@@ -435,6 +479,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:systemtools";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:directoryusers";
 		$this->menus[$r]->position = 5;
 		$this->menus[$r]->langs = "users";
@@ -445,6 +490,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:databases";
 		$this->menus[$r]->position = 6;
 		$this->menus[$r]->langs = "users";
@@ -456,6 +502,7 @@ class modUser extends DolibarrModules
 		$r++;
 
 		// Module RH
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:rh";
 		$this->menus[$r]->type = "top";
 		$this->menus[$r]->position = 999;
@@ -464,6 +511,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->title = "RH";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:team";
 		$this->menus[$r]->position = 3;
 		$this->menus[$r]->langs = "users";
@@ -474,6 +522,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:rh";
 		$r++;
 
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:groups";
 		$this->menus[$r]->position = 4;
 		$this->menus[$r]->langs = "users";
@@ -486,35 +535,32 @@ class modUser extends DolibarrModules
 
 		// Exports
 		//--------
-		$r=0;
+		$r = 0;
 
 		$r++;
-		$this->export_code[$r]=$this->rights_class.'_'.$r;
-		$this->export_label[$r]='Liste des utilisateurs Dolibarr et attributs';
-		$this->export_permission[$r]=array(array("user","user","export"));
-		$this->export_fields_array[$r]=array('u.rowid'=>"Id",'u.login'=>"Login",'u.name'=>"Lastname",'u.firstname'=>"Firstname",'u.office_phone'=>'Telephone','u.office_fax'=>'Fax','u.email'=>'EMail','u.datec'=>"DateCreation",'u.tms'=>"DateLastModification",'u.admin'=>"Admin",'u.statut'=>'Status','u.note'=>"Note",'u.datelastlogin'=>'LastConnexion','u.datepreviouslogin'=>'PreviousConnexion','u.fk_socpeople'=>"IdContact",'u.fk_societe'=>"IdCompany",'u.fk_member'=>"MemberId");
-		$this->export_entities_array[$r]=array('u.rowid'=>"user",'u.login'=>"user",'u.name'=>"user",'u.firstname'=>"user",'u.office_phone'=>'user','u.office_fax'=>'user','u.email'=>'user','u.datec'=>"user",'u.tms'=>"user",'u.admin'=>"user",'u.statut'=>'user','u.note'=>"user",'u.datelastlogin'=>'user','u.datepreviouslogin'=>'user','u.fk_socpeople'=>"contact",'u.fk_societe'=>"company",'u.fk_member'=>"member");
-        if (empty($conf->adherent->enabled))
-        {
-            unset($this->export_fields_array[$r]['u.fk_member']);
-            unset($this->export_entities_array[$r]['u.fk_member']);
-        }
-		$this->export_sql_start[$r]='SELECT DISTINCT ';
-		$this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'user as u';
-		$this->export_sql_end[$r] .=' WHERE u.entity IN (0,'.$conf->entity.')';
+		$this->export_code[$r] = $this->rights_class . '_' . $r;
+		$this->export_label[$r] = 'Liste des utilisateurs Dolibarr et attributs';
+		$this->export_permission[$r] = array(array("user", "user", "export"));
+		$this->export_fields_array[$r] = array('u.rowid' => "Id", 'u.login' => "Login", 'u.name' => "Lastname", 'u.firstname' => "Firstname", 'u.office_phone' => 'Telephone', 'u.office_fax' => 'Fax', 'u.email' => 'EMail', 'u.datec' => "DateCreation", 'u.tms' => "DateLastModification", 'u.admin' => "Admin", 'u.statut' => 'Status', 'u.note' => "Note", 'u.datelastlogin' => 'LastConnexion', 'u.datepreviouslogin' => 'PreviousConnexion', 'u.fk_socpeople' => "IdContact", 'u.fk_societe' => "IdCompany", 'u.fk_member' => "MemberId");
+		$this->export_entities_array[$r] = array('u.rowid' => "user", 'u.login' => "user", 'u.name' => "user", 'u.firstname' => "user", 'u.office_phone' => 'user', 'u.office_fax' => 'user', 'u.email' => 'user', 'u.datec' => "user", 'u.tms' => "user", 'u.admin' => "user", 'u.statut' => 'user', 'u.note' => "user", 'u.datelastlogin' => 'user', 'u.datepreviouslogin' => 'user', 'u.fk_socpeople' => "contact", 'u.fk_societe' => "company", 'u.fk_member' => "member");
+		if (empty($conf->adherent->enabled)) {
+			unset($this->export_fields_array[$r]['u.fk_member']);
+			unset($this->export_entities_array[$r]['u.fk_member']);
+		}
+		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
+		$this->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'user as u';
+		$this->export_sql_end[$r] .=' WHERE u.entity IN (0,' . $conf->entity . ')';
 	}
 
-
-    /**
-	 *		Function called when module is enabled.
-	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 *		It also creates data directories
+	/**
+	 * 		Function called when module is enabled.
+	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 * 		It also creates data directories
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-     */
-	function init($options='')
-	{
+	 */
+	function init($options = '') {
 		global $conf;
 
 		// Permissions
@@ -525,23 +571,23 @@ class modUser extends DolibarrModules
 
 		$sql = array();
 
-		return $this->_init($sql,$options);
+		return $this->_init($sql, $options);
 	}
 
-    /**
-	 *		Function called when module is disabled.
+	/**
+	 * 		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 *		Data directories are not deleted
+	 * 		Data directories are not deleted
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-     */
-    function remove($options='')
-    {
+	 */
+	function remove($options = '') {
 		$sql = array();
 
-		return $this->_remove($sql,$options);
-    }
+		return $this->_remove($sql, $options);
+	}
 
 }
+
 ?>
