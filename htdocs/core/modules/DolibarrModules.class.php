@@ -1085,7 +1085,7 @@ class DolibarrModules extends nosqlDocument {
 				$obj = $this->couchdb->getDoc($id);
 				$menu[$id]->_rev = $obj->_rev;
 			} catch (Exception $e) {
-				
+
 			}
 		}
 
@@ -1121,7 +1121,7 @@ class DolibarrModules extends nosqlDocument {
 				$menu->enabled = false;
 				$this->couchdb->storeDoc($menu);
 			} catch (Exception $e) {
-				
+
 			}
 		}
 
@@ -1414,7 +1414,7 @@ class DolibarrModules extends nosqlDocument {
 	function upgradeCore() {
 		$files = array("DolibarrModules.view", "MenuAuguria.view", "Dict.view", "extrafields.DolibarrModules");
 
-		$dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/";
+		$dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/system/";
 		foreach ($files as $row) {
 			$fp = fopen($dir . $row . ".json", "r");
 			if ($fp) {
@@ -1430,7 +1430,7 @@ class DolibarrModules extends nosqlDocument {
 				$result = $this->couchdb->getDoc($obj->_id);
 				$obj->_rev = $result->_rev;
 			} catch (Exception $e) {
-				
+
 			}
 
 			try {
