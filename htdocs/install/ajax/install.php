@@ -129,8 +129,8 @@ if ($action == 'create_config') {
 		echo json_encode(array('status' => 'error', 'value' => $filepath));
 	}
 
-// Populate system database
-} else if ($action == 'populate_system_database') {
+// Populate entity database
+} else if ($action == 'populate_entity_database') {
 	$filename = GETPOST('filename', 'alpha');
 	$filepath = GETPOST('filepath');
 
