@@ -55,11 +55,11 @@ abstract class nosqlDocument extends CommonObject {
 	public function useDatabase($dbname = "") {
 		global $conf, $couch;
 
-		if (empty($this->couchdb)) {
+		if (empty($this->couchdb) && is_object($couch)) {
 			$this->couchdb = clone $couch;
 		}
 
-		if (!empty($dbname))
+		if (!empty($dbname) && is_object($couch))
 			$this->couchdb->useDatabase($dbname);
 		//else
 		//	$this->couchdb->useDatabase($conf->Couchdb->name);
