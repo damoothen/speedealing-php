@@ -298,8 +298,8 @@ if ($action == 'create_config') {
 	// Add specifiq view in _users database
 	$couch->useDatabase('_users');
 	$filename = array(
-			DOL_DOCUMENT_ROOT . "/useradmin/json/_auth.view.json",
-			DOL_DOCUMENT_ROOT . "/useradmin/json/useradmin.view.json"
+			DOL_DOCUMENT_ROOT . "/user/json/_auth.view.json",
+			DOL_DOCUMENT_ROOT . "/user/json/User.view.json"
 	);
 
 	foreach ($filename as $filepath) {

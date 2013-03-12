@@ -145,8 +145,8 @@
 	</div>
 
 	<div class="field-block button-height">
-		<label for="couchdb_user_root" class="label"><b><?php echo $langs->trans("EmailAddress"); ?></b></label>
-		<input type="text" name="couchdb_user_root" id="couchdb_user_root" value="admin@speedealing.com" class="input full-width validate[required,custom[email]]">
+		<label for="couchdb_user_root" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
+		<input type="text" name="couchdb_user_root" id="couchdb_user_root" value="admin" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height">
@@ -173,13 +173,8 @@
 	</div>
 
 	<div class="field-block button-height">
-		<label for="couchdb_user_pseudo" class="label"><b><?php echo $langs->trans("Pseudo"); ?></b></label>
+		<label for="couchdb_user_pseudo" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
 		<input type="text" name="couchdb_user_pseudo" id="couchdb_user_pseudo" value="demo" class="input full-width validate[required]">
-	</div>
-
-	<div class="field-block button-height">
-		<label for="couchdb_user_email" class="label"><b><?php echo $langs->trans("EmailAddress"); ?></b></label>
-		<input type="text" name="couchdb_user_email" id="couchdb_user_email" value="demo@demo.org" class="input full-width validate[required,custom[email]]">
 	</div>
 
 	<div class="field-block button-height">
@@ -262,8 +257,8 @@
 	</div>
 
 	<div class="field-drop button-height black-inputs">
-		<input type="checkbox" name="couchdb_create_usersync" id="couchdb_create_usersync" class="switch mini"> &nbsp; <label for="couchdb_create_usersync"><?php echo $langs->trans("CheckToCreateCouchdbUserSync"); ?></label><br>
-		<input type="checkbox" name="couchdb_replication" id="couchdb_replication" class="switch mini"> &nbsp; <label for="couchdb_replication"><?php echo $langs->trans("CheckToReplicateRemoteDatabase"); ?></label>
+		<input type="checkbox" name="couchdb_create_usersync" id="couchdb_create_usersync" class="switch mini" disabled> &nbsp; <label for="couchdb_create_usersync"><?php echo $langs->trans("CheckToCreateCouchdbUserSync"); ?></label><br>
+		<input type="checkbox" name="couchdb_replication" id="couchdb_replication" class="switch mini" disabled> &nbsp; <label for="couchdb_replication"><?php echo $langs->trans("CheckToReplicateRemoteDatabase"); ?></label>
 	</div>
 
 	<!-- Memcached -->
