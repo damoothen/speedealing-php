@@ -200,7 +200,7 @@ if ($action == 'create_config') {
 			$useradmin->admin = true;
 			$useradmin->Status = 'ENABLE';
 
-			$id = $edituser->update("", 0, "add");
+			$id = $useradmin->update("", 0, "add");
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
 			exit;
