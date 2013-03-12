@@ -480,17 +480,6 @@ class modUser extends DolibarrModules {
 		$r++;
 
 		$this->menus[$r] = new stdClass();
-		$this->menus[$r]->_id = "menu:directoryusers";
-		$this->menus[$r]->position = 5;
-		$this->menus[$r]->langs = "users";
-		$this->menus[$r]->url = "/useradmin/index.php";
-		$this->menus[$r]->perms = '$user->superadmin';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Users";
-		$this->menus[$r]->fk_menu = "menu:parameters";
-		$r++;
-
-		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:databases";
 		$this->menus[$r]->position = 6;
 		$this->menus[$r]->langs = "users";
