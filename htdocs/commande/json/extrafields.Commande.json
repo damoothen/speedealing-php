@@ -1,8 +1,7 @@
 {
    "_id": "extrafields:Commande",
-   "_rev": "55-e4fc696bae5f675c0787799808b21f52",
    "class": "extrafields",
-   "ico": "16-Document.png",
+   "ico": "icon-object-order",
    "langs": [
        "orders"
    ],
