@@ -497,18 +497,6 @@ function hideMessage(fieldId,message) {
 }
 
 /*
- * Request Core Method
- */
-function requestCore(action, string, element = null, option = null) {
-	return $.ajax({
-		type: 'POST',
-		url: 'core/ajax/core.php',
-		data: { action: action, string: string, element: element, option: option},
-		async: false
-	}).responseText;
-}
-
-/*
  * 
  */
 function setConstant(url, code, input, entity) {
