@@ -68,7 +68,7 @@ function upgrade() {
 	$dict = new Dict($db);
 	$result = $dict->getView("list");
 
-	$dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/";
+	$dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/system/";
 	foreach ($result->rows as $aRow) {
 		try {
 			$dict->load($aRow->key);
