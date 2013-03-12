@@ -146,7 +146,7 @@ $(document).ready(function() {
 					addUsersync();
 				} else {
 					setProgressBar('set_conf', 100);
-					addDatabase();
+					addSystemDatabase();
 				}
 			} else {
 				return false;
