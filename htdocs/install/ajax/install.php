@@ -179,32 +179,12 @@ if ($action == 'create_config') {
 		exit;
 	}
 
-	// create admin in login database
-	try {
-		$useradmin = new UserAdmin($db);
-
-		$useradmin->Lastname = "Admin";
-		$useradmin->Firstname = "Admin";
-		$useradmin->name = trim($couchdb_user_root);
-		$useradmin->pass = trim($couchdb_pass_root);
-		$useradmin->entity = $couchdb_name;
-		$useradmin->admin = true;
-		$useradmin->Status = 'ENABLE';
-
-		$id = $useradmin->update('', 'add');
-		if ($id < 0)
-			error_log($id);
-	} catch (Exception $e) {
-		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
-		exit;
-	}
-
-	// create admin in couchdb_name database
-	$edituser = new User($db);
+	// create superadmin in system and _users databases
+	$useradmin = new User();
 
 	$found = false;
 	try {
-		$edituser->load("user:admin");
+		$useradmin->load("user:" . trim($couchdb_user_root));
 		$found = true;
 	} catch (Exception $e) {
 		// user not exit
@@ -212,12 +192,13 @@ if ($action == 'create_config') {
 
 	if (!$found) {
 		try {
-			$edituser->Lastname = "Admin";
-			$edituser->Firstname = "Admin";
-			$edituser->name = "admin";
-			$edituser->admin = true;
-			$edituser->email = trim($couchdb_user_root);
-			$edituser->Status = 'ENABLE';
+			$useradmin->Lastname = "Admin";
+			$useradmin->Firstname = "Admin";
+			$useradmin->name = trim($couchdb_user_root);
+			$useradmin->pass = trim($couchdb_pass_root);
+			$useradmin->entity = $couchdb_name;
+			$useradmin->admin = true;
+			$useradmin->Status = 'ENABLE';
 
 			$id = $edituser->update("", 0, "add");
 		} catch (Exception $e) {
@@ -234,8 +215,7 @@ if ($action == 'create_config') {
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
 	$couchdb_user_firstname = GETPOST('couchdb_user_firstname', 'alpha');
 	$couchdb_user_lastname = GETPOST('couchdb_user_lastname', 'alpha');
-	$couchdb_user_pseudo = GETPOST('couchdb_user_pseudo', 'alpha');
-	$couchdb_user_email = GETPOST('couchdb_user_email', 'alpha');
+	$couchdb_user_login = GETPOST('couchdb_user_login', 'alpha');
 	$couchdb_user_pass = GETPOST('couchdb_user_pass', 'alpha');
 
 	$host = substr($main_couchdb_host, 7);
@@ -248,29 +228,11 @@ if ($action == 'create_config') {
 		exit;
 	}
 
-	// create user in login database
-	try {
-		$useradmin = new UserAdmin($db);
-
-		$useradmin->Lastname = trim($couchdb_user_lastname);
-		$useradmin->Firstname = trim($couchdb_user_firstname);
-		$useradmin->name = trim($couchdb_user_email);
-		$useradmin->pass = trim($couchdb_user_pass);
-		$useradmin->entity = $couchdb_name;
-		$useradmin->admin = false;
-		$useradmin->Status = 'DISABLE';
-
-		$id = $useradmin->update('', 'add');
-	} catch (Exception $e) {
-		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
-		exit;
-	}
-
-	// create user in couchdb_name database
-	$edituser = new User($db);
+	// create first user in system and _users databases
+	$firstuser = new User();
 	$found = false;
 	try {
-		$edituser->load("user:" . trim($couchdb_user_pseudo));
+		$firstuser->load("user:" . trim($couchdb_user_login));
 		$found = true;
 	} catch (Exception $e) {
 		// user not exit
@@ -278,13 +240,15 @@ if ($action == 'create_config') {
 
 	if (!$found) {
 		try {
-			$edituser->Lastname = trim($couchdb_user_lastname);
-			$edituser->Firstname = trim($couchdb_user_firstname);
-			$edituser->name = trim($couchdb_user_pseudo);
-			$edituser->admin = false;
-			$edituser->email = trim($couchdb_user_email);
+			$firstuser->Lastname = trim($couchdb_user_lastname);
+			$firstuser->Firstname = trim($couchdb_user_firstname);
+			$firstuser->name = trim($couchdb_user_login);
+			$firstuser->pass = trim($couchdb_user_pass);
+			$firstuser->entity = $couchdb_name;
+			$firstuser->admin = false;
+			$firstuser->Status = 'DISABLE';
 
-			$id = $edituser->update("", 0, "add");
+			$id = $firstuser->update("", 0, "add");
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
 			exit;
@@ -293,9 +257,9 @@ if ($action == 'create_config') {
 
 	// Add fisrt user to the database for security database
 	$admin = new couchAdmin($couch);
-	$admin->addDatabaseReaderUser(trim($couchdb_user_email));
+	$admin->addDatabaseReaderUser(trim($couchdb_user_login));
 
-	// Add specifiq view in _users database
+	// Add specific view in _users database
 	$couch->useDatabase('_users');
 	$filename = array(
 			DOL_DOCUMENT_ROOT . "/user/json/_auth.view.json",
@@ -319,7 +283,6 @@ if ($action == 'create_config') {
 			fclose($fp);
 		}
 	}
-
 
 	//remove admin_install
 	try {

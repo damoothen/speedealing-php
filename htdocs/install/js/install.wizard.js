@@ -280,8 +280,7 @@ $(document).ready(function() {
 			couchdb_name: $('#couchdb_name').val(),
     		couchdb_user_firstname: $('#couchdb_user_firstname').val(),
     		couchdb_user_lastname: $('#couchdb_user_lastname').val(),
-    		couchdb_user_pseudo: $('#couchdb_user_pseudo').val(),
-    		couchdb_user_email: $('#couchdb_user_email').val(),
+    		couchdb_user_login: $('#couchdb_user_login').val(),
     		couchdb_user_pass: $('#couchdb_user_pass').val()
 		},
 		function(value) {

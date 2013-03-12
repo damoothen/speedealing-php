@@ -173,8 +173,8 @@
 	</div>
 
 	<div class="field-block button-height">
-		<label for="couchdb_user_pseudo" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
-		<input type="text" name="couchdb_user_pseudo" id="couchdb_user_pseudo" value="demo" class="input full-width validate[required]">
+		<label for="couchdb_user_login" class="label"><b><?php echo $langs->trans("Login"); ?></b></label>
+		<input type="text" name="couchdb_user_login" id="couchdb_user_login" value="demo" class="input full-width validate[required]">
 	</div>
 
 	<div class="field-block button-height">
