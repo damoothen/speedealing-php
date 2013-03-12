@@ -65,11 +65,14 @@
            }
        },
        "date": {
-           "type": "text",
+           "type": "datetime",
            "label": "TrashedDate",
            "enable": true,
            "list": {
                "static": true
+           },
+           "render": {
+               "type": "datetime"
            }
        },
        "Action": {
