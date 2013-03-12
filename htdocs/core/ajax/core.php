@@ -38,10 +38,6 @@ if (!empty($action) && !empty($string)) {
 		$imgMethod = 'img_'.$string;
 		if (function_exists($imgMethod))
 			echo call_user_func($imgMethod);
-	} else if ($action == 'getImageObject') {
-		$imgMethod = 'img_'.$string;
-		if (function_exists($imgMethod))
-			echo call_user_func($imgMethod);
 	} else if ($action == 'getNameUrl' && !empty($class)) {
 		$withpicto = (GETPOST('option', 'int') ? GETPOST('option', 'int') : 0);
 		$result = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php", $class);
@@ -51,6 +47,13 @@ if (!empty($action) && !empty($string)) {
 		$object = new $class();
 		$res = $object->fetch($string);
 		echo $object->getNomUrl($withpicto);
+	} else if ($action == 'getTrash') {
+		dol_include_once('/trash/class/trash.class.php', 'trash');
+		$object = new Trash();
+		if ($string == 'count') {
+			$result = $object->getView($string);
+			echo (!empty($result->rows) ? $result->rows[0]->value : false);
+		}
 	}
 }
 ?>
