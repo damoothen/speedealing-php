@@ -210,12 +210,32 @@ $(document).ready(function() {
 		} else {
 			// Populate local database
 			var progress_value = 30;
-			var step = Math.round((75 / numfiles) + 1);
-			var files = $.parseJSON(jsonfiles);
+			var step = Math.round((75 / (numSystemFiles + numEntityFiles)) + 1);
+			// Populate system database
+			var files = $.parseJSON(systemFiles);
+			$.each(files, function(name, path) {
+				$.post("install/ajax/install.php", {
+					action: 'populate_system_database',
+		    		filename: name,
+		    		filepath: path
+				},
+				function(value) {
+					if (value.status == 'ok') {
+						progress_value = progress_value + step;
+						progress_value = (progress_value < 100 ? progress_value : 100)
+						setProgressBar('set_database', progress_value);
+					} else {
+						// Break
+						return false;
+					}
+				}, 'json');
+			});
+			// Populate entity database
+			var files = $.parseJSON(entityFiles);
 			$.each(files, function(name, path) {
 				$.post("install/ajax/install.php", {
 					couchdb_name: $('#couchdb_name').val(),
-					action: 'populate_database',
+					action: 'populate_entity_database',
 		    		filename: name,
 		    		filepath: path
 				},

@@ -105,8 +105,8 @@ if ($action == 'create_config') {
 		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('WarningDatabaseAlreadyExists'))); // database already exists
 	}
 
-// Populate all databases
-} else if ($action == 'populate_database') {
+// Populate system database
+} else if ($action == 'populate_system_database') {
 	$filename = GETPOST('filename', 'alpha');
 	$filepath = GETPOST('filepath');
 
@@ -117,6 +117,28 @@ if ($action == 'create_config') {
 		unset($obj->_rev);
 		if ($obj->_id == "const")
 			unset($obj->MAIN_VERSION);
+
+		$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', 'system');
+
+		$couch->storeDoc($obj);
+		fclose($fp);
+
+		echo json_encode(array('status' => 'ok', 'value' => $filename));
+	} else {
+		error_log("file not found : " . $filepath);
+		echo json_encode(array('status' => 'error', 'value' => $filepath));
+	}
+
+// Populate system database
+} else if ($action == 'populate_system_database') {
+	$filename = GETPOST('filename', 'alpha');
+	$filepath = GETPOST('filepath');
+
+	$fp = fopen($filepath, "r");
+	if ($fp) {
+		$json = fread($fp, filesize($filepath));
+		$obj = json_decode($json);
+		unset($obj->_rev);
 
 		$couchdb_name = GETPOST('couchdb_name', 'alpha');
 		$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);

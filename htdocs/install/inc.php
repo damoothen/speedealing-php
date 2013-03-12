@@ -39,8 +39,6 @@ if (!class_exists('couchAdmin'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchAdmin.php';
 if (!class_exists('couchClient'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
-if (!class_exists('UserAdmin'))
-	require DOL_DOCUMENT_ROOT . '/useradmin/class/useradmin.class.php';
 if (!class_exists('User'))
 	require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
 
@@ -112,9 +110,15 @@ else
 
 // Get json files list
 $jsonfiles = array();
-$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json', 'files');
+// Get system files
+$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/system', 'files');
 foreach($fileslist as $file) {
-	$jsonfiles[$file['name']] = $file['fullname'];
+	$jsonfiles['system'][$file['name']] = $file['fullname'];
+}
+// Get entity files
+$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/entity', 'files');
+foreach($fileslist as $file) {
+	$jsonfiles['entity'][$file['name']] = $file['fullname'];
 }
 
 // Now we load forced value from install.forced.php file.

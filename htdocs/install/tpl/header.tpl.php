@@ -64,8 +64,10 @@
 
 	<!-- Json files for database -->
 	<script type="text/javascript">
-		var numfiles = '<?php echo count($jsonfiles); ?>';
-		var jsonfiles = '<?php echo json_encode($jsonfiles); ?>';
+		var numSystemFiles = '<?php echo count($jsonfiles['system']); ?>';
+		var systemFiles = '<?php echo json_encode($jsonfiles['system']); ?>';
+		var numEntityFiles = '<?php echo count($jsonfiles['entity']); ?>';
+		var entityFiles = '<?php echo json_encode($jsonfiles['entity']); ?>';
 	</script>
 </head>
 
