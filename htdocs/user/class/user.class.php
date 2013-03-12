@@ -171,7 +171,7 @@ class User extends nosqlDocument {
 		try {
 			$admins = $this->couchAdmin->getUserAdmins();
 			$name = $this->couchAdmin->getLoginSession();
-			
+
 			if ((isset($admins->$name) || in_array("_admin", $this->roles, true)) && $this->name == $name)
 				$this->superadmin = true;
 			else
@@ -643,7 +643,6 @@ class User extends nosqlDocument {
 			$result = $this->couchAdmin->getUser($this->name);
 		} catch (Exception $e) {
 			// User doesn-t exist
-			
 		}
 
 		if (isset($result->name) && $action == 'add') {
@@ -652,9 +651,12 @@ class User extends nosqlDocument {
 		} else {
 			if ($action == 'add' || empty($result->name)) {
 				try {
-					$this->couchAdmin->createUser($this->name, $this->pass);
+					if ($this->admin)
+						$this->couchAdmin->createAdmin($this->name, $this->pass);
+					else
+						$this->couchAdmin->createUser($this->name, $this->pass);
 					unset($this->pass);
-					if(count($this->roles))
+					if (count($this->roles))
 						foreach ($this->roles as $group)
 							$this->couchAdmin->addRoleToUser($this->name, $group);
 				} catch (Exception $e) {
@@ -677,8 +679,10 @@ class User extends nosqlDocument {
 
 			if ($action == 'add' && empty($this->Status))
 				$this->Status = "DISABLE";
-			if ($action == 'add')
+			if ($action == 'add') {
 				$this->CreateDate = dol_now();
+				$this->_id = "user:" . $this->name;
+			}
 
 			$pass = $this->pass;
 			unset($this->pass);
@@ -693,13 +697,12 @@ class User extends nosqlDocument {
 			if ($caneditpassword && !empty($pass)) { // Case we can edit only password
 				$this->couchAdmin->setPassword($this->name, $pass);
 			}
-			
-			if($this->admin)
-				$this->couchAdmin->addRoleToUser($this->name, "_admin");
-			else
-				$this->couchAdmin->removeRoleFromUser($this->name, "_admin");
-			
-			
+
+			if ($action == 'update')
+				if ($this->admin)
+					$this->couchAdmin->addRoleToUser($this->name, "_admin");
+				else
+					$this->couchAdmin->removeRoleFromUser($this->name, "_admin");
 		} catch (Exception $e) {
 			$this->error = $e->getMessage();
 			error_log($this->error);
@@ -1552,10 +1555,10 @@ class User extends nosqlDocument {
 
 	function getUserAdmins() {
 		$result = $this->couchAdmin->getUserAdmins();
-		
+
 		$result_roles = $this->couchAdmin->getAllUsers(true);
 		foreach ($result_roles as $aRow) {
-			if(in_array("_admin",$aRow->doc->roles,true)){
+			if (in_array("_admin", $aRow->doc->roles, true)) {
 				$name = $aRow->doc->name;
 				$result->$name = true;
 			}
@@ -1574,11 +1577,11 @@ class User extends nosqlDocument {
 	function getLibStatus() {
 		return $this->LibStatus($this->Status);
 	}
-	
+
 	function addRoleToUser($role) {
 		return $this->couchAdmin->addRoleToUser($this->name, $role);
 	}
-	
+
 	function removeRoleFromUser($role) {
 		return $this->couchAdmin->removeRoleFromUser($this->name, $role);
 	}
