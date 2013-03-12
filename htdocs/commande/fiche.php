@@ -877,8 +877,9 @@ $form = new Form($db);
 $formfile = new FormFile($db);
 $formorder = new FormOrder($db);
 
-llxHeader('', $title, 'EN:Customers_Orders|FR:Commandes_Clients|ES:Pedidos de clientes');
+llxHeader('', $title);
 print_fiche_titre($title);
+
 
 $formconfirm = null;
 
@@ -1410,7 +1411,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 	}
 
 	// Lines
-    
+
 	$object->showLines();
 
 //	print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);

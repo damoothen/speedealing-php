@@ -2421,7 +2421,7 @@ class Product extends nosqlDocument {
         global $langs, $conf, $user, $db, $bc;
 
         $titre = $langs->trans("SellingPrice");
-        print start_box($titre, "tweleve", "16-Money.png", false);
+        print start_box($titre, "tweleve", "icon-object-price", false);
 
         $i = 0;
         $obj = new stdClass();

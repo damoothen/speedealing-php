@@ -1549,7 +1549,7 @@ abstract class nosqlDocument extends CommonObject {
 	function show_notes($edit = true) {
 		global $conf, $user, $langs;
 
-		$out = start_box($langs->trans("Notes"), "twelve", "16-Info-_-About.png");
+		$out = start_box($langs->trans("Notes"), "twelve", "icon-object-notes");
 
 		// Notes
 		if ($edit) {

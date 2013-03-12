@@ -2201,18 +2201,14 @@ function print_titre($title) {
  * 	@param	boolean	$box_action		Enable or Disable buttons reduse and delete box
  * 	@return	string					Title to show
  */
-function start_box($title, $nbcolumn = 'twelve', $icon = '16-Abacus.png', $box_action = true, $head = null) {
-	global $conf, $langs;
+function start_box($title, $nbcolumn = 'twelve', $icon = 'icon-object-default', $box_action = true, $head = null) {
 
 	$path = DOL_URL_ROOT;
 	if (empty($path))
 		$path = "..";
 
 	if (empty($icon))
-		$icon = '16-Abacus.png';
-
-	if (empty($conf->theme))
-		$conf->theme = "eldy";
+		$icon = 'icon-object-default';
 
 	$rtr = '<div class="' . $nbcolumn . '-columns twelve-columns-mobile">';
 	$rtr.= '<div class="box_c">';
@@ -2220,7 +2216,7 @@ function start_box($title, $nbcolumn = 'twelve', $icon = '16-Abacus.png', $box_a
 		$rtr.= '<div class="box_c_heading cf box_actions">';
 	else
 		$rtr.= '<div class="box_c_heading cf">';
-	$rtr.= '<div class="box_c_ico"><img src="' . $path . '/theme/' . $conf->theme . '/img/ico/icSw2/' . $icon . '" alt="" /></div>';
+	$rtr.= '<div class="box_c_ico"><span class="'. $icon . '"></span></div>';
 	$rtr.= '<p>' . $title . '</p>';
 
 	// See menu on top box
