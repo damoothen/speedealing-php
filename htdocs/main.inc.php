@@ -707,15 +707,18 @@ function main_menu() {
 
 	print "\n";
 
-	require_once DOL_DOCUMENT_ROOT . '/agenda/class/agenda.class.php';
-	$agenda = new Agenda($db);
-	$countTODO = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
+	$countTODO = null;
+	if ($conf->agenda->enabled) {
+		require_once DOL_DOCUMENT_ROOT . '/agenda/class/agenda.class.php';
+		$agenda = new \Agenda($db);
+		$countTODO = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
+	}
 
 	// Show menu
 	$menu = new MenuAuguria($db);
 	$menu->atarget = $target;
 
-	$listMyTasks = '';
+	$listMyTasks = null;
 	if ($conf->agenda->enabled) {
 		$agenda = new \Agenda($db);
 		$params = array(

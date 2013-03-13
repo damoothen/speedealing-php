@@ -1,9 +1,9 @@
 <?php
-/* Copyright (C) 2003-2004 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
- * Copyright (C) 2003      Jean-Louis Bergamo    <jlb@j1b.org>
- * Copyright (C) 2004-2012 Laurent Destailleur   <eldy@users.sourceforge.net>
- * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerke@telenet.be>
- * Copyright (C) 2005-2013 Regis Houssin         <regis.houssin@capnetworks.com>
+/* Copyright (C) 2003-2004	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2003		Jean-Louis Bergamo		<jlb@j1b.org>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2007		Franky Van Liedekerke	<franky.van.liedekerke@telenet.be>
+ * Copyright (C) 2005-2013	Regis Houssin			<regis.houssin@capnetworks.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  */
 
 /**
- *       \file       htdocs/admin/system/about.php
+ *       \file       admin/system/about.php
  *       \brief      About Speedealing File page
  */
 
@@ -44,7 +44,7 @@ print '<div style="padding-left: 30px;">'.img_picto_common('', 'dolibarr_box.png
 
 print $langs->trans("Version").' / '.$langs->trans("SpeedealingLicense").':';
 print '<ul>';
-print '<li>'.DOL_VERSION.' / <a href="http://www.apache.org/licenses/">Apache V2</a></li>';
+print '<li>'.DOL_VERSION.' / <a href="http://www.gnu.org/copyleft/gpl.html">GNU-GPL</a></li>';
 print '</ul>';
 
 //print "<br>\n";
@@ -64,7 +64,7 @@ print '<a target="_blank" href="http://www.speedealing.com/">'.$langs->trans("Of
 print '</li>';
 
 print '<li>';
-print '<a target="_blank" href="http://wiki.speedealing.com/">'.$langs->trans("OfficialWiki").'</a>';
+print '<a target="_blank" href="https://speedealing.atlassian.net/wiki/">'.$langs->trans("OfficialWiki").'</a>';
 print '</li>';
 print '</ul>';
 
@@ -78,13 +78,11 @@ print '</ul>';
 print $langs->trans("ModulesMarketPlaces").':';
 print '<ul>';
 print '<li>';
-print '<a target="_blank" href="http://shop.speedealing.com">'.$langs->trans("OfficialMarketPlace").'</a>';
+print '<a target="_blank" href="http://www.speedealing.com">'.$langs->trans("OfficialMarketPlace").'</a>';
 print '</li>';
 print '</ul>';
 
 print dol_fiche_end();
 
 llxFooter();
-
-$db->close();
 ?>

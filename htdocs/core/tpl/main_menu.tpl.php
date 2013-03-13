@@ -52,7 +52,7 @@
 					</span>
 				</li>
 				<li style="width: 20%;">
-				<?php if ($conf->agenda->enabled) : ?>
+				<?php if (!empty($countTODO)) : ?>
 					<a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>">
 						<span class="icon-calendar"></span>
 						<?php if ($countTODO->rows[0]->value) { ?>
