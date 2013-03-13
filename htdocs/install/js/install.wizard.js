@@ -104,6 +104,20 @@ $(document).ready(function() {
 					$('.syncuser').hide('blind');
 				}
 			});
+			// First check for search engine user
+			if ($('#couchdb_create_searchengineuser').prop('checked')) {
+				$('.searchengine').show();
+			} else {
+				$('.searchengine').hide();
+			}
+			// Check change for search engine user
+			$('#couchdb_create_searchengineuser').change(function() {
+				if ($(this).prop('checked')) {
+					$('.searchengine').show('blind');
+				} else {
+					$('.searchengine').hide('blind');
+				}
+			});
 			// First check for replication
 			if ($('#couchdb_replication').prop('checked')) {
 				$('.remotebase').show();
