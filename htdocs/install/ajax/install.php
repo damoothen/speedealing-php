@@ -287,18 +287,6 @@ if ($action == 'create_config') {
 			fclose($fp);
 		}
 	}
-	
-	// Increase timeout in couchdb to 3600s
-	$admin->setConfig("couch_httpd_auth", "timeout", "3600");
-
-	//remove admin_install
-	try {
-		// delete temporary admin user
-		$admin->deleteAdmin("admin_install");
-	} catch (Exception $e) {
-		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
-		exit;
-	}
 
 	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserCreated')));
 
@@ -366,6 +354,9 @@ if ($action == 'create_config') {
 	}
 
 	$admin = new couchAdmin($couch);
+
+	// Increase timeout in couchdb to 3600s
+	$admin->setConfig("couch_httpd_auth", "timeout", "3600");
 
 	//remove admin_install
 	try {
