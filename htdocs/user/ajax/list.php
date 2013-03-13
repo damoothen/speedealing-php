@@ -76,8 +76,8 @@ if ($json == "list") {
 
 	if (!empty($result->rows)) {
 		foreach ($result->rows as $aRow) {
-			// To hide specific users
-			if (!empty($aRow->value->hide))
+			// To hide specific users for all normals users except superadmin
+			if (!empty($aRow->value->hide) && empty($user->superadmin))
 				continue;
 
 			$name = substr($aRow->value->_id, 5);
@@ -99,8 +99,8 @@ if ($json == "list") {
 
 	if ($result_all) {
 		foreach ($result_all as $aRow) {
-			// To hide specific users
-			if (!empty($aRow->value->hide))
+			// To hide specific users for all normals users except superadmin
+			if (!empty($aRow->value->hide) && empty($user->superadmin))
 				continue;
 
 			$name = substr($aRow->doc->_id, 17);
