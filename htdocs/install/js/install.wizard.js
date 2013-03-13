@@ -285,6 +285,29 @@ $(document).ready(function() {
 		},
 		function(value) {
 			if (value.status == 'ok') {
+				if ($('#couchdb_create_searchengineuser').prop('checked')) {
+					setProgressBar('set_security', 75);
+					addSearchEngineUser();
+				} else {
+					setProgressBar('set_security', 100);
+					lockInstall();
+				}
+			} else {
+				return false;
+			}
+		}, 'json');
+	}
+	
+	// Create user
+	function addSearchEngineUser() {
+		$.post("install/ajax/install.php", {
+    		action: 'create_searchengine_user',
+			couchdb_name: $('#couchdb_name').val(),
+    		couchdb_searchengine_login: $('#couchdb_searchengine_login').val(),
+    		couchdb_searchengine_pass: $('#couchdb_searchengine_pass').val()
+		},
+		function(value) {
+			if (value.status == 'ok') {
 				setProgressBar('set_security', 100);
 				lockInstall();
 			} else {

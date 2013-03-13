@@ -294,8 +294,8 @@ if ($action == 'create_config') {
 } else if ($action == 'create_searchengine_user') {
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
-	$couchdb_searchengine_login = GETPOST('couchdb_user_login', 'alpha');
-	$couchdb_searchengine_pass = GETPOST('couchdb_user_pass', 'alpha');
+	$couchdb_searchengine_login = GETPOST('couchdb_searchengine_login', 'alpha');
+	$couchdb_searchengine_pass = GETPOST('couchdb_searchengine_pass', 'alpha');
 
 	$host = substr($main_couchdb_host, 7);
 

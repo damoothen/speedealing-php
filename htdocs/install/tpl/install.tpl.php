@@ -261,6 +261,26 @@
 		<input type="checkbox" name="couchdb_replication" id="couchdb_replication" class="switch mini" disabled> &nbsp; <label for="couchdb_replication"><?php echo $langs->trans("CheckToReplicateRemoteDatabase"); ?></label>
 	</div>
 
+	<?php if ($useforcedwizard && !empty($force_install_searchlogin) && !empty($force_install_searchpass)) { ?>
+	<!-- Search engine -->
+
+	<div class="field-block searchengine">
+		<h4 class="blue"><?php echo $langs->trans("SearchEngineTitle"); ?></h4>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/searchengine.png" alt="Search Engine"></div>
+		<p><?php echo $langs->trans("SearchEngineDesc"); ?></p>
+	</div>
+
+	<div class="field-block button-height searchengine">
+		<label for="couchdb_searchengine_login" class="label"><b><?php echo $langs->trans("Identifier"); ?></b></label>
+		<input type="text" name="couchdb_searchengine_login" id="couchdb_searchengine_login" value="<?php echo $force_install_searchlogin ?>" class="input full-width validate[required]" disabled>
+	</div>
+
+	<div class="field-block button-height memcached">
+		<label for="couchdb_searchengine_pass" class="label"><b><?php echo $langs->trans("SecurityKey"); ?></b></label>
+		<input type="text" name="couchdb_searchengine_pass" id="couchdb_searchengine_pass" value="<?php echo $force_install_searchpass ?>" class="input full-width validate[required]" disabled>
+	</div>
+	<?php } ?>
+
 	<!-- Memcached -->
 
 	<div class="field-block memcached">
