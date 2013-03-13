@@ -13,7 +13,7 @@
            "map": "function(doc) {\n  if(doc.class && (doc.class==\"User\" || doc.class==\"UserGroup\") && (doc._id != \"user:admin\"))\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
        },
        "listAll": {
-           "map": "function(doc) {\n  if(doc.class && doc.class == \"User\" && doc._id != \"user:searchengine\")\n     emit(doc.name, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class == \"User\")\n     emit(doc.name, doc);\n}"
        }
    },
    "updates": {

@@ -323,8 +323,8 @@ if ($action == 'create_config') {
 			$searchengine->Firstname = 'Engine';
 			$searchengine->name = trim($couchdb_searchengine_login);
 			$searchengine->pass = trim($couchdb_searchengine_pass);
-			//$searchengine->entity = $couchdb_name;
 			$searchengine->admin = false;
+			$searchengine->hide = true;
 			$searchengine->Status = 'DISABLE';
 
 			$id = $searchengine->update("", 0, "add");
@@ -334,9 +334,9 @@ if ($action == 'create_config') {
 		}
 	}
 
-	// Add fisrt user to the database for security database
-	//$admin = new couchAdmin($couch);
-	//$admin->addDatabaseReaderUser(trim($couchdb_user_login));
+	// Add search engine user to the database reader user
+	$admin = new couchAdmin($couch);
+	$admin->addDatabaseReaderUser(trim($couchdb_searchengine_login));
 
 	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserSearchEngineCreated')));
 
