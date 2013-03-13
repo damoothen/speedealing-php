@@ -655,7 +655,7 @@ class User extends nosqlDocument {
 					else
 						$this->couchAdmin->createUser($this->name, $this->pass);
 					unset($this->pass);
-					if(count($this->roles))
+					if(!empty($this->roles)) // use not empty instead count for avoid error
 						foreach ($this->roles as $group)
 							$this->couchAdmin->addRoleToUser($this->name, $group);
 				} catch (Exception $e) {
@@ -683,8 +683,12 @@ class User extends nosqlDocument {
 				$this->_id = "user:" . $this->name;
 			}
 
-			$pass = $this->pass;
-			unset($this->pass);
+			$pass = null;
+			if (!empty($this->pass)) { // For avoid error
+				$pass = $this->pass;
+				unset($this->pass);
+			}
+
 			//print_r($this);exit;
 			$result = $this->record(); // Save all specific parameters
 
@@ -1554,7 +1558,7 @@ class User extends nosqlDocument {
 
 	function getUserAdmins() {
 		$result = $this->couchAdmin->getUserAdmins();
-		
+
 		$result_roles = $this->couchAdmin->getAllUsers(true);
 		foreach ($result_roles as $aRow) {
 			if(in_array("_admin",$aRow->doc->roles,true)){
@@ -1576,11 +1580,11 @@ class User extends nosqlDocument {
 	function getLibStatus() {
 		return $this->LibStatus($this->Status);
 	}
-	
+
 	function addRoleToUser($role) {
 		return $this->couchAdmin->addRoleToUser($this->name, $role);
 	}
-	
+
 	function removeRoleFromUser($role) {
 		return $this->couchAdmin->removeRoleFromUser($this->name, $role);
 	}
