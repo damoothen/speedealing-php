@@ -302,5 +302,8 @@ if ($action == 'create_config') {
 		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('LockFileCreated')));
 	else
 		echo json_encode(array('status' => 'error', 'value' => $langs->trans('LockFileCouldNotBeCreated')));
+
+	// destroy couchdb cookie
+	setcookie('AuthSession', '', 1, '/');
 }
 ?>

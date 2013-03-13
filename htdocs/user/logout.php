@@ -51,13 +51,6 @@ if ($result < 0) {
 // Define url to go after disconnect
 $urlfrom = empty($_SESSION["urlfrom"]) ? '' : $_SESSION["urlfrom"];
 
-// Destroy some cookies
-// TODO external module
-if (!empty($conf->phenix->enabled) && !empty($conf->phenix->cookie)) {
-    // Destroy cookie
-    setcookie($conf->phenix->cookie, '', 1, "/");
-}
-
 // Destroy object of session
 unset($_SESSION['dol_login']);
 unset($_SESSION['dol_entity']);
@@ -72,13 +65,9 @@ if (!empty($_COOKIE[$sessiontimeout]))
 session_name($sessionname);
 session_destroy();
 
-
-//if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $_SERVER["SERVER_NAME"], $regs))
-//	setcookie('AuthSession', '', 1, '/', "." . $regs["domain"]); // destroy couchdb cookie
-//else
+// destroy couchdb cookie
 setcookie('AuthSession', '', 1, '/');
 
-dol_syslog("End of session " . $sessionname);
 
 // Define url to go
 if ($conf->urlrewrite)
