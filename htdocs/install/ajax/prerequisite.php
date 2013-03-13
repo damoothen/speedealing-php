@@ -119,7 +119,7 @@ if ($action == 'check_prerequisite') {
 	}
 
 	// Check for couchdb /db proxy_pass and check couchdb version
-	$couch = new couchClient($scheme . "://" . $serverport . '/db/', '_users');
+	$couch = new couchClient(MAIN_PROTOCOL . "://" . MAIN_SERVER_NAME . '/db/', '_users');
 
 	try {
 		$result = $couch->getVersion();
