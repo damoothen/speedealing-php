@@ -228,41 +228,45 @@ $(document).ready(function() {
 			// Populate system database
 			var files = $.parseJSON(systemFiles);
 			$.each(files, function(name, path) {
-				$.post("install/ajax/install.php", {
-					action: 'populate_system_database',
-		    		filename: name,
-		    		filepath: path
-				},
-				function(value) {
-					if (value.status == 'ok') {
-						progress_value = progress_value + step;
-						progress_value = (progress_value < 100 ? progress_value : 100)
-						setProgressBar('set_database', progress_value);
-					} else {
-						// Break
-						return false;
-					}
-				}, 'json');
+				setTimeout(function() {
+					$.post("install/ajax/install.php", {
+						action: 'populate_system_database',
+			    		filename: name,
+			    		filepath: path
+					},
+					function(value) {
+						if (value.status == 'ok') {
+							progress_value = progress_value + step;
+							progress_value = (progress_value < 100 ? progress_value : 100)
+							setProgressBar('set_database', progress_value);
+						} else {
+							// Break
+							return false;
+						}
+					}, 'json');
+				}, 500);
 			});
 			// Populate entity database
 			var files = $.parseJSON(entityFiles);
 			$.each(files, function(name, path) {
-				$.post("install/ajax/install.php", {
-					couchdb_name: $('#couchdb_name').val(),
-					action: 'populate_entity_database',
-		    		filename: name,
-		    		filepath: path
-				},
-				function(value) {
-					if (value.status == 'ok') {
-						progress_value = progress_value + step;
-						progress_value = (progress_value < 100 ? progress_value : 100)
-						setProgressBar('set_database', progress_value);
-					} else {
-						// Break
-						return false;
-					}
-				}, 'json');
+				setTimeout(function() {
+					$.post("install/ajax/install.php", {
+						couchdb_name: $('#couchdb_name').val(),
+						action: 'populate_entity_database',
+			    		filename: name,
+			    		filepath: path
+					},
+					function(value) {
+						if (value.status == 'ok') {
+							progress_value = progress_value + step;
+							progress_value = (progress_value < 100 ? progress_value : 100)
+							setProgressBar('set_database', progress_value);
+						} else {
+							// Break
+							return false;
+						}
+					}, 'json');
+				}, 500);
 			});
 			addSuperadmin();
 		}
