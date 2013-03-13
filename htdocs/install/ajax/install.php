@@ -283,6 +283,9 @@ if ($action == 'create_config') {
 			fclose($fp);
 		}
 	}
+	
+	// Increase timeout in couchdb to 3600s
+	$admin->setConfig("couch_httpd_auth", "timeout", "3600");
 
 	//remove admin_install
 	try {
