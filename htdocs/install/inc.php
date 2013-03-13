@@ -164,7 +164,7 @@ function pFooter() {
 function write_conf_file() {
 	global $conf, $langs;
 	global $couchdb_host, $couchdb_port, $force_https;
-	global $memcached_host, $memcached_port, $force_install_urlrewrite;
+	global $memcached_host, $memcached_port, $useforcedwizard, $force_install_urlrewrite;
 	global $conffile, $conffiletoshowshort;
 
 	$key = md5(uniqid(mt_rand(), TRUE)); // Generate random hash
@@ -239,7 +239,7 @@ function write_conf_file() {
 
 		/* URL rewriting (multicompany) */
 
-		if (!empty($force_install_urlrewrite)) {
+		if ($useforcedwizard && !empty($force_install_urlrewrite)) {
 			fputs($fp, '// URL rewriting');
 			fputs($fp, "\n");
 

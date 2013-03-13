@@ -123,6 +123,10 @@ if ($action == 'create_config') {
 		$couch->storeDoc($obj);
 		fclose($fp);
 
+		// Add role to the system database for security
+		$admin = new couchAdmin($couch);
+		$admin->addDatabaseReaderRole('speedealing');
+
 		echo json_encode(array('status' => 'ok', 'value' => $filename));
 	} else {
 		error_log("file not found : " . $filepath);
@@ -152,7 +156,7 @@ if ($action == 'create_config') {
 		echo json_encode(array('status' => 'error', 'value' => $filepath));
 	}
 
-	// Create superadmin
+// Create superadmin
 } else if ($action == 'create_admin') {
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
@@ -209,7 +213,7 @@ if ($action == 'create_config') {
 
 	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('AdminCreated')));
 
-	// Create first user
+// Create first user
 } else if ($action == 'create_user') {
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
@@ -295,8 +299,80 @@ if ($action == 'create_config') {
 
 	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserCreated')));
 
-	// Install is finished, we create the lock file
+// Create search engine user
+} else if ($action == 'create_searchengine_user') {
+
+	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couchdb_searchengine_login = GETPOST('couchdb_user_login', 'alpha');
+	$couchdb_searchengine_pass = GETPOST('couchdb_user_pass', 'alpha');
+
+	$host = substr($main_couchdb_host, 7);
+
+	try {
+		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+	} catch (Exception $e) {
+		error_log($e->getMessage());
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
+
+	// create first user in system and _users databases
+	$searchengine = new User();
+	$found = false;
+	try {
+		$searchengine->load("user:" . trim($couchdb_searchengine_login));
+		$found = true;
+	} catch (Exception $e) {
+		// user not exit
+	}
+
+	if (!$found) {
+		try {
+			$searchengine->Lastname = 'Search';
+			$searchengine->Firstname = 'Engine';
+			$searchengine->name = trim($couchdb_searchengine_login);
+			$searchengine->pass = trim($couchdb_searchengine_pass);
+			//$searchengine->entity = $couchdb_name;
+			$searchengine->admin = false;
+			$searchengine->Status = 'DISABLE';
+
+			$id = $searchengine->update("", 0, "add");
+		} catch (Exception $e) {
+			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+			exit;
+		}
+	}
+
+	// Add fisrt user to the database for security database
+	//$admin = new couchAdmin($couch);
+	//$admin->addDatabaseReaderUser(trim($couchdb_user_login));
+
+	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserSearchEngineCreated')));
+
+// Install is finished, we create the lock file
 } else if ($action == 'lock_install') {
+	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$host = substr($main_couchdb_host, 7);
+
+	try {
+		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+	} catch (Exception $e) {
+		error_log($e->getMessage());
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
+
+	$admin = new couchAdmin($couch);
+
+	//remove admin_install
+	try {
+		// delete temporary admin user
+		$admin->deleteAdmin("admin_install");
+	} catch (Exception $e) {
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
+
 	$ret = write_lock_file();
 	if ($ret > 0)
 		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('LockFileCreated')));
