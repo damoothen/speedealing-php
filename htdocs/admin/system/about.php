@@ -44,7 +44,7 @@ print '<div style="padding-left: 30px;">'.img_picto_common('', 'dolibarr_box.png
 
 print $langs->trans("Version").' / '.$langs->trans("SpeedealingLicense").':';
 print '<ul>';
-print '<li>'.DOL_VERSION.' / <a href="http://www.apache.org/licenses/">Apache V2</a></li>';
+print '<li>'.DOL_VERSION.' / <a href="http://www.gnu.org/copyleft/gpl.html">GNU-GPL</a></li>';
 print '</ul>';
 
 //print "<br>\n";
@@ -64,7 +64,7 @@ print '<a target="_blank" href="http://www.speedealing.com/">'.$langs->trans("Of
 print '</li>';
 
 print '<li>';
-print '<a target="_blank" href="http://wiki.speedealing.com/">'.$langs->trans("OfficialWiki").'</a>';
+print '<a target="_blank" href="https://speedealing.atlassian.net/wiki/">'.$langs->trans("OfficialWiki").'</a>';
 print '</li>';
 print '</ul>';
 
@@ -78,7 +78,7 @@ print '</ul>';
 print $langs->trans("ModulesMarketPlaces").':';
 print '<ul>';
 print '<li>';
-print '<a target="_blank" href="http://shop.speedealing.com">'.$langs->trans("OfficialMarketPlace").'</a>';
+print '<a target="_blank" href="http://www.speedealing.com">'.$langs->trans("OfficialMarketPlace").'</a>';
 print '</li>';
 print '</ul>';
 
