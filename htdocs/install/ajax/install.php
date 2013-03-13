@@ -79,6 +79,11 @@ if ($action == 'create_config') {
 	if (!$couch->databaseExists()) {
 		try {
 			$couch->createDatabase();
+
+			// Add role to the system database for security
+			$admin = new couchAdmin($couch);
+			$admin->addDatabaseReaderRole('speedealing');
+
 			echo json_encode(array('status' => 'ok', 'value' => $langs->trans('SystemDatabaseCreated')));
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
@@ -152,7 +157,7 @@ if ($action == 'create_config') {
 		echo json_encode(array('status' => 'error', 'value' => $filepath));
 	}
 
-	// Create superadmin
+// Create superadmin
 } else if ($action == 'create_admin') {
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
@@ -209,7 +214,7 @@ if ($action == 'create_config') {
 
 	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('AdminCreated')));
 
-	// Create first user
+// Create first user
 } else if ($action == 'create_user') {
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
@@ -283,7 +288,74 @@ if ($action == 'create_config') {
 			fclose($fp);
 		}
 	}
-	
+
+	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserCreated')));
+
+// Create search engine user
+} else if ($action == 'create_searchengine_user') {
+
+	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couchdb_searchengine_login = GETPOST('couchdb_searchengine_login', 'alpha');
+	$couchdb_searchengine_pass = GETPOST('couchdb_searchengine_pass', 'alpha');
+
+	$host = substr($main_couchdb_host, 7);
+
+	try {
+		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+	} catch (Exception $e) {
+		error_log($e->getMessage());
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
+
+	// create first user in system and _users databases
+	$searchengine = new User();
+	$found = false;
+	try {
+		$searchengine->load("user:" . trim($couchdb_searchengine_login));
+		$found = true;
+	} catch (Exception $e) {
+		// user not exit
+	}
+
+	if (!$found) {
+		try {
+			$searchengine->Lastname = 'Search';
+			$searchengine->Firstname = 'Engine';
+			$searchengine->name = trim($couchdb_searchengine_login);
+			$searchengine->pass = trim($couchdb_searchengine_pass);
+			$searchengine->admin = false;
+			$searchengine->hide = true;
+			$searchengine->Status = 'DISABLE';
+
+			$id = $searchengine->update("", 0, "add");
+		} catch (Exception $e) {
+			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+			exit;
+		}
+	}
+
+	// Add search engine user to the database reader user
+	$admin = new couchAdmin($couch);
+	$admin->addDatabaseReaderUser(trim($couchdb_searchengine_login));
+
+	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserSearchEngineCreated')));
+
+// Install is finished, we create the lock file
+} else if ($action == 'lock_install') {
+	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$host = substr($main_couchdb_host, 7);
+
+	try {
+		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+	} catch (Exception $e) {
+		error_log($e->getMessage());
+		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
+		exit;
+	}
+
+	$admin = new couchAdmin($couch);
+
 	// Increase timeout in couchdb to 3600s
 	$admin->setConfig("couch_httpd_auth", "timeout", "3600");
 
@@ -296,14 +368,13 @@ if ($action == 'create_config') {
 		exit;
 	}
 
-	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserCreated')));
-
-	// Install is finished, we create the lock file
-} else if ($action == 'lock_install') {
 	$ret = write_lock_file();
 	if ($ret > 0)
 		echo json_encode(array('status' => 'ok', 'value' => $langs->trans('LockFileCreated')));
 	else
 		echo json_encode(array('status' => 'error', 'value' => $langs->trans('LockFileCouldNotBeCreated')));
+
+	// destroy couchdb cookie
+	setcookie('AuthSession', '', 1, '/');
 }
 ?>

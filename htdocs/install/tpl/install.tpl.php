@@ -233,6 +233,24 @@
 		<button type="button" id="reload_secretkey" class="icon-redo button compact orange-gradient glossy float-right">
 	</div>
 
+	<!-- Search engine -->
+
+	<div class="field-block searchengine">
+		<h4 class="blue"><?php echo $langs->trans("SearchEngineTitle"); ?></h4>
+		<div class="image hidden-on-mobile"><img src="<?php echo DOL_URL_ROOT; ?>/install/img/searchengine.png" alt="Search Engine"></div>
+		<p><?php echo $langs->trans("SearchEngineDesc"); ?></p>
+	</div>
+
+	<div class="field-block button-height searchengine">
+		<label for="couchdb_searchengine_login" class="label"><b><?php echo $langs->trans("Identifier"); ?></b></label>
+		<input type="text" name="couchdb_searchengine_login" id="couchdb_searchengine_login" value="<?php echo (!empty($force_install_searchlogin)?$force_install_searchlogin:''); ?>" class="input full-width validate[required]" disabled>
+	</div>
+
+	<div class="field-block button-height searchengine">
+		<label for="couchdb_searchengine_pass" class="label"><b><?php echo $langs->trans("SecurityKey"); ?></b></label>
+		<input type="text" name="couchdb_searchengine_pass" id="couchdb_searchengine_pass" value="<?php echo (!empty($force_install_searchpass)?$force_install_searchpass:''); ?>" class="input full-width validate[required]" disabled>
+	</div>
+
 	<!-- Remote database -->
 
 	<div class="field-block remotebase">
@@ -258,6 +276,9 @@
 
 	<div class="field-drop button-height black-inputs">
 		<input type="checkbox" name="couchdb_create_usersync" id="couchdb_create_usersync" class="switch mini" disabled> &nbsp; <label for="couchdb_create_usersync"><?php echo $langs->trans("CheckToCreateCouchdbUserSync"); ?></label><br>
+		<?php if ($useforcedwizard && !empty($force_install_searchlogin) && !empty($force_install_searchpass)) { ?>
+		<input type="checkbox" name="couchdb_create_searchengineuser" id="couchdb_create_searchengineuser" class="switch mini" checked disabled> &nbsp; <label for="couchdb_create_searchengineuser"><?php echo $langs->trans("CheckToCreateCouchdbSearchEngineUser"); ?></label><br>
+		<?php } ?>
 		<input type="checkbox" name="couchdb_replication" id="couchdb_replication" class="switch mini" disabled> &nbsp; <label for="couchdb_replication"><?php echo $langs->trans("CheckToReplicateRemoteDatabase"); ?></label>
 	</div>
 
