@@ -69,7 +69,7 @@ class Contact extends nosqlDocument {
      *  @param		DoliDB		$db      Database handler
      */
 
-    function __construct($db) {
+    function __construct() {
         parent::__construct($db);
 
 

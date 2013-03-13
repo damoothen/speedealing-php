@@ -1,503 +1,292 @@
 <?php
 
-require_once(DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php');
+require_once DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
 
 class AbstractInvoice extends nosqlDocument {
 
-    public $lines = array();
+	var $lines = array();
 
-    public function fetch($id) {
-        $res = parent::fetch($id);
-        
-        // Attribuer un id à chaque ligne
-        for ($i = 0; $i < count($this->lines); $i++) {
-            $this->lines[$i]->id = $i+1;
-        }
-        
-        return $res;
-    }
-    
-    public function record(){
-        
-        // ne pas sauvegarder l'id des lignes
-        for ($i = 0; $i < count($this->lines); $i++)
-            $this->lines[$i]->id = null;
-        
-        return parent::record();
-        
-    }
-    
-    /**
-     * 	Add an order line into database (linked to product/service or not)
-     *
-     * 	@param      int				$commandeid      	Id of line
-     * 	@param      string			$desc            	Description of line
-     * 	@param      double			$pu_ht    	        Unit price (without tax)
-     * 	@param      double			$qty             	Quantite
-     * 	@param      double			$txtva           	Taux de tva force, sinon -1
-     * 	@param      double			$txlocaltax1		Local tax 1 rate
-     * 	@param      double			$txlocaltax2		Local tax 2 rate
-     * 	@param      int				$fk_product      	Id du produit/service predefini
-     * 	@param      double			$remise_percent  	Pourcentage de remise de la ligne
-     * 	@param      int				$info_bits			Bits de type de lignes
-     * 	@param      int				$fk_remise_except	Id remise
-     * 	@param      string			$price_base_type	HT or TTC
-     * 	@param      double			$pu_ttc    		    Prix unitaire TTC
-     * 	@param      timestamp		$date_start       	Start date of the line - Added by Matelli (See http://matelli.fr/showcases/patchs-dolibarr/add-dates-in-order-lines.html)
-     * 	@param      timestamp		$date_end         	End date of the line - Added by Matelli (See http://matelli.fr/showcases/patchs-dolibarr/add-dates-in-order-lines.html)
-     * 	@param      int				$type				Type of line (0=product, 1=service)
-     * 	@param      int				$rang             	Position of line
-     * 	@param		int				$special_code		Special code
-     * 	@param		int				$fk_parent_line		Parent line
-     *  @param		int				$fk_fournprice		Id supplier price
-     *  @param		int				$pa_ht				Buying price (without tax)
-     *  @param		string			$label				Label
-     * 	@return     int             					>0 if OK, <0 if KO
-     *
-     * 	@see        add_product
-     *
-     * 	Les parametres sont deja cense etre juste et avec valeurs finales a l'appel
-     * 	de cette methode. Aussi, pour le taux tva, il doit deja avoir ete defini
-     * 	par l'appelant par la methode get_default_tva(societe_vendeuse,societe_acheteuse,produit)
-     * 	et le desc doit deja avoir la bonne valeur (a l'appelant de gerer le multilangue)
-     */
-    function addline($commandeid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1 = 0, $txlocaltax2 = 0, $fk_product = 0, $remise_percent = 0, $info_bits = 0, $fk_remise_except = 0, $price_base_type = 'HT', $pu_ttc = 0, $date_start = '', $date_end = '', $type = 0, $rang = -1, $special_code = 0, $fk_parent_line = 0, $fk_fournprice = null, $pa_ht = 0, $label = '') {
-        dol_syslog(get_class($this) . "::addline commandeid=$commandeid, desc=$desc, pu_ht=$pu_ht, qty=$qty, txtva=$txtva, fk_product=$fk_product, remise_percent=$remise_percent, info_bits=$info_bits, fk_remise_except=$fk_remise_except, price_base_type=$price_base_type, pu_ttc=$pu_ttc, date_start=$date_start, date_end=$date_end, type=$type", LOG_DEBUG);
+	public function load($id) {
+		$res = parent::load($id);
 
-        include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
+		// Attribuer un id à chaque ligne
+		for ($i = 0; $i < count($this->lines); $i++) {
+			$this->lines[$i]->id = $i + 1;
+		}
 
-        // Clean parameters
-        if (empty($remise_percent))
-            $remise_percent = 0;
-        if (empty($qty))
-            $qty = 0;
-        if (empty($info_bits))
-            $info_bits = 0;
-        if (empty($rang))
-            $rang = 0;
-        if (empty($txtva))
-            $txtva = 0;
-        if (empty($txlocaltax1))
-            $txlocaltax1 = 0;
-        if (empty($txlocaltax2))
-            $txlocaltax2 = 0;
-        if (empty($fk_parent_line) || $fk_parent_line < 0)
-            $fk_parent_line = 0;
+		return $res;
+	}
 
-        $remise_percent = price2num($remise_percent);
-        $qty = price2num($qty);
-        $pu_ht = price2num($pu_ht);
-        $pu_ttc = price2num($pu_ttc);
-        $pa_ht = price2num($pa_ht);
-        $txtva = price2num($txtva);
-        $txlocaltax1 = price2num($txlocaltax1);
-        $txlocaltax2 = price2num($txlocaltax2);
-        if ($price_base_type == 'HT') {
-            $pu = $pu_ht;
-        } else {
-            $pu = $pu_ttc;
-        }
-        $label = trim($label);
-        $desc = trim($desc);
+	public function record() {
 
-        // Check parameters
-//        if ($type < 0)
-//            return -1;
+		// ne pas sauvegarder l'id des lignes
+		for ($i = 0; $i < count($this->lines); $i++)
+			$this->lines[$i]->id = null;
 
-        if ($this->Status == "DRAFT") {
+		return parent::record();
+	}
 
-            // Calcul du total TTC et de la TVA pour la ligne a partir de
-            // qty, pu, remise_percent et txtva
-            // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
-            // la part ht, tva et ttc, et ce au niveau de la ligne qui a son propre taux tva.
-            $tabprice = calcul_price_total($qty, $pu, $remise_percent, $txtva, $txlocaltax1, $txlocaltax2, 0, $price_base_type, $info_bits, $type);
-            $total_ht = $tabprice[0];
-            $total_tva = $tabprice[1];
-            $total_ttc = $tabprice[2];
-            $total_localtax1 = $tabprice[9];
-            $total_localtax2 = $tabprice[10];
+	/**
+	 *  Update a line in database
+	 *
+	 *  @param    	int				$rowid            	Id of line to update
+	 *  @return   	int              					< 0 if KO, > 0 if OK
+	 */
+	function updateline($lineid, $line) {
+		global $conf;
 
-            // Rang to use
-            $rangtouse = $rang;
-//            if ($rangtouse == -1) {
-//                $rangmax = $this->line_max($fk_parent_line);
-//                $rangtouse = $rangmax + 1;
-//            }
-            // TODO A virer
-            // Anciens indicateurs: $price, $remise (a ne plus utiliser)
-            $price = $pu;
-            $remise = 0;
-            if ($remise_percent > 0) {
-                $remise = round(($pu * $remise_percent / 100), 2);
-                $price = $pu - $remise;
-            }
+		$this->lines[$lineid] = new stdClass();
+		foreach (get_object_vars($line) as $key => $aRow)
+			$this->lines[$lineid]->$key = $aRow;
 
-            // Insert line
-            $line = new stdClass();
+		$this->lines = array_merge($this->lines);
+		$this->update_price();
+		return 1;
+	}
 
-            $line->label = $label;
-            $line->description = $desc;
-            $line->qty = $qty;
-            $line->tva_tx = $txtva;
-            $line->localtax1_tx = $txlocaltax1;
-            $line->localtax2_tx = $txlocaltax2;
-            $line->fk_product = $fk_product;
-            $line->fk_remise_except = $fk_remise_except;
-            $line->remise = $remise_percent;
-            $line->pu_ht = $pu_ht;
-//            $line->rang = $rangtouse;
-            $line->info_bits = $info_bits;
-            $line->total_ht = $total_ht;
-            $line->total_tva = $total_tva;
-            $line->total_localtax1 = $total_localtax1;
-            $line->total_localtax2 = $total_localtax2;
-            $line->total_ttc = $total_ttc;
-            $line->product_type = $type == 1 ? 'SERVICE' : 'PRODUCT';
-            $line->special_code = $special_code;
-            $line->fk_parent_line = $fk_parent_line;
+	/**
+	 *  Delete an order line
+	 *
+	 *  @param      int		$lineid		Id of line to delete
+	 *  @return     int        		 	>0 if OK, 0 if nothing to do, <0 if KO
+	 */
+	function deleteline($lineid) {
+		global $user;
+		if ($this->Status == "DRAFT") {
+			unset($this->lines[$lineid - 1]);
+			$this->lines = array_merge($this->lines);
 
-            $line->date_start = $date_start;
-            $line->date_end = $date_end;
+			$this->update_price(1);
 
-            // infos marge
-            $line->fk_fournprice = $fk_fournprice;
-            $line->pa_ht = $pa_ht;
-            
-            $this->lines[] = $line;
-            $this->lines = array_merge($this->lines);
-                       
-            $this->record();
-            $this->update_price();
+			return 1;
+		} else {
+			return -2;
+		}
+	}
 
-            return 1;
-        }
-        return -1;
-    }
-    
-    /**
-     *  Update a line in database
-     *
-     *  @param    	int				$rowid            	Id of line to update
-     *  @param    	string			$desc             	Description de la ligne
-     *  @param    	double			$pu               	Prix unitaire
-     *  @param    	double			$qty              	Quantity
-     *  @param    	double			$remise_percent   	Pourcentage de remise de la ligne
-     *  @param    	double			$txtva           	Taux TVA
-     * 	@param		double			$txlocaltax1		Local tax 1 rate
-     *  @param		double			$txlocaltax2		Local tax 2 rate
-     *  @param    	string			$price_base_type	HT or TTC
-     *  @param    	int				$info_bits        	Miscellaneous informations on line
-     *  @param    	timestamp		$date_start        	Start date of the line
-     *  @param    	timestamp		$date_end          	End date of the line
-     * 	@param		int				$type				Type of line (0=product, 1=service)
-     * 	@param		int				$fk_parent_line		Id of parent line (0 in most cases, used by modules adding sublevels into lines).
-     * 	@param		int				$skip_update_total	Keep fields total_xxx to 0 (used for special lines by some modules)
-     *  @param		int				$fk_fournprice		Id of origin supplier price
-     *  @param		int				$pa_ht				Price (without tax) of product when it was bought
-     *  @param		string			$label				Label
-     *  @return   	int              					< 0 if KO, > 0 if OK
-     */
-    function updateline($rowid, $desc, $pu, $qty, $remise_percent, $txtva, $txlocaltax1 = 0, $txlocaltax2 = 0, $price_base_type = 'HT', $info_bits = 0, $date_start = '', $date_end = '', $type = 0, $fk_parent_line = 0, $skip_update_total = 0, $fk_fournprice = null, $pa_ht = 0, $label = '') {
-        global $conf;
+	function update_price($exclspec = 0, $roundingadjust = -1, $nodatabaseupdate = 0) {
 
-        dol_syslog(get_class($this) . "::updateline $rowid, $desc, $pu, $qty, $remise_percent, $txtva, $txlocaltax1, $txlocaltax2, $price_base_type, $info_bits, $date_start, $date_end, $type");
-        include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
+		$this->total_ht = 0;
+		$this->total_localtax1 = 0;
+		$this->total_localtax2 = 0;
+		$this->total_tva = 0;
+		$this->total_ttc = 0;
 
-        if ($this->Status == "DRAFT") {
-            // Clean parameters
-            if (empty($qty))
-                $qty = 0;
-            if (empty($info_bits))
-                $info_bits = 0;
-            if (empty($txtva))
-                $txtva = 0;
-            if (empty($txlocaltax1))
-                $txlocaltax1 = 0;
-            if (empty($txlocaltax2))
-                $txlocaltax2 = 0;
-            if (empty($remise))
-                $remise = 0;
-            if (empty($remise_percent))
-                $remise_percent = 0;
-            $remise_percent = price2num($remise_percent);
-            $qty = price2num($qty);
-            $pu = price2num($pu);
-            $pa_ht = price2num($pa_ht);
-            $txtva = price2num($txtva);
-            $txlocaltax1 = price2num($txlocaltax1);
-            $txlocaltax2 = price2num($txlocaltax2);
+		foreach ($this->lines as $line) {
+			$this->total_ht += $line->total_ht;
+			$this->total_localtax1 += $line->total_localtax1;
+			$this->total_localtax2 += $line->totaltaxt1;
+			$this->total_tva += $line->total_tva;
+			$this->total_ttc += $line->total_ttc;
+		}
 
-            // Calcul du total TTC et de la TVA pour la ligne a partir de
-            // qty, pu, remise_percent et txtva
-            // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
-            // la part ht, tva et ttc, et ce au niveau de la ligne qui a son propre taux tva.
-            $tabprice = calcul_price_total($qty, $pu, $remise_percent, $txtva, $txlocaltax1, $txlocaltax2, 0, $price_base_type, $info_bits, $type);
-            $total_ht = $tabprice[0];
-            $total_tva = $tabprice[1];
-            $total_ttc = $tabprice[2];
-            $total_localtax1 = $tabprice[9];
-            $total_localtax2 = $tabprice[10];
+		return 1;
+	}
 
-            // Anciens indicateurs: $price, $subprice, $remise (a ne plus utiliser)
-            $price = $pu;
-            $subprice = $pu;
-            $remise = 0;
-            if ($remise_percent > 0) {
-                $remise = round(($pu * $remise_percent / 100), 2);
-                $price = ($pu - $remise);
-            }
+	/**
+	 *  For menu Add/Remove a datatable
+	 *
+	 *  @param $ref_css name of #list
+	 *  @return string
+	 */
+	public function datatablesEditLine($ref_css, $title = "") {
+		global $langs, $user;
 
-            $line = $this->lines[$rowid-1];
+		$class = strtolower(get_class($this));
 
-            $line->label = $label;
-            $line->description = $desc;
-            $line->qty = $qty;
-            $line->tva_tx = $txtva;
-            $line->localtax1_tx = $txlocaltax1;
-            $line->localtax2_tx = $txlocaltax2;
-            $line->remise = $remise_percent;
-            $line->pu_ht = $subprice;
-            $line->info_bits = $info_bits;
-            $line->special_code = 0; // To remove special_code=3 coming from proposals copy
-            $line->total_ht = $total_ht;
-            $line->total_tva = $total_tva;
-            $line->total_localtax1 = $total_localtax1;
-            $line->total_localtax2 = $total_localtax2;
-            $line->total_ttc = $total_ttc;
-            $line->date_start = $date_start;
-            $line->date_end = $date_end;
-            $line->product_type = $type;
-            $line->fk_parent_line = $fk_parent_line;
-            $line->skip_update_total = $skip_update_total;
+		if (!$user->rights->$class->edit && !$user->rights->$class->creer)
+			return null;
 
-            // infos marge
-            $line->fk_fournprice = $fk_fournprice;
-            $line->pa_ht = $pa_ht;
+		if (count($this->fk_extrafields->createLine)) {
+			print '<form id="' . $ref_css . '_formAddNewRow" class="block" title="' . $title . '">';
+			//print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+			print '<input type="hidden" name="json" id="json" value="addline" />';
+			print '<input type="hidden" name="fk_invoice" id="fk_invoice" value="' . $this->id . '" />';
+			print '<input type="hidden" name="class" id="class" value="' . get_class($this) . '" />';
+			foreach ($this->fk_extrafields->createLine as $aRow) {
+				print '<p class="button-height block-label">';
+				$label = $langs->trans($this->fk_extrafields->fields->$aRow->label);
+				if (empty($label))
+					$label = $langs->trans($aRow);
+				print '<label for = "' . $aRow . '" class="label">' . $label . '</label>';
+				print $this->select_fk_extrafields($aRow, $aRow, null, true, 40, "full-width");
+				print '</p>';
+			}
+			print '</form>';
 
-            $this->lines = array_merge($this->lines);
-            $this->record();
-            $this->update_price();
-            return 1;
-        } else {
-            $this->error = get_class($this) . "::updateline Order status makes operation forbidden";
-            $this->errors = array('OrderStatusMakeOperationForbidden');
-            return -2;
-        }
-    }
-    
-        /**
-     *  Delete an order line
-     *
-     *  @param      int		$lineid		Id of line to delete
-     *  @return     int        		 	>0 if OK, 0 if nothing to do, <0 if KO
-     */
-    function deleteline($lineid) {
-        global $user;
-        if ($this->Status == "DRAFT") {
-            
-            unset($this->lines[$lineid - 1]);
-            $this->lines = array_merge($this->lines);
-            
-            $this->record();
-            $this->update_price(1);
+			if ($user->rights->$class->edit || $user->rights->$class->creer)
+				print '<button id="' . $ref_css . '_btnAddNewRow">' . $langs->trans("Add") . '</button> ';
+		}
 
-            return 1;
+		/* if ($user->rights->$class->delete)
+		  print '<button id="' . $ref_css . '_btnDeleteRow">' . $langs->trans("Delete") . '</button>'; */
 
-        } else {
-            return -2;
-        }
-    }
-    
-    function update_price($exclspec = 0, $roundingadjust = -1, $nodatabaseupdate = 0) {
+		print '<p class="button-height "></p>';
+	}
 
-        include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
+	public function showLines() {
 
-        $this->total_ht = 0;
-        $this->total_localtax1 = 0;
-        $this->total_localtax2 = 0;
-        $this->total_tva = 0;
-        $this->total_ttc = 0;
+		global $langs;
+		global $conf;
 
-        foreach ($this->lines as $line) {
-            $this->total_ht += $line->total_ht;
-            $this->total_localtax1 += $line->total_localtax1;
-            $this->total_localtax2 += $line->totaltaxt1;
-            $this->total_tva += $line->total_tva;
-            $this->total_ttc += $line->total_ttc;
-        }
+		require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
 
-        $this->record();
+		print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
 
-        return 1;
-    }
-    
-    /**
-     *  For menu Add/Remove a datatable
-     *
-     *  @param $ref_css name of #list
-     *  @return string
-     */
-    public function datatablesEditLine($ref_css, $title = "") {
-        global $langs, $user;
+		print $this->datatablesEditLine("listlines", $langs->trans("Lines"));
 
-        $class = strtolower(get_class($this));
-
-        if (!$user->rights->$class->edit && !$user->rights->$class->creer)
-            return null;
-
-        if (count($this->fk_extrafields->createLine)) {
-            print '<form id="' . $ref_css . '_formAddNewRow" class="block" title="' . $title . '">';
-            //print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-            print '<input type="hidden" name="json" id="json" value="addline" />';
-            print '<input type="hidden" name="fk_invoice" id="fk_invoice" value="' . $this->id . '" />';
-            print '<input type="hidden" name="class" id="class" value="' . get_class($this) . '" />';
-            foreach ($this->fk_extrafields->createLine as $aRow) {
-                print '<p class="button-height block-label">';
-                $label = $langs->trans($this->fk_extrafields->fields->$aRow->label);
-                if (empty($label))
-                    $label = $langs->trans($aRow);
-                print '<label for = "' . $aRow . '" class="label">' . $label . '</label>';
-                print $this->select_fk_extrafields($aRow, $aRow, null, true, 40, "full-width");
-                print '</p>';
-            }
-            print '</form>';
-
-            if ($user->rights->$class->edit || $user->rights->$class->creer)
-                print '<button id="' . $ref_css . '_btnAddNewRow">' . $langs->trans("Add") . '</button> ';
-        }
-
-        /* if ($user->rights->$class->delete)
-          print '<button id="' . $ref_css . '_btnDeleteRow">' . $langs->trans("Delete") . '</button>'; */
-
-        print '<p class="button-height "></p>';
-    }
-    
-    public function showLines() {
-        
-        global $langs;
-        global $conf;
-        
-        require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
-        $product = new Product($this->db);
-        
-        print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
-
-        print $this->datatablesEditLine("listlines", $langs->trans("Lines"));
-
-        $i = 0;
-        print '<table class="display dt_act" id="listlines" >';
-        // Ligne des titres 
-        print'<thead>';
-        print'<tr>';
-        print'<th>';
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "_id";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = false;
-        $obj->aoColumns[$i]->bVisible = false;
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("Description");
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "description";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = true;
-        $obj->aoColumns[$i]->editable = true;
-        $obj->aoColumns[$i]->sDefaultContent = "";
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("Product");
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "product.label";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = true;
-        $obj->aoColumns[$i]->sDefaultContent = "";
-        $obj->aoColumns[$i]->fnRender = $product->datatablesFnRender("product.label", "url");
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("VAT");
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "tva_tx";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = true;
-        $obj->aoColumns[$i]->editable = true;
+		$i = 0;
+		print '<table class="display dt_act" id="listlines" >';
+		// Ligne des titres 
+		print'<thead>';
+		print'<tr>';
+		print'<th>';
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "_id";
+		$obj->aoColumns[$i]->bUseRendered = false;
+		$obj->aoColumns[$i]->bSearchable = false;
+		$obj->aoColumns[$i]->bVisible = false;
+		$i++;
+		
+		print'<th class="essential">';
+		print $langs->trans("Group");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "group";
+		$obj->aoColumns[$i]->sDefaultContent = "";
+		$obj->aoColumns[$i]->bVisible = false;
+		$i++;
+		
+		print'<th class="essential">';
+		print $langs->trans("Description");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "description";
+		$obj->aoColumns[$i]->bUseRendered = false;
+		$obj->aoColumns[$i]->bSearchable = true;
+		$obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->sDefaultContent = "";
+		$i++;
+		print'<th class="essential">';
+		$product = new Product($this->db);
+		print $langs->trans("Product");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "product.label";
+		$obj->aoColumns[$i]->bUseRendered = false;
+		$obj->aoColumns[$i]->bSearchable = true;
+		$obj->aoColumns[$i]->sDefaultContent = "";
+		$obj->aoColumns[$i]->fnRender = $product->datatablesFnRender("product.label", "url", array("id" => "product.id"));
+		$i++;
+		print'<th class="essential">';
+		print $langs->trans("VAT");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "tva_tx";
+		$obj->aoColumns[$i]->bUseRendered = false;
+		$obj->aoColumns[$i]->bSearchable = true;
+		$obj->aoColumns[$i]->editable = true;
 		$obj->aoColumns[$i]->sDefaultContent = 0;
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("PriceUHT");
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "pu_ht";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = true;
-        $obj->aoColumns[$i]->editable = true;
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("pu_ht", "price");
-        $obj->aoColumns[$i]->sDefaultContent = 0;
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("Qty");
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "qty";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = true;
-        $obj->aoColumns[$i]->editable = true;
-        $obj->aoColumns[$i]->sDefaultContent = 0;
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("ReductionShort");
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "remise";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = true;
-        $obj->aoColumns[$i]->editable = true;
-        $obj->aoColumns[$i]->sDefaultContent = "0";
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("TotalHTShort");
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "total_ht";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = true;
-        $obj->aoColumns[$i]->editable = true;
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("total_ht", "price");    
-        $obj->aoColumns[$i]->sDefaultContent = 0;
-        $i++;
+		$i++;
+		print'<th class="essential">';
+		print $langs->trans("PriceUHT");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "pu_ht";
+		$obj->aoColumns[$i]->bUseRendered = false;
+		$obj->aoColumns[$i]->bSearchable = true;
+		$obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("pu_ht", "price");
+		$obj->aoColumns[$i]->sDefaultContent = 0;
+		$i++;
+		print'<th class="essential">';
+		print $langs->trans("Qty");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "qty";
+		$obj->aoColumns[$i]->bUseRendered = false;
+		$obj->aoColumns[$i]->bSearchable = true;
+		$obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->sDefaultContent = 0;
+		$i++;
+		print'<th class="essential">';
+		print $langs->trans("ReductionShort");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "remise";
+		$obj->aoColumns[$i]->bUseRendered = false;
+		$obj->aoColumns[$i]->bSearchable = true;
+		$obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->sDefaultContent = "0";
+		$i++;
+		print'<th class="essential">';
+		print $langs->trans("TotalHTShort");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "total_ht";
+		$obj->aoColumns[$i]->bUseRendered = false;
+		$obj->aoColumns[$i]->bSearchable = true;
+		$obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("total_ht", "price");
+		$obj->aoColumns[$i]->sDefaultContent = 0;
+		$i++;
 
-print'<th class="essential">';
-print $langs->trans('Action');
-print'</th>';
-$obj->aoColumns[$i] = new stdClass();
-$obj->aoColumns[$i]->mDataProp = "";
-$obj->aoColumns[$i]->sClass = "center content_actions";
-$obj->aoColumns[$i]->sWidth = "60px";
-$obj->aoColumns[$i]->bSortable = false;
-$obj->aoColumns[$i]->sDefaultContent = "";
+		print'<th class="essential">';
+		print $langs->trans('Action');
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "";
+		$obj->aoColumns[$i]->sClass = "center content_actions";
+		$obj->aoColumns[$i]->sWidth = "60px";
+		$obj->aoColumns[$i]->bSortable = false;
+		$obj->aoColumns[$i]->sDefaultContent = "";
 
-$url = "commande/fiche.php";
-$obj->aoColumns[$i]->fnRender = 'function(obj) {
+		$url = "commande/fiche.php";
+		$obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
 	ar[ar.length] = "<a href=\"\"";
 	ar[ar.length] = " class=\"delEnqBtn\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
 	var str = ar.join("");
 	return str;
 }';
-print'</tr>';
-        print'</thead>';
-        print'<tfoot>';
-        print'</tfoot>';
-        print'<tbody>';
-        print'</tbody>';
+		print'</tr>';
+		print'</thead>';
+		print'<tfoot>';
+		print'</tfoot>';
+		print'<tbody>';
+		print'</tbody>';
 
-        print "</table>";
+		print "</table>";
 
-        $obj->aaSorting = array(array(1, 'asc'));
+		$obj->fnDrawCallback = "function(oSettings){
+                if ( oSettings.aiDisplay.length == 0 )
+                {
+                    return;
+                }
+                var nTrs = jQuery('#listlines tbody tr');
+                var iColspan = nTrs[0].getElementsByTagName('td').length;
+                var sLastGroup = '';
+                for ( var i=0 ; i<nTrs.length ; i++ )
+                {
+                    var iDisplayIndex = oSettings._iDisplayStart + i;
+                     var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData['group'];
+                         if (sGroup!=null && sGroup!='' && sGroup != sLastGroup)
+                            {
+                                var nGroup = document.createElement('tr');
+                                var nCell = document.createElement('td');
+                                nCell.colSpan = iColspan;
+                                nCell.className = 'group';
+                                nCell.innerHTML = sGroup;
+                                nGroup.appendChild( nCell );
+                                nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+                                sLastGroup = sGroup;
+                            }
+
+
+                }
+	}";
+		$obj->aaSorting = array(array(1, 'asc'));
 //$obj->bServerSide = true;
 //if ($all) {
 //    if ($type == "DONE")
@@ -511,17 +300,144 @@ print'</tr>';
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listTODOByUser";
 //
 //}
-        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=lines&id=" . $this->id;
+		$obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=lines&id=" . $this->id;
 
-        $this->datatablesCreate($obj, "listlines", true, true);
-        
-        print end_box();
-    }
+		$this->datatablesCreate($obj, "listlines", true, true);
+
+		print end_box();
+	}
 
 }
 
-class InvoiceLine {
-    
+class Line {
+
+	var $rowid;
+	var $desc;
+	var $pu;
+	var $qty;
+	var $remise_percent;
+	var $tva_tx;
+	var $price_base_type = 'HT';
+	var $info_bits = 0;
+	var $date_start = '';
+	var $date_end = '';
+	var $type = 0;
+	var $fk_parent_line = 0;
+	var $skip_update_total = 0;
+	var $fk_fournprice = null;
+	var $pa_ht = 0;
+	var $label = '';
+	var $group = '';
+
+	function __construct() {
+		//TODO Load extrafields
+	}
+
+	function load($line) {
+		if (is_object($line))
+			foreach ($line as $key => $row)
+				$this->$key = $row;
+	}
+
+	function verify() {
+		// Clean parameters
+		if (empty($this->qty))
+			$this->qty = 0;
+		if (empty($this->info_bits))
+			$this->info_bits = 0;
+		if (empty($this->tva_tx))
+			$this->tva_tx = 0;
+		if (empty($this->remise))
+			$this->remise = 0;
+		if (empty($this->remise_percent))
+			$this->remise_percent = 0;
+		$this->remise_percent = price2num($this->remise_percent);
+		$this->qty = price2num($this->qty);
+		if ($this->price_base_type == 'HT')
+			$this->pu = price2num($this->pu_ht);
+		else
+			$this->pu = price2num($this->pu_ttc);
+		$this->pu = price2num($this->pu);
+		$this->pa_ht = price2num($this->pa_ht);
+		$this->tva_tx = price2num($this->tva_tx);
+
+		// Calcul du total TTC et de la TVA pour la ligne a partir de
+		// qty, pu, remise_percent et tva_tx
+		// TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
+		// la part ht, tva et ttc, et ce au niveau de la ligne qui a son propre taux tva.
+		$this->calcul_price_total();
+
+		return 1;
+	}
+
+	function calcul_price_total() {
+		global $conf, $mysoc;
+
+		// initialize total (may be HT or TTC depending on price_base_type)
+		$tot_sans_remise = $this->pu * $this->qty;
+		$tot_avec_remise_ligne = $tot_sans_remise * (1 - ($this->remise_percent_ligne / 100));
+		$tot_avec_remise = $tot_avec_remise_ligne * (1 - ($this->remise_percent_global / 100));
+
+		// initialize result
+		$this->total_tva = 0;
+		$this->total_ttc = 0;
+
+		if ($this->price_base_type == 'HT') {
+			// We work to define prices using the price without tax
+			$this->total_ht_without_discount = price2num($tot_sans_remise, 'MT');
+			$this->total_ttc_without_discount = price2num(($tot_sans_remise) * (1 + ( (($this->info_bits & 1) ? 0 : $this->tva_tx) / 100)), 'MT'); // Selon TVA NPR ou non
+			$result8bis = price2num(($tot_sans_remise) * (1 + ( $this->tva_tx / 100)), 'MT'); // Si TVA consideree normale (non NPR)
+			$this->total_vat_without_discount = price2num($result8bis - ($this->total_ht_without_discount), 'MT');
+
+			$this->total_ht = price2num($tot_avec_remise, 'MT');
+			$this->total_ttc = price2num(($tot_avec_remise) * (1 + ( (($this->info_bits & 1) ? 0 : $this->tva_tx) / 100)), 'MT'); // Selon TVA NPR ou non
+			$result2bis = price2num(($tot_avec_remise) * (1 + ( $this->tva_tx / 100)), 'MT'); // Si TVA consideree normale (non NPR)
+			$this->total_tva = price2num($result2bis - ($this->total_ht), 'MT'); // Total VAT = TTC - (HT + localtax)
+
+			$this->pu_ht = price2num($this->pu, 'MU');
+			$this->pu_ttc = price2num(($this->pu) * (1 + ((($this->info_bits & 1) ? 0 : $this->tva_tx) / 100)), 'MU'); // Selon TVA NPR ou non
+			$result5bis = price2num(($this->pu) * (1 + ($this->tva_tx / 100)), 'MU'); // Si TVA consideree normale (non NPR)
+			$this->pu_tva = price2num($result5bis - ($this->pu_ht), 'MU');
+		} else {
+			// We work to define prices using the price with tax
+			$this->total_ttc_without_discount = price2num($tot_sans_remise, 'MT');
+			$this->total_ht_without_discount = price2num(($tot_sans_remise ) / (1 + ((($this->info_bits & 1) ? 0 : $this->tva_tx) / 100)), 'MT'); // Selon TVA NPR ou non
+			$result6bis = price2num(($tot_sans_remise ) / (1 + ($this->tva_tx / 100)), 'MT'); // Si TVA consideree normale (non NPR)
+			$this->total_vat_without_discount = price2num($this->total_ttc_without_discount - ($result6bis ), 'MT');
+
+			$this->total_ttc = price2num($tot_avec_remise, 'MT');
+			$this->total_ht = price2num(($tot_avec_remise ) / (1 + ((($this->info_bits & 1) ? 0 : $this->tva_tx) / 100)), 'MT'); // Selon TVA NPR ou non
+			$result0bis = price2num(($tot_avec_remise ) / (1 + ($this->tva_tx / 100)), 'MT'); // Si TVA consideree normale (non NPR)
+			$this->total_tva = price2num($this->total_ttc - ($result0bis ), 'MT'); // Total VAT = TTC - HT
+
+			$this->pu_ttc = price2num(($this->pu), 'MU');
+			$this->pu_ht = price2num(($this->pu ) / (1 + ((($this->info_bits & 1) ? 0 : $this->tva_tx) / 100)), 'MU'); // Selon TVA NPR ou non
+			$result3bis = price2num(($this->pu ) / (1 + ($this->tva_tx / 100)), 'MU'); // Si TVA consideree normale (non NPR)
+			$this->pu_tva = price2num($this->pu_ttc - ($result3bis ), 'MU');
+		}
+
+		//If price is 'TTC' we need to have the totals without VAT for a correct calculation
+		if ($this->price_base_type == 'TTC') {
+			$tot_sans_remise = price2num($tot_sans_remise / (1 + ($this->tva_tx / 100)), 'MU');
+			$tot_avec_remise = price2num($tot_avec_remise / (1 + ($this->tva_tx / 100)), 'MU');
+		}
+
+		// If rounding is not using base 10 (rare)
+		if (!empty($conf->global->MAIN_ROUNDING_RULE_TOT)) {
+			if ($this->price_base_type == 'HT') {
+				$this->total_ht = round($this->total_ht / $conf->global->MAIN_ROUNDING_RULE_TOT, 0) * $conf->global->MAIN_ROUNDING_RULE_TOT;
+				$this->total_tva = round($this->total_tva / $conf->global->MAIN_ROUNDING_RULE_TOT, 0) * $conf->global->MAIN_ROUNDING_RULE_TOT;
+				$this->total_ttc = price2num($this->total_ht + $this->total_tva, 'MT');
+			} else {
+				$this->total_tva = round($this->total_tva / $conf->global->MAIN_ROUNDING_RULE_TOT, 0) * $conf->global->MAIN_ROUNDING_RULE_TOT;
+				$this->total_ttc = round($this->total_ttc / $conf->global->MAIN_ROUNDING_RULE_TOT, 0) * $conf->global->MAIN_ROUNDING_RULE_TOT;
+				$this->total_ht = price2num($this->total_ttc - $this->total_ht, 'MT');
+			}
+		}
+
+		//print "Price.lib::calcul_price_total ".$this->total_ht."-".$this->total_tva."-".$this->total_ttc
+	}
+
 }
 
 ?>
