@@ -1,5 +1,6 @@
 {
    "_id": "_design/Societe",
+   "_rev": "145-4b31132773a24285ebb01da2bbd59c78",
    "language": "javascript",
    "views": {
        "list": {
@@ -35,6 +36,9 @@
        },
        "listGPS": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true && doc.gps && doc.Status!=\"ST_NEVER\" && doc.Status!=\"ST_NO\")\n  emit(doc.name, doc);\n}"
+       },
+       "code_client": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.code_client)\n  emit(doc.code_client, doc._id);\n}"
        }
    },
    "updates": {
