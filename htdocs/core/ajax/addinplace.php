@@ -107,15 +107,15 @@ if (!empty($json) && !empty($class)) {
 			$product = new Product($db);
 			$product->load($idProduct);
 			$line->description = $product->description;
-			$line->pu = $product->price->price;
+			$line->pu_ht = $product->price->price;
 			$line->tva_tx = $product->price->tva_tx;
-			$product_type = $product->type;
+			$line->product_type = $product->type;
 			$productData = new stdClass();
 			$productData->id = $idProduct;
 			$productData->label = $product->label;
 			//$productData->description = $product->description;
 		} else {
-			$line->pu = GETPOST('pu_ht', "float");
+			$line->pu_ht = GETPOST('pu_ht', "float");
 			$line->tva_tx = GETPOST('tva_tx', "float");
 			$line->product_type = GETPOST('product_type');
 		}
@@ -123,7 +123,6 @@ if (!empty($json) && !empty($class)) {
 		$line->qty = GETPOST('qty');
 		$line->remise = GETPOST('remise');
 		$line->product = $productData;
-		$line->product_type = $product_type;
 		$line->verify();
 
 		$object->updateline(count($object->lines), $line);

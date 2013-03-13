@@ -4,7 +4,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
 
 class AbstractInvoice extends nosqlDocument {
 
-	public $lines = array();
+	var $lines = array();
 
 	public function load($id) {
 		$res = parent::load($id);
@@ -35,6 +35,7 @@ class AbstractInvoice extends nosqlDocument {
 	function updateline($lineid, $line) {
 		global $conf;
 
+		$this->lines[$lineid] = new stdClass();
 		foreach (get_object_vars($line) as $key => $aRow)
 			$this->lines[$lineid]->$key = $aRow;
 
@@ -147,6 +148,16 @@ class AbstractInvoice extends nosqlDocument {
 		$obj->aoColumns[$i]->bSearchable = false;
 		$obj->aoColumns[$i]->bVisible = false;
 		$i++;
+		
+		print'<th class="essential">';
+		print $langs->trans("Group");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "group";
+		$obj->aoColumns[$i]->sDefaultContent = "";
+		$obj->aoColumns[$i]->bVisible = false;
+		$i++;
+		
 		print'<th class="essential">';
 		print $langs->trans("Description");
 		print'</th>';
@@ -248,6 +259,33 @@ class AbstractInvoice extends nosqlDocument {
 
 		print "</table>";
 
+		$obj->fnDrawCallback = "function(oSettings){
+                if ( oSettings.aiDisplay.length == 0 )
+                {
+                    return;
+                }
+                var nTrs = jQuery('#listlines tbody tr');
+                var iColspan = nTrs[0].getElementsByTagName('td').length;
+                var sLastGroup = '';
+                for ( var i=0 ; i<nTrs.length ; i++ )
+                {
+                    var iDisplayIndex = oSettings._iDisplayStart + i;
+                     var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData['group'];
+                         if (sGroup!=null && sGroup!='' && sGroup != sLastGroup)
+                            {
+                                var nGroup = document.createElement('tr');
+                                var nCell = document.createElement('td');
+                                nCell.colSpan = iColspan;
+                                nCell.className = 'group';
+                                nCell.innerHTML = sGroup;
+                                nGroup.appendChild( nCell );
+                                nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+                                sLastGroup = sGroup;
+                            }
+
+
+                }
+	}";
 		$obj->aaSorting = array(array(1, 'asc'));
 //$obj->bServerSide = true;
 //if ($all) {

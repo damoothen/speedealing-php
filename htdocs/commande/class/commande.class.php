@@ -57,7 +57,7 @@ class Commande extends AbstractInvoice {
 	var $demand_reason_code;
 	var $fk_delivery_address;
 	var $adresse;
-	var $date;	// Date commande
+	var $date; // Date commande
 	var $date_commande;  // Date commande (deprecated)
 	var $date_livraison; // Date livraison souhaitee
 	var $fk_remise_except;
@@ -73,7 +73,7 @@ class Commande extends AbstractInvoice {
 	var $rang;
 	var $special_code;
 	var $source;   // Origin of order
-	var $note;	// deprecated
+	var $note; // deprecated
 	var $note_private;
 	var $note_public;
 	var $extraparams = array();
@@ -972,7 +972,7 @@ class Commande extends AbstractInvoice {
 			if (is_object($hookmanager)) {
 				$parameters = array('objFrom' => $objFrom);
 				$action = '';
-				$reshook = $hookmanager->executeHooks('createFrom', $parameters, $this, $action);	// Note that $action and $object may have been modified by some hooks
+				$reshook = $hookmanager->executeHooks('createFrom', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
 				if ($reshook < 0)
 					$error++;
 			}
@@ -1068,7 +1068,7 @@ class Commande extends AbstractInvoice {
 				$hookmanager->initHooks(array('orderdao'));
 				$parameters = array('objFrom' => $object);
 				$action = '';
-				$reshook = $hookmanager->executeHooks('createFrom', $parameters, $this, $action);	// Note that $action and $object may have been modified by some hooks
+				$reshook = $hookmanager->executeHooks('createFrom', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
 				if ($reshook < 0)
 					$error++;
 
@@ -1339,11 +1339,11 @@ class Commande extends AbstractInvoice {
 
 			$line->fk_commande = $this->id;
 			$line->fk_remise_except = $remise->id;
-			$line->desc = $remise->description;	// Description ligne
+			$line->desc = $remise->description; // Description ligne
 			$line->tva_tx = $remise->tva_tx;
 			$line->subprice = -$remise->amount_ht;
 			$line->price = -$remise->amount_ht;
-			$line->fk_product = 0;	 // Id produit predefini
+			$line->fk_product = 0;  // Id produit predefini
 			$line->qty = 1;
 			$line->remise = 0;
 			$line->remise_percent = 0;
@@ -2046,7 +2046,7 @@ class Commande extends AbstractInvoice {
 		}
 		$sql.= $clause . " c.entity = " . $conf->entity;
 		//$sql.= " AND c.fk_statut IN (1,2,3) AND c.facture = 0";
-		$sql.= " AND ((c.fk_statut IN (1,2)) OR (c.fk_statut = 3 AND c.facture = 0))";	// If status is 2 and facture=1, it must be selected
+		$sql.= " AND ((c.fk_statut IN (1,2)) OR (c.fk_statut = 3 AND c.facture = 0))"; // If status is 2 and facture=1, it must be selected
 		if ($user->societe_id)
 			$sql.=" AND c.fk_soc = " . $user->societe_id;
 
@@ -2811,6 +2811,7 @@ class Commande extends AbstractInvoice {
 		$obj->aoColumns[$i]->bSearchable = false;
 		$obj->aoColumns[$i]->bVisible = false;
 		$i++;
+		
 		print'<th class="essential">';
 		print $langs->trans("Ref");
 		print'</th>';
@@ -2854,6 +2855,7 @@ class Commande extends AbstractInvoice {
 		print "</table>";
 
 		$obj->iDisplayLength = $max;
+		$obj->aaSorting = array(array(1, 'asc'));
 		$obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listLinkedObjects&class=" . get_class($this) . "&key=" . $this->id;
 		$this->datatablesCreate($obj, "listlinkedobjects", true);
 		print end_box();
@@ -2979,14 +2981,14 @@ class OrderLine extends nosqlDocument {
 	var $fk_parent_line;
 	var $fk_facture;
 	var $label;
-	var $description;		   // Description ligne
+	var $description;	 // Description ligne
 	var $fk_product;  // Id produit predefini
 	var $product_type = 0; // Type 0 = product, 1 = Service
-	var $qty;	// Quantity (example 2)
+	var $qty; // Quantity (example 2)
 	var $tva_tx;   // VAT Rate for product/service (example 19.6)
 	var $localtax1_tx;   // Local tax 1
 	var $localtax2_tx;   // Local tax 2
-	var $subprice;	   // U.P. HT (example 100)
+	var $subprice;	// U.P. HT (example 100)
 	var $remise_percent; // % for line discount (example 20%)
 	var $fk_remise_except;
 	var $rang = 0;
@@ -3006,7 +3008,7 @@ class OrderLine extends nosqlDocument {
 	var $remise;
 	var $price;
 	// From llx_product
-	var $ref;	// deprecated
+	var $ref; // deprecated
 	var $libelle;   // deprecated
 	var $product_ref;
 	var $product_label;  // Label produit
