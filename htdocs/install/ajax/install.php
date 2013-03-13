@@ -79,6 +79,11 @@ if ($action == 'create_config') {
 	if (!$couch->databaseExists()) {
 		try {
 			$couch->createDatabase();
+
+			// Add role to the system database for security
+			$admin = new couchAdmin($couch);
+			$admin->addDatabaseReaderRole('speedealing');
+
 			echo json_encode(array('status' => 'ok', 'value' => $langs->trans('SystemDatabaseCreated')));
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
@@ -122,10 +127,6 @@ if ($action == 'create_config') {
 
 		$couch->storeDoc($obj);
 		fclose($fp);
-
-		// Add role to the system database for security
-		$admin = new couchAdmin($couch);
-		$admin->addDatabaseReaderRole('speedealing');
 
 		echo json_encode(array('status' => 'ok', 'value' => $filename));
 	} else {
