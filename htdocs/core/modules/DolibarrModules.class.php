@@ -551,7 +551,7 @@ class DolibarrModules extends nosqlDocument {
 
 		$var_dbuser = array("_design/_auth");
 
-		$var_dbsystem = array("_design/User", "_desgin/UserGroup");
+		$var_dbsystem = array("_design/User", "_design/UserGroup");
 
 		$list_db = $this->couchdb->listDatabases();
 		$no_upgradeDB = array("_users", "system", "_replicator", "mips");
