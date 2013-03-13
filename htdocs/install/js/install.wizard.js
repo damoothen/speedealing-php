@@ -319,7 +319,8 @@ $(document).ready(function() {
 	// Add lock file
 	function lockInstall() {
 		$.post("install/ajax/install.php", {
-    		action: 'lock_install'
+    		action: 'lock_install',
+    		couchdb_name: $('#couchdb_name').val()
 		},
 		function(value) {
 			if (value.status == 'ok') {
