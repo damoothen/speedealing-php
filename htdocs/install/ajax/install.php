@@ -101,11 +101,6 @@ if ($action == 'create_config') {
 	if (!$couch->databaseExists()) {
 		try {
 			$couch->createDatabase();
-
-			// Disable delayed commits
-			$admin = new couchAdmin($couch);
-			$admin->setConfig("couchdb", "delayed_commits", "false");
-
 			echo json_encode(array('status' => 'ok', 'value' => $langs->trans('DatabaseCreated')));
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
