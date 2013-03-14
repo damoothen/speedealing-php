@@ -159,16 +159,6 @@ class AbstractInvoice extends nosqlDocument {
 		$i++;
 		
 		print'<th class="essential">';
-		print $langs->trans("Description");
-		print'</th>';
-		$obj->aoColumns[$i] = new stdClass();
-		$obj->aoColumns[$i]->mDataProp = "description";
-		$obj->aoColumns[$i]->bUseRendered = false;
-		$obj->aoColumns[$i]->bSearchable = true;
-		$obj->aoColumns[$i]->editable = true;
-		$obj->aoColumns[$i]->sDefaultContent = "";
-		$i++;
-		print'<th class="essential">';
 		$product = new Product($this->db);
 		print $langs->trans("Product");
 		print'</th>';
@@ -179,6 +169,18 @@ class AbstractInvoice extends nosqlDocument {
 		$obj->aoColumns[$i]->sDefaultContent = "";
 		$obj->aoColumns[$i]->fnRender = $product->datatablesFnRender("product.label", "url", array("id" => "product.id"));
 		$i++;
+		
+		print'<th class="essential">';
+		print $langs->trans("Description");
+		print'</th>';
+		$obj->aoColumns[$i] = new stdClass();
+		$obj->aoColumns[$i]->mDataProp = "description";
+		$obj->aoColumns[$i]->bUseRendered = false;
+		$obj->aoColumns[$i]->bSearchable = true;
+		$obj->aoColumns[$i]->editable = true;
+		$obj->aoColumns[$i]->sDefaultContent = "";
+		$i++;
+		
 		print'<th class="essential">';
 		print $langs->trans("VAT");
 		print'</th>';
