@@ -238,9 +238,6 @@ $(document).ready(function() {
 						progress_value = progress_value + step;
 						progress_value = (progress_value < 100 ? progress_value : 100)
 						setProgressBar('set_database', progress_value);
-					} else {
-						// Break
-						return false;
 					}
 				}, 'json');
 			});
@@ -258,9 +255,6 @@ $(document).ready(function() {
 						progress_value = progress_value + step;
 						progress_value = (progress_value < 100 ? progress_value : 100)
 						setProgressBar('set_database', progress_value);
-					} else {
-						// Break
-						return false;
 					}
 				}, 'json');
 			});
