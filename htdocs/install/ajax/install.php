@@ -101,6 +101,11 @@ if ($action == 'create_config') {
 	if (!$couch->databaseExists()) {
 		try {
 			$couch->createDatabase();
+
+			// Disable delayed commits
+			$admin = new couchAdmin($couch);
+			$admin->setConfig("couchdb", "delayed_commits", "false");
+
 			echo json_encode(array('status' => 'ok', 'value' => $langs->trans('DatabaseCreated')));
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
@@ -370,6 +375,9 @@ if ($action == 'create_config') {
 
 	// Increase timeout in couchdb to 3600s
 	$admin->setConfig("couch_httpd_auth", "timeout", "3600");
+
+	// Enable delayed commits
+	$admin->setConfig("couchdb", "delayed_commits", "true");
 
 	//remove admin_install
 	try {
