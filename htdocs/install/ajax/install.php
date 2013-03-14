@@ -125,10 +125,16 @@ if ($action == 'create_config') {
 
 		$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', 'system');
 
-		$couch->storeDoc($obj);
 		fclose($fp);
 
-		echo json_encode(array('status' => 'ok', 'value' => $filename));
+		try {
+			$couch->storeDoc($obj);
+			echo json_encode(array('status' => 'ok', 'value' => $filename));
+		} catch (Exception $e) {
+			error_log('File:' . $filename .' '. $e->getMessage());
+			echo json_encode(array('status' => 'error', 'value' => 'File:' . $filename .' '. $e->getMessage()));
+		}
+
 	} else {
 		error_log("file not found : " . $filepath);
 		echo json_encode(array('status' => 'error', 'value' => $filepath));
@@ -148,10 +154,16 @@ if ($action == 'create_config') {
 		$couchdb_name = GETPOST('couchdb_name', 'alpha');
 		$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
 
-		$couch->storeDoc($obj);
 		fclose($fp);
 
-		echo json_encode(array('status' => 'ok', 'value' => $filename));
+		try {
+			$couch->storeDoc($obj);
+			echo json_encode(array('status' => 'ok', 'value' => $filename));
+		} catch (Exception $e) {
+			error_log('File:' . $filename .' '. $e->getMessage());
+			echo json_encode(array('status' => 'error', 'value' => 'File:' . $filename .' '. $e->getMessage()));
+		}
+
 	} else {
 		error_log("file not found : " . $filepath);
 		echo json_encode(array('status' => 'error', 'value' => $filepath));
