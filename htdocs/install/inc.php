@@ -114,7 +114,7 @@ else
 // Get json files list
 $jsonfiles = array();
 // Get system files
-$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/system', 'files', 0, '', '^dict\.');
+$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/system', 'files');
 foreach($fileslist as $file) {
 	$jsonfiles['system'][$file['name']] = $file['fullname'];
 }
