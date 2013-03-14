@@ -111,17 +111,23 @@ if (GETPOST('lang'))
 else
     $langs->setDefaultLang('auto');
 
-// Get json files list
-$jsonfiles = array();
-// Get system files
-$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/system', 'files');
-foreach($fileslist as $file) {
-	$jsonfiles['system'][$file['name']] = $file['fullname'];
-}
-// Get entity files
-$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/entity', 'files');
-foreach($fileslist as $file) {
-	$jsonfiles['entity'][$file['name']] = $file['fullname'];
+if (!empty($_SESSION['db_json_files'])) {
+	$jsonfiles = $_SESSION['db_json_files'];
+} else {
+	// Get json files list
+	$jsonfiles = array();
+	// Get system files
+	$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/system', 'files');
+	foreach($fileslist as $file) {
+		$jsonfiles['system'][$file['name']] = $file['fullname'];
+	}
+	// Get entity files
+	$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/entity', 'files');
+	foreach($fileslist as $file) {
+		$jsonfiles['entity'][$file['name']] = $file['fullname'];
+	}
+	// Stock in session for best performance
+	$_SESSION['db_json_files'] = $jsonfiles;
 }
 
 // Now we load forced value from install.forced.php file.
