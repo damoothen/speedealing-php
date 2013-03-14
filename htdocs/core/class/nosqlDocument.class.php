@@ -954,21 +954,25 @@ abstract class nosqlDocument extends CommonObject {
 
 				$rtr = 'function(obj) {
 	 		var ar = [];
-	 		if(obj.aData.' . $params["id"] . ' === undefined)
-				return ar.join("");
-			else if(obj.aData.' . $key . ' === undefined)
+	 		if(obj.aData.' . $key . ' === undefined)
 				obj.aData.'.$key.' = obj.aData.' . $params["id"].';
 			';
 
 				if (!empty($this->fk_extrafields->ico)) {
 					$rtr.= 'ar[ar.length] = "<span class=\"' . $this->fk_extrafields->ico . '\" title=\"' . $langs->trans("See " . get_class($this)) . ' : " + obj.aData.' . $key . '.toString() + "\">";';
 				}
-				$rtr.= '
-						ar[ar.length] = "<a href=\"' . $url . '";
+				
+				$rtr.= 'if(obj.aData.' . $params["id"] . ' === undefined) {
+					ar[ar.length] = "<span>";
+					ar[ar.length] = obj.aData.' . $key . '.toString();
+				ar[ar.length] = "</span>";
+				} else {
+					ar[ar.length] = "<a href=\"' . $url . '";
 				ar[ar.length] = obj.aData.' . $params["id"] . ';
 					ar[ar.length] = "\">";
 					ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "</a>";
+				}
 				var str = ar.join("");
 				return str;
 			}';
