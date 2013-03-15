@@ -19,279 +19,277 @@
 
 class Import extends nosqlDocument {
 
-    var $array_import_module;
-    var $array_import_perms;
-    var $array_import_icon;
-    var $array_import_code;
-    var $array_import_label;
-    var $array_import_tables;
-    var $array_import_fields;
-    var $array_import_entities;
-    var $array_import_regex;
-    var $array_import_examplevalues;
-    var $array_import_convertvalue;
+	var $array_import_module;
+	var $array_import_perms;
+	var $array_import_icon;
+	var $array_import_code;
+	var $array_import_label;
+	var $array_import_tables;
+	var $array_import_fields;
+	var $array_import_entities;
+	var $array_import_regex;
+	var $array_import_examplevalues;
+	var $array_import_convertvalue;
 
-    /**
-     *    Constructor
-     *
-     *    @param  	DoliDB		$db		Database handler
-     */
-    function __construct($db) {
-        $this->db = $db;
-    }
+	/**
+	 *    Constructor
+	 *
+	 *    @param  	DoliDB		$db		Database handler
+	 */
+	function __construct($db) {
+		$this->db = $db;
+	}
 
-    /**
-     *  Load description int this->array_import_module, this->array_import_fields, ... of an importable dataset
-     *
-     *  @param		User	$user      	Object user making import
-     *  @param  	string	$filter		Load a particular dataset only. Index will start to 0.
-     *  @return		int					<0 if KO, >0 if OK
-     */
-    function load_arrays($user, $filter = '') {
-        global $langs, $conf;
+	/**
+	 *  Load description int this->array_import_module, this->array_import_fields, ... of an importable dataset
+	 *
+	 *  @param		User	$user      	Object user making import
+	 *  @param  	string	$filter		Load a particular dataset only. Index will start to 0.
+	 *  @return		int					<0 if KO, >0 if OK
+	 */
+	function load_arrays($user, $filter = '') {
+		global $langs, $conf;
 
-        dol_syslog(get_class($this) . "::load_arrays user=" . $user->id . " filter=" . $filter);
+		$var = true;
+		$i = 0;
 
-        $var = true;
-        $i = 0;
+		$modules = new DolibarrModules($this->db);
+		$result = $modules->getView("list_import");
 
-        $modules = new DolibarrModules($this->db);
-        $result = $modules->getView("list_import");
+		foreach ($result->rows as $key => $aRow) {
+			if ($filter && ($filter != $aRow->key[1]))
+				continue;
 
-        foreach ($result->rows as $key => $aRow) {
-            if ($filter && ($filter != $aRow->key[1]))
-                continue;
+			// Load lang file
+			$langtoload = $aRow->value->langfiles;
+			if (is_array($langtoload)) {
+				foreach ($langtoload as $key) {
+					$langs->load($key);
+				}
+			}
 
-            // Load lang file
-            $langtoload = $aRow->value->langfiles;
-            if (is_array($langtoload)) {
-                foreach ($langtoload as $key) {
-                    $langs->load($key);
-                }
-            }
+			// Permission
+			$this->array_import_perms[$i] = $user->rights->import->run;
+			// Icon
+			$this->array_import_icon[$i] = $aRow->value->icon;
+			// Code du dataset export
+			$this->array_import_code[$i] = $aRow->key[1];
+			// Libelle du dataset export
+			$langstring = "ImportDataset_" . $aRow->key[1];
+			//print "x".$langstring;
+			if ($langs->trans($langstring) == $langstring) {
+				// Traduction non trouvee
+				$this->array_import_label[$i] = $langs->trans($aRow->value->label);
+			} else {
+				// Traduction trouvee
+				$this->array_import_label[$i] = $langs->trans($langstring);
+			}
 
-            // Permission
-            $this->array_import_perms[$i] = $user->rights->import->run;
-            // Icon
-            $this->array_import_icon[$i] = $aRow->value->icon;
-            // Code du dataset export
-            $this->array_import_code[$i] = $aRow->key[1];
-            // Libelle du dataset export
-            $langstring = "ImportDataset_" . $aRow->key[1];
-            //print "x".$langstring;
-            if ($langs->trans($langstring) == $langstring) {
-                // Traduction non trouvee
-                $this->array_import_label[$i] = $langs->trans($aRow->value->label);
-            } else {
-                // Traduction trouvee
-                $this->array_import_label[$i] = $langs->trans($langstring);
-            }
+			// Class
+			if (isset($aRow->value->class))
+				$this->array_import_class[$i] = $aRow->value->class;
+			else
+				$this->array_import_class[$i] = $aRow->key[0];
 
-            // Class
-            if(isset($aRow->value->class))
-                $this->array_import_class[$i] = $aRow->value->class;
-            else
-                $this->array_import_class[$i] = $aRow->key[0];
 
-            
-            // Module
-            $class = $this->array_import_class[$i];
-            $this->array_import_module[$i] = new DolibarrModules($this->db);
-            $this->array_import_module[$i]->load("module:".$aRow->key[0]);
-            
-            dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
-            $object = new $class($this->db);
+			// Module
+			$class = $this->array_import_class[$i];
+			$this->array_import_module[$i] = new DolibarrModules($this->db);
+			$this->array_import_module[$i]->load("module:" . $aRow->key[0]);
 
-            $this->array_import_fields[$i]["_id"] = "_id";
-            $this->array_import_fields[$i]["_rev"] = "_rev";
-            
-            foreach ($object->fk_extrafields->fields as $idx => $row) {
-                if ($row->enable && $row->type != "uploadfile")
-                    if($row->class) {
-                        $this->array_import_fields[$i][$idx."->name"] = $idx."->name";
-                        $this->array_import_fields[$i][$idx."->id"] = $idx."->id";
-                    }
-                    else
-                        $this->array_import_fields[$i][$idx] = $idx;
-            }
+			dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+			$object = new $class($this->db);
 
-            dol_syslog("Import loaded for module " . $modulename . " with index " . $i . ", dataset=" . $module->import_code[$r] . ", nb of fields=" . count($module->import_fields_array[$r]));
-            $i++;
-        }
+			$this->array_import_fields[$i]["_id"] = "_id";
+			$this->array_import_fields[$i]["_rev"] = "_rev";
 
-        return 1;
-    }
+			if (isset($object->fk_extrafields))
+				foreach ($object->fk_extrafields->fields as $idx => $row) {
+					if ($row->enable && $row->type != "uploadfile")
+						if ($row->class) {
+							$this->array_import_fields[$i][$idx . "->name"] = $idx . "->name";
+							$this->array_import_fields[$i][$idx . "->id"] = $idx . "->id";
+						}
+						else
+							$this->array_import_fields[$i][$idx] = $idx;
+				}
 
-    /**
-     *  Build an import example file.
-     *  Arrays this->array_export_xxx are already loaded for required datatoexport
-     *
-     *  @param      string	$model              Name of import engine ('csv', ...)
-     *  @param      string	$headerlinefields   Array of values for first line of example file
-     *  @param      string	$contentlinevalues	Array of values for content line of example file
-     *  @param		string	$datatoimport		Dataset to import
-     *  @return		string						<0 if KO, >0 if OK
-     */
-    function build_example_file($model, $headerlinefields, $contentlinevalues, $datatoimport) {
-        global $conf, $langs;
+			$i++;
+		}
 
-        $indice = 0;
+		return 1;
+	}
 
-        dol_syslog(get_class($this) . "::build_example_file " . $model);
+	/**
+	 *  Build an import example file.
+	 *  Arrays this->array_export_xxx are already loaded for required datatoexport
+	 *
+	 *  @param      string	$model              Name of import engine ('csv', ...)
+	 *  @param      string	$headerlinefields   Array of values for first line of example file
+	 *  @param      string	$contentlinevalues	Array of values for content line of example file
+	 *  @param		string	$datatoimport		Dataset to import
+	 *  @return		string						<0 if KO, >0 if OK
+	 */
+	function build_example_file($model, $headerlinefields, $contentlinevalues, $datatoimport) {
+		global $conf, $langs;
 
-        // Creation de la classe d'import du model Import_XXX
-        $dir = DOL_DOCUMENT_ROOT . "/core/modules/import/";
-        $file = "import_" . $model . ".modules.php";
-        $classname = "Import" . $model;
-        require_once $dir . $file;
-        $objmodel = new $classname($this->db, $datatoimport);
+		$indice = 0;
 
-        $outputlangs = $langs; // Lang for output
-        $s = '';
+		dol_syslog(get_class($this) . "::build_example_file " . $model);
 
-        // Genere en-tete
-        $s.=$objmodel->write_header_example($outputlangs);
+		// Creation de la classe d'import du model Import_XXX
+		$dir = DOL_DOCUMENT_ROOT . "/core/modules/import/";
+		$file = "import_" . $model . ".modules.php";
+		$classname = "Import" . $model;
+		require_once $dir . $file;
+		$objmodel = new $classname($this->db, $datatoimport);
 
-        // Genere ligne de titre
-        $s.=$objmodel->write_title_example($outputlangs, $headerlinefields);
+		$outputlangs = $langs; // Lang for output
+		$s = '';
 
-        // Genere ligne de titre
-        $s.=$objmodel->write_record_example($outputlangs, $contentlinevalues);
+		// Genere en-tete
+		$s.=$objmodel->write_header_example($outputlangs);
 
-        // Genere pied de page
-        $s.=$objmodel->write_footer_example($outputlangs);
+		// Genere ligne de titre
+		$s.=$objmodel->write_title_example($outputlangs, $headerlinefields);
 
-        return $s;
-    }
+		// Genere ligne de titre
+		$s.=$objmodel->write_record_example($outputlangs, $contentlinevalues);
 
-    /**
-     *  Save an export model in database
-     *
-     *  @param		User	$user 	Object user that save
-     *  @return		int				<0 if KO, >0 if OK
-     */
-    function create($user) {
-        global $conf;
+		// Genere pied de page
+		$s.=$objmodel->write_footer_example($outputlangs);
 
-        dol_syslog("Import.class.php::create");
+		return $s;
+	}
 
-        // Check parameters
-        if (empty($this->model_name)) {
-            $this->error = 'ErrorWrongParameters';
-            return -1;
-        }
-        if (empty($this->datatoimport)) {
-            $this->error = 'ErrorWrongParameters';
-            return -1;
-        }
-        if (empty($this->hexa)) {
-            $this->error = 'ErrorWrongParameters';
-            return -1;
-        }
+	/**
+	 *  Save an export model in database
+	 *
+	 *  @param		User	$user 	Object user that save
+	 *  @return		int				<0 if KO, >0 if OK
+	 */
+	function create($user) {
+		global $conf;
 
-        $this->db->begin();
+		dol_syslog("Import.class.php::create");
 
-        $sql = 'INSERT INTO ' . MAIN_DB_PREFIX . 'import_model (';
-        $sql.= 'fk_user, label, type, field';
-        $sql.= ')';
-        $sql.= " VALUES (" . ($user->id > 0 ? $user->id : 0) . ", '" . $this->db->escape($this->model_name) . "', '" . $this->datatoimport . "', '" . $this->hexa . "')";
+		// Check parameters
+		if (empty($this->model_name)) {
+			$this->error = 'ErrorWrongParameters';
+			return -1;
+		}
+		if (empty($this->datatoimport)) {
+			$this->error = 'ErrorWrongParameters';
+			return -1;
+		}
+		if (empty($this->hexa)) {
+			$this->error = 'ErrorWrongParameters';
+			return -1;
+		}
 
-        dol_syslog(get_class($this) . "::create sql=" . $sql, LOG_DEBUG);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            $this->db->commit();
-            return 1;
-        } else {
-            $this->error = $this->db->lasterror();
-            $this->errno = $this->db->lasterrno();
-            dol_syslog(get_class($this) . "::create error " . $this->error, LOG_ERR);
-            $this->db->rollback();
-            return -1;
-        }
-    }
+		$this->db->begin();
 
-    /**
-     *  Load an import profil from database
-     *
-     *  @param		int		$id		Id of profil to load
-     *  @return		int				<0 if KO, >0 if OK
-     */
-    function fetch($id) {
-        $sql = 'SELECT em.rowid, em.field, em.label, em.type';
-        $sql.= ' FROM ' . MAIN_DB_PREFIX . 'import_model as em';
-        $sql.= ' WHERE em.rowid = ' . $id;
+		$sql = 'INSERT INTO ' . MAIN_DB_PREFIX . 'import_model (';
+		$sql.= 'fk_user, label, type, field';
+		$sql.= ')';
+		$sql.= " VALUES (" . ($user->id > 0 ? $user->id : 0) . ", '" . $this->db->escape($this->model_name) . "', '" . $this->datatoimport . "', '" . $this->hexa . "')";
 
-        dol_syslog(get_class($this) . "::fetch sql=" . $sql, LOG_DEBUG);
-        $result = $this->db->query($sql);
-        if ($result) {
-            $obj = $this->db->fetch_object($result);
-            if ($obj) {
-                $this->id = $obj->rowid;
-                $this->hexa = $obj->field;
-                $this->model_name = $obj->label;
-                $this->datatoimport = $obj->type;
-                $this->fk_user = $obj->fk_user;
-                return 1;
-            } else {
-                $this->error = "Model not found";
-                return -2;
-            }
-        } else {
-            dol_print_error($this->db);
-            return -3;
-        }
-    }
+		dol_syslog(get_class($this) . "::create sql=" . $sql, LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			$this->db->commit();
+			return 1;
+		} else {
+			$this->error = $this->db->lasterror();
+			$this->errno = $this->db->lasterrno();
+			dol_syslog(get_class($this) . "::create error " . $this->error, LOG_ERR);
+			$this->db->rollback();
+			return -1;
+		}
+	}
 
-    /**
-     * 	Delete object in database
-     *
-     * 	@param      User	$user        	User that delete
-     *  @param      int		$notrigger	    0=launch triggers after, 1=disable triggers
-     * 	@return		int						<0 if KO, >0 if OK
-     */
-    function delete($user, $notrigger = 0) {
-        global $conf, $langs;
-        $error = 0;
+	/**
+	 *  Load an import profil from database
+	 *
+	 *  @param		int		$id		Id of profil to load
+	 *  @return		int				<0 if KO, >0 if OK
+	 */
+	function fetch($id) {
+		$sql = 'SELECT em.rowid, em.field, em.label, em.type';
+		$sql.= ' FROM ' . MAIN_DB_PREFIX . 'import_model as em';
+		$sql.= ' WHERE em.rowid = ' . $id;
 
-        $sql = "DELETE FROM " . MAIN_DB_PREFIX . "import_model";
-        $sql.= " WHERE rowid=" . $this->id;
+		dol_syslog(get_class($this) . "::fetch sql=" . $sql, LOG_DEBUG);
+		$result = $this->db->query($sql);
+		if ($result) {
+			$obj = $this->db->fetch_object($result);
+			if ($obj) {
+				$this->id = $obj->rowid;
+				$this->hexa = $obj->field;
+				$this->model_name = $obj->label;
+				$this->datatoimport = $obj->type;
+				$this->fk_user = $obj->fk_user;
+				return 1;
+			} else {
+				$this->error = "Model not found";
+				return -2;
+			}
+		} else {
+			dol_print_error($this->db);
+			return -3;
+		}
+	}
 
-        $this->db->begin();
+	/**
+	 * 	Delete object in database
+	 *
+	 * 	@param      User	$user        	User that delete
+	 *  @param      int		$notrigger	    0=launch triggers after, 1=disable triggers
+	 * 	@return		int						<0 if KO, >0 if OK
+	 */
+	function delete($user, $notrigger = 0) {
+		global $conf, $langs;
+		$error = 0;
 
-        dol_syslog(get_class($this) . "::delete sql=" . $sql);
-        $resql = $this->db->query($sql);
-        if (!$resql) {
-            $error++;
-            $this->errors[] = "Error " . $this->db->lasterror();
-        }
+		$sql = "DELETE FROM " . MAIN_DB_PREFIX . "import_model";
+		$sql.= " WHERE rowid=" . $this->id;
 
-        if (!$error) {
-            if (!$notrigger) {
-                // Call triggers
-                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                $interface = new Interfaces($this->db);
-                $result = $interface->run_triggers('IMPORT_DELETE', $this, $user, $langs, $conf);
-                if ($result < 0) {
-                    $error++;
-                    $this->errors = $interface->errors;
-                }
-                // End call triggers
-            }
-        }
+		$this->db->begin();
 
-        // Commit or rollback
-        if ($error) {
-            foreach ($this->errors as $errmsg) {
-                dol_syslog(get_class($this) . "::delete " . $errmsg, LOG_ERR);
-                $this->error.=($this->error ? ', ' . $errmsg : $errmsg);
-            }
-            $this->db->rollback();
-            return -1 * $error;
-        } else {
-            $this->db->commit();
-            return 1;
-        }
-    }
+		dol_syslog(get_class($this) . "::delete sql=" . $sql);
+		$resql = $this->db->query($sql);
+		if (!$resql) {
+			$error++;
+			$this->errors[] = "Error " . $this->db->lasterror();
+		}
+
+		if (!$error) {
+			if (!$notrigger) {
+				// Call triggers
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+				$interface = new Interfaces($this->db);
+				$result = $interface->run_triggers('IMPORT_DELETE', $this, $user, $langs, $conf);
+				if ($result < 0) {
+					$error++;
+					$this->errors = $interface->errors;
+				}
+				// End call triggers
+			}
+		}
+
+		// Commit or rollback
+		if ($error) {
+			foreach ($this->errors as $errmsg) {
+				dol_syslog(get_class($this) . "::delete " . $errmsg, LOG_ERR);
+				$this->error.=($this->error ? ', ' . $errmsg : $errmsg);
+			}
+			$this->db->rollback();
+			return -1 * $error;
+		} else {
+			$this->db->commit();
+			return 1;
+		}
+	}
 
 }
 
