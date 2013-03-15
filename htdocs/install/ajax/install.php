@@ -36,6 +36,10 @@ $out = array();
 /*
  * View
  */
+
+// For avoid error with destroy cookie
+ob_start();
+
 header('Content-type: application/json');
 
 // This variable are loaded by inc.php
@@ -374,5 +378,9 @@ if ($action == 'create_config') {
 	else
 		echo json_encode(array('status' => 'error', 'value' => $langs->trans('LockFileCouldNotBeCreated')));
 
+	// destroy couchdb cookie
+	setcookie('AuthSession', '', 1, '/');
 }
+// For avoid error with destroy cookie
+ob_end_flush();
 ?>

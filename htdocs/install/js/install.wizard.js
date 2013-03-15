@@ -305,7 +305,6 @@ $(document).ready(function() {
 		},
 		function(value) {
 			if (value.status == 'ok') {
-				destroySessionCookie();
 				$('#start_button').removeAttr('disabled');
 			} else {
 				return false;
