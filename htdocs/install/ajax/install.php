@@ -36,7 +36,6 @@ $out = array();
 /*
  * View
  */
-
 header('Content-type: application/json');
 
 // This variable are loaded by inc.php
@@ -44,10 +43,12 @@ header('Content-type: application/json');
 // $main_couchdb_port
 // Create config file
 if ($action == 'create_config') {
+
 	$couchdb_host = GETPOST('couchdb_host', 'alpha');
 	$couchdb_port = GETPOST('couchdb_port', 'int');
 	$memcached_host = GETPOST('memcached_host', 'alpha');
 	$memcached_port = GETPOST('memcached_port', 'int');
+
 	// Save old conf file on disk
 	if (file_exists("$conffile")) {
 		// We must ignore errors as an existing old file may already exists and not be replacable or
@@ -63,6 +64,7 @@ if ($action == 'create_config') {
 
 // Create sync user
 } else if ($action == 'create_syncuser') {
+
 	$couchdb_user_sync = GETPOST('couchdb_user_sync', 'alpha');
 	$couchdb_pass_sync = GETPOST('couchdb_pass_sync', 'alpha');
 	// $main_couchdb_host
@@ -73,6 +75,7 @@ if ($action == 'create_config') {
 
 // Create system database
 } else if ($action == 'create_system_database') {
+
 	$couchdb_name = 'system';
 	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
 
@@ -95,6 +98,7 @@ if ($action == 'create_config') {
 
 // Create database
 } else if ($action == 'create_entity_database') {
+
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
 	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
 
@@ -111,7 +115,7 @@ if ($action == 'create_config') {
 	}
 
 // Populate system database
-} else if ($action == 'populate_system_database' && !empty($jsonfiles['system'])) {
+} else if ($action == 'populate_system_database' && !empty($jsonfiles)) {
 
 	$errors = array();
 	$return = array();
@@ -119,7 +123,7 @@ if ($action == 'create_config') {
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
 	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', 'system');
 
-	foreach($jsonfiles['system'] as $filename => $filepath) {
+	foreach($jsonfiles as $filename => $filepath) {
 		$fp = fopen($filepath, "r");
 		if ($fp) {
 			$json = fread($fp, filesize($filepath));
@@ -127,46 +131,6 @@ if ($action == 'create_config') {
 			unset($obj->_rev);
 			if ($obj->_id == "const")
 				unset($obj->MAIN_VERSION);
-
-			try {
-				$couch->storeDoc($obj);
-				$return[] = $filename;
-			} catch (Exception $e) {
-				$error = 'File:' . $filename .' '. $e->getMessage();
-				error_log($error);
-				$errors[] = $error;
-			}
-
-			fclose($fp);
-
-		} else {
-			$error = "file not found : " . $filepath;
-			error_log($error);
-			$errors[] = $error;
-		}
-	}
-
-	if (!empty($errors)) {
-		echo json_encode(array('status' => 'error', 'value' => $errors));
-	} else {
-		echo json_encode(array('status' => 'ok', 'value' => $return));
-	}
-
-// Populate entity database
-} else if ($action == 'populate_entity_database' && !empty($jsonfiles['entity'])) {
-
-	$errors = array();
-	$return = array();
-
-	$couchdb_name = GETPOST('couchdb_name', 'alpha');
-	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
-
-	foreach($jsonfiles['entity'] as $filename => $filepath) {
-		$fp = fopen($filepath, "r");
-		if ($fp) {
-			$json = fread($fp, filesize($filepath));
-			$obj = json_decode($json);
-			unset($obj->_rev);
 
 			try {
 				$couch->storeDoc($obj);
@@ -378,6 +342,7 @@ if ($action == 'create_config') {
 
 // Install is finished, we create the lock file
 } else if ($action == 'lock_install') {
+
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
 	$host = substr($main_couchdb_host, 7);
 
@@ -409,7 +374,5 @@ if ($action == 'create_config') {
 	else
 		echo json_encode(array('status' => 'error', 'value' => $langs->trans('LockFileCouldNotBeCreated')));
 
-	// destroy couchdb cookie
-	setcookie('AuthSession', '', 1, '/');
 }
 ?>
