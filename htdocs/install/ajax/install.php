@@ -94,7 +94,7 @@ if ($action == 'create_config') {
 	}
 
 // Create database
-} else if ($action == 'create_database') {
+} else if ($action == 'create_entity_database') {
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
 	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
 
@@ -111,62 +111,85 @@ if ($action == 'create_config') {
 	}
 
 // Populate system database
-} else if ($action == 'populate_system_database') {
-	$filename = GETPOST('filename', 'alpha');
-	$filepath = GETPOST('filepath');
+} else if ($action == 'populate_system_database' && !empty($jsonfiles['system'])) {
 
-	$fp = fopen($filepath, "r");
-	if ($fp) {
-		$json = fread($fp, filesize($filepath));
-		$obj = json_decode($json);
-		unset($obj->_rev);
-		if ($obj->_id == "const")
-			unset($obj->MAIN_VERSION);
+	$errors = array();
+	$return = array();
 
-		$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', 'system');
+	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', 'system');
 
-		fclose($fp);
+	foreach($jsonfiles['system'] as $filename => $filepath) {
+		$fp = fopen($filepath, "r");
+		if ($fp) {
+			$json = fread($fp, filesize($filepath));
+			$obj = json_decode($json);
+			unset($obj->_rev);
+			if ($obj->_id == "const")
+				unset($obj->MAIN_VERSION);
 
-		try {
-			$couch->storeDoc($obj);
-			echo json_encode(array('status' => 'ok', 'value' => $filename));
-		} catch (Exception $e) {
-			error_log('File:' . $filename .' '. $e->getMessage());
-			echo json_encode(array('status' => 'error', 'value' => 'File:' . $filename .' '. $e->getMessage()));
+			try {
+				$couch->storeDoc($obj);
+				$return[] = $filename;
+			} catch (Exception $e) {
+				$error = 'File:' . $filename .' '. $e->getMessage();
+				error_log($error);
+				$errors[] = $error;
+			}
+
+			fclose($fp);
+
+		} else {
+			$error = "file not found : " . $filepath;
+			error_log($error);
+			$errors[] = $error;
 		}
+	}
 
+	if (!empty($errors)) {
+		echo json_encode(array('status' => 'error', 'value' => $errors));
 	} else {
-		error_log("file not found : " . $filepath);
-		echo json_encode(array('status' => 'error', 'value' => $filepath));
+		echo json_encode(array('status' => 'ok', 'value' => $return));
 	}
 
 // Populate entity database
-} else if ($action == 'populate_entity_database') {
-	$filename = GETPOST('filename', 'alpha');
-	$filepath = GETPOST('filepath');
+} else if ($action == 'populate_entity_database' && !empty($jsonfiles['entity'])) {
 
-	$fp = fopen($filepath, "r");
-	if ($fp) {
-		$json = fread($fp, filesize($filepath));
-		$obj = json_decode($json);
-		unset($obj->_rev);
+	$errors = array();
+	$return = array();
 
-		$couchdb_name = GETPOST('couchdb_name', 'alpha');
-		$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
+	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couch = new couchClient($main_couchdb_host . ':' . $main_couchdb_port . '/', $couchdb_name);
 
-		fclose($fp);
+	foreach($jsonfiles['entity'] as $filename => $filepath) {
+		$fp = fopen($filepath, "r");
+		if ($fp) {
+			$json = fread($fp, filesize($filepath));
+			$obj = json_decode($json);
+			unset($obj->_rev);
 
-		try {
-			$couch->storeDoc($obj);
-			echo json_encode(array('status' => 'ok', 'value' => $filename));
-		} catch (Exception $e) {
-			error_log('File:' . $filename .' '. $e->getMessage());
-			echo json_encode(array('status' => 'error', 'value' => 'File:' . $filename .' '. $e->getMessage()));
+			try {
+				$couch->storeDoc($obj);
+				$return[] = $filename;
+			} catch (Exception $e) {
+				$error = 'File:' . $filename .' '. $e->getMessage();
+				error_log($error);
+				$errors[] = $error;
+			}
+
+			fclose($fp);
+
+		} else {
+			$error = "file not found : " . $filepath;
+			error_log($error);
+			$errors[] = $error;
 		}
+	}
 
+	if (!empty($errors)) {
+		echo json_encode(array('status' => 'error', 'value' => $errors));
 	} else {
-		error_log("file not found : " . $filepath);
-		echo json_encode(array('status' => 'error', 'value' => $filepath));
+		echo json_encode(array('status' => 'ok', 'value' => $return));
 	}
 
 // Create superadmin
@@ -370,9 +393,6 @@ if ($action == 'create_config') {
 
 	// Increase timeout in couchdb to 3600s
 	$admin->setConfig("couch_httpd_auth", "timeout", "3600");
-
-	// Enable delayed commits
-	$admin->setConfig("couchdb", "delayed_commits", "true");
 
 	//remove admin_install
 	try {

@@ -193,7 +193,7 @@ $(document).ready(function() {
 		function(value) {
 			if (value.status == 'ok') {
 				setProgressBar('set_database', 15);
-				addDatabase();
+				addEntityDatabase();
 			} else {
 				return false;
 			}
@@ -201,70 +201,59 @@ $(document).ready(function() {
 	}
 	
 	// Add database
-	function addDatabase() {
+	function addEntityDatabase() {
 		$.post("install/ajax/install.php", {
-    		action: 'create_database',
+    		action: 'create_entity_database',
     		couchdb_name: $('#couchdb_name').val()
 		},
 		function(value) {
 			if (value.status == 'ok') {
 				setProgressBar('set_database', 30);
-				populateDatabase();
+				populateSystemDatabase();
 			} else {
 				return false;
 			}
 		}, "json");
 	}
 	
-	// Populate database
-	function populateDatabase() {
+	// Populate system database
+	function populateSystemDatabase() {
 		if ($('#couchdb_replication').prop('checked')) {
 			// Sync database
 			// TODO add sync progress here
 		} else {
-			// Populate local database
-			var progress_value = 30;
-			var step = Math.round((75 / (numSystemFiles + numEntityFiles)) + 1);
-			// Populate system database
-			var files = $.parseJSON(systemFiles);
-			$.each(files, function(name, path) {
-				$.post("install/ajax/install.php", {
-					action: 'populate_system_database',
-		    		filename: name,
-		    		filepath: path
-				},
-				function(value) {
-					if (value.status == 'ok') {
-						progress_value = progress_value + step;
-						progress_value = (progress_value < 100 ? progress_value : 100)
-						setProgressBar('set_database', progress_value);
-					}
-				}, 'json');
-			});
-			// Populate entity database
-			var files = $.parseJSON(entityFiles);
-			$.each(files, function(name, path) {
-				$.post("install/ajax/install.php", {
-					couchdb_name: $('#couchdb_name').val(),
-					action: 'populate_entity_database',
-		    		filename: name,
-		    		filepath: path
-				},
-				function(value) {
-					if (value.status == 'ok') {
-						progress_value = progress_value + step;
-						progress_value = (progress_value < 100 ? progress_value : 100)
-						setProgressBar('set_database', progress_value);
-					}
-				}, 'json');
-			});
-			addSuperadmin();
+			$.post("install/ajax/install.php", {
+				action: 'populate_system_database'
+			},
+			function(value) {
+				if (value.status == 'ok') {
+					setProgressBar('set_database', 80);
+					populateEntityDatabase();
+				} else {
+					return false;
+				}
+			}, 'json');
 		}
+	}
+	
+	// Populate entity database
+	function populateEntityDatabase() {
+		$.post("install/ajax/install.php", {
+			action: 'populate_entity_database',
+			couchdb_name: $('#couchdb_name').val()
+		},
+		function(value) {
+			if (value.status == 'ok') {
+				setProgressBar('set_database', 100);
+				addSuperadmin();
+			} else {
+				return false;
+			}
+		}, 'json');
 	}
 	
 	// Create superadmin
 	function addSuperadmin() {
-		var result;
 		$.post("install/ajax/install.php", {
     		action: 'create_admin',
     		couchdb_name: $('#couchdb_name').val(),

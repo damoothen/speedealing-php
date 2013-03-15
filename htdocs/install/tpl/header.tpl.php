@@ -61,14 +61,6 @@
 
 	<!-- JavaScript at bottom except for Modernizr -->
 	<script src="<?php echo DOL_URL_ROOT; ?>/includes/js/modernizr.custom.js"></script>
-
-	<!-- Json files for database -->
-	<script type="text/javascript">
-		var numSystemFiles = '<?php echo count($jsonfiles['system']); ?>';
-		var systemFiles = '<?php echo json_encode($jsonfiles['system']); ?>';
-		var numEntityFiles = '<?php echo count($jsonfiles['entity']); ?>';
-		var entityFiles = '<?php echo json_encode($jsonfiles['entity']); ?>';
-	</script>
 </head>
 
 <body class="full-page-wizard">
