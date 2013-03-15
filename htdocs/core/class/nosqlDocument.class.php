@@ -972,7 +972,7 @@ abstract class nosqlDocument extends CommonObject {
 				} else {
 					ar[ar.length] = "<a href=\"' . $url . '";
 				ar[ar.length] = obj.aData.' . $params["id"] . ';
-					ar[ar.length] = "\">";
+					ar[ar.length] = "\" target=\"_blank\">";
 					ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "</a>";
 				}

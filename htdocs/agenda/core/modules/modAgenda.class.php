@@ -39,7 +39,7 @@ class modAgenda extends DolibarrModules {
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
 		$this->name = preg_replace('/^mod/i', '', get_class($this));
 		$this->description = "Gestion de l'agenda et des actions";
-		$this->version = 'speedealing';						// 'experimental' or 'dolibarr' or version
+		$this->version = 'speedealing';	  // 'experimental' or 'dolibarr' or version
 		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
 		$this->special = 0;
@@ -322,7 +322,7 @@ class modAgenda extends DolibarrModules {
 		$this->menus[$r]->perms = '$user->rights->agenda->myactions->read';
 		$this->menus[$r]->enabled = '$conf->agenda->enabled';
 		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Agenda";
+		$this->menus[$r]->title = "Activities";
 		$r++;
 
 		$this->menus[$r] = new stdClass();
@@ -336,8 +336,8 @@ class modAgenda extends DolibarrModules {
 		$this->menus[$r]->title = "NewAction";
 		$this->menus[$r]->fk_menu = "menu:agenda";
 		$r++;
-		
-$this->menus[$r] = new stdClass();
+
+		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:actioncalendar";
 		$this->menus[$r]->position = 102;
 		$this->menus[$r]->url = "/agenda/index.php";
@@ -345,10 +345,10 @@ $this->menus[$r] = new stdClass();
 		$this->menus[$r]->perms = '$user->rights->agenda->myactions->read';
 		$this->menus[$r]->enabled = '$conf->agenda->enabled';
 		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Agenda";
+		$this->menus[$r]->title = "CalendarMeeting";
 		$this->menus[$r]->fk_menu = "menu:agenda";
 		$r++;
-		
+
 		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:myagendaListTODO";
 		$this->menus[$r]->position = 111;
@@ -360,7 +360,7 @@ $this->menus[$r] = new stdClass();
 		$this->menus[$r]->title = "MenuToDoMyActions";
 		$this->menus[$r]->fk_menu = "menu:agenda";
 		$r++;
-		
+
 		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:myagendaListDONE";
 		$this->menus[$r]->position = 112;
@@ -372,7 +372,7 @@ $this->menus[$r] = new stdClass();
 		$this->menus[$r]->title = "MenuDoneMyActions";
 		$this->menus[$r]->fk_menu = "menu:agenda";
 		$r++;
-		
+
 		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:agendaListTODO";
 		$this->menus[$r]->position = 121;
@@ -384,7 +384,7 @@ $this->menus[$r] = new stdClass();
 		$this->menus[$r]->title = "MenuToDoActions";
 		$this->menus[$r]->fk_menu = "menu:agenda";
 		$r++;
-		
+
 		$this->menus[$r] = new stdClass();
 		$this->menus[$r]->_id = "menu:agendaListDONE";
 		$this->menus[$r]->position = 122;

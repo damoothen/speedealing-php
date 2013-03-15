@@ -1270,7 +1270,6 @@ class Agenda extends nosqlDocument {
 
 					$obj = new stdClass();
 					$obj->x = strtotime($aRow->value->datep) * 1000;
-					error_log($obj->x);
 					$obj->y = $priority;
 					$obj->name = $aRow->value->label;
 					$obj->id = $aRow->value->_id;

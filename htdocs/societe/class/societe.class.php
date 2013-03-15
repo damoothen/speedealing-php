@@ -297,7 +297,7 @@ class Societe extends nosqlDocument {
 				$town = substr($town, 0, $pos);
 				//print $town;exit;
 			}
-			$apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" . urlencode($this->address . "," . $this->zip . "," . $this->town);
+			$apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" . urlencode($this->address . "," . $this->zip . "," . $town);
 			$c = curl_init();
 			curl_setopt($c, CURLOPT_URL, $apiUrl);
 			curl_setopt($c, CURLOPT_HEADER, false);
