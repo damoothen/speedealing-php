@@ -1,5 +1,6 @@
 {
    "_id": "extrafields:Societe",
+   "_rev": "51-87499267de3b19d781420d186f76ce91",
    "class": "extrafields",
    "ico": "icon-object-company",
    "langs": [
@@ -29,22 +30,13 @@
        "idprof3"
    ],
    "longList": [
-       "_id",
-       "Checkbox",
-       "name",
        "code_client",
-       "commercial_id",
        "zip",
        "town",
        "address",
        "zonegeo",
        "phone",
-       "email",
-       "idprof3",
-       "Tag",
-       "Status",
-       "prospectlevel",
-       "Action"
+       "idprof3"
    ],
    "shortList": [
        "town",
@@ -133,6 +125,7 @@
            "enable": true,
            "javascript": null,
            "list": {
+               "searchable": true,
                "cssclass": "center dol_edit",
                "editable": true
            }
@@ -227,7 +220,8 @@
            "length": "25",
            "enable": true,
            "list": {
-               "visible": false
+               "visible": false,
+               "searchable": true
            }
        },
        "idprof3": {
@@ -236,6 +230,7 @@
            "length": "12",
            "enable": true,
            "list": {
+               "searchable": true
            }
        },
        "typent_id": {
@@ -363,7 +358,8 @@
            "enable": true,
            "list": {
                "cssclass": "center",
-               "editable": true
+               "editable": true,
+               "searchable": true
            },
            "view": "listZoneGeo",
            "getkey": true,

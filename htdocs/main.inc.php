@@ -569,24 +569,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 	if (empty($conf->css))
 		$conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // DOCTYPE
 	include DOL_DOCUMENT_ROOT . '/core/tpl/preheader.tpl.php';
 

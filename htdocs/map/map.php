@@ -10,7 +10,7 @@ $langs->load("companies");
 // Security check
 $id = isset($_GET["id"]) ? $_GET["id"] : '';
 if ($user->societe_id)
-    $id = $user->societe_id;
+	$id = $user->societe_id;
 $result = restrictedArea($user, 'societe', $socid);
 
 // Initialization Company Object
@@ -20,33 +20,29 @@ $soc->load($id);
 $arrayjs = array();
 
 if ($conf->map->enabled) {
-    if ($conf->global->MAP_SYSTEM == 'microsoft') {
-        //microsoft
-        $arrayjs[0] = 'https://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6';
-        $arrayjs[1] = '/map/lib/mxn.js?(microsoft)';
-    }
+	//microsoft
+	$arrayjs[0] = 'https://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6';
+	$arrayjs[1] = '/map/lib/mxn.js?(microsoft)';
 
-    if ($conf->global->MAP_SYSTEM == 'google') {
-        //google
-        $arrayjs[0] = 'https://maps.google.com/maps?file=api&amp;v=3&amp;sensor=false&amp;key=' . $conf->global->GOOGLE_KEY;
-        $arrayjs[1] = '/map/lib/mxn.js?(google)';
-    }
+	if ($conf->global->MAP_SYSTEM == 'google') {
+		//google
+		$arrayjs[0] = 'https://maps.google.com/maps?file=api&amp;v=3&amp;sensor=false&amp;key=' . $conf->global->GOOGLE_KEY;
+		$arrayjs[1] = '/map/lib/mxn.js?(google)';
+	}
 
-    if ($conf->global->MAP_SYSTEM == 'openlayers') {
-        //open street map
-        $arrayjs[0] = 'http://www.openlayers.org/api/OpenLayers.js';
-        $arrayjs[1] = '/map/lib/mxn.js?(openlayers)';
-    }
+	if ($conf->global->MAP_SYSTEM == 'openlayers') {
+		//open street map
+		$arrayjs[0] = 'http://www.openlayers.org/api/OpenLayers.js';
+		$arrayjs[1] = '/map/lib/mxn.js?(openlayers)';
+	}
 }
 
 
-llxHeader('', '', '', '', '', '', $arrayjs, '');
+llxHeader('', '', '', '', '', $arrayjs, '', '');
 
 //$head = societe_prepare_head($soc);
-
 //dol_fiche_head($head, 'map', $langs->trans("ThirdParty"), 0, 'company');
 print_fiche_titre($soc->name);
-
 ?>
 
 <center>
@@ -54,28 +50,28 @@ print_fiche_titre($soc->name);
 </center>
 
 <script type="text/javascript">
-    //<![CDATA[
-    function initialize() {
+	//<![CDATA[
+	function initialize() {
 
-        // create mxn object
-        var m = new mxn.Mapstraction('mapdiv','<?php print $conf->global->MAP_SYSTEM; ?>');
+		// create mxn object
+		var m = new mxn.Mapstraction('mapdiv', '<?php print $conf->global->MAP_SYSTEM; ?>');
 
-        $.ajax({
-            url:'<?php print DOL_URL_ROOT; ?>/map/geoservice.php?id=<?php print $id; ?>',
-            type:'GET',
-            success: function(json){
-                m.addJSON(json);
-            }
-        });
+		$.ajax({
+			url: '<?php print DOL_URL_ROOT; ?>/map/geoservice.php?id=<?php print $id; ?>',
+			type: 'GET',
+			success: function(json) {
+				m.addJSON(json);
+			}
+		});
 
-        m.addControls({zoom:'small'});
+		m.addControls({zoom: 'small'});
 
-        var latlon = new mxn.LatLonPoint(<?php print $soc->gps[0]; ?>,<?php print $soc->gps[1]; ?> );
-        // put map on page
-        m.setCenterAndZoom(latlon, 13);
-    }
-    window.onload = initialize;
-    //]]>
+		var latlon = new mxn.LatLonPoint(<?php print $soc->gps[0]; ?>,<?php print $soc->gps[1]; ?>);
+		// put map on page
+		m.setCenterAndZoom(latlon, 13);
+	}
+	window.onload = initialize;
+	//]]>
 </script> 
 
 <?php

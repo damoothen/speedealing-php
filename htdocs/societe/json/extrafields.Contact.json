@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Contact",
-   "_rev": "22-df23a424fa3ae1d00d0338f4375371b3",
+   "_rev": "50-7397f45ea63dc18b477a12d395177f67",
    "class": "extrafields",
    "ico": "16-User.png",
    "langs": [
@@ -51,18 +51,22 @@
            },
            "values": {
                "ST_NEVER": {
+                   "label": "Non déterminé",
                    "enable": true,
                    "cssClass": "grey-gradient"
                },
                "ST_ENABLE": {
+                   "label": "Actif",
                    "enable": true,
                    "cssClass": "green-gradient"
                },
                "ST_DISABLE": {
+                   "label": "Inactif",
                    "enable": true,
                    "cssClass": "blue-gradient"
                },
-               "ST_OUT": {
+               "ST_NO": {
+                   "label": "Ne pas contacter",
                    "enable": true,
                    "cssClass": "red-gradient"
                }

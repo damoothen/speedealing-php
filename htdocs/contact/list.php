@@ -76,7 +76,10 @@ if ($_GET['json'] == "list") {
 
     $result = array();
     try {
-        $resultsoc = $soc->getView("listByCommercial", array("key" => $user->id));
+		if($_GET["disable"]=="true")
+			$resultsoc = $soc->getView("listDisableByCommercial", array("key" => $user->id));
+		else
+			$resultsoc = $soc->getView("listByCommercial", array("key" => $user->id));
     } catch (Exception $exc) {
         print $exc->getMessage();
     }
@@ -220,8 +223,9 @@ print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Status";
-$obj->aoColumns[$i]->sClass = "dol_select center";
+$obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sWidth = "100px";
+$obj->aoColumns[$i]->editable = true;
 $obj->aoColumns[$i]->sDefaultContent = $object->fk_extrafields->fields->Status->default;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
 $i++;
@@ -284,8 +288,11 @@ print'</tbody>';
 print "</table>";
 
 //$obj->bServerSide = true;
+if($_GET["disable"])
+	$obj->sAjaxSource = "core/ajax/listdatatables.php?json=listDisable&class=" . get_class($object);
+
 if (!$user->rights->societe->client->voir)
-    $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list&class=" . get_class($object) . "&key=" . $user->id;
+    $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list&class=" . get_class($object) . "&key=" . $user->id . "&disable=".($_GET["disable"]?"true":"false");
 
 $object->datatablesCreate($obj, "list_contacts", true, true);
 
