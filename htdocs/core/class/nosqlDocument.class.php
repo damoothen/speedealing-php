@@ -1026,7 +1026,8 @@ abstract class nosqlDocument extends CommonObject {
 			var statusDateEnd = "";
 			var stat = obj.aData.' . $key . ';
 			if(stat === undefined)
-			stat = "' . $this->fk_extrafields->fields->$key->default . '";';
+				stat = "' . $this->fk_extrafields->fields->$key->default . '";';
+			
 
 				if (!empty($this->fk_extrafields->fields->$key->values)) {
 					foreach ($this->fk_extrafields->fields->$key->values as $key1 => $aRow) {
@@ -1050,6 +1051,9 @@ abstract class nosqlDocument extends CommonObject {
 				stat = expire[stat];';
 					$rtr.= '}';
 				}
+				$rtr.= 'if(status[stat]===undefined)
+					stat = "ERROR";';
+				
 				$rtr.= 'var ar = [];
 		ar[ar.length] = "<span class=\"tag ";
 		ar[ar.length] = status[stat][1];

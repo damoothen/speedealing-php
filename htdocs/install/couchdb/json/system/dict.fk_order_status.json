@@ -1,5 +1,6 @@
 {
    "_id": "dict:fk_order_status",
+   "_rev": "40-365b6f37476fe97588366f096e52d4f7",
    "class": "Dict",
    "values": {
        "DRAFT": {
@@ -7,19 +8,20 @@
            "label": "StatusOrderDraft",
            "cssClass": "grey-gradient"
        },
-       "AUTO": {
-           "label": "StatusOrderAuto",
+       "NEW": {
+           "enable": true,
+           "label": "StatusOrderNew",
            "cssClass": "orange-gradient"
        },
        "VALIDATED": {
            "enable": true,
-           "label": "StatusOrderValidated",
+           "label": "StatusOrderApproved",
            "cssClass": "red-gradient"
        },
-       "TO_BILL": {
+       "PROCESSING": {
            "enable": true,
-           "label": "StatusOrderToBill2",
-           "cssClass": "orange-gradient"
+           "label": "StatusOrderProcessing",
+           "cssClass": "blue-gradient"
        },
        "PROCESSED": {
            "enable": true,
@@ -30,6 +32,11 @@
            "enable": true,
            "label": "StatusOrderCanceled",
            "cssClass": "black-gradient"
+       },
+       "ERROR": {
+           "enable": true,
+           "label": "StatusOrderError",
+           "cssClass": "red-gradient"
        }
    }
 }
