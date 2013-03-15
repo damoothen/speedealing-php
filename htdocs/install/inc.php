@@ -116,15 +116,10 @@ if (!empty($_SESSION['db_json_files'])) {
 } else {
 	// Get json files list
 	$jsonfiles = array();
-	// Get system files
-	$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/system', 'files');
+	// Get dict files
+	$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json', 'files');
 	foreach($fileslist as $file) {
-		$jsonfiles['system'][$file['name']] = $file['fullname'];
-	}
-	// Get entity files
-	$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json/entity', 'files');
-	foreach($fileslist as $file) {
-		$jsonfiles['entity'][$file['name']] = $file['fullname'];
+			$jsonfiles[$file['name']] = $file['fullname'];
 	}
 	// Stock in session for best performance
 	$_SESSION['db_json_files'] = $jsonfiles;

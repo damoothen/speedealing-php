@@ -227,29 +227,13 @@ $(document).ready(function() {
 			},
 			function(value) {
 				if (value.status == 'ok') {
-					setProgressBar('set_database', 80);
-					populateEntityDatabase();
+					setProgressBar('set_database', 100);
+					addSuperadmin();
 				} else {
 					return false;
 				}
 			}, 'json');
 		}
-	}
-	
-	// Populate entity database
-	function populateEntityDatabase() {
-		$.post("install/ajax/install.php", {
-			action: 'populate_entity_database',
-			couchdb_name: $('#couchdb_name').val()
-		},
-		function(value) {
-			if (value.status == 'ok') {
-				setProgressBar('set_database', 100);
-				addSuperadmin();
-			} else {
-				return false;
-			}
-		}, 'json');
 	}
 	
 	// Create superadmin

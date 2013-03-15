@@ -232,10 +232,10 @@ if (empty($builder)) {
 		$i++;
 	}
 	foreach ($object->fk_extrafields->oldList as $aRow) {
-		if ($object->fk_extrafields->fields->$aRow->list->searchable == true)
-			print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search " . $aRow) . '" /></th>';
+		if (is_bool($object->fk_extrafields->fields->$aRow->list->searchable) === true && $object->fk_extrafields->fields->$aRow->list->searchable === false)
+			print '<th id="' . $i . '"></th>';
 		else
-			print'<th id="' . $i . '"></th>';
+			print '<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search " . $aRow) . '" /></th>';
 		$i++;
 	}
 	print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search category") . '" /></th>';

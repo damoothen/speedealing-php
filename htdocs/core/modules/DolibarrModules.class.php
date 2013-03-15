@@ -1414,7 +1414,7 @@ class DolibarrModules extends nosqlDocument {
 	function upgradeCore() {
 		$files = array("DolibarrModules.view", "MenuAuguria.view", "Dict.view", "extrafields.DolibarrModules");
 
-		$dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/system/";
+		$dir = DOL_DOCUMENT_ROOT . "/install/couchdb/json/";
 		foreach ($files as $row) {
 			$fp = fopen($dir . $row . ".json", "r");
 			if ($fp) {
