@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => 'جدول الأعمال',
 		'Agendas' => 'جداول الأعمال',
 		'Calendar' => 'التقويم',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => 'التقاويم',
 		'LocalAgenda' => 'تقويم محلي',
 		'AffectedTo' => 'إلى المتضررين',

@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => 'Napirend',
 		'Agendas' => 'Napirendek',
 		'Calendar' => 'Naptár',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => 'Naptárak',
 		'LocalAgenda' => 'Helyi naptár',
 		'AffectedTo' => 'Befolyásolhatja',

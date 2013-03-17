@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => 'Päevakord',
 		'Agendas' => 'Päevakorrad',
 		'Calendar' => 'Kalender',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => 'Kalendrid',
 		'LocalAgenda' => 'Kohalik kalender',
 		'AffectedTo' => 'Mõjutada',

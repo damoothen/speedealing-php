@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => 'Agenda',
 		'Agendas' => 'Agendes',
 		'Calendar' => 'Calendari',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => 'Calendaris',
 		'LocalAgenda' => 'Calendari local',
 		'AffectedTo' => 'Assignada a',

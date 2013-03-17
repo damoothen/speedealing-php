@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => '议程',
 		'Agendas' => '议程',
 		'Calendar' => '日历',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => '日历',
 		'LocalAgenda' => '本地日历',
 		'AffectedTo' => '受影响',
