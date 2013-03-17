@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => 'Дневен ред',
 		'Agendas' => 'Дневен ред',
 		'Calendar' => 'Календар',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => 'Календари',
 		'LocalAgenda' => 'Локално календар',
 		'AffectedTo' => 'Засегнати в',

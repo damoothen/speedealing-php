@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => 'Ημερολόγιο',
 		'Agendas' => 'Ημερολόγια',
 		'Calendar' => 'Ημερολόγιο',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => 'Ημερολόγια',
 		'LocalAgenda' => 'Τοπικό ημερολόγιο',
 		'AffectedTo' => 'Ανάθεση σε',

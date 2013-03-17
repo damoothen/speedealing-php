@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => 'Agenda',
 		'Agendas' => 'Esityslistat',
 		'Calendar' => 'Kalenteri',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => 'Kalenterit',
 		'LocalAgenda' => 'Paikallinen kalenteri',
 		'AffectedTo' => 'Vaikuttaa',
