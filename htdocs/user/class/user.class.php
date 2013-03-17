@@ -171,8 +171,9 @@ class User extends nosqlDocument {
 		try {
 			$admins = $this->couchAdmin->getUserAdmins();
 			$name = $this->couchAdmin->getLoginSession();
+			$user = $this->couchAdmin->getUser($name);
 
-			if ((isset($admins->$name) || in_array("_admin", $this->roles, true)) && $this->name == $name)
+			if ((isset($admins->$name) || in_array("_admin", $user->roles, true)) && $this->name == $name)
 				$this->superadmin = true;
 			else
 				$this->superadmin = false;
