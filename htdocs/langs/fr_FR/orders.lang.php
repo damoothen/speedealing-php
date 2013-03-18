@@ -59,6 +59,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Reçu complètement',
 		'StatusOrderCanceled' => 'Annulée',
 		'StatusOrderDraft' => 'Brouillon (à valider)',
+		'StatusOrderNeedQuotes' => 'Brouillon (Devis manuel requis)',
 		'StatusOrderNew' => 'Nouvelle commande (à valider)',
 		'StatusOrderProcessing' => 'En cours de traitement',
 		'StatusOrderValidated' => 'Validée',

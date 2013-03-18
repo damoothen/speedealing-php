@@ -59,6 +59,7 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Everything received',
 		'StatusOrderCanceled' => 'Canceled',
 		'StatusOrderDraft' => 'Draft (needs to be validated)',
+		'StatusOrderNeedQuotes' => 'Draft (needs manual quotes)',
 		'StatusOrderNew' => 'New order (needs to be validated)',
 		'StatusOrderProcessing' => 'Processing',
 		'StatusOrderValidated' => 'Validated',

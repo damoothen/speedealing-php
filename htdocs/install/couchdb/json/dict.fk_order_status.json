@@ -1,12 +1,17 @@
 {
    "_id": "dict:fk_order_status",
-   "_rev": "40-365b6f37476fe97588366f096e52d4f7",
+   "_rev": "50-4144366efc7185a12e17aab8bdb1f01f",
    "class": "Dict",
    "values": {
        "DRAFT": {
            "enable": true,
            "label": "StatusOrderDraft",
            "cssClass": "grey-gradient"
+       },
+       "QUOTES": {
+           "enable": false,
+           "label": "StatusOrderNeedQuotes",
+           "cssClass": "red-gradient"
        },
        "NEW": {
            "enable": true,

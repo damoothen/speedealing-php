@@ -148,7 +148,7 @@ class AbstractInvoice extends nosqlDocument {
 		$obj->aoColumns[$i]->bSearchable = false;
 		$obj->aoColumns[$i]->bVisible = false;
 		$i++;
-		
+
 		print'<th class="essential">';
 		print $langs->trans("Group");
 		print'</th>';
@@ -157,7 +157,7 @@ class AbstractInvoice extends nosqlDocument {
 		$obj->aoColumns[$i]->sDefaultContent = "";
 		$obj->aoColumns[$i]->bVisible = false;
 		$i++;
-		
+
 		print'<th class="essential">';
 		$product = new Product($this->db);
 		print $langs->trans("Product");
@@ -169,7 +169,7 @@ class AbstractInvoice extends nosqlDocument {
 		$obj->aoColumns[$i]->sDefaultContent = "";
 		$obj->aoColumns[$i]->fnRender = $product->datatablesFnRender("product.label", "url", array("id" => "product.id"));
 		$i++;
-		
+
 		print'<th class="essential">';
 		print $langs->trans("Description");
 		print'</th>';
@@ -180,7 +180,7 @@ class AbstractInvoice extends nosqlDocument {
 		$obj->aoColumns[$i]->editable = true;
 		$obj->aoColumns[$i]->sDefaultContent = "";
 		$i++;
-		
+
 		print'<th class="essential">';
 		print $langs->trans("VAT");
 		print'</th>';
@@ -359,10 +359,9 @@ class Line {
 			$this->pu = price2num($this->pu_ht);
 		else
 			$this->pu = price2num($this->pu_ttc);
+		
 		$this->pa_ht = price2num($this->pa_ht);
 		$this->tva_tx = price2num($this->tva_tx);
-		
-							error_log($this->pu);
 
 		// Calcul du total TTC et de la TVA pour la ligne a partir de
 		// qty, pu, remise_percent et tva_tx
