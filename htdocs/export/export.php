@@ -191,7 +191,7 @@ if ($step == 1 || $action == 'cleanselect') {
     dol_setcache("export_selected_fields",array());
     $array_selected = array();
 }
-
+		
 if ($action == 'remove_file') {
         $langs->load("other");
         $file = $conf->export->dir_temp . '/' . $user->id. '/' . GETPOST('file'); // Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
