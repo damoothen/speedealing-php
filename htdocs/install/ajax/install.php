@@ -187,12 +187,9 @@ if ($action == 'create_config') {
 		exit;
 	}
 
-	// create superadmin in system and _users databases
-	$useradmin = new User();
-
 	$found = false;
 	try {
-		$useradmin->load("user:" . trim($couchdb_user_root));
+		$admin->getUser(trim($couchdb_user_root));
 		$found = true;
 	} catch (Exception $e) {
 		// user not exit
@@ -200,6 +197,9 @@ if ($action == 'create_config') {
 
 	if (!$found) {
 		try {
+			// create superadmin in system and _users databases
+			$useradmin = new User();
+
 			$useradmin->Lastname = "Admin";
 			$useradmin->Firstname = "Admin";
 			$useradmin->name = trim($couchdb_user_root);
@@ -230,17 +230,16 @@ if ($action == 'create_config') {
 
 	try {
 		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+		$admin = new couchAdmin($couch);
 	} catch (Exception $e) {
 		error_log($e->getMessage());
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
 		exit;
 	}
 
-	// create first user in system and _users databases
-	$firstuser = new User();
 	$found = false;
 	try {
-		$firstuser->load("user:" . trim($couchdb_user_login));
+		$admin->getUser(trim($couchdb_user_login));
 		$found = true;
 	} catch (Exception $e) {
 		// user not exit
@@ -248,6 +247,9 @@ if ($action == 'create_config') {
 
 	if (!$found) {
 		try {
+			// create first user in system and _users databases
+			$firstuser = new User();
+
 			$firstuser->Lastname = trim($couchdb_user_lastname);
 			$firstuser->Firstname = trim($couchdb_user_firstname);
 			$firstuser->name = trim($couchdb_user_login);
