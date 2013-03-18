@@ -679,7 +679,7 @@ class User extends nosqlDocument {
 			  $this->_id = $user_tmp->_id;
 			  $this->_rev = $user_tmp->_rev; */
 
-			if (($action == 'add' || $action == 'install') {
+			if ($action == 'add' || $action == 'install') {
 				if (empty($this->Status))
 					$this->Status = "DISABLE";
 				$this->CreateDate = dol_now();
