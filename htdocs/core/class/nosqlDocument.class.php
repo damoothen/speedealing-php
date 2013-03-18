@@ -65,6 +65,11 @@ abstract class nosqlDocument extends CommonObject {
 		//	$this->couchdb->useDatabase($conf->Couchdb->name);
 	}
 
+	/**
+	 *
+	 * @param unknown $rowid
+	 * @return number
+	 */
 	function fetch($rowid) { // old dolibarr rowid
 		if (is_int($rowid)) {
 			try {
@@ -89,6 +94,11 @@ abstract class nosqlDocument extends CommonObject {
 		return 1;
 	}
 
+	/**
+	 *
+	 * @param unknown $id
+	 * @return number
+	 */
 	function simpleFetch($id) {
 		global $conf;
 
@@ -104,6 +114,11 @@ abstract class nosqlDocument extends CommonObject {
 		return 1;
 	}
 
+	/**
+	 *
+	 * @param unknown $user
+	 * @return Ambigous <object, boolean, NULL, unknown, mixed, multitype:>
+	 */
 	function update($user) {
 		if ($this->id) // only update
 			$this->UserUpdate = $user->login;
