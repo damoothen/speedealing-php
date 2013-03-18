@@ -32,7 +32,7 @@ abstract class nosqlDocument extends CommonObject {
 	public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "couchdb", "db",
 		"error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
 		"dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin",
-		"all_permissions_are_loaded","right");
+		"all_permissions_are_loaded", "right");
 
 	/**
 	 * 	class constructor
@@ -537,126 +537,127 @@ abstract class nosqlDocument extends CommonObject {
 		?>
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready(function() {
-				var oTable = $('#<?php echo $ref_css ?>').dataTable( {
-					"aoColumns" : [
+			var oTable = $('#<?php echo $ref_css ?>').dataTable({
+			"aoColumns" : [
 		<?php
 		$nb = count($obj->aoColumns);
 		foreach ($obj->aoColumns as $i => $aRow):
 			?>
-								{
+				{
 			<?php foreach ($aRow as $key => $fields): ?>
 				<?php if ($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
-												"<?php echo $key; ?>":"<?php echo $fields; ?>",
+						"<?php echo $key; ?>":"<?php echo $fields; ?>",
 				<?php elseif ($key == "fnRender") : ?>
-												"<?php echo $key; ?>": <?php echo $fields; ?>,
+						"<?php echo $key; ?>": <?php echo $fields; ?>,
 				<?php else : ?>
-												"<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
+						"<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
 				<?php endif; ?>
 				<?php
 			endforeach;
 			if ($nb - 1 == $i)
-				echo "}"; else
+				echo "}";
+			else
 				echo"},";
 			?>
 		<?php endforeach; ?>
-						],
+			],
 		<?php if (!isset($obj->aaSorting)) : ?>
-							"aaSorting" : [[1,"asc"]],
+				"aaSorting" : [[1, "asc"]],
 		<?php else : ?>
-							"aaSorting" : <?php echo json_encode($obj->aaSorting); ?>,
+				"aaSorting" : <?php echo json_encode($obj->aaSorting); ?>,
 		<?php endif; ?>
 		<?php if ($json) : ?>
 			<?php if (!empty($obj->sAjaxSource)): ?>
-									"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
+					"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
 			<?php else : ?>
-									"sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listdatatables.php'; ?>?json=list&bServerSide=<?php echo $obj->bServerSide; ?>&class=<?php echo get_class($this); ?>",
+					"sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listdatatables.php'; ?>?json=list&bServerSide=<?php echo $obj->bServerSide; ?>&class=<?php echo get_class($this); ?>",
 			<?php endif; ?>
 		<?php endif; ?>
 		<?php if (!empty($obj->iDisplayLength)): ?>
-							"iDisplayLength": <?php echo $obj->iDisplayLength; ?>,
+				"iDisplayLength": <?php echo $obj->iDisplayLength; ?>,
 		<?php else : ?>
-							"iDisplayLength": <?php echo (int) $conf->global->MAIN_SIZE_LISTE_LIMIT; ?>,
+				"iDisplayLength": <?php echo (int) $conf->global->MAIN_SIZE_LISTE_LIMIT; ?>,
 		<?php endif; ?>
-						"aLengthMenu": [[5, 10, 25, 50, 100],[5, 10, 25, 50, 100]],
-						"bProcessing": true,
-						"bJQueryUI": true,
-						"bAutoWidth": false,
-						/*"sScrollY": "500px",
-												"oScroller": {
-														"loadingIndicator": true
-												},*/
+			"aLengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+					"bProcessing": true,
+					"bJQueryUI": true,
+					"bAutoWidth": false,
+					/*"sScrollY": "500px",
+					 "oScroller": {
+					 "loadingIndicator": true
+					 },*/
 		<?php if ($obj->bServerSide) : ?>
-							"bServerSide": true,
+				"bServerSide": true,
 		<?php else : ?>
-							"bServerSide": false,
+				"bServerSide": false,
 		<?php endif; ?>
-						"bDeferRender": true,
-						"oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/core/js/datatables.js.php?lang=' . ($langs->defaultlang ? $langs->defaultlang : "en_US"); ?>"},
-						/*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
-						/*$obj->sPaginationType = 'full_numbers';*/
-						/*$obj->sDom = 'TC<\"clear\">lfrtip';*/
-						"oColVis": { "buttonText" : 'Voir/Cacher',
-							"aiExclude": [0,1] // Not cacheable _id and name
-						},
-						//$obj->oColVis->bRestore = true;
-						//$obj->oColVis->sAlign = 'left';
+			"bDeferRender": true,
+					"oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/core/js/datatables.js.php?lang=' . ($langs->defaultlang ? $langs->defaultlang : "en_US"); ?>"},
+					/*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
+					/*$obj->sPaginationType = 'full_numbers';*/
+					/*$obj->sDom = 'TC<\"clear\">lfrtip';*/
+					"oColVis": { "buttonText" : 'Voir/Cacher',
+					"aiExclude": [0, 1] // Not cacheable _id and name
+			},
+					//$obj->oColVis->bRestore = true;
+					//$obj->oColVis->sAlign = 'left';
 
-						// Avec export Excel
+					// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
-							//"sDom": "Cl<fr>t<\"clear\"rtip>",
-							"sDom": "<?php echo $obj->sDom; ?>",
+				//"sDom": "Cl<fr>t<\"clear\"rtip>",
+				"sDom": "<?php echo $obj->sDom; ?>",
 		<?php else : ?>
-							//"sDom": "C<\"clear\"fr>lt<\"clear\"rtip>",
-							"sDom": "<\"dataTables_header\"lfr>t<\"dataTables_footer\"ip>",
-							//"sDom": "C<\"clear\"fr>tiS",
-							//"sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
+				//"sDom": "C<\"clear\"fr>lt<\"clear\"rtip>",
+				"sDom": "<\"dataTables_header\"lfr>t<\"dataTables_footer\"ip>",
+						//"sDom": "C<\"clear\"fr>tiS",
+						//"sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
 		<?php endif; ?>
-						// bottons
+			// bottons
 		<?php if ($obj->oTableTools->aButtons != null) : ?>
-							"oTableTools" : { "aButtons": [
+				"oTableTools" : { "aButtons": [
 			<?php foreach ($obj->oTableTools->aButtons as $i => $aRow): ?>
 				<?php if (is_array($aRow)): ?>
-													{
+						{
 					<?php foreach ($aRow as $key => $fields): ?>
 						<?php if ($key == "fnClick" || $key == "fnAjaxComplete") : ?>
-																		"<?php echo $key; ?>": <?php echo $fields; ?>,
+								"<?php echo $key; ?>": <?php echo $fields; ?>,
 						<?php else : ?>
-																		"<?php echo $key; ?>":"<?php echo $fields; ?>",
+								"<?php echo $key; ?>":"<?php echo $fields; ?>",
 						<?php endif; ?>
 					<?php endforeach; ?>
-														},
+						},
 				<?php else : ?>
-													{
-														"sExtends": "<?php echo $aRow; ?>",
-														"sFieldBoundary": '"',
-														//"sFieldSeperator": "-",
-														"sCharSet": "utf8",
-														"sFileName": "export.csv",
-														"bSelectedOnly": false
-													},
+						{
+						"sExtends": "<?php echo $aRow; ?>",
+								"sFieldBoundary": '"',
+								//"sFieldSeperator": "-",
+								"sCharSet": "utf8",
+								"sFileName": "export.csv",
+								"bSelectedOnly": false
+						},
 				<?php endif; ?>
 			<?php endforeach; ?>
-									],
-									"sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>",
-									"sRowSelect": "multi"
-								},
+				],
+						"sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>",
+						"sRowSelect": "multi"
+				},
 		<?php endif; ?>
 		<?php if (isset($obj->fnRowCallback)): ?>
-							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
+				"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
 		<?php if (isset($obj->fnFooterCallback)): ?>
-							"fnFooterCallback": <?php echo $obj->fnFooterCallback; ?>,
+				"fnFooterCallback": <?php echo $obj->fnFooterCallback; ?>,
 		<?php endif; ?>
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
-									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
+					"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
 			<?php endif; ?>
 		<?php endif; ?>
 		<?php if ($user->rights->$class->edit || $user->rights->$class->creer || $user->admin) : ?>
-						}).makeEditable({
-							sUpdateURL: urlSaveInPlace,
-							sAddURL: urlAddInPlace,
-							"aoColumns": [<?php
+				}).makeEditable({
+				sUpdateURL: urlSaveInPlace,
+						sAddURL: urlAddInPlace,
+						"aoColumns": [<?php
 			$nb = count($obj->aoColumns);
 			foreach ($obj->aoColumns as $i => $aRow) {
 				$idx = $aRow->mDataProp;
@@ -677,14 +678,14 @@ abstract class nosqlDocument extends CommonObject {
 						case "select" :
 							print "type: 'select',";
 							print "loadurl : urlLoadInPlace,";
-							?>loaddata: function ( value, settings ) {
-																	return {
-																		"id": oTable.fnGetData( this.parentNode, 0),
-																		"element_class" : "<?php echo get_class($this); ?>",
-																		"type":"select",
-																		"key": "editval_<?php echo $idx; ?>"
-																	};
-																},<?php
+							?>loaddata: function (value, settings) {
+								return {
+								"id": oTable.fnGetData(this.parentNode, 0),
+										"element_class" : "<?php echo get_class($this); ?>",
+										"type":"select",
+										"key": "editval_<?php echo $idx; ?>"
+								};
+								},<?php
 							break;
 						case "text":
 							print "type: 'text',";
@@ -697,19 +698,19 @@ abstract class nosqlDocument extends CommonObject {
 							print "type: 'text',";
 							break;
 					}
-					?>submitdata: function ( value, settings ) {
-												return { "id": oTable.fnGetData( this.parentNode, 0),
-													"element_class" : "<?php echo get_class($this); ?>",
-													"type": "<?php echo $this->fk_extrafields->fields->$idx->type; ?>",
-													"key": "editval_<?php echo $idx; ?>"
-												};
-											},
-											callback: function(sValue, y) {
-												//var aPos = oTable.fnGetPosition( this );
-												//oTable.fnAddData( sValue, aPos[0], aPos[1] ); // doesn't work with server-side
-												//oTable.fnDraw();
-												$(this).html(sValue);
-											},<?php
+					?>submitdata: function (value, settings) {
+						return { "id": oTable.fnGetData(this.parentNode, 0),
+								"element_class" : "<?php echo get_class($this); ?>",
+								"type": "<?php echo $this->fk_extrafields->fields->$idx->type; ?>",
+								"key": "editval_<?php echo $idx; ?>"
+						};
+						},
+								callback: function(sValue, y) {
+						//var aPos = oTable.fnGetPosition( this );
+						//oTable.fnAddData( sValue, aPos[0], aPos[1] ); // doesn't work with server-side
+						//oTable.fnDraw();
+						$(this).html(sValue);
+						},<?php
 					if (isset($this->fk_extrafields->fields->$idx->validate)) {
 						print 'oValidationOptions : { rules:{ value: {';
 
@@ -722,42 +723,43 @@ abstract class nosqlDocument extends CommonObject {
 							print 'cssclass: "' . $this->fk_extrafields->fields->$idx->validate->cssclass . '",';
 					}
 					print "},";
-				} else
+				}
+				else
 					print "null,";
 			}
 			?>
-						],
+				],
 						fnOnNewRowPosted: function(data) {
-							var rtn = oTable.fnAddData(JSON.parse(data));
-							return true;
-						},
+				var rtn = oTable.fnAddData(JSON.parse(data));
+						return true;
+				},
 						fnOnAdding: function() {
-							oTable.fnDraw(false);
-							return true;
-						},
+				oTable.fnDraw(false);
+						return true;
+				},
 						oAddNewRowButtonOptions: {
-							icons: { primary: 'ui-icon-plus' }
-						},
+				icons: { primary: 'ui-icon-plus' }
+				},
 						oDeleteRowButtonOptions: {
-							icons: { primary: 'ui-icon-trash' }
-						},
+				icons: { primary: 'ui-icon-trash' }
+				},
 						oAddNewRowOkButtonOptions: {
-							label: "<?php echo $langs->trans("Create"); ?>",
-							icons: { primary: 'ui-icon-check' },
-							name: "action",
-							value: "add-new"
-						},
+				label: "<?php echo $langs->trans("Create"); ?>",
+						icons: { primary: 'ui-icon-check' },
+						name: "action",
+						value: "add-new"
+				},
 						oAddNewRowCancelButtonOptions: {
-							label: "<?php echo $langs->trans("Undo"); ?>",
-							class: "back-class",
-							name: "action",
-							value: "cancel-add",
-							icons: { primary: 'ui-icon-close' }
-						},
+				label: "<?php echo $langs->trans("Undo"); ?>",
+						class: "back-class",
+						name: "action",
+						value: "cancel-add",
+						icons: { primary: 'ui-icon-close' }
+				},
 						oAddNewRowFormOptions: {
-							show: "blind",
-							hide: "blind"
-						},
+				show: "blind",
+						hide: "blind"
+				},
 						sAddNewRowFormId: "<?php echo $ref_css ?>_formAddNewRow",
 						sAddNewRowButtonId: "<?php echo $ref_css ?>_btnAddNewRow",
 						sAddNewRowOkButtonId: "<?php echo $ref_css ?>_btnAddNewRowOk",
@@ -766,51 +768,51 @@ abstract class nosqlDocument extends CommonObject {
 		<?php endif; ?>
 			});
 		<?php if ($ColSearch) : ?>
-				$("tfoot input").keyup( function () {
-					/* Filter on the column */
-					var id = $(this).parent().attr("id");
-					oTable.fnFilter( this.value, id);
-				} );
-				/*send selected level value to server */
-				$("tfoot #level").change( function () {
-					/* Filter on the column */
-					var id = $(this).parent().attr("id");
-					var value = $(this).val();
-					oTable.fnFilter( value, id);
-				} );
-				/*send selected stcomm value to server */
-				$("tfoot .flat").change( function () {
-					/* Filter on the column */
-					var id = $(this).parent().attr("id");
-					var value = $(this).val();
-					oTable.fnFilter( value, id);
-				} );
+				$("tfoot input").keyup(function () {
+				/* Filter on the column */
+				var id = $(this).parent().attr("id");
+						oTable.fnFilter(this.value, id);
+				});
+						/*send selected level value to server */
+						$("tfoot #level").change(function () {
+				/* Filter on the column */
+				var id = $(this).parent().attr("id");
+						var value = $(this).val();
+						oTable.fnFilter(value, id);
+				});
+						/*send selected stcomm value to server */
+						$("tfoot .flat").change(function () {
+				/* Filter on the column */
+				var id = $(this).parent().attr("id");
+						var value = $(this).val();
+						oTable.fnFilter(value, id);
+				});
 		<?php endif; ?>
 			// Select_all
 			$('.chSel_all').click(function () {
-				$(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
+			$(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
 			});
-			$("tbody tr td .delEnqBtn").live('click', function(){
-				var aPos = oTable.fnGetPosition(this.parentNode);
-				var aData = oTable.fnGetData(aPos[0]);
-				if(aData["name"] === undefined)
+					$("tbody tr td .delEnqBtn").live('click', function(){
+			var aPos = oTable.fnGetPosition(this.parentNode);
+					var aData = oTable.fnGetData(aPos[0]);
+					if (aData["name"] === undefined)
 					var text = aData["label"];
-				else
+					else
 					var text = aData["name"];
-				var answer = confirm("<?php echo $langs->trans("Delete"); ?> '"+text+"' ?");
-				if(answer) {
-					$.ajax({
-						type: "POST",
-						url: "<?php echo DOL_URL_ROOT . '/core/ajax/deleteinplace.php'; ?>",
-						data: "json=delete&class=<?php echo get_class($this); ?>&id="+aData["_id"],
-						success: function(msg){
-							oTable.fnDeleteRow(aPos[0]);
-						}
-					});
-				}
-				return false;
+					var answer = confirm("<?php echo $langs->trans("Delete"); ?> '" + text + "' ?");
+					if (answer) {
+			$.ajax({
+			type: "POST",
+					url: "<?php echo DOL_URL_ROOT . '/core/ajax/deleteinplace.php'; ?>",
+					data: "json=delete&class=<?php echo get_class($this); ?>&id=" + aData["_id"],
+					success: function(msg){
+			oTable.fnDeleteRow(aPos[0]);
+			}
 			});
-		});
+			}
+			return false;
+			});
+			});
 		</script>
 		<?php
 //$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
@@ -956,11 +958,15 @@ abstract class nosqlDocument extends CommonObject {
 
 				$rtr = 'function(obj) {
 	 		var ar = [];
+			';
+				if (strpos($key,".") > 0)
+					$rtr.='if(obj.aData.' . substr($key, 0, strpos($key,".")) . '=== undefined)
+							return ar.join("");
 	 		if(obj.aData.' . $key . ' === undefined)
 				if(obj.aData.' . $params["id"] . ' === undefined)
 					return ar.join("");
 				else
-					obj.aData.'.$key.' = obj.aData.' . $params["id"].';
+					obj.aData.' . $key . ' = obj.aData.' . $params["id"] . ';
 			';
 
 				if (!empty($this->fk_extrafields->ico)) {
@@ -1247,7 +1253,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		// Add plugins defined in database
 		if (!empty($this->fk_extrafields->pluginsList)) {
-			foreach($this->fk_extrafields->pluginsList as $plugin) {
+			foreach ($this->fk_extrafields->pluginsList as $plugin) {
 				$classname = 'datatables\plugins\\' . $plugin;
 				if (class_exists($classname))
 					$table->plug(new $classname);
@@ -1536,7 +1542,7 @@ abstract class nosqlDocument extends CommonObject {
 				$out.= $value;
 				break;
 			case "email":
-				$out.= '<a href="mailto:' . $value .'">' . $value .'</a>';
+				$out.= '<a href="mailto:' . $value . '">' . $value . '</a>';
 				break;
 			case "date":
 				$out .= dol_print_date($value, "%d/%m/%Y");

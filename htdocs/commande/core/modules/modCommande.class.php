@@ -203,6 +203,18 @@ class modCommande extends DolibarrModules {
 		$this->menus[$r]->title = "OrdersStatistics";
 		$this->menus[$r]->fk_menu = "menu:commandes";
 		$r++;
+		
+		$this->menus[$r] = new stdClass();
+        $this->menus[$r]->_id = "menu:planning";
+        $this->menus[$r]->position = 10;
+        $this->menus[$r]->url = "/commande/list.php?planning=1";
+        $this->menus[$r]->langs = "agenda";
+        $this->menus[$r]->perms = '$user->rights->commande->lire';
+        $this->menus[$r]->enabled = '$conf->commande->enabled';
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->title = "Planning";
+		$this->menus[$r]->fk_menu = "menu:commandes";
+        $r++;
 
 		// Exports
 		//--------

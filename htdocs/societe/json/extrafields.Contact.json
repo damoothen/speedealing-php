@@ -2,7 +2,7 @@
    "_id": "extrafields:Contact",
    "_rev": "50-7397f45ea63dc18b477a12d395177f67",
    "class": "extrafields",
-   "ico": "16-User.png",
+   "ico": "icon-object-contact",
    "langs": [
        "companies"
    ],

@@ -25,6 +25,7 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
+require_once DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
 
 $langs->load('orders');
 $langs->load('deliveries');
@@ -154,6 +155,16 @@ $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->editable = true;
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
+
+$contact = new Contact();
+print'<th class="essential">';
+print $langs->trans('Contact');
+print'</th>';
+$obj->aoColumns[$i] = new stdClass();
+$obj->aoColumns[$i]->mDataProp = "contact.name";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $contact->datatablesFnRender("contact.name", "url", array('id' => "contact.id"));
+$i++;
 print'<th class="essential">';
 print $langs->trans('Date');
 print'</th>';
@@ -269,6 +280,9 @@ $obj->aaSorting = array(array(1, 'asc'));
 //
 //}
 //$obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
+
+if($_GET["planning"])
+	$obj->sAjaxSource = "core/ajax/listdatatables.php?json=planning&class=" . get_class($object);
 
 $object->datatablesCreate($obj, "listorders", true, true);
 

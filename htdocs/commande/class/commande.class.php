@@ -2462,6 +2462,7 @@ class Commande extends AbstractInvoice {
 					$label = $langs->trans($aRow->key);
 
 				if ($i == 0) { // first element
+					$output[$i] = new stdClass();
 					$output[$i]->name = $label;
 					$output[$i]->y = $aRow->value;
 					$output[$i]->sliced = true;

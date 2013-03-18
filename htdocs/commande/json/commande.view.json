@@ -1,6 +1,6 @@
 {
    "_id": "_design/Commande",
-   "_rev": "85-0c16616f785b1cec314ef7bc1fd8a6d8",
+   "_rev": "91-5e5e3f1aa41b398b9e7cdb05c21f1e95",
    "language": "javascript",
    "views": {
        "list": {
@@ -37,6 +37,9 @@
        },
        "lines": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nfor (i in doc.lines) {\n\tvar id;\n\tid=doc._id +\"#\"+ i;\n  emit(doc._id, {_id:id,description:doc.lines[i].description,pu_ht:doc.lines[i].pu_ht,qty:doc.lines[i].qty,tva_tx:doc.lines[i].tva_tx,total_ht:doc.lines[i].total_ht,total_tva:doc.lines[i].total_tva,total_ttc:doc.lines[i].total_ttc,product_type:doc.lines[i].product_type,remise:doc.lines[i].remise,product:doc.lines[i].product,group:doc.lines[i].group});\n}\n }\n}"
+       },
+       "planning": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Commande\" && (doc.Status != \"CANCELED\" && doc.Status != \"CLOSED\" && doc.Status != \"DRAFT\"))\n  emit(doc._id, doc);\n}"
        }
    },
    "updates": {

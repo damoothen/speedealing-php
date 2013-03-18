@@ -119,7 +119,6 @@ class modPlanning extends DolibarrModules {
 
 		$this->menus[$r] = new stdClass();
         $this->menus[$r]->_id = "menu:planning";
-        $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 20;
         $this->menus[$r]->url = "/planning/list.php";
         $this->menus[$r]->langs = "agenda";
@@ -127,6 +126,7 @@ class modPlanning extends DolibarrModules {
         $this->menus[$r]->enabled = '$conf->planning->enabled';
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->title = "Planning";
+		$this->menus[$r]->fk_menu = "menu:commandes";
         $r++;
 
         // Exports
