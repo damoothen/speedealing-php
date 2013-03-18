@@ -208,7 +208,7 @@ if ($action == 'create_config') {
 			$useradmin->admin = true;
 			$useradmin->Status = 'ENABLE';
 
-			$id = $useradmin->update("", 0, "add");
+			$id = $useradmin->update("", 0, "install");
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
 			exit;
@@ -370,15 +370,6 @@ if ($action == 'create_config') {
 
 	// Increase timeout in couchdb to 3600s
 	$admin->setConfig("couch_httpd_auth", "timeout", "3600");
-
-	//remove admin_install
-/*	try {
-		// delete temporary admin user
-		$admin->deleteAdmin("admin_install");
-	} catch (Exception $e) {
-		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
-		exit;
-	}*/
 
 	$ret = write_lock_file();
 	if ($ret > 0)
