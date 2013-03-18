@@ -359,9 +359,10 @@ class Line {
 			$this->pu = price2num($this->pu_ht);
 		else
 			$this->pu = price2num($this->pu_ttc);
-		$this->pu = price2num($this->pu);
 		$this->pa_ht = price2num($this->pa_ht);
 		$this->tva_tx = price2num($this->tva_tx);
+		
+							error_log($this->pu);
 
 		// Calcul du total TTC et de la TVA pour la ligne a partir de
 		// qty, pu, remise_percent et tva_tx

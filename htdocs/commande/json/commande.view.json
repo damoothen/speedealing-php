@@ -1,6 +1,6 @@
 {
    "_id": "_design/Commande",
-   "_rev": "44-4a95e1f6aaff4417e5c4cadfdf823a64",
+   "_rev": "85-0c16616f785b1cec314ef7bc1fd8a6d8",
    "language": "javascript",
    "views": {
        "list": {
@@ -36,7 +36,7 @@
            "map": "function(doc) {\nif (doc.class && doc.class == 'Commande')\n  emit(doc.client.id, doc);\n}"
        },
        "lines": {
-           "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nfor (i in doc.lines) {\n\tvar id;\n\tid=doc._id +\"#\"+ i;\n  emit(doc._id, {_id:id,description:doc.lines[i].description,pu_ht:doc.lines[i].pu_ht,qty:doc.lines[i].qty,tva_tx:doc.lines[i].tva_tx,total_ht:doc.lines[i].total_ht,total_tva:doc.lines[i].total_tva,total_ttc:doc.lines[i].total_ttc,product_type:doc.lines[i].product_type,remise:doc.lines[i].remise,product:doc.lines[i].product});\n}\n }\n}"
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\"){\nfor (i in doc.lines) {\n\tvar id;\n\tid=doc._id +\"#\"+ i;\n  emit(doc._id, {_id:id,description:doc.lines[i].description,pu_ht:doc.lines[i].pu_ht,qty:doc.lines[i].qty,tva_tx:doc.lines[i].tva_tx,total_ht:doc.lines[i].total_ht,total_tva:doc.lines[i].total_tva,total_ttc:doc.lines[i].total_ttc,product_type:doc.lines[i].product_type,remise:doc.lines[i].remise,product:doc.lines[i].product,group:doc.lines[i].group});\n}\n }\n}"
        }
    },
    "updates": {
