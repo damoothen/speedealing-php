@@ -171,8 +171,8 @@ if ($action == 'create_config') {
 	$admin = new couchAdmin($couch);
 
 	try {
-		// create a temporary admin user
-		$admin->createAdmin("admin_install", "admin_install");
+		// create couchdb admin user
+		$admin->createAdmin($couchdb_user_root, $couchdb_pass_root);
 	} catch (Exception $e) {
 		// already exist or protected couchdb server
 	}
@@ -180,19 +180,16 @@ if ($action == 'create_config') {
 	$host = substr($main_couchdb_host, 7);
 
 	try {
-		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+		$couch = new couchClient('http://' . $couchdb_user_root . ':' . $couchdb_pass_root . '@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
 	} catch (Exception $e) {
 		error_log($e->getMessage());
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
 		exit;
 	}
 
-	// create superadmin in system and _users databases
-	$useradmin = new User();
-
 	$found = false;
 	try {
-		$useradmin->load("user:" . trim($couchdb_user_root));
+		$admin->getUser(trim($couchdb_user_root));
 		$found = true;
 	} catch (Exception $e) {
 		// user not exit
@@ -200,6 +197,9 @@ if ($action == 'create_config') {
 
 	if (!$found) {
 		try {
+			// create superadmin in system and _users databases
+			$useradmin = new User();
+
 			$useradmin->Lastname = "Admin";
 			$useradmin->Firstname = "Admin";
 			$useradmin->name = trim($couchdb_user_root);
@@ -208,7 +208,7 @@ if ($action == 'create_config') {
 			$useradmin->admin = true;
 			$useradmin->Status = 'ENABLE';
 
-			$id = $useradmin->update("", 0, "add");
+			$id = $useradmin->update("", 0, "install");
 		} catch (Exception $e) {
 			echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
 			exit;
@@ -221,6 +221,8 @@ if ($action == 'create_config') {
 } else if ($action == 'create_user') {
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couchdb_user_root = GETPOST('couchdb_user_root', 'alpha');
+	$couchdb_pass_root = GETPOST('couchdb_pass_root', 'alpha');
 	$couchdb_user_firstname = GETPOST('couchdb_user_firstname', 'alpha');
 	$couchdb_user_lastname = GETPOST('couchdb_user_lastname', 'alpha');
 	$couchdb_user_login = GETPOST('couchdb_user_login', 'alpha');
@@ -229,18 +231,17 @@ if ($action == 'create_config') {
 	$host = substr($main_couchdb_host, 7);
 
 	try {
-		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+		$couch = new couchClient('http://' . $couchdb_user_root . ':' . $couchdb_pass_root . '@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+		$admin = new couchAdmin($couch);
 	} catch (Exception $e) {
 		error_log($e->getMessage());
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
 		exit;
 	}
 
-	// create first user in system and _users databases
-	$firstuser = new User();
 	$found = false;
 	try {
-		$firstuser->load("user:" . trim($couchdb_user_login));
+		$admin->getUser(trim($couchdb_user_login));
 		$found = true;
 	} catch (Exception $e) {
 		// user not exit
@@ -248,6 +249,9 @@ if ($action == 'create_config') {
 
 	if (!$found) {
 		try {
+			// create first user in system and _users databases
+			$firstuser = new User();
+
 			$firstuser->Lastname = trim($couchdb_user_lastname);
 			$firstuser->Firstname = trim($couchdb_user_firstname);
 			$firstuser->name = trim($couchdb_user_login);
@@ -264,7 +268,6 @@ if ($action == 'create_config') {
 	}
 
 	// Add fisrt user to the database for security database
-	$admin = new couchAdmin($couch);
 	$admin->addDatabaseReaderUser(trim($couchdb_user_login));
 
 	// Add specific view in _users database
@@ -298,24 +301,25 @@ if ($action == 'create_config') {
 } else if ($action == 'create_searchengine_user') {
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couchdb_user_root = GETPOST('couchdb_user_root', 'alpha');
+	$couchdb_pass_root = GETPOST('couchdb_pass_root', 'alpha');
 	$couchdb_searchengine_login = GETPOST('couchdb_searchengine_login', 'alpha');
 	$couchdb_searchengine_pass = GETPOST('couchdb_searchengine_pass', 'alpha');
 
 	$host = substr($main_couchdb_host, 7);
 
 	try {
-		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+		$couch = new couchClient('http://' . $couchdb_user_root . ':' . $couchdb_pass_root . '@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+		$admin = new couchAdmin($couch);
 	} catch (Exception $e) {
 		error_log($e->getMessage());
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
 		exit;
 	}
 
-	// create first user in system and _users databases
-	$searchengine = new User();
 	$found = false;
 	try {
-		$searchengine->load("user:" . trim($couchdb_searchengine_login));
+		$admin->getUser(trim($couchdb_searchengine_login));
 		$found = true;
 	} catch (Exception $e) {
 		// user not exit
@@ -323,6 +327,9 @@ if ($action == 'create_config') {
 
 	if (!$found) {
 		try {
+			// create first user in system and _users databases
+			$searchengine = new User();
+
 			$searchengine->Lastname = 'Search';
 			$searchengine->Firstname = 'Engine';
 			$searchengine->name = trim($couchdb_searchengine_login);
@@ -339,7 +346,6 @@ if ($action == 'create_config') {
 	}
 
 	// Add search engine user to the database reader user
-	$admin = new couchAdmin($couch);
 	$admin->addDatabaseReaderUser(trim($couchdb_searchengine_login));
 
 	echo json_encode(array('status' => 'ok', 'value' => $langs->trans('UserSearchEngineCreated')));
@@ -348,29 +354,22 @@ if ($action == 'create_config') {
 } else if ($action == 'lock_install') {
 
 	$couchdb_name = GETPOST('couchdb_name', 'alpha');
+	$couchdb_user_root = GETPOST('couchdb_user_root', 'alpha');
+	$couchdb_pass_root = GETPOST('couchdb_pass_root', 'alpha');
+
 	$host = substr($main_couchdb_host, 7);
 
 	try {
-		$couch = new couchClient('http://admin_install:admin_install@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+		$couch = new couchClient('http://' . $couchdb_user_root . ':' . $couchdb_pass_root . '@' . $host . ':' . $main_couchdb_port . '/', $couchdb_name, array("cookie_auth" => TRUE));
+		$admin = new couchAdmin($couch);
 	} catch (Exception $e) {
 		error_log($e->getMessage());
 		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
 		exit;
 	}
 
-	$admin = new couchAdmin($couch);
-
 	// Increase timeout in couchdb to 3600s
 	$admin->setConfig("couch_httpd_auth", "timeout", "3600");
-
-	//remove admin_install
-	try {
-		// delete temporary admin user
-		$admin->deleteAdmin("admin_install");
-	} catch (Exception $e) {
-		echo json_encode(array('status' => 'error', 'value' => $e->getMessage()));
-		exit;
-	}
 
 	$ret = write_lock_file();
 	if ($ret > 0)

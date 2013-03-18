@@ -154,6 +154,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		require_once DOL_DOCUMENT_ROOT . '/core/lib/memory.lib.php';
 
+		$values = array();
 		$found = false;
 
 		if ($cache && !empty($conf->memcached)) {
@@ -164,17 +165,18 @@ abstract class nosqlDocument extends CommonObject {
 		}
 
 		if (!$found) {
-			$values = array();
 			$values = $this->couchdb->getDoc($id); // load extrafields for class
-
 			if ($cache && !empty($conf->memcached)) {
 				dol_setcache($id, $values);
 			}
 		}
-		$this->id = $values->_id;
 
-		foreach (get_object_vars($values) as $key => $aRow)
-			$this->$key = $aRow;
+		if (!empty($values)) {
+			$this->id = $values->_id;
+
+			foreach (get_object_vars($values) as $key => $aRow)
+				$this->$key = $aRow;
+		}
 
 		return $values;
 	}
@@ -964,7 +966,7 @@ abstract class nosqlDocument extends CommonObject {
 				if (!empty($this->fk_extrafields->ico)) {
 					$rtr.= 'ar[ar.length] = "<span class=\"' . $this->fk_extrafields->ico . '\" title=\"' . $langs->trans("See " . get_class($this)) . ' : " + obj.aData.' . $key . '.toString() + "\">";';
 				}
-				
+
 				$rtr.= 'if(obj.aData.' . $params["id"] . ' === undefined) {
 					ar[ar.length] = "<span>";
 					ar[ar.length] = obj.aData.' . $key . '.toString();
@@ -1030,7 +1032,7 @@ abstract class nosqlDocument extends CommonObject {
 			var stat = obj.aData.' . $key . ';
 			if(stat === undefined)
 				stat = "' . $this->fk_extrafields->fields->$key->default . '";';
-			
+
 
 				if (!empty($this->fk_extrafields->fields->$key->values)) {
 					foreach ($this->fk_extrafields->fields->$key->values as $key1 => $aRow) {
@@ -1056,7 +1058,7 @@ abstract class nosqlDocument extends CommonObject {
 				}
 				$rtr.= 'if(status[stat]===undefined)
 					stat = "ERROR";';
-				
+
 				$rtr.= 'var ar = [];
 		ar[ar.length] = "<span class=\"tag ";
 		ar[ar.length] = status[stat][1];

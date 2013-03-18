@@ -645,16 +645,18 @@ class User extends nosqlDocument {
 
 		}
 
-		if (isset($result->name) && $action == 'add') {
+		if (isset($result->name) && $action == 'add' && $action != 'install') {
 			$this->error = 'ErrorLoginAlreadyExists';
 			return -6;
 		} else {
-			if ($action == 'add' || empty($result->name)) {
+			if ($action == 'add' || $action == 'install' || empty($result->name)) {
 				try {
-					if ($this->admin)
-						$this->couchAdmin->createAdmin($this->name, $this->pass);
-					else
-						$this->couchAdmin->createUser($this->name, $this->pass);
+					if ($action != 'install') {
+						if ($this->admin)
+							$this->couchAdmin->createAdmin($this->name, $this->pass);
+						else
+							$this->couchAdmin->createUser($this->name, $this->pass);
+					}
 					unset($this->pass);
 					if(!empty($this->roles)) // use not empty instead count for avoid error
 						foreach ($this->roles as $group)
@@ -677,9 +679,9 @@ class User extends nosqlDocument {
 			  $this->_id = $user_tmp->_id;
 			  $this->_rev = $user_tmp->_rev; */
 
-			if ($action == 'add' && empty($this->Status))
-				$this->Status = "DISABLE";
-			if ($action == 'add') {
+			if ($action == 'add' || $action == 'install') {
+				if (empty($this->Status))
+					$this->Status = "DISABLE";
 				$this->CreateDate = dol_now();
 				$this->_id = "user:" . $this->name;
 			}
@@ -702,11 +704,12 @@ class User extends nosqlDocument {
 				$this->couchAdmin->setPassword($this->name, $pass);
 			}
 
-			if ($action == 'update')
+			if ($action == 'update') {
 				if ($this->admin)
 					$this->couchAdmin->addRoleToUser($this->name, "_admin");
 				else
 					$this->couchAdmin->removeRoleFromUser($this->name, "_admin");
+			}
 		} catch (Exception $e) {
 			$this->error = $e->getMessage();
 			error_log($this->error);

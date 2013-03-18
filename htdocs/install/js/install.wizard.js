@@ -259,6 +259,8 @@ $(document).ready(function() {
 		$.post("install/ajax/install.php", {
     		action: 'create_user',
 			couchdb_name: $('#couchdb_name').val(),
+			couchdb_user_root: $('#couchdb_user_root').val(),
+    		couchdb_pass_root: $('#couchdb_pass_root').val(),
     		couchdb_user_firstname: $('#couchdb_user_firstname').val(),
     		couchdb_user_lastname: $('#couchdb_user_lastname').val(),
     		couchdb_user_login: $('#couchdb_user_login').val(),
@@ -284,6 +286,8 @@ $(document).ready(function() {
 		$.post("install/ajax/install.php", {
     		action: 'create_searchengine_user',
 			couchdb_name: $('#couchdb_name').val(),
+			couchdb_user_root: $('#couchdb_user_root').val(),
+    		couchdb_pass_root: $('#couchdb_pass_root').val(),
     		couchdb_searchengine_login: $('#couchdb_searchengine_login').val(),
     		couchdb_searchengine_pass: $('#couchdb_searchengine_pass').val()
 		},
@@ -301,7 +305,9 @@ $(document).ready(function() {
 	function lockInstall() {
 		$.post("install/ajax/install.php", {
     		action: 'lock_install',
-    		couchdb_name: $('#couchdb_name').val()
+    		couchdb_name: $('#couchdb_name').val(),
+    		couchdb_user_root: $('#couchdb_user_root').val(),
+    		couchdb_pass_root: $('#couchdb_pass_root').val()
 		},
 		function(value) {
 			if (value.status == 'ok') {
