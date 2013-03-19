@@ -1,6 +1,6 @@
 {
    "_id": "_design/Propal",
-   "_rev": "34-6b2bd11c95ba4e29827b9355ac350272",
+   "_rev": "92-cf04e6eaf6998c364deabd2429922af7",
    "language": "javascript",
    "views": {
        "list": {
@@ -11,7 +11,7 @@
            "reduce": "_sum"
        },
        "lines": {
-           "map": "function(doc) {\nif (doc.class && doc.class == \"PropalLine\")\n  emit(doc._id, doc);\n}"
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Propal\"){\nfor (i in doc.lines) {\n\tvar id;\n\tid=doc._id +\"#\"+ i;\n  emit(doc._id, {_id:id,description:doc.lines[i].description,pu_ht:doc.lines[i].pu_ht,qty:doc.lines[i].qty,tva_tx:doc.lines[i].tva_tx,total_ht:doc.lines[i].total_ht,total_tva:doc.lines[i].total_tva,total_ttc:doc.lines[i].total_ttc,product_type:doc.lines[i].product_type,remise:doc.lines[i].remise,product:doc.lines[i].product});\n}\n }\n}"
        },
        "linesPerPropal": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"PropalLine\")\n  emit(doc.fk_propal, doc);\n}"

@@ -293,7 +293,7 @@ class pdf_einstein extends ModelePDFCommandes
 					}
 
 					// Unit price before discount
-					$up_excl_tax = pdf_getlineupexcltax($object, $i, $outputlangs, $hidedetails);
+					$up_excl_tax = price($object->lines[$i]->pu_ht);//pdf_getlineupexcltax($object, $i, $outputlangs, $hidedetails);
 					$pdf->SetXY($this->posxup, $curY);
 					$pdf->MultiCell($this->posxqty-$this->posxup-1, 3, $up_excl_tax, 0, 'R', 0);
 

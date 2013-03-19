@@ -382,7 +382,22 @@ class AbstractInvoice extends nosqlDocument {
         require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
         $product = new Product($this->db);
         
-        print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
+        switch(get_class($this)) {
+            case 'Commande':
+                $startBoxTitle = $langs->trans('OrderLines');
+                $url = 'commande/fiche.php';
+                break;
+            case 'Propal':
+                $startBoxTitle = $langs->trans('PropalLines');
+                $url = 'propal/fiche.php';
+                break;
+            case 'Facture':
+                $startBoxTitle = $langs->trans('FactureLines');
+                $url = 'facture/fiche.php';
+                break;
+        }
+        
+        print start_box($startBoxTitle, "twelve", $object->fk_extrafields->ico, false);
 
         print $this->datatablesEditLine("listlines", $langs->trans("Lines"));
 
@@ -482,7 +497,6 @@ $obj->aoColumns[$i]->sWidth = "60px";
 $obj->aoColumns[$i]->bSortable = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 
-$url = "commande/fiche.php";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
 	ar[ar.length] = "<a href=\"\"";

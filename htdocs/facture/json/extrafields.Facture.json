@@ -1,6 +1,5 @@
 {
    "_id": "extrafields:Facture",
-   "_rev": "6-57eadfd147477a693851095e0f311f89",
    "class": "extrafields",
    "ico": "16-Document.png",
    "langs": [
@@ -11,6 +10,15 @@
        "date",
        "ref_client",
        "Status"
+   ],
+   "createLine": [
+       "product",
+       "product_type",
+       "description",
+       "pu_ht",
+       "qty",
+       "tva_tx",
+       "remise"
    ],
    "fields": {
        "type": {
@@ -137,6 +145,64 @@
            "type": "date",
            "enable": true,
            "label": "Date"
+       },
+       "description": {
+           "type": "text",
+           "enable": true,
+           "label": "Description"
+       },
+       "pu_ht": {
+           "type": "text",
+           "enable": true,
+           "label": "PriceUHT"
+       },
+       "qty": {
+           "type": "text",
+           "enable": true,
+           "label": "Qty"
+       },
+       "tva_tx": {
+           "type": "text",
+           "enable": true,
+           "label": "VAT"
+       },
+       "remise": {
+           "type": "text",
+           "enable": true,
+           "label": "ReductionShort"
+       },
+       "product": {
+           "type": "select",
+           "enable": true,
+           "class": "Product",
+           "view": "list",
+           "label": "Product"
+       },
+       "product_type": {
+           "type": "select",
+           "enable": true,
+           "default": "PRODUCT",
+           "status": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "PRODUCT": {
+                   "enable": true,
+                   "label": "Product",
+                   "cssClass": "blue-gradient"
+               },
+               "SERVICE": {
+                   "label": "Service",
+                   "enable": true,
+                   "cssClass": "green-gradient"
+               }
+           }
+       },
+       "subprice": {
+           "enable": true
        }
    }
 }

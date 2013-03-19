@@ -30,7 +30,7 @@
  * 	\file       htdocs/comm/propal/class/propal.class.php
  * 	\brief      Fichier de la classe des propales
  */
-require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/abstractinvoice.class.php';
 require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT . '/margin/lib/margins.lib.php';
@@ -39,7 +39,7 @@ require_once DOL_DOCUMENT_ROOT . '/margin/lib/margins.lib.php';
  * 	\class      Propal
  * 	\brief      Classe permettant la gestion des propales
  */
-class Propal extends nosqlDocument {
+class Propal extends AbstractInvoice {
 
     public $element = 'propal';
     public $table_element = 'propal';
@@ -104,48 +104,27 @@ class Propal extends nosqlDocument {
      * 	Constructor
      *
      * 	@param      DoliDB	$db         Database handler
-     * 	@param      int		$socid		Id third party
-     * 	@param      int		$propalid   Id proposal
      */
-    function __construct($db, $socid = "", $propalid = 0) {
-        global $langs;
+	function __construct($db) {
+		parent::__construct($db);
 
-        parent::__construct($db);
+		$this->no_save[] = 'thirdparty';
+		$this->no_save[] = 'line';
 
-        $this->fk_extrafields = new ExtraFields($db);
-        $this->fk_extrafields->fetch(get_class($this));
+		$this->fk_extrafields = new ExtraFields($db);
+		$this->fk_extrafields->fetch(get_class($this));
 
-        $this->no_save[] = 'thirdparty';
-        $this->no_save[] = 'line';
-        $this->no_save[] = 'lines';
+		$this->remise = 0;
+		$this->remise_percent = 0;
 
-        $this->socid = $socid;
-        $this->id = $propalid;
-        $this->products = array();
-        $this->remise = 0;
-        $this->remise_percent = 0;
-        $this->remise_absolue = 0;
-        $this->Status = "DRAFT";
-
-        $this->duree_validite = $conf->global->PROPALE_VALIDITY_DURATION;
-
-        $langs->load("propal");
-//        $this->labelstatut[0] = (!empty($conf->global->PROPAL_STATUS_DRAFT_LABEL) ? $conf->global->PROPAL_STATUS_DRAFT_LABEL : $langs->trans("PropalStatusDraft"));
-//        $this->labelstatut[1] = (!empty($conf->global->PROPAL_STATUS_VALIDATED_LABEL) ? $conf->global->PROPAL_STATUS_VALIDATED_LABEL : $langs->trans("PropalStatusValidated"));
-//        $this->labelstatut[2] = (!empty($conf->global->PROPAL_STATUS_SIGNED_LABEL) ? $conf->global->PROPAL_STATUS_SIGNED_LABEL : $langs->trans("PropalStatusSigned"));
-//        $this->labelstatut[3] = (!empty($conf->global->PROPAL_STATUS_NOTSIGNED_LABEL) ? $conf->global->PROPAL_STATUS_NOTSIGNED_LABEL : $langs->trans("PropalStatusNotSigned"));
-//        $this->labelstatut[4] = (!empty($conf->global->PROPAL_STATUS_BILLED_LABEL) ? $conf->global->PROPAL_STATUS_BILLED_LABEL : $langs->trans("PropalStatusBilled"));
-//        $this->labelstatut_short[0] = (!empty($conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL) ? $conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL : $langs->trans("PropalStatusDraftShort"));
-//        $this->labelstatut_short[1] = (!empty($conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL : $langs->trans("Opened"));
-//        $this->labelstatut_short[2] = (!empty($conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL : $langs->trans("PropalStatusSignedShort"));
-//        $this->labelstatut_short[3] = (!empty($conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL : $langs->trans("PropalStatusNotSignedShort"));
-//        $this->labelstatut_short[4] = (!empty($conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL : $langs->trans("PropalStatusBilledShort"));
-    }
+		$this->products = array();
+	}
 
     /**
      * 	Add line into array products
      * 	$this->client doit etre charge
-     *
+     *    public $modelpdf = 'marbre';
+
      * 	@param  int		$idproduct       	Product Id to add
      * 	@param  int		$qty             	Quantity
      * 	@param  int		$remise_percent  	Discount effected on Product
@@ -256,316 +235,7 @@ class Propal extends nosqlDocument {
             return -2;
         }
     }
-
-    /**
-     *    	Add a proposal line into database (linked to product/service or not)
-     * 		Les parametres sont deja cense etre juste et avec valeurs finales a l'appel
-     * 		de cette methode. Aussi, pour le taux tva, il doit deja avoir ete defini
-     * 		par l'appelant par la methode get_default_tva(societe_vendeuse,societe_acheteuse,'',produit)
-     * 		et le desc doit deja avoir la bonne valeur (a l'appelant de gerer le multilangue)
-     *
-     * 		@param    	int			$propalid			Id de la propale
-     * 		@param    	string		$desc				Description de la ligne
-     * 		@param    	double		$pu_ht				Prix unitaire
-     * 		@param    	double		$qty             	Quantite
-     * 		@param    	double		$txtva           	Taux de tva
-     * 		@param		double		$txlocaltax1		Local tax 1 rate
-     *  	@param		double		$txlocaltax2		Local tax 2 rate
-     * 		@param    	int			$fk_product      	Id du produit/service predefini
-     * 		@param    	double		$remise_percent  	Pourcentage de remise de la ligne
-     * 		@param    	string		$price_base_type	HT or TTC
-     * 		@param    	dobule		$pu_ttc             Prix unitaire TTC
-     * 		@param    	int			$info_bits			Bits de type de lignes
-     *      @param      int			$type               Type of line (product, service)
-     *      @param      int			$rang               Position of line
-     *      @param		int			$special_code		Special code
-     *      @param		int			$fk_parent_line		Id of parent line
-     *      @param		int			$fk_fournprice		Id supplier price
-     *      @param		int			$pa_ht				Buying price without tax
-     *      @param		string		$label				???
-     *    	@return    	int         	    			>0 if OK, <0 if KO
-     *
-     *    	@see       	add_product
-     */
-    function addline($propalid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1 = 0, $txlocaltax2 = 0, $fk_product = 0, $remise_percent = 0, $price_base_type = 'HT', $pu_ttc = 0, $info_bits = 0, $type = 0, $rang = -1, $special_code = 0, $fk_parent_line = 0, $fk_fournprice = null, $pa_ht = 0, $label = '') {
-        global $conf;
-
-        dol_syslog(get_class($this) . "::addline propalid=$propalid, desc=$desc, pu_ht=$pu_ht, qty=$qty, txtva=$txtva, fk_product=$fk_product, remise_except=$remise_percent, price_base_type=$price_base_type, pu_ttc=$pu_ttc, info_bits=$info_bits, type=$type");
-        include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
-
-        // Clean parameters
-        if (empty($remise_percent))
-            $remise_percent = 0;
-        if (empty($qty))
-            $qty = 0;
-        if (empty($info_bits))
-            $info_bits = 0;
-        if (empty($rang))
-            $rang = 0;
-        if (empty($fk_parent_line) || $fk_parent_line < 0)
-            $fk_parent_line = 0;
-
-        $remise_percent = price2num($remise_percent);
-        $qty = price2num($qty);
-        $pu_ht = price2num($pu_ht);
-        $pu_ttc = price2num($pu_ttc);
-        $txtva = price2num($txtva);
-        $txlocaltax1 = price2num($txlocaltax1);
-        $txlocaltax2 = price2num($txlocaltax2);
-        $pa_ht = price2num($pa_ht);
-        if ($price_base_type == 'HT') {
-            $pu = $pu_ht;
-        } else {
-            $pu = $pu_ttc;
-        }
-
-        // Check parameters
-//        if ($type < 0)
-//            return -1;
-
-        if ($this->Status == "DRAFT") {
-//            $this->db->begin();
-            // Calcul du total TTC et de la TVA pour la ligne a partir de
-            // qty, pu, remise_percent et txtva
-            // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
-            // la part ht, tva et ttc, et ce au niveau de la ligne qui a son propre taux tva.
-            $tabprice = calcul_price_total($qty, $pu, $remise_percent, $txtva, $txlocaltax1, $txlocaltax2, 0, $price_base_type, $info_bits, $type);
-            $total_ht = $tabprice[0];
-            $total_tva = $tabprice[1];
-            $total_ttc = $tabprice[2];
-            $total_localtax1 = $tabprice[9];
-            $total_localtax2 = $tabprice[10];
-
-            // Rang to use
-            $rangtouse = $rang;
-            if ($rangtouse == -1) {
-                $rangmax = $this->line_max($fk_parent_line);
-                $rangtouse = $rangmax + 1;
-            }
-
-            // TODO A virer
-            // Anciens indicateurs: $price, $remise (a ne plus utiliser)
-            $price = $pu;
-            $remise = 0;
-            if ($remise_percent > 0) {
-                $remise = round(($pu * $remise_percent / 100), 2);
-                $price = $pu - $remise;
-            }
-
-            // Insert line
-            $this->line = new PropalLine($this->db);
-
-            $this->line->fk_propal = $propalid;
-            $this->line->label = $label;
-            $this->line->description = $desc;
-            $this->line->qty = $qty;
-            $this->line->tva_tx = $txtva;
-            $this->line->localtax1_tx = $txlocaltax1;
-            $this->line->localtax2_tx = $txlocaltax2;
-            $this->line->fk_product = $fk_product;
-            $this->line->remise_percent = $remise_percent;
-            $this->line->subprice = $pu_ht;
-            $this->line->rang = $rangtouse;
-            $this->line->info_bits = $info_bits;
-            $this->line->total_ht = $total_ht;
-            $this->line->total_tva = $total_tva;
-            $this->line->total_localtax1 = $total_localtax1;
-            $this->line->total_localtax2 = $total_localtax2;
-            $this->line->total_ttc = $total_ttc;
-            $this->line->product_type = $type;
-            $this->line->special_code = $special_code;
-            $this->line->fk_parent_line = $fk_parent_line;
-
-            // infos marge
-            $this->line->fk_fournprice = $fk_fournprice;
-            $this->line->pa_ht = $pa_ht;
-
-            // Mise en option de la ligne
-            //if ($conf->global->PROPALE_USE_OPTION_LINE && !$qty) $ligne->special_code=3;
-            if (empty($qty) && empty($special_code))
-                $this->line->special_code = 3;
-
-            // TODO deprecated
-            $this->line->price = $price;
-            $this->line->remise = $remise;
-
-            $result = $this->line->insert();
-            $result = $this->update_price(1);
-//            if ($result > 0) {
-//                // Reorder if child line
-//                if (!empty($fk_parent_line))
-//                    $this->line_order(true, 'DESC');
-//
-//                // Mise a jour informations denormalisees au niveau de la propale meme
-//                $result = $this->update_price(1);
-//                if ($result > 0) {
-//                    $this->db->commit();
-//                    return $this->line->rowid;
-//                } else {
-//                    $this->error = $this->db->error();
-//                    dol_syslog("Error sql=$sql, error=" . $this->error, LOG_ERR);
-//                    $this->db->rollback();
-//                    return -1;
-//                }
-//            } else {
-//                $this->error = $this->line->error;
-//                $this->db->rollback();
-//                return -2;
-//            }
-        }
-    }
-
-    /**
-     *  Update a proposal line
-     *
-     *  @param      int			$propalid           	Id de la propal
-     *  @param      int			$rowid           	Id de la ligne
-     *  @param      double		$pu		     	  	Prix unitaire (HT ou TTC selon price_base_type)
-     *  @param      double		$qty            	Quantity
-     *  @param      double		$remise_percent  	Remise effectuee sur le produit
-     *  @param      double		$txtva	          	Taux de TVA
-     * 	@param	  	double		$txlocaltax1		Local tax 1 rate
-     *  @param	  	double		$txlocaltax2		Local tax 2 rate
-     *  @param      string		$desc            	Description
-     * 	@param	  	double		$price_base_type	HT ou TTC
-     * 	@param      int			$info_bits        	Miscellanous informations
-     * 	@param      int			$special_code      	Set special code ('' = we don't change it)
-     * 	@param		int			$fk_parent_line		Id of parent line (0 in most cases, used by modules adding sublevels into lines).
-     * 	@param		int			$skip_update_total	Keep fields total_xxx to 0 (used for special lines by some modules)
-     *  @param		int			$fk_fournprice		Id of origin supplier price
-     *  @param		int			$pa_ht				Price (without tax) of product when it was bought
-     *  @param		string		$label				???
-     *  @param		int			$type				0/1=Product/service
-     *  @return     int     		        		0 if OK, <0 if KO
-     */
-    function updateline($propalid, $rowid, $pu, $qty, $remise_percent, $txtva, $txlocaltax1 = 0, $txlocaltax2 = 0, $desc = '', $price_base_type = 'HT', $info_bits = 0, $special_code = 0, $fk_parent_line = 0, $skip_update_total = 0, $fk_fournprice = null, $pa_ht = 0, $label = '', $type = 0) {
-        global $conf, $user, $langs;
-
-        dol_syslog(get_class($this) . "::updateLine $rowid, $pu, $qty, $remise_percent, $txtva, $desc, $price_base_type, $info_bits");
-        include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
-
-        // Clean parameters
-        $remise_percent = price2num($remise_percent);
-        $qty = price2num($qty);
-        $pu = price2num($pu);
-        $txtva = price2num($txtva);
-        $txlocaltax1 = price2num($txlocaltax1);
-        $txlocaltax2 = price2num($txlocaltax2);
-        $pa_ht = price2num($pa_ht);
-        if (empty($qty) && empty($special_code))
-            $special_code = 3;    // Set option tag
-        if (!empty($qty) && $special_code == 3)
-            $special_code = 0;    // Remove option tag
-
-        if ($this->Status == "DRAFT") {
-//            $this->db->begin();
-            // Calcul du total TTC et de la TVA pour la ligne a partir de
-            // qty, pu, remise_percent et txtva
-            // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
-            // la part ht, tva et ttc, et ce au niveau de la ligne qui a son propre taux tva.
-            $tabprice = calcul_price_total($qty, $pu, $remise_percent, $txtva, $txlocaltax1, $txlocaltax2, 0, $price_base_type, $info_bits, $type);
-            $total_ht = $tabprice[0];
-            $total_tva = $tabprice[1];
-            $total_ttc = $tabprice[2];
-            $total_localtax1 = $tabprice[9];
-            $total_localtax2 = $tabprice[10];
-
-            // Anciens indicateurs: $price, $remise (a ne plus utiliser)
-            $price = $pu;
-            if ($remise_percent > 0) {
-                $remise = round(($pu * $remise_percent / 100), 2);
-                $price = $pu - $remise;
-            }
-            // Update line
-            $this->line = new PropalLine($this->db);
-            $this->line->fetch($rowid);
-
-            // Stock previous line records
-            $staticline = new PropalLine($this->db);
-            $staticline->fetch($rowid);
-            $this->line->oldline = $staticline;
-//
-//            // Reorder if fk_parent_line change
-//            if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
-//                $rangmax = $this->line_max($fk_parent_line);
-//                $this->line->rang = $rangmax + 1;
-//            }
-
-            $this->line->label = $label;
-            $this->line->description = $desc;
-            $this->line->qty = $qty;
-            $this->line->tva_tx = $txtva;
-            $this->line->localtax1_tx = $txlocaltax1;
-            $this->line->localtax2_tx = $txlocaltax2;
-            $this->line->remise_percent = $remise_percent;
-            $this->line->subprice = $pu;
-            $this->line->info_bits = $info_bits;
-            $this->line->total_ht = $total_ht;
-            $this->line->total_tva = $total_tva;
-            $this->line->total_localtax1 = $total_localtax1;
-            $this->line->total_localtax2 = $total_localtax2;
-            $this->line->total_ttc = $total_ttc;
-            $this->line->special_code = $special_code;
-            $this->line->fk_parent_line = $fk_parent_line;
-            $this->line->skip_update_total = $skip_update_total;
-
-            // infos marge
-            $this->line->fk_fournprice = $fk_fournprice;
-            $this->line->pa_ht = $pa_ht;
-
-            // TODO deprecated
-            $this->line->price = $price;
-            $this->line->remise = $remise;
-
-            $result = $this->line->update();
-            $this->update_price(1);
-
-            if ($result > 0) {
-                // Reorder if child line
-//                if (!empty($fk_parent_line))
-//                    $this->line_order(true, 'DESC');
-//                $this->update_price(1);
-//                $this->fk_propal = $this->id;
-//                $this->rowid = $rowid;
-//                $this->db->commit();
-                return $result;
-            } else {
-                $this->error = $this->db->error();
-//                $this->db->rollback();
-                dol_syslog(get_class($this) . "::updateline Error=" . $this->error, LOG_ERR);
-                return -1;
-            }
-        } else {
-            dol_syslog(get_class($this) . "::updateline Erreur -2 Propal en mode incompatible pour cette action");
-            return -2;
-        }
-    }
-
-    /**
-     *  Delete detail line
-     *
-     *  @param		int		$lineid			Id of line to delete
-     *  @return     int         			>0 if OK, <0 if KO
-     */
-    function deleteline($lineid) {
-        if ($this->Status == "DRAFT") {
-            $line = new PropalLine($this->db);
-
-            // For triggers
-            $line->fetch($lineid);
-
-            if ($line->delete() > 0) {
-                $this->update_price(1);
-
-                return 1;
-            } else {
-                return -1;
-            }
-        } else {
-            return -2;
-        }
-    }
-
+    
     /**
      *  Create commercial proposal into database
      * 	this->ref can be set or empty. If empty, we will use "(PROVid)"
@@ -896,13 +566,9 @@ class Propal extends nosqlDocument {
     function fetch($rowid, $ref = '') {
         global $conf;
 
-        parent::fetch($rowid);
+        return parent::fetch($rowid);
 
-        // Get lines
-        $this->getLinesArray();
-
-        return 1;
-
+        
 //        $sql = "SELECT p.rowid, p.ref, p.remise, p.remise_percent, p.remise_absolue, p.fk_soc";
 //        $sql.= ", p.total, p.tva, p.localtax1, p.localtax2, p.total_ht";
 //        $sql.= ", p.datec";
@@ -2410,39 +2076,6 @@ class Propal extends nosqlDocument {
     public function getExtraFieldLabel($field) {
         global $langs;
         return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
-    }
-
-    /**
-     * 	Update total_ht, total_ttc and total_vat for an object (sum of lines)
-     *
-     * 	@param	int		$exclspec          	Exclude special product (product_type=9)
-     *  @param  int		$roundingadjust    	-1=Use default method (MAIN_ROUNDOFTOTAL_NOT_TOTALOFROUND or 0), 0=Use total of rounding, 1=Use rounding of total
-     *  @param	int		$nodatabaseupdate	1=Do not update database. Update only properties of object.
-     * 	@return	int    			           	<0 if KO, >0 if OK
-     */
-    function update_price($exclspec = 0, $roundingadjust = -1, $nodatabaseupdate = 0) {
-
-        include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
-
-        $this->total_ht = 0;
-        $this->total_localtax1 = 0;
-        $this->total_localtax2 = 0;
-        $this->total_tva = 0;
-        $this->total_ttc = 0;
-
-        $this->getLinesArray();
-
-        foreach ($this->lines as $line) {
-            $this->total_ht += $line->total_ht;
-            $this->total_localtax1 += $line->total_localtax1;
-            $this->total_localtax2 += $line->totaltaxt1;
-            $this->total_tva += $line->total_tva;
-            $this->total_ttc += $line->total_ttc;
-        }
-
-        $this->record();
-
-        return 1;
     }
 
     function update_note_public($note_public) {
