@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2012	Regis Houssin	<regis.houssin@capnetworks.com>
+/* Copyright (C) 2012-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012-2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,11 +60,13 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => '一切都收到',
 		'StatusOrderCanceled' => '取消',
 		'StatusOrderDraft' => '草案（需要验证）',
+		'StatusOrderNeedQuotes' => 'Draft (needs manual quotes)',
 		'StatusOrderNew' => 'New order (needs to be validated)',
 		'StatusOrderProcessing' => 'Processing',
 		'StatusOrderValidated' => '验证',
 		'StatusOrderOnProcess' => '论过程',
-		'StatusOrderProcessed' => '加工',
+		'StatusOrderSending' => 'Sending',
+		'StatusOrderClosed' => 'Closed (Shipped)',
 		'StatusOrderToBill' => '为了法案',
 		'StatusOrderToBill2' => 'To bill',
 		'StatusOrderApproved' => '核准',
@@ -178,6 +181,7 @@ $orders = array(
 		'CloseProcessedOrdersAutomatically' => 'Classify "Processed" all selected orders.',
 		'MenuOrdersToBill2' => 'Orders to bill',
 		'LinkedInvoices' => 'Linked invoices',
-		'LinkedProposals' => 'Linked proposals'
+		'LinkedProposals' => 'Linked proposals',
+		'ShippingHT' => 'Shipping cost'
 );
 ?>
