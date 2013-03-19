@@ -1,5 +1,6 @@
 {
    "_id": "extrafields:Commande",
+   "_rev": "70-0619b32229e6af1a04fc6ab855e48edb",
    "class": "extrafields",
    "ico": "icon-object-order",
    "langs": [
@@ -19,6 +20,12 @@
        "qty",
        "tva_tx",
        "remise"
+   ],
+   "amountsBox": [
+       "total_ht",
+       "shipping",
+       "total_tva",
+       "total_ttc"
    ],
    "fields": {
        "Status": {
@@ -159,6 +166,47 @@
                    "cssClass": "green-gradient"
                }
            }
+       },
+       "total_ht": {
+           "type": "text",
+           "settype": "float",
+           "price": true,
+           "cssClass": "tag green-bg",
+           "enable": true,
+           "label": "AmountHT",
+           "mode": "absolute",
+           "default": 0
+       },
+       "total_tva": {
+           "type": "text",
+           "settype": "float",
+           "price": true,
+           "enable": true,
+           "label": "AmountVAT",
+           "mode": "absolute",
+           "default": 0
+       },
+       "total_ttc": {
+           "type": "text",
+           "settype": "float",
+           "price": true,
+           "enable": true,
+           "label": "AmountTTC",
+           "mode": "absolute",
+           "default": 0
+       },
+       "shipping": {
+           "type": "text",
+           "icon": "icon-plane",
+           "settype": "float",
+           "price": true,
+           "enable": true,
+           "label": "ShippingHT",
+           "mode": "absolute",
+           "default": 0
+       },
+       "subprice": {
+           "enable": true
        }
    }
 }

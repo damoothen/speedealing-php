@@ -480,7 +480,7 @@ abstract class nosqlDocument extends CommonObject {
 		else
 			$color = "anthracite-gradient";
 
-		return '<span class="tag ' . $color . ' glossy">' . $label . '</span> ';
+		return '<small class="tag ' . $color . ' glossy">' . $label . '</small> ';
 	}
 
 	/**
@@ -1066,11 +1066,11 @@ abstract class nosqlDocument extends CommonObject {
 					stat = "ERROR";';
 
 				$rtr.= 'var ar = [];
-		ar[ar.length] = "<span class=\"tag ";
+		ar[ar.length] = "<small class=\"tag ";
 		ar[ar.length] = status[stat][1];
 		ar[ar.length] = " glossy\">";
 		ar[ar.length] = status[stat][0];
-		ar[ar.length] = "</span>";
+		ar[ar.length] = "</small>";
 		var str = ar.join("");
 		return str;
 			}';
@@ -1164,10 +1164,10 @@ abstract class nosqlDocument extends CommonObject {
 					var ar = [];
 
 					for (var i in obj.aData.' . $key . ') {
-					ar[ar.length] = "<span class=\"tag anthracite-gradient glossy";
+					ar[ar.length] = "<small class=\"tag anthracite-gradient glossy";
 					ar[ar.length] = " \">";
 					ar[ar.length] = obj.aData.' . $key . '[i].toString();
-					ar[ar.length] = "</span> ";
+					ar[ar.length] = "</small> ";
                                 }
 					var str = ar.join("");
 					return str;
@@ -1303,8 +1303,8 @@ abstract class nosqlDocument extends CommonObject {
 					$lien = '<a href="' . DOL_URL_ROOT . '/adherent/type.php?id=' . $this->Tag[$i] . '">';
 					$lienfin = '</a> ';
 				} else {
-					$lien = '<span>';
-					$lienfin = '</span> ';
+					$lien = '<small>';
+					$lienfin = '</small> ';
 				}
 
 				$picto = 'group';

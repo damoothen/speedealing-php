@@ -1259,11 +1259,6 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 	print '</td>';
 	print '</tr>';
 
-	// Total HT
-	print '<tr><td>' . $langs->trans('AmountHT') . '</td>';
-	print '<td align="right"><b>' . price($object->total_ht) . '</b></td>';
-	print '<td>' . $langs->trans('Currency' . $conf->currency) . '</td>';
-
 	// Margin Infos
 	if (!empty($conf->margin->enabled)) {
 		print '<td valign="top" width="50%" rowspan="4">';
@@ -1271,28 +1266,6 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 		print '</td>';
 	}
 	print '</tr>';
-
-	// Total TVA
-	print '<tr><td>' . $langs->trans('AmountVAT') . '</td><td align="right">' . price($object->total_tva) . '</td>';
-	print '<td>' . $langs->trans('Currency' . $conf->currency) . '</td></tr>';
-
-	// Amount Local Taxes
-	if ($mysoc->country_code == 'ES') {
-		if ($mysoc->localtax1_assuj == "1") { //Localtax1 RE
-			print '<tr><td>' . $langs->transcountry("AmountLT1", $mysoc->country_code) . '</td>';
-			print '<td align="right">' . price($object->total_localtax1) . '</td>';
-			print '<td>' . $langs->trans("Currency" . $conf->currency) . '</td></tr>';
-		}
-		if ($mysoc->localtax2_assuj == "1") { //Localtax2 IRPF
-			print '<tr><td>' . $langs->transcountry("AmountLT2", $mysoc->country_code) . '</td>';
-			print '<td align="right">' . price($object->total_localtax2) . '</td>';
-			print '<td>' . $langs->trans("Currency" . $conf->currency) . '</td></tr>';
-		}
-	}
-
-	// Total TTC
-	print '<tr><td>' . $langs->trans('AmountTTC') . '</td><td align="right">' . price($object->total_ttc) . '</td>';
-	print '<td>' . $langs->trans('Currency' . $conf->currency) . '</td></tr>';
 
 	// Statut
 //    print '<tr><td>' . $langs->trans('Status') . '</td>';
@@ -1393,7 +1366,7 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 	dol_fiche_end();
 
 	print end_box();
-
+	
 	// Print Notes
 	print $object->show_notes();
 
@@ -1411,8 +1384,11 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 	}
 
 	// Lines
-
 	$object->showLines();
+	
+	// Print Total
+	print $object->showAmounts();
+
 
 //	print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
 //	print '<table id="tablelines" class="noborder" width="100%">';

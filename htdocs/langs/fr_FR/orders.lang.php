@@ -180,6 +180,7 @@ $orders = array(
 		'CloseProcessedOrdersAutomatically' => 'Classer automatiquement à "Traitées" les commandes sélectionnées.',
 		'MenuOrdersToBill2' => 'Commandes à facturer',
 		'LinkedInvoices' => 'Factures jointes',
-		'LinkedProposals' => 'Propositions commerciales jointes'
+		'LinkedProposals' => 'Propositions commerciales jointes',
+		'ShippingHT' => 'Frais de transport'
 );
 ?>

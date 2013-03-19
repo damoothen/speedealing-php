@@ -309,6 +309,64 @@ class AbstractInvoice extends nosqlDocument {
 		print end_box();
 	}
 
+	/**
+	 * return div with total table
+	 *
+	 *  @return	@string
+	 */
+	function showAmounts($edit = true) {
+		global $conf, $user, $langs;
+
+		$out = start_box($langs->trans("Amount"), "six", "icon-object-price");
+
+		if ($edit) {
+			$out.= '<table class="simple-table responsive-table" id="table-amount">
+				<thead>
+					<tr>
+						<th scope="col"></th>
+						<th scope="col" width="40%"></th>
+						<th scope="col" width="15%" class="hide-on-mobile-portrait"></th>
+					</tr>
+				</thead>
+				<tbody>';
+			foreach ($this->fk_extrafields->amountsBox as $aRow) {
+				$out.= '<tr>
+						<th scope="row">';
+				if (isset($this->fk_extrafields->fields->$aRow->icon))
+					$out.= '<span class="' . $this->fk_extrafields->fields->$aRow->icon . '">' . $langs->trans($this->fk_extrafields->fields->$aRow->label) . '</span>';
+				else
+					$out.= $langs->trans($this->fk_extrafields->fields->$aRow->label);
+				$out.= '</th>
+						<td align="right">';
+				if (isset($this->fk_extrafields->fields->$aRow->cssClass))
+					$out.= '<span class="' . $this->fk_extrafields->fields->$aRow->cssClass . '">';
+				if ($this->fk_extrafields->fields->$aRow->price)
+					$out.= price($this->$aRow);
+				else
+					$out.= $this->$aRow;
+				if (isset($this->fk_extrafields->fields->$aRow->cssClass))
+					$out.= '</span>';
+				$out.='</td>
+						<td>';
+				if ($this->fk_extrafields->fields->$aRow->mode == "absolute")
+					$out.= $langs->trans('Currency' . $conf->currency);
+				else
+					$out.= "%";
+
+				$out.='</td>
+					</tr>';
+			}
+			$out.='</tbody>
+
+			</table>';
+		}
+		else
+			$out.= $this->notes;
+
+		$out.= end_box();
+		return $out;
+	}
+
 }
 
 class Line {
@@ -359,7 +417,7 @@ class Line {
 			$this->pu = price2num($this->pu_ht);
 		else
 			$this->pu = price2num($this->pu_ttc);
-		
+
 		$this->pa_ht = price2num($this->pa_ht);
 		$this->tva_tx = price2num($this->tva_tx);
 

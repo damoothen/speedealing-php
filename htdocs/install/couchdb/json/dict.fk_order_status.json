@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_order_status",
-   "_rev": "56-a0b0fc2e324777cda572e5f761a3f60a",
+   "_rev": "65-0d7487225fd2ee387b22230c6187dc3b",
    "class": "Dict",
    "values": {
        "DRAFT": {
@@ -35,7 +35,7 @@
        },
        "CLOSED": {
            "enable": true,
-           "label": "StatusOrderProcessed",
+           "label": "StatusOrderClosed",
            "cssClass": "green-gradient",
            "system": true
        },
