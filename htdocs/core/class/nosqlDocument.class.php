@@ -1584,18 +1584,26 @@ abstract class nosqlDocument extends CommonObject {
 	function show_notes($edit = true) {
 		global $conf, $user, $langs;
 
-		$out = start_box($langs->trans("Notes"), "twelve", "icon-object-notes");
+		//$out = start_box("", "six");
 
 		// Notes
 		if ($edit) {
 			$out.= '<input id="element_id_notes" type="hidden" value="' . $this->id . '"/>';
 			$out.= '<input id="element_class_notes" type="hidden" value="' . get_class($this) . '"/>';
-			$out.= '<div id="editval_notes" class="edit_wysiwyg ttip_l">' . $this->notes . '</div>';
+			$out.= '<div class="wrapped margin-bottom left-icon icon-info-round">';
+			$out.= '<h4 class="no-margin-bottom">'.$langs->trans("Notes").'</h4>';
+			$out.= '<div id="editval_notes" class="edit_wysiwyg with-tooltip">';
+			$out.= $this->notes . '</div>';
+			$out.= '</div>';
 		}
-		else
+		else {
+			$out.= '<div class="wrapped margin-bottom left-icon icon-info-round">';
+			$out.= '<h4 class="no-margin-bottom">'.$langs->trans("Notes").'</h4>';
 			$out.= $this->notes;
+			$out.= '</div>';
+		}
 
-		$out.= end_box();
+		//$out.= end_box();
 		return $out;
 	}
 

@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Commande",
-   "_rev": "70-0619b32229e6af1a04fc6ab855e48edb",
+   "_rev": "74-84ffd04ecb304d15789428e026c6373b",
    "class": "extrafields",
    "ico": "icon-object-order",
    "langs": [
@@ -171,7 +171,7 @@
            "type": "text",
            "settype": "float",
            "price": true,
-           "cssClass": "tag green-bg",
+           "cssClass": "red",
            "enable": true,
            "label": "AmountHT",
            "mode": "absolute",

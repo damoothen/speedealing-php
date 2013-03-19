@@ -933,6 +933,29 @@ class Agenda extends nosqlDocument {
 
 		$titre = $langs->trans("Actions");
 		print start_box($titre, "twelve", "16-Mail.png", true, $head);
+		
+		$h = 0;
+		$head[$h] = new stdClass();
+		$head[$h]->href = "#";
+		$head[$h]->title = $langs->trans("StatusActionToDo");
+		$head[$h]->id = "TODO";
+		$head[$h]->icon = "TODO";
+		$h++;
+		$head[$h] = new stdClass();
+		$head[$h]->href = "#";
+		$head[$h]->title = $langs->trans("StatusActionToDo");
+		$head[$h]->id = "DONE";
+		$head[$h]->icon = "TODO";
+		$h++;
+		$head[$h] = new stdClass();
+		$head[$h]->href = "#";
+		$head[$h]->title = $langs->trans("StatusActionToDo");
+		$head[$h]->id = "TODO";
+		$head[$h]->icon = "TODO";
+		$h++;
+		
+		print column_start("six");
+		print show_title($titre, "icon-calendar", $head);
 
 		$i = 0;
 		$obj = new stdClass();
@@ -1028,12 +1051,13 @@ class Agenda extends nosqlDocument {
 			?>
 			<script>
 				$(document).ready(function() {
-					var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actions" . $aRow[2] . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
-					$("#<?php echo $aRow[2]; ?>").attr("onclick", js);
+					var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actions" . $aRow->id . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
+					$("#<?php echo $aRow->id; ?>").attr("onclick", js);
 				} );
 			</script>
 			<?php
 		}
+		print column_end();
 		print end_box();
 	}
 

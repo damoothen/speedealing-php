@@ -529,8 +529,7 @@ function dol_get_fiche_head($links = array(), $active = '0', $title = '', $notab
 			}
 		} else if (!empty($links[$i][1])) {
 			//print "x $i $active ".$links[$i][2]." z";
-			if ((is_numeric($active) && $i == $active)
-					|| (!is_numeric($active) && $active == $links[$i][2])) {
+			if ((is_numeric($active) && $i == $active) || (!is_numeric($active) && $active == $links[$i][2])) {
 				$out.='<a id="active" class="tab" href="' . $links[$i][0] . '">' . $links[$i][1] . '</a>' . "\n";
 			} else {
 				$out.='<a id="' . $links[$i][2] . '" class="tab" href="' . $links[$i][0] . '">' . $links[$i][1] . '</a>' . "\n";
@@ -707,6 +706,13 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
+
+
+
+
+
+
+		
 // If date undefined or "", we return ""
 	if (dol_strlen($time) == 0)
 		return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
@@ -726,6 +732,13 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
+
+
+
+
+
+
+		
 //print 'x'.$time;
 
 	if (preg_match('/%b/i', $format)) {  // There is some text to translate
@@ -740,8 +753,7 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 	}
 
 	// Analyze date (deprecated)   Ex: 1970-01-01, 1970-01-01 01:00:00, 19700101010000
-	if (preg_match('/^([0-9]+)\-([0-9]+)\-([0-9]+) ?([0-9]+)?:?([0-9]+)?:?([0-9]+)?/i', $time, $reg)
-			|| preg_match('/^([0-9][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])$/i', $time, $reg)) {
+	if (preg_match('/^([0-9]+)\-([0-9]+)\-([0-9]+) ?([0-9]+)?:?([0-9]+)?:?([0-9]+)?/i', $time, $reg) || preg_match('/^([0-9][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])([0-9][0-9])$/i', $time, $reg)) {
 		// This part of code should not be used.
 		dol_syslog("Functions.lib::dol_print_date function call with deprecated value of time in page " . $_SERVER["PHP_SELF"], LOG_WARNING);
 		// Date has format 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' or 'YYYYMMDDHHMMSS'
@@ -2210,13 +2222,29 @@ function start_box($title, $nbcolumn = 'twelve', $icon = 'icon-object-default', 
 	if (empty($icon))
 		$icon = 'icon-object-default';
 
-	$rtr = '<div class="' . $nbcolumn . '-columns twelve-columns-mobile">';
+	switch ($nbcolumn) {
+		case "two" :
+			$rtr = '<div class="two-columns four-columns-mobile-landscape six-columns-mobile-portrait">';
+			break;
+		case "four" :
+			$rtr = '<div class="four-columns six-columns-tablet twelve-columns-mobile">';
+			break;
+		case "six" :
+			$rtr = '<div class="six-columns twelve-columns-mobile">';
+			break;
+		default :
+			$rtr = '<div class="twelve-columns">';
+	}
+
+
+
+
 	$rtr.= '<div class="box_c">';
 	if ($box_action && empty($head))
 		$rtr.= '<div class="box_c_heading cf box_actions">';
 	else
 		$rtr.= '<div class="box_c_heading cf">';
-	$rtr.= '<div class="box_c_ico"><span class="'. $icon . '"></span></div>';
+	$rtr.= '<div class="box_c_ico"><span class="' . $icon . '"></span></div>';
 	$rtr.= '<p>' . $title . '</p>';
 
 	// See menu on top box
@@ -2242,6 +2270,45 @@ function end_box() {
 	$rtr = '</div>'; //end content box
 	$rtr.= '</div>'; //end box
 	$rtr.= '</div>'; //end columns
+	return $rtr;
+}
+
+function column_start($nbcolumn = "tweleve") {
+	switch ($nbcolumn) {
+		case "two" :
+			$rtr = '<div class="two-columns four-columns-mobile-landscape six-columns-mobile-portrait">';
+			break;
+		case "four" :
+			$rtr = '<div class="four-columns six-columns-tablet twelve-columns-mobile">';
+			break;
+		case "six" :
+			$rtr = '<div class="six-columns twelve-columns-mobile">';
+			break;
+		default :
+			$rtr = '<div class="twelve-columns">';
+	}
+	return $rtr;
+}
+
+function column_end() {
+	return "</div>";
+}
+
+function show_title($title, $icon, $menu = array()) {
+	if (!empty($title)) {
+		$rtr = '<h4 class="red underline left-icon ' . $icon . '">' . $title;
+		if (count($menu) > 0)
+			if (count($menu) == 1)
+				$rtr.= '<a href="' . $menu[0]->href. '" class="absolute-right compact button ' . $menu[0]->icon . '">' . $menu[0]->title . '</a>';
+			else {
+				$rtr.= '<div class="button-group absolute-right compact">
+						<a href="#" class="button icon-pencil">Edit</a>
+						<a href="#" class="button icon-gear with-tooltip" title="Other actions"></a>
+						<a href="#" class="button icon-trash with-tooltip confirm" title="Delete"></a>
+					</div>';
+			}
+		$rtr.= '</h4>';
+	}
 	return $rtr;
 }
 
@@ -2613,6 +2680,13 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
 
 
 
+
+
+
+
+
+
+			
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
 		if (dol_strlen($nbofdectoround))
 			$amount = round($amount, $nbofdectoround); // $nbofdectoround can be 0.
@@ -2818,8 +2892,7 @@ function get_default_tva($thirdparty_seller, $thirdparty_buyer, $idprod = 0, $id
 	//if (is_object($thirdparty_buyer) && ($thirdparty_seller->country_id == $thirdparty_buyer->country_id) && ($thirdparty_buyer->tva_assuj == 1 || $thirdparty_buyer->tva_assuj == 'reel'))
 	// Le test ci-dessus ne devrait pas etre necessaire. Me signaler l'exemple du cas juridique concerne si le test suivant n'est pas suffisant.
 	// Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
-	if (($thirdparty_seller->country_id == $thirdparty_buyer->country_id)
-			|| (in_array($thirdparty_seller->country_id, array('FR,MC')) && in_array($thirdparty_buyer->country_id, array('FR', 'MC')))) { // Warning ->country_id not always defined
+	if (($thirdparty_seller->country_id == $thirdparty_buyer->country_id) || (in_array($thirdparty_seller->country_id, array('FR,MC')) && in_array($thirdparty_buyer->country_id, array('FR', 'MC')))) { // Warning ->country_id not always defined
 		//print 'VATRULE 3';
 		return get_product_vat_for_country($idprod, $thirdparty_seller, $idprodfournprice);
 	}
@@ -2896,7 +2969,8 @@ function get_default_localtax($thirdparty_seller, $thirdparty_buyer, $local, $id
 				return 0;
 			if (!is_numeric($thirdparty_seller->localtax2_assuj) && $thirdparty_seller->localtax2_assuj == 'localtax2off')
 				return 0;
-		} else
+		}
+		else
 			return -1;
 
 		if ($idprod)
@@ -3013,6 +3087,13 @@ function dol_mkdir($dir, $dataroot = '') {
 
 
 
+
+
+
+
+
+
+			
 // Attention, le is_dir() peut echouer bien que le rep existe.
 		// (ex selon config de open_basedir)
 		if ($ccdir) {
@@ -3567,7 +3648,7 @@ function dol_htmloutput_events() {
 							autoClose: true,
 							delay: 500,
 							closeDelay: <?php echo $closeDelay; ?>,
-							classes : ["<?php echo $color; ?>"],
+							classes: ["<?php echo $color; ?>"],
 							icon: '<?php echo $icon; ?>'
 						});
 					});
@@ -3637,15 +3718,15 @@ function get_htmloutput_mesg($mesgstring = '', $mesgarray = '', $style = 'ok', $
 				break;
 		}
 		?><script>
-				$(document).ready(function() {
-					notify('<?php echo dol_escape_js($row->title); ?>', '<?php echo dol_escape_js($out); ?>', {
-						autoClose: true,
-						delay: 500,
-						closeDelay: <?php echo $closeDelay; ?>,
-						classes : ["<?php echo $color; ?>"],
-						icon: '<?php echo $icon; ?>'
-					});
+			$(document).ready(function() {
+				notify('<?php echo dol_escape_js($row->title); ?>', '<?php echo dol_escape_js($out); ?>', {
+					autoClose: true,
+					delay: 500,
+					closeDelay: <?php echo $closeDelay; ?>,
+					classes: ["<?php echo $color; ?>"],
+					icon: '<?php echo $icon; ?>'
 				});
+			});
 		</script><?php
 	}
 	return $return;
@@ -4128,10 +4209,10 @@ function colorArrayToHex($arraycolor, $colorifnotfound = '888888') {
  * @param	object	$data	Object to convert
  * @return	array			Object converted
  */
-function object2array($data){
-	if(!is_object($data) && !is_array($data))
+function object2array($data) {
+	if (!is_object($data) && !is_array($data))
 		return $data;
-	if(is_object($data))
+	if (is_object($data))
 		$data = get_object_vars($data);
 	return array_map('object2array', $data);
 }

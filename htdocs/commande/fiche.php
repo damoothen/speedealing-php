@@ -878,7 +878,7 @@ $formfile = new FormFile($db);
 $formorder = new FormOrder($db);
 
 llxHeader('', $title);
-print_fiche_titre($title);
+print_fiche_titre($title . " " . $object->ref_client);
 
 
 $formconfirm = null;
@@ -1169,14 +1169,14 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 	print end_box();
 } else {
 	/* Default View */
-	print start_box($title, "twelve", $object->fk_extrafields->ico, false);
+	print column_start("six");
 
 	dol_fiche_head();
 
 	print '<table class="border" width="100%">';
 
 	// Ref
-	print '<tr><td width="18%">' . $langs->trans('Ref') . '</td>';
+	print '<tr><td width="30%">' . $langs->trans('Ref') . '</td>';
 	print '<td colspan="3">';
 	print $object->ref;
 	print '</td>';
@@ -1365,11 +1365,18 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 
 	dol_fiche_end();
 
-	print end_box();
+	print column_end();
 	
+	
+	
+	print column_start("six");
 	// Print Notes
 	print $object->show_notes();
+	
+	// Print Total
+	print $object->showAmounts();
 
+	print column_end();
 
 	if (!empty($conf->global->MAIN_DISABLE_CONTACTS_TAB)) {
 		$blocname = 'contacts';
@@ -1385,9 +1392,6 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 
 	// Lines
 	$object->showLines();
-	
-	// Print Total
-	print $object->showAmounts();
 
 
 //	print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);

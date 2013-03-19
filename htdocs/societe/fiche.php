@@ -1342,7 +1342,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 		print '<div class="columns">';
 
 		$titre = $langs->trans("ThirdParty");
-		print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
+		print column_start("twelve");
 
 		dol_fiche_head($head, 'card', $langs->trans("ThirdParty"), 0, 'company');
 
@@ -1731,7 +1731,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 		}
 
 		print '</table>';
-		print '</div>';
 
 		/*
 		 *  Actions
@@ -1755,11 +1754,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 		print "</span>";
 		print "</div>";
 		print '</div>';
+		print '</div>';
 
-		print end_box();
+		print column_end();
 
+		print column_start("six");
 		// Print Notes
 		print $object->show_notes();
+		print column_end();
 
 		if ($conf->ecm->enabled) {
 			// Generated documents

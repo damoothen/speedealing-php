@@ -66,28 +66,6 @@
 		.medium {font-size: 13px}
 		.large{font-size:17px}
 
-	/* Foundation framework adjustements */
-		h1, h2, h3, h4, h5, h6 {font-weight:400}
-		small {font-size:11px}
-		ul,ol,li {margin-bottom:0}
-		ul.pagination {margin-bottom:14px}
-		ul.pagination a:hover {text-decoration:none}
-		input.input-text:focus, textarea:focus {background: #f3fee7}
-		/*input,textarea,select {font-family:inherit}*/
-		label + input.input-text, label + textarea, label + select, label + div.dropdown, select + div.dropdown {margin-top: -6px}
-		.form-field.error label {color: inherit}
-		form.custom div.custom.dropdown a:hover {text-decoration:none}
-		form.nice div.form-field input,form.nice div.form-field textarea{border-color: #C00000}
-		.row .row {max-width: 100%; min-width: 0}
-		.form-field.error input:focus, .form-field.error textarea:focus {background-color: rgba(255,0,0,0.25)}
-		.alert-box a.close {padding:3px}
-		.alert-box a.close:hover {text-decoration:none}
-		ul.pagination li a.current {border-bottom: 2px solid #00A6FC;color: #141414}
-		ul.nice li {margin-bottom:12px}
-		img {max-width:none\9}
-		.alert-box.info {background-color: #058DC7;color: #fff;text-shadow: 0 -1px rgba(0, 0, 0, 0.3)}
-		div.alert-box {padding-right:22px}
-
 	/* ------------------------------------------
 	CSS3 GITHUB BUTTONS (Nicolas Gallagher)
 	Licensed under Unlicense
@@ -624,10 +602,6 @@
 	/* cross browser inline-block display */
 		.btn,.ntf_item,.ntf_tip,.user_box a,.overview_list li strong,.gallery_pagination a,
 		.pricing_panel,.pricing_promoted,form label {display:-moz-inline-stack;display:inline-block;*zoom: 1;*display:inline}
-
-	/* fonts */
-		#smoothmenu_h ul,#smoothmenu_v ul,.st-accordion .top_Ha {font-family: 'Open Sans Condensed', sans-serif;}
-		h1,h2,h3,h4,h5,.box_c_heading p {font-family: 'Terminal Dosis', sans-serif;}
 
 	/* round corners */
 		.user_box,#search_box,.pricing_table .pricing_promoted,

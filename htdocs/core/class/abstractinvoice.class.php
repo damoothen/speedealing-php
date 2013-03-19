@@ -317,13 +317,11 @@ class AbstractInvoice extends nosqlDocument {
 	function showAmounts($edit = true) {
 		global $conf, $user, $langs;
 
-		$out = start_box($langs->trans("Amount"), "six", "icon-object-price");
-
 		if ($edit) {
 			$out.= '<table class="simple-table responsive-table" id="table-amount">
 				<thead>
 					<tr>
-						<th scope="col"></th>
+						<th scope="col"><div class="no-margin-bottom red left-icon icon-bag"><h4 class="no-margin-bottom">' . $langs->trans("Summary") . '</h4></div></th>
 						<th scope="col" width="40%"></th>
 						<th scope="col" width="15%" class="hide-on-mobile-portrait"></th>
 					</tr>
@@ -333,7 +331,7 @@ class AbstractInvoice extends nosqlDocument {
 				$out.= '<tr>
 						<th scope="row">';
 				if (isset($this->fk_extrafields->fields->$aRow->icon))
-					$out.= '<span class="' . $this->fk_extrafields->fields->$aRow->icon . '">' . $langs->trans($this->fk_extrafields->fields->$aRow->label) . '</span>';
+					$out.= '<span class="left-icon ' . $this->fk_extrafields->fields->$aRow->icon . '">' . $langs->trans($this->fk_extrafields->fields->$aRow->label) . '</span>';
 				else
 					$out.= $langs->trans($this->fk_extrafields->fields->$aRow->label);
 				$out.= '</th>
@@ -363,7 +361,6 @@ class AbstractInvoice extends nosqlDocument {
 		else
 			$out.= $this->notes;
 
-		$out.= end_box();
 		return $out;
 	}
 
