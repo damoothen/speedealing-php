@@ -46,7 +46,7 @@ class RenderTag implements ElementInterface {
 		return 'function(data, type, row) {
 					var ar = [];
 					for (var i in data) {
-						ar[ar.length] = "<span class=\"' . $this->field->render->cssclass . '\">" + data[i].toString() + "</span> ";
+						ar[ar.length] = "<small class=\"' . $this->field->render->cssclass . '\">" + data[i].toString() + "</small> ";
 					}
 					return ar.join("");
 				}';

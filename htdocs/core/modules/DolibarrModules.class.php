@@ -604,10 +604,10 @@ class DolibarrModules extends nosqlDocument {
 
 									if (!empty($result)) {
 										if ($result->class == "extrafields") {
-											if (isset($obj->shortList))
+											/*if (isset($obj->shortList))
 												$obj->shortList = $result->shortList;
 											if (isset($obj->longList))
-												$obj->longList = $result->longList;
+												$obj->longList = $result->longList;*/
 
 											foreach ($result->fields as $key => $aRow) {
 												if ($aRow->optional) //specific extrafields
