@@ -97,7 +97,7 @@ function dol_loginfunction($langs, $conf, $mysoc) {
             $i++;
         }
     }
-    $main_home = dol_htmlcleanlastbr($conf->global->MAIN_HOME);
+    $main_home = (!empty($conf->global->MAIN_HOME) ? dol_htmlcleanlastbr($conf->global->MAIN_HOME) : '');
 
     // Google AD
     $main_google_ad_client = ((!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_GOOGLE_AD_SLOT)) ? 1 : 0);
@@ -106,7 +106,7 @@ function dol_loginfunction($langs, $conf, $mysoc) {
     $favicon = DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/favicon.ico';
     $jquerytheme = 'smoothness';
 
-    include($template_dir . 'login.tpl.php'); // To use native PHP
+    include $template_dir . 'login.tpl.php'; // To use native PHP
 
 
     $_SESSION["dol_loginmesg"] = '';

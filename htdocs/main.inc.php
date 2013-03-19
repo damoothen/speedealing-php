@@ -263,7 +263,7 @@ if (!defined('NOLOGIN')) {
 			include DOL_DOCUMENT_ROOT . '/core/class/translatestandalone.class.php'; // Use this class before authentication
 			$langs = new TranslateStandalone();
 		}
-		dol_loginfunction($langs, $conf, $mysoc);
+		dol_loginfunction($langs, $conf, (!empty($mysoc)?$mysoc:''));
 		exit;
 	} else {
 		// We are already into an authenticated session
