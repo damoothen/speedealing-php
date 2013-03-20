@@ -28,6 +28,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT . '/export/class/export.class.php';
 require_once DOL_DOCUMENT_ROOT . '/export/core/modules/export/modules_export.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 
 $langs->load("exports");
 
@@ -189,6 +190,12 @@ if ($action == 'downfield' || $action == 'upfield') {
 if ($step == 1 || $action == 'cleanselect') {
     dol_setcache("export_selected_fields",array());
     $array_selected = array();
+}
+		
+if ($action == 'remove_file') {
+        $langs->load("other");
+        $file = $conf->export->dir_temp . '/' . $user->id. '/' . GETPOST('file'); // Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
+		$ret = dol_delete_file($file);
 }
 
 if ($action == 'builddoc') {

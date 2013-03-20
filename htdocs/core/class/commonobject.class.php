@@ -1781,7 +1781,10 @@ abstract class CommonObject {
      *  @return		int				<0 if KO, 0 if nothing done, >0 if OK
      */
     function getCanvas($id = 0, $ref = '') {
-        global $conf;
+        return false;
+
+        /*
+    	global $conf;
 
         if (empty($id) && empty($ref))
             return 0;
@@ -1814,7 +1817,7 @@ abstract class CommonObject {
         else {
             dol_print_error($this->db);
             return -1;
-        }
+        }*/
     }
 
     /**

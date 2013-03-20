@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2012	Regis Houssin	<regis.houssin@capnetworks.com>
+/* Copyright (C) 2012-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012-2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,14 +60,18 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Complet recepţionată',
 		'StatusOrderCanceled' => 'Anulată',
 		'StatusOrderDraft' => 'Draft (trebuie să fie validată)',
-		'StatusOrderAuto' => 'Comanda Internet ( de validat)',
+		'StatusOrderNeedQuotes' => 'Draft (needs manual quotes)',
+		'StatusOrderNew' => 'Ordin nou (trebuie să fie validat)',
+		'StatusOrderProcessing' => 'Procesare',
 		'StatusOrderValidated' => 'Validată',
 		'StatusOrderOnProcess' => 'Aşteaptă recepţia',
-		'StatusOrderProcessed' => 'Procesată',
+		'StatusOrderSending' => 'Sending',
+		'StatusOrderClosed' => 'Closed (Shipped)',
 		'StatusOrderToBill' => 'Livrată',
 		'StatusOrderToBill2' => 'De facturat',
 		'StatusOrderApproved' => 'Aprobată',
 		'StatusOrderRefused' => 'Refuzată',
+		'StatusOrderError' => 'Eroare',
 		'StatusOrderReceivedPartially' => 'Parţial recepţionată',
 		'StatusOrderReceivedAll' => 'Recepţionată complet',
 		'ShippingExist' => 'O expediţie există',
@@ -176,6 +181,7 @@ $orders = array(
 		'CloseProcessedOrdersAutomatically' => 'Clasare automată  "Procesate" toate comenzile selectate.',
 		'MenuOrdersToBill2' => 'Comenzi de facturat',
 		'LinkedInvoices' => 'Facturi ataşate',
-		'LinkedProposals' => 'Propuneri comerciale ataşate'
+		'LinkedProposals' => 'Propuneri comerciale ataşate',
+		'ShippingHT' => 'Shipping cost'
 );
 ?>

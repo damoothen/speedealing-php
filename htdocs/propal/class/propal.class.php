@@ -2655,133 +2655,6 @@ class Propal extends nosqlDocument {
 
     }
 
-     /**
-     *  Show actions
-     *
-     *  @param	int		$max		Max nb of records
-     *  @return	void
-     *  FIXME use $id in first parameter with no default value
-     */
-    function showPropals($max = 5, $id = 0) {
-        global $langs, $conf, $user, $db, $bc;
-
-        $h = 0;
-        $head[$h][0] = "#";
-        $head[$h][1] = $langs->trans("StatusActionToDo");
-        $head[$h][2] = "TODO";
-        $h++;
-        $head[$h][0] = "#";
-        $head[$h][1] = $langs->trans("StatusActionDone");
-        $head[$h][2] = "DONE";
-
-        $langs->load("agenda");
-
-        $titre = $langs->trans("Actions");
-        print start_box($titre, "six", "16-Mail.png", false, $head);
-
-        $i = 0;
-        $obj = new stdClass();
-        $societe = new Societe($this->db);
-
-        /*
-         * Barre d'actions
-         *
-         */
-
-        //print $this->datatablesEdit("actions_datatable", $langs->trans("NewAction"));
-
-        if ($user->rights->agenda->myactions->create || $user->rights->agenda->allactions->create) {
-            print '<p class="button-height right">';
-            print '<span class="button-group">';
-            print '<a class="button compact icon-star" href="agenda/fiche.php?action=create&socid='.$id.'">' . $langs->trans("NewAction") . '</a>';
-            print "</span>";
-            print "</p>";
-        }
-
-        //https://crm.symeos.com/symeos/comm/action/fiche.php?action=create&socid=573
-
-        print '<table class="display dt_act" id="actions_datatable" >';
-        // Ligne des titres
-
-        print '<thead>';
-        print'<tr>';
-        print'<th>';
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "_id";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = false;
-        $obj->aoColumns[$i]->bVisible = false;
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("Titre");
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "label";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = true;
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("label", "url");
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans('DateEchAction');
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "datep";
-        $obj->aoColumns[$i]->sClass = "center";
-        $obj->aoColumns[$i]->sDefaultContent = "";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("datep", "date");
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans('Company');
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "societe.name";
-        $obj->aoColumns[$i]->sDefaultContent = "";
-        $obj->aoColumns[$i]->fnRender = $societe->datatablesFnRender("societe.name", "url", array('id' => "societe.id"));
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans('AffectedTo');
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "usertodo.name";
-        $obj->aoColumns[$i]->sDefaultContent = "";
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("Status");
-        print'</th>';
-        $obj->aoColumns[$i] = new stdClass();
-        $obj->aoColumns[$i]->mDataProp = "Status";
-        $obj->aoColumns[$i]->sClass = "center";
-        $obj->aoColumns[$i]->sDefaultContent = "TODO";
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("Status", "status", array("dateEnd" => "datep"));
-        $i++;
-        print '</tr>';
-        print '</thead>';
-        print'<tfoot>';
-        print'</tfoot>';
-        print'<tbody>';
-        print'</tbody>';
-        print "</table>";
-
-        $obj->iDisplayLength = $max;
-        $obj->aaSorting = array(array(2, 'desc'));
-        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actionsTODO&class=" . get_class($this) . "&key=" . $id;
-        $this->datatablesCreate($obj, "actions_datatable", true);
-
-        foreach ($head as $aRow) {
-            ?>
-            <script>
-                $(document).ready(function() {
-                    var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actions" . $aRow[2] . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
-                    $("#<?php echo $aRow[2]; ?>").attr("onclick", js);
-                } );
-            </script>
-            <?php
-        }
-        print end_box();
-    }
-
     public function show($id) {
 
         global $langs;
@@ -2789,8 +2662,14 @@ class Propal extends nosqlDocument {
         require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');
         $propal = new Propal($this->db);
 
-        print start_box($langs->trans("Proposals"), "twelve", $this->fk_extrafields->ico);
-        print '<table class="display dt_act" id="listpropals" >';
+        //print start_box($langs->trans("Proposals"), "twelve", $this->fk_extrafields->ico);
+        //print column_start("six");
+		print '<dt>';
+		print show_title($langs->trans("Proposals"), "icon-chat no-margin-bottom");
+		print '</dt>';
+		
+		print '<dd><div class="with-mid-padding">';
+		print '<table class="display dt_act" id="listpropals" >';
         // Ligne des titres
 
         print '<thead>';
@@ -2848,7 +2727,8 @@ class Propal extends nosqlDocument {
         $obj->iDisplayLength = $max;
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listBySociete&class=" . get_class($this) . "&key=" . $id;
         $this->datatablesCreate($obj, "listpropals", true);
-        print end_box();
+        //print column_end();
+		print '</div></dd>';
     }
 
 }

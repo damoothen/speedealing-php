@@ -1,35 +1,54 @@
 {
    "_id": "dict:fk_order_status",
+   "_rev": "65-0d7487225fd2ee387b22230c6187dc3b",
    "class": "Dict",
    "values": {
        "DRAFT": {
            "enable": true,
            "label": "StatusOrderDraft",
-           "cssClass": "grey-gradient"
+           "cssClass": "grey-gradient",
+           "system": true
        },
-       "AUTO": {
-           "label": "StatusOrderAuto",
+       "QUOTES": {
+           "label": "StatusOrderNeedQuotes",
+           "cssClass": "red-gradient"
+       },
+       "NEW": {
+           "enable": true,
+           "label": "StatusOrderNew",
            "cssClass": "orange-gradient"
        },
        "VALIDATED": {
            "enable": true,
-           "label": "StatusOrderValidated",
+           "label": "StatusOrderApproved",
            "cssClass": "red-gradient"
        },
-       "TO_BILL": {
+       "PROCESSING": {
            "enable": true,
-           "label": "StatusOrderToBill2",
-           "cssClass": "orange-gradient"
+           "label": "StatusOrderProcessing",
+           "cssClass": "blue-gradient"
        },
-       "PROCESSED": {
+       "SHIPPING": {
+           "label": "StatusOrderSending",
            "enable": true,
-           "label": "StatusOrderProcessed",
            "cssClass": "green-gradient"
+       },
+       "CLOSED": {
+           "enable": true,
+           "label": "StatusOrderClosed",
+           "cssClass": "green-gradient",
+           "system": true
        },
        "CANCELED": {
            "enable": true,
            "label": "StatusOrderCanceled",
-           "cssClass": "black-gradient"
+           "cssClass": "black-gradient",
+           "system": true
+       },
+       "ERROR": {
+           "label": "StatusOrderError",
+           "cssClass": "red-gradient",
+           "system": true
        }
    }
 }

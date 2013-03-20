@@ -1,10 +1,10 @@
 {
    "_id": "_design/Contact",
-   "_rev": "50-8f62eb49e933b6a7205ce95678038556",
+   "_rev": "85-e33054f7bb7cbdf50d15ca82ac6f8523",
    "language": "javascript",
    "views": {
        "list": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Contact\")\n  emit(doc._id, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Contact\" && (doc.Status == \"ST_ENABLE\"))\n  emit(doc._id, doc);\n}"
        },
        "listSociete": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Contact\" && doc.societe.id)\n  emit(doc.societe.id, doc);\n}"
@@ -15,6 +15,9 @@
        },
        "target_id": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Contact\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
+       },
+       "listDisable": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Contact\" && (doc.Status != \"ST_ENABLE\"))\n  emit(doc._id, doc);\n}"
        }
    },
    "updates": {

@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => 'Dagskrá',
 		'Agendas' => 'Dagskrá',
 		'Calendar' => 'Calendar',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => 'Dagatöl',
 		'LocalAgenda' => 'Staðbundin dagbók',
 		'AffectedTo' => 'Áhrifum á',

@@ -38,7 +38,7 @@ if (!class_exists('Conf'))
 
 $conf = new Conf();
 // Identifiant propres au serveur couchdb
-$conf->Couchdb->protocol = $dolibarr_main_couchdb_protocol;
+//$conf->Couchdb->protocol = $dolibarr_main_couchdb_protocol;
 $conf->Couchdb->host = $dolibarr_main_couchdb_host;
 $conf->Couchdb->port = $dolibarr_main_couchdb_port;
 $conf->Couchdb->name = null;
@@ -49,17 +49,21 @@ $conf->memcached->port = $dolibarr_main_memcached_port;
 $conf->urlrewrite = $dolibarr_urlrewrite;
 
 // Identifiant propres au serveur base de donnee
-$conf->db->host = $dolibarr_main_db_host;
-$conf->db->port = $dolibarr_main_db_port;
-$conf->db->name = $dolibarr_main_db_name;
-$conf->db->user = $dolibarr_main_db_user;
-$conf->db->pass = $dolibarr_main_db_pass;
-$conf->db->type = $dolibarr_main_db_type;
-$conf->db->prefix = $dolibarr_main_db_prefix;
-$conf->db->character_set = $dolibarr_main_db_character_set;
-$conf->db->dolibarr_main_db_collation = $dolibarr_main_db_collation;
-$conf->db->dolibarr_main_db_encryption = $dolibarr_main_db_encryption;
-$conf->db->dolibarr_main_db_cryptkey = $dolibarr_main_db_cryptkey;
+// TODO deprecated
+if (!empty($dolibarr_main_db_host)) {
+	$conf->db->host = $dolibarr_main_db_host;
+	$conf->db->port = $dolibarr_main_db_port;
+	$conf->db->name = $dolibarr_main_db_name;
+	$conf->db->user = $dolibarr_main_db_user;
+	$conf->db->pass = $dolibarr_main_db_pass;
+	$conf->db->type = $dolibarr_main_db_type;
+	$conf->db->prefix = $dolibarr_main_db_prefix;
+	$conf->db->character_set = $dolibarr_main_db_character_set;
+	$conf->db->dolibarr_main_db_collation = $dolibarr_main_db_collation;
+	$conf->db->dolibarr_main_db_encryption = $dolibarr_main_db_encryption;
+	$conf->db->dolibarr_main_db_cryptkey = $dolibarr_main_db_cryptkey;
+}
+
 $conf->file->main_limit_users = $dolibarr_main_limit_users;
 $conf->file->mailing_limit_sendbyweb = $dolibarr_mailing_limit_sendbyweb;
 // Identification mode
@@ -171,7 +175,8 @@ if (!defined('NOREQUIREDB')) {
 	}
 
 	$couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
-	$couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
+	if (!empty($_COOKIE['AuthSession']))
+		$couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
 }
 
 // Create the global $hookmanager object

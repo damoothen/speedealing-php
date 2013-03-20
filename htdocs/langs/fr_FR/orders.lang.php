@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2012	Regis Houssin	<regis.houssin@capnetworks.com>
+/* Copyright (C) 2012-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012-2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,14 +60,18 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Reçu complètement',
 		'StatusOrderCanceled' => 'Annulée',
 		'StatusOrderDraft' => 'Brouillon (à valider)',
-		'StatusOrderAuto' => 'Commande Internet (à valider)',
+		'StatusOrderNeedQuotes' => 'Brouillon (Devis manuel requis)',
+		'StatusOrderNew' => 'Nouvelle commande (à valider)',
+		'StatusOrderProcessing' => 'En cours de traitement',
 		'StatusOrderValidated' => 'Validée',
 		'StatusOrderOnProcess' => 'Attente réception',
-		'StatusOrderProcessed' => 'Traitée',
+		'StatusOrderSending' => 'Envoi en cours',
+		'StatusOrderClosed' => 'Terminée (expédiée)',
 		'StatusOrderToBill' => 'Délivrée',
 		'StatusOrderToBill2' => 'A facturer',
 		'StatusOrderApproved' => 'Approuvée',
 		'StatusOrderRefused' => 'Refusée',
+		'StatusOrderError' => 'Erreur',
 		'StatusOrderReceivedPartially' => 'Reçu partiellement',
 		'StatusOrderReceivedAll' => 'Reçu complètement',
 		'ShippingExist' => 'Une expédition existe',
@@ -176,6 +181,7 @@ $orders = array(
 		'CloseProcessedOrdersAutomatically' => 'Classer automatiquement à "Traitées" les commandes sélectionnées.',
 		'MenuOrdersToBill2' => 'Commandes à facturer',
 		'LinkedInvoices' => 'Factures jointes',
-		'LinkedProposals' => 'Propositions commerciales jointes'
+		'LinkedProposals' => 'Propositions commerciales jointes',
+		'ShippingHT' => 'Frais de transport'
 );
 ?>

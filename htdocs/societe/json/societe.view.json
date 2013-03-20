@@ -1,9 +1,10 @@
 {
    "_id": "_design/Societe",
+   "_rev": "154-72a7485d1dcd1fb6f53147dae48d9c56",
    "language": "javascript",
    "views": {
        "list": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true)\n  emit(doc.name, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true && (doc.Status != \"ST_NO\" && doc.Status != \"ST_NEVER\"))\n  emit(doc.name, doc);\n}"
        },
        "target_id": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true)\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
@@ -27,7 +28,7 @@
            "reduce": "function(keys, values) {\n  return sum(values)\n}"
        },
        "listByCommercial": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.commercial_id.id && doc._id != \"societe:mysoc\" && doc.trash != true)\n  emit(doc.commercial_id.id, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.commercial_id.id && doc._id != \"societe:mysoc\" && doc.trash != true && (doc.Status != \"ST_NO\" && doc.Status != \"ST_NEVER\"))\n  emit(doc.commercial_id.id, doc);\n}"
        },
        "listZoneGeo": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\"  && doc.trash != true && doc.zonegeo)\n  emit(doc.zonegeo, doc);\n}",
@@ -35,6 +36,15 @@
        },
        "listGPS": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true && doc.gps && doc.Status!=\"ST_NEVER\" && doc.Status!=\"ST_NO\")\n  emit(doc.name, doc);\n}"
+       },
+       "code_client": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.code_client)\n  emit(doc.code_client, doc._id);\n}"
+       },
+       "listDisable": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.trash != true && (doc.Status == \"ST_NO\" || doc.Status == \"ST_NEVER\"))\n  emit(doc.name, doc);\n}"
+       },
+       "listDisableByCommercial": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.commercial_id.id && doc._id != \"societe:mysoc\" && doc.trash != true && (doc.Status == \"ST_NO\" || doc.Status == \"ST_NEVER\"))\n  emit(doc.commercial_id.id, doc);\n}"
        }
    },
    "updates": {

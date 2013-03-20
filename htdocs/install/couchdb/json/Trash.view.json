@@ -1,9 +1,0 @@
-{
-   "_id": "_design/Trash",
-   "language": "javascript",
-   "views": {
-       "list": {
-           "map": "function(doc) {\n  if(doc.class && doc.trash == true)\n  emit(doc.name, doc);\n}"
-       }
-    }
-}

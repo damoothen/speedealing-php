@@ -1,8 +1,8 @@
 {
    "_id": "extrafields:Commande",
-   "_rev": "55-e4fc696bae5f675c0787799808b21f52",
+   "_rev": "74-84ffd04ecb304d15789428e026c6373b",
    "class": "extrafields",
-   "ico": "16-Document.png",
+   "ico": "icon-object-order",
    "langs": [
        "orders"
    ],
@@ -20,6 +20,12 @@
        "qty",
        "tva_tx",
        "remise"
+   ],
+   "amountsBox": [
+       "total_ht",
+       "shipping",
+       "total_tva",
+       "total_ttc"
    ],
    "fields": {
        "Status": {
@@ -160,6 +166,47 @@
                    "cssClass": "green-gradient"
                }
            }
+       },
+       "total_ht": {
+           "type": "text",
+           "settype": "float",
+           "price": true,
+           "cssClass": "red",
+           "enable": true,
+           "label": "AmountHT",
+           "mode": "absolute",
+           "default": 0
+       },
+       "total_tva": {
+           "type": "text",
+           "settype": "float",
+           "price": true,
+           "enable": true,
+           "label": "AmountVAT",
+           "mode": "absolute",
+           "default": 0
+       },
+       "total_ttc": {
+           "type": "text",
+           "settype": "float",
+           "price": true,
+           "enable": true,
+           "label": "AmountTTC",
+           "mode": "absolute",
+           "default": 0
+       },
+       "shipping": {
+           "type": "text",
+           "icon": "icon-plane",
+           "settype": "float",
+           "price": true,
+           "enable": true,
+           "label": "ShippingHT",
+           "mode": "absolute",
+           "default": 0
+       },
+       "subprice": {
+           "enable": true
        }
    }
 }

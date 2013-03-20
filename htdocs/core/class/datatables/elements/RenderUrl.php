@@ -55,29 +55,45 @@ class RenderUrl implements ElementInterface {
 
 		return 'function(data, type, row) {
 					var ar = [];
-					var url = "' . $url . '";
-					var img, ico = "'.(!empty($ico) ? $ico : false).'";
+					ico = "'.(!empty($ico) ? ' ' . $ico : false).'";
 
 					if(row._id === undefined)
 						return ar.join("");
 					else if(data === undefined)
 						data = row._id;
 
-					if (ico) {
-						var title = "' . $langs->trans("Show") . ' ' . $this->classname . '";
-						img = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/" + ico + "\" border=\"0\" alt=\"" + title + " : " + data.toString() + "\" title=\"" + title + " : " + data.toString() + "\"> ";
+					var objClassName = "' . $this->classname . '";
+					if (objClassName == "mixed" && row.element) {
+						objClassName = row.element;
+						ico = "icon-object-" + objClassName.toLowerCase();
 					}
+
+					var url = objClassName.toLowerCase() + "/'.$this->cardname.'.php?id=";
+
+					var title = "' . $langs->trans("Show"). ' " + objClassName;
 
 					if (typeof data == "object") {
 						if (data.length > 1) {
 							$.each(data, function(key, value) {
-								ar[ar.length] = img + "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + value.id + "\">" + value.name.toString() + "</a></span> ";
+								if (ico)
+									ar[ar.length] = "<span class=\"" + ico + "\" title=\"" + title + " : " + value.name.toString() + "\">";
+								ar[ar.length] = "<a href=\"" + url + value.id + "\">" + value.name.toString() + "</a> ";
+								if (ico)
+									ar[ar.length] = "</span>";
 							});
 						} else if (data.id) {
-							ar[ar.length] = img + "<span class=\"' . $this->field->render->cssclass . '\"><a href=\"" + url + data.id + "\">" + data.name.toString() + "</a></span> ";
+							if (ico)
+								ar[ar.length] = "<span class=\"" + ico + "\" title=\"" + title + " : " + data.name.toString() + "\">";
+							ar[ar.length] = "<a href=\"" + url + data.id + "\">" + data.name.toString() + "</a> ";
+							if (ico)
+								ar[ar.length] = "</span>";
 						}
 					} else {
-						ar[ar.length] = img + "<a href=\"" + url + row._id + "\">" + data.toString() + "</a>";
+						if (ico)
+							ar[ar.length] = "<span class=\"" + ico + "\" title=\"" + title + " : " + data.toString() + "\">";
+						ar[ar.length] = "<a href=\"" + url + row._id + "\">" + data.toString() + "</a>";
+						if (ico)
+							ar[ar.length] = "</span>";
 					}
 					return ar.join("");
 				}';

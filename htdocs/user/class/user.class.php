@@ -79,7 +79,7 @@ class User extends nosqlDocument {
 	 *    @param   DoliDb  $db     Database handler
 	 */
 
-	function __construct($db) {
+	function __construct($db = null) {
 		$this->db = $db;
 
 		parent::__construct($db);
@@ -171,8 +171,9 @@ class User extends nosqlDocument {
 		try {
 			$admins = $this->couchAdmin->getUserAdmins();
 			$name = $this->couchAdmin->getLoginSession();
-			
-			if ((isset($admins->$name) || in_array("_admin", $this->roles, true)) && $this->name == $name)
+			$user = $this->couchAdmin->getUser($name);
+
+			if ((isset($admins->$name) || in_array("_admin", $user->roles, true)) && $this->name == $name)
 				$this->superadmin = true;
 			else
 				$this->superadmin = false;
@@ -200,7 +201,7 @@ class User extends nosqlDocument {
 				$this->admin = true;
 			}
 		} catch (Exception $e) {
-			
+
 		}
 
 		$this->id = $this->_id;
@@ -572,20 +573,20 @@ class User extends nosqlDocument {
 		// Supprime droits
 		$sql = "DELETE FROM " . MAIN_DB_PREFIX . "user_rights WHERE fk_user = " . $this->id;
 		if ($this->db->query($sql)) {
-			
+
 		}
 
 		// Remove group
 		$sql = "DELETE FROM " . MAIN_DB_PREFIX . "usergroup_user WHERE fk_user  = " . $this->id;
 		if ($this->db->query($sql)) {
-			
+
 		}
 
 		// Si contact, supprime lien
 		if ($this->contact_id) {
 			$sql = "UPDATE " . MAIN_DB_PREFIX . "socpeople SET fk_user_creat = null WHERE rowid = " . $this->contact_id;
 			if ($this->db->query($sql)) {
-				
+
 			}
 		}
 
@@ -628,14 +629,12 @@ class User extends nosqlDocument {
 		$this->Firstname = trim($this->Firstname);
 		$this->Lastname = trim($this->Lastname);
 
-		dol_syslog(get_class($this) . "::create login=" . $this->name . ", user=" . (is_object($user) ? $user->id : ''), LOG_DEBUG);
-
 		// Check parameters
-		if (!isValidEMail($this->email)) {
+		/*if (!isValidEMail($this->email)) {
 			$langs->load("errors");
 			$this->error = $langs->trans("ErrorBadEMail", $this->email);
 			return -1;
-		}
+		}*/
 
 		$error = 0;
 
@@ -643,18 +642,23 @@ class User extends nosqlDocument {
 			$result = $this->couchAdmin->getUser($this->name);
 		} catch (Exception $e) {
 			// User doesn-t exist
-			
+
 		}
 
-		if (isset($result->name) && $action == 'add') {
+		if (isset($result->name) && $action == 'add' && $action != 'install') {
 			$this->error = 'ErrorLoginAlreadyExists';
 			return -6;
 		} else {
-			if ($action == 'add' || empty($result->name)) {
+			if ($action == 'add' || $action == 'install' || empty($result->name)) {
 				try {
-					$this->couchAdmin->createUser($this->name, $this->pass);
+					if ($action != 'install') {
+						if ($this->admin)
+							$this->couchAdmin->createAdmin($this->name, $this->pass);
+						else
+							$this->couchAdmin->createUser($this->name, $this->pass);
+					}
 					unset($this->pass);
-					if(count($this->roles))
+					if(!empty($this->roles)) // use not empty instead count for avoid error
 						foreach ($this->roles as $group)
 							$this->couchAdmin->addRoleToUser($this->name, $group);
 				} catch (Exception $e) {
@@ -675,13 +679,19 @@ class User extends nosqlDocument {
 			  $this->_id = $user_tmp->_id;
 			  $this->_rev = $user_tmp->_rev; */
 
-			if ($action == 'add' && empty($this->Status))
-				$this->Status = "DISABLE";
-			if ($action == 'add')
+			if ($action == 'add' || $action == 'install') {
+				if (empty($this->Status))
+					$this->Status = "DISABLE";
 				$this->CreateDate = dol_now();
+				$this->_id = "user:" . $this->name;
+			}
 
-			$pass = $this->pass;
-			unset($this->pass);
+			$pass = null;
+			if (!empty($this->pass)) { // For avoid error
+				$pass = $this->pass;
+				unset($this->pass);
+			}
+
 			//print_r($this);exit;
 			$result = $this->record(); // Save all specific parameters
 
@@ -693,13 +703,13 @@ class User extends nosqlDocument {
 			if ($caneditpassword && !empty($pass)) { // Case we can edit only password
 				$this->couchAdmin->setPassword($this->name, $pass);
 			}
-			
-			if($this->admin)
-				$this->couchAdmin->addRoleToUser($this->name, "_admin");
-			else
-				$this->couchAdmin->removeRoleFromUser($this->name, "_admin");
-			
-			
+
+			if ($action == 'update') {
+				if ($this->admin)
+					$this->couchAdmin->addRoleToUser($this->name, "_admin");
+				else
+					$this->couchAdmin->removeRoleFromUser($this->name, "_admin");
+			}
 		} catch (Exception $e) {
 			$this->error = $e->getMessage();
 			error_log($this->error);
@@ -1552,7 +1562,7 @@ class User extends nosqlDocument {
 
 	function getUserAdmins() {
 		$result = $this->couchAdmin->getUserAdmins();
-		
+
 		$result_roles = $this->couchAdmin->getAllUsers(true);
 		foreach ($result_roles as $aRow) {
 			if(in_array("_admin",$aRow->doc->roles,true)){
@@ -1574,11 +1584,11 @@ class User extends nosqlDocument {
 	function getLibStatus() {
 		return $this->LibStatus($this->Status);
 	}
-	
+
 	function addRoleToUser($role) {
 		return $this->couchAdmin->addRoleToUser($this->name, $role);
 	}
-	
+
 	function removeRoleFromUser($role) {
 		return $this->couchAdmin->removeRoleFromUser($this->name, $role);
 	}

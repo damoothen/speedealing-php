@@ -24,7 +24,7 @@
  */
 
 if (!defined('DOL_VERSION'))
-    define('DOL_VERSION', '0.2.23');
+    define('DOL_VERSION', '0.2.30');
 if (!defined('EURO'))
     define('EURO', chr(128));
 
@@ -69,7 +69,7 @@ if (!$result && !empty($_SERVER["GATEWAY_INTERFACE"])) {    // If install not do
 }
 
 // Force PHP error_reporting setup (Speedealing may report warning without this)
-if (!empty($dolibarr_strict_mode)) {
+if (!empty($main_strict_mode)) {
     error_reporting(E_ALL | E_STRICT);
 } else {
     if (!defined('E_DEPRECATED'))
@@ -82,11 +82,15 @@ if (!empty($dolibarr_main_prod))
     ini_set('display_errors', 'Off');
 
 // Clean parameters
-$dolibarr_main_data_root = trim($dolibarr_main_data_root);
-$dolibarr_main_url_root = trim($dolibarr_main_url_root);
-$dolibarr_main_url_root_alt = trim($dolibarr_main_url_root_alt);
-$dolibarr_main_document_root = realpath(dirname(__FILE__));
-$dolibarr_main_document_root_alt = trim($dolibarr_main_document_root_alt);
+// TODO deprecated
+if (!empty($dolibarr_main_data_root)) {
+	$dolibarr_main_data_root = trim($dolibarr_main_data_root);
+	$dolibarr_main_url_root = trim($dolibarr_main_url_root);
+	$dolibarr_main_url_root_alt = trim($dolibarr_main_url_root_alt);
+	$dolibarr_main_document_root = realpath(dirname(__FILE__));
+	$dolibarr_main_document_root_alt = trim($dolibarr_main_document_root_alt);
+}
+
 
 if (empty($dolibarr_main_db_port))
     $dolibarr_main_db_port = 0;  // Pour compatibilite avec anciennes configs, si non defini, on prend 'mysql'
@@ -108,8 +112,8 @@ if (empty($dolibarr_mailing_limit_sendbyweb))
     $dolibarr_mailing_limit_sendbyweb = 0;
 if (empty($force_charset_do_notuse))
     $force_charset_do_notuse = 'UTF-8';
-if (empty($dolibarr_strict_mode))
-    $dolibarr_strict_mode = 0; // For debug in php strict mode
+if (empty($main_strict_mode))
+    $main_strict_mode = 0; // For debug in php strict mode
 
 
 
@@ -130,35 +134,42 @@ if (!defined('NOCSRFCHECK') && empty($dolibarr_nocsrfcheck) && !empty($_SERVER['
 
 // Define some constants
 define('DOL_CLASS_PATH', 'class/');         // Filesystem path to class dir (defined only for some code that want to be compatible with old versions without this parameter)
-define('DOL_DATA_ROOT', $dolibarr_main_data_root);     // Filesystem data (documents)
-if (!empty($dolibarr_main_document_root_alt)) {
-    define('DOL_DOCUMENT_ROOT_ALT', $dolibarr_main_document_root_alt); // Filesystem paths to alternate core php (alternate htdocs)
+// TODO deprecated
+if (!empty($dolibarr_main_data_root)) {
+	define('DOL_DATA_ROOT', $dolibarr_main_data_root);     // Filesystem data (documents)
+	if (!empty($dolibarr_main_document_root_alt)) {
+		define('DOL_DOCUMENT_ROOT_ALT', $dolibarr_main_document_root_alt); // Filesystem paths to alternate core php (alternate htdocs)
+	}
 }
+
 // Define DOL_MAIN_URL_ROOT and DOL_URL_ROOT
 $tmp = '';
 $found = 0;
-$real_dolibarr_main_document_root = str_replace('\\', '/', realpath($dolibarr_main_document_root));
-$pathroot = $_SERVER["DOCUMENT_ROOT"];
-$paths = explode('/', str_replace('\\', '/', $_SERVER["SCRIPT_NAME"]));
-$concatpath = '';
-foreach ($paths as $tmppath) {
-    if ($tmppath)
-        $concatpath.='/' . $tmppath;
-    //print $_SERVER["SCRIPT_NAME"].'-'.$pathroot.'-'.$concatpath.'-'.$real_dolibarr_main_document_root.'-'.realpath($pathroot.$concatpath).'<br>';
-    if ($real_dolibarr_main_document_root == @realpath($pathroot . $concatpath)) {    // @ avoid warning when safe_mode is on.
-        $tmp3 = $concatpath;
-        //print "Found relative url = ".$tmp3;
-        $found = 1;
-        break;
-    }
-    //else print "Not found yet for concatpath=".$concatpath."<br>\n";
+// TODO deprecated
+if (!empty($dolibarr_main_document_root)) {
+	$real_dolibarr_main_document_root = str_replace('\\', '/', realpath($dolibarr_main_document_root));
+	$pathroot = $_SERVER["DOCUMENT_ROOT"];
+	$paths = explode('/', str_replace('\\', '/', $_SERVER["SCRIPT_NAME"]));
+	$concatpath = '';
+	foreach ($paths as $tmppath) {
+		if ($tmppath)
+			$concatpath.='/' . $tmppath;
+		//print $_SERVER["SCRIPT_NAME"].'-'.$pathroot.'-'.$concatpath.'-'.$real_dolibarr_main_document_root.'-'.realpath($pathroot.$concatpath).'<br>';
+		if ($real_dolibarr_main_document_root == @realpath($pathroot . $concatpath)) {    // @ avoid warning when safe_mode is on.
+			$tmp3 = $concatpath;
+			//print "Found relative url = ".$tmp3;
+			$found = 1;
+			break;
+		}
+		//else print "Not found yet for concatpath=".$concatpath."<br>\n";
+	}
 }
 
-if (!$found) { // If autodetect fails (Ie: when using apache alias that point outside default DOCUMENT_ROOT.
+if (!$found && !empty($dolibarr_main_url_root)) { // If autodetect fails (Ie: when using apache alias that point outside default DOCUMENT_ROOT.
     $tmp = $dolibarr_main_url_root;
 }
 else
-    $tmp = MAIN_PROTOCOL . '://' . $_SERVER["SERVER_NAME"] . ((empty($_SERVER["SERVER_PORT"]) || $_SERVER["SERVER_PORT"] == 80) ? '' : ':' . $_SERVER["SERVER_PORT"]) . ($tmp3 ? (preg_match('/^\//', $tmp3) ? '' : '/') . $tmp3 : '');
+    $tmp = MAIN_PROTOCOL . '://' . $_SERVER["SERVER_NAME"] . ((empty($_SERVER["SERVER_PORT"]) || $_SERVER["SERVER_PORT"] == 80) ? '' : ':' . $_SERVER["SERVER_PORT"]) . (!empty($tmp3) ? (preg_match('/^\//', $tmp3) ? '' : '/') . $tmp3 : '');
 //print "tmp1=".$tmp1." tmp2=".$tmp2." tmp3=".$tmp3." tmp=".$tmp;
 
 if (!empty($dolibarr_main_force_https))
@@ -197,6 +208,7 @@ define('MAIN_DB_PREFIX', $dolibarr_main_db_prefix);
  * To use other version than embeded libraries, define here constant to path. Use '' to use include class path autodetect.
  */
 // Path to root libraries
+// TODO deprecated and unused
 if (!defined('ADODB_PATH')) {
     define('ADODB_PATH', (!isset($dolibarr_lib_ADODB_PATH)) ? DOL_DOCUMENT_ROOT . '/includes/adodbtime/' : (empty($dolibarr_lib_ADODB_PATH) ? '' : $dolibarr_lib_ADODB_PATH . '/'));
 }
@@ -259,13 +271,16 @@ include_once DOL_DOCUMENT_ROOT . '/core/lib/functions.lib.php';
 include_once DOL_DOCUMENT_ROOT . '/core/lib/security.lib.php';
 //print memory_get_usage();
 // If password is encoded, we decode it
-if (preg_match('/crypted:/i', $dolibarr_main_db_pass) || !empty($dolibarr_main_db_encrypted_pass)) {
-    if (preg_match('/crypted:/i', $dolibarr_main_db_pass)) {
-        $dolibarr_main_db_pass = preg_replace('/crypted:/i', '', $dolibarr_main_db_pass);
-        $dolibarr_main_db_pass = dol_decode($dolibarr_main_db_pass);
-        $dolibarr_main_db_encrypted_pass = $dolibarr_main_db_pass; // We need to set this as it is used to know the password was initially crypted
-    }
-    else
-        $dolibarr_main_db_pass = dol_decode($dolibarr_main_db_encrypted_pass);
+// TODO deprecated
+if (!empty($dolibarr_main_db_pass)) {
+	if (preg_match('/crypted:/i', $dolibarr_main_db_pass) || !empty($dolibarr_main_db_encrypted_pass)) {
+		if (preg_match('/crypted:/i', $dolibarr_main_db_pass)) {
+			$dolibarr_main_db_pass = preg_replace('/crypted:/i', '', $dolibarr_main_db_pass);
+			$dolibarr_main_db_pass = dol_decode($dolibarr_main_db_pass);
+			$dolibarr_main_db_encrypted_pass = $dolibarr_main_db_pass; // We need to set this as it is used to know the password was initially crypted
+		}
+		else
+			$dolibarr_main_db_pass = dol_decode($dolibarr_main_db_encrypted_pass);
+	}
 }
 ?>

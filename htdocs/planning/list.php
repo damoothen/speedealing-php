@@ -24,6 +24,7 @@
 require '../main.inc.php';
 if (! class_exists('Planning'))
 	require DOL_DOCUMENT_ROOT . '/planning/class/planning.class.php';
+require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
 
 $langs->load("companies");
 $langs->load("customers");
@@ -33,7 +34,7 @@ $langs->load("orders");
 // Security check
 $result = restrictedArea($user, 'planning', "", '');
 
-$object = new Planning($db);
+$object = new Commande($db);
 /*
  * View
  */
@@ -87,18 +88,20 @@ print'<th class="essential">';
 print $langs->trans("Orders");
 print'</th>';
 $obj->aoColumns[$i] = new stdClass();
-$obj->aoColumns[$i]->mDataProp = "name";
+$obj->aoColumns[$i]->mDataProp = "label";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("name", "url");
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("label", "url");
 $i++;
 print'<th class="essential">';
-print $langs->trans("Date");
+print $langs->trans("Date");require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
 print'</th>';
 $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "name";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("name", "url");
 $i++;
 print'<th class="essential">';
@@ -108,6 +111,7 @@ $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "name";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("name", "url");
 $i++;
 print'<th class="essential">';
@@ -117,6 +121,7 @@ $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "name";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("name", "url");
 $i++;
 foreach ($object->fk_extrafields->longList as $aRow) {
@@ -158,7 +163,7 @@ $obj->aoColumns[$i]->sWidth = "60px";
 $obj->aoColumns[$i]->bSortable = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 
-$url = "societe/fiche.php";
+$url = "commande/fiche.php";
 if ($user->rights->societe->creer && $user->rights->societe->supprimer) {
     $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];

@@ -255,14 +255,26 @@ class modSociete extends DolibarrModules {
         $r++;
 		
 		$this->menus[$r] = new stdClass();
-        $this->menus[$r]->_id = "menu:thirdparty";
+        $this->menus[$r]->_id = "menu:thirdpartyenable";
         $this->menus[$r]->position = 2;
         $this->menus[$r]->url = "/societe/list.php";
         $this->menus[$r]->langs = "companies";
         $this->menus[$r]->perms = '$user->rights->societe->lire';
         $this->menus[$r]->enabled = '$conf->societe->enabled';
         $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "ListOfThirdParties";
+        $this->menus[$r]->title = "ListOfThirdPartiesEnable";
+        $this->menus[$r]->fk_menu = "menu:companies";
+        $r++;
+		
+		$this->menus[$r] = new stdClass();
+        $this->menus[$r]->_id = "menu:thirdpartydisable";
+        $this->menus[$r]->position = 3;
+        $this->menus[$r]->url = "/societe/list.php?disable=true";
+        $this->menus[$r]->langs = "companies";
+        $this->menus[$r]->perms = '$user->rights->societe->lire';
+        $this->menus[$r]->enabled = '$conf->societe->enabled';
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->title = "ListOfThirdPartiesDisable";
         $this->menus[$r]->fk_menu = "menu:companies";
         $r++;
         
@@ -279,14 +291,26 @@ class modSociete extends DolibarrModules {
         $r++;
 		
 		$this->menus[$r] = new stdClass();
-        $this->menus[$r]->_id = "menu:contactsaddresses";
+        $this->menus[$r]->_id = "menu:contactsenable";
         $this->menus[$r]->position = 11;
         $this->menus[$r]->url = "/contact/list.php";
         $this->menus[$r]->langs = "companies";
         $this->menus[$r]->perms = '$user->rights->societe->lire';
         $this->menus[$r]->enabled = '$conf->societe->enabled';
         $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = 'ListOfContacts';
+        $this->menus[$r]->title = 'ListOfContactsEnable';
+        $this->menus[$r]->fk_menu = "menu:companies";
+        $r++;
+		
+		$this->menus[$r] = new stdClass();
+        $this->menus[$r]->_id = "menu:contactsdisable";
+        $this->menus[$r]->position = 12;
+        $this->menus[$r]->url = "/contact/list.php?disable=true";
+        $this->menus[$r]->langs = "companies";
+        $this->menus[$r]->perms = '$user->rights->societe->lire';
+        $this->menus[$r]->enabled = '$conf->societe->enabled';
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->title = 'ListOfContactsDisable';
         $this->menus[$r]->fk_menu = "menu:companies";
         $r++;
 

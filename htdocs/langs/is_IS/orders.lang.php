@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2012	Regis Houssin	<regis.houssin@capnetworks.com>
+/* Copyright (C) 2012-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012-2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,14 +60,18 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Allt hlaut',
 		'StatusOrderCanceled' => 'Hætt við',
 		'StatusOrderDraft' => 'Víxill (þarf að vera staðfest)',
-		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
+		'StatusOrderNeedQuotes' => 'Draft (needs manual quotes)',
+		'StatusOrderNew' => 'New order (needs to be validated)',
+		'StatusOrderProcessing' => 'Processing',
 		'StatusOrderValidated' => 'Staðfestar',
 		'StatusOrderOnProcess' => 'Á ferli',
-		'StatusOrderProcessed' => 'Afgreitt',
+		'StatusOrderSending' => 'Sending',
+		'StatusOrderClosed' => 'Closed (Shipped)',
 		'StatusOrderToBill' => 'Við reikning',
 		'StatusOrderToBill2' => 'To bill',
 		'StatusOrderApproved' => 'Samþykkt',
 		'StatusOrderRefused' => 'Neitaði',
+		'StatusOrderError' => 'Error',
 		'StatusOrderReceivedPartially' => 'Að hluta til fékk',
 		'StatusOrderReceivedAll' => 'Allt hlaut',
 		'ShippingExist' => 'A sendingunni til',
@@ -176,6 +181,7 @@ $orders = array(
 		'CloseProcessedOrdersAutomatically' => 'Classify "Processed" all selected orders.',
 		'MenuOrdersToBill2' => 'Orders to bill',
 		'LinkedInvoices' => 'Linked invoices',
-		'LinkedProposals' => 'Linked proposals'
+		'LinkedProposals' => 'Linked proposals',
+		'ShippingHT' => 'Shipping cost'
 );
 ?>

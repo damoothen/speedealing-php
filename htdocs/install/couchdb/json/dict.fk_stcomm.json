@@ -10,7 +10,7 @@
        },
        "ST_NEVER": {
            "enable": true,
-           "label": "Non Déterminé",
+           "label": "Non déterminé",
            "type": "suspect",
            "cssClass": "grey-gradient"
        },

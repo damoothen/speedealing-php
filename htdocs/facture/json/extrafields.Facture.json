@@ -1,8 +1,7 @@
 {
    "_id": "extrafields:Facture",
-   "_rev": "6-57eadfd147477a693851095e0f311f89",
    "class": "extrafields",
-   "ico": "16-Document.png",
+   "ico": "icon-object-invoice",
    "langs": [
        "bills"
    ],

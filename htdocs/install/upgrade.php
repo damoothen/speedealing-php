@@ -50,6 +50,7 @@ function upgrade() {
 		if ($aRow->id == "module:User")
 			$aRow->value->numero = 0;
 
+		$object = new DolibarrModules($db);
 		if (!empty($modules[$aRow->value->numero]) && $aRow->value->enabled) { // Test if module is present and enabled
 			$objMod = $modules[$aRow->value->numero];
 

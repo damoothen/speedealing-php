@@ -1342,7 +1342,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 		print '<div class="columns">';
 
 		$titre = $langs->trans("ThirdParty");
-		print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
+		print column_start("twelve");
 
 		dol_fiche_head($head, 'card', $langs->trans("ThirdParty"), 0, 'company');
 
@@ -1731,7 +1731,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 		}
 
 		print '</table>';
-		print '</div>';
 
 		/*
 		 *  Actions
@@ -1755,11 +1754,38 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 		print "</span>";
 		print "</div>";
 		print '</div>';
+		print '</div>';
 
-		print end_box();
+		print column_end();
 
+		print column_start("six");
 		// Print Notes
 		print $object->show_notes();
+		print column_end();
+		
+		print column_start("six");
+		print '<dl class="accordion">';
+		
+		if ($conf->propal->enabled) {
+			require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');
+			$propal = new Propal($db);
+			$propal->show($object->id);
+		}
+
+		if ($conf->commande->enabled) {
+			require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
+			$commande = new Commande($db);
+			$commande->show($object->id);
+		}
+
+		if ($conf->facture->enabled) {
+			require_once(DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php');
+			$facture = new Facture($db);
+			$facture->show($object->id);
+		}
+		
+		print '</dl>';
+		print column_end();
 
 		if ($conf->ecm->enabled) {
 			// Generated documents
@@ -1796,24 +1822,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 		// Projects list
 		// TODO replace with show method
 		//$result = show_projects($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
-
-		if ($conf->propal->enabled) {
-			require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');
-			$propal = new Propal($db);
-			$propal->show($object->id);
-		}
-
-		if ($conf->commande->enabled) {
-			require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
-			$commande = new Commande($db);
-			$commande->show($object->id);
-		}
-
-		if ($conf->facture->enabled) {
-			require_once(DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php');
-			$facture = new Facture($db);
-			$facture->show($object->id);
-		}
 
 		print '</div></div>';
 	}

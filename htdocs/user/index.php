@@ -1,8 +1,8 @@
 <?php
 
-/* Copyright (C) 2002-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis.houssin@capnetworks.com>
+/* Copyright (C) 2002-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2013	Regis Houssin			<regis.houssin@capnetworks.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,15 +91,13 @@ $url = strtolower(get_class($object)) . '/fiche.php?id=';
 $key = "name";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 				var ar = [];
-				ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $object->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($object)) . ' : ";
-				ar[ar.length] = obj.aData.' . $key . '.toString();
-				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($object)) . ' : ";
+				ar[ar.length] = "<span class=\"' . $object->fk_extrafields->ico . '\" title=\"' . $langs->trans("See " . get_class($object)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\"> <a href=\"' . $url . '";
 				ar[ar.length] = obj.aData._id;
 				ar[ar.length] = "\">";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
-				ar[ar.length] = "</a> ";
+				ar[ar.length] = "</a></span> ";
 				if(obj.aData.admin) {
 					ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/redstar.png\" border=\"0\" ";
 					ar[ar.length] = "\" title=\"' . $langs->trans("SuperAdmin") . '";

@@ -33,44 +33,44 @@ class Societe extends nosqlDocument {
 	public $element = 'societe';
 	public $table_element = 'societe';
 	public $fk_element = 'fk_soc';
-	protected $childtables = array("propal", "commande", "facture", "contrat", "facture_fourn", "commande_fournisseur");	// To test if we can delete object
+	protected $childtables = array("propal", "commande", "facture", "contrat", "facture_fourn", "commande_fournisseur"); // To test if we can delete object
 	protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 	var $id;
 	var $name;
-	var $nom;	  // TODO obsolete
+	var $nom;   // TODO obsolete
 	var $firstname;
 	var $particulier;
 	var $civility_id;
 	var $address;
 	var $adresse;  // TODO obsolete
-	var $cp;	   // TODO obsolete
+	var $cp;	// TODO obsolete
 	var $zip;
-	var $ville;	// TODO obsolete
+	var $ville; // TODO obsolete
 	var $town;
 	var $status;   // 0=activity ceased, 1= in activity
 	var $state_id;
 	var $state_code;
 	var $state;
-	var $departement_id;	 // deprecated
+	var $departement_id;  // deprecated
 	var $departement_code;   // deprecated
-	var $departement;		// deprecated
+	var $departement;  // deprecated
 	var $pays_id;   // deprecated
 	var $pays_code; // deprecated
-	var $pays;	 // deprecated
+	var $pays;  // deprecated
 	var $country_id;
 	var $country_code;
 	var $country;
-	var $tel;		// deprecated
+	var $tel;  // deprecated
 	var $phone;
 	var $fax;
 	var $email;
 	var $url;
 	//! barcode
-	var $barcode;			   // value
-	var $barcode_type;		  // id
-	var $barcode_type_code;	 // code (loaded by fetch_barcode)
-	var $barcode_type_label;	// label (loaded by fetch_barcode)
-	var $barcode_type_coder;	// coder (loaded by fetch_barcode)
+	var $barcode;	  // value
+	var $barcode_type;	// id
+	var $barcode_type_code;  // code (loaded by fetch_barcode)
+	var $barcode_type_label; // label (loaded by fetch_barcode)
+	var $barcode_type_coder; // coder (loaded by fetch_barcode)
 	// 4 professional id (usage depend on country)
 	var $idprof1; // IdProf1 (Ex: Siren in France)
 	var $idprof2; // IdProf2 (Ex: Siret in France)
@@ -94,9 +94,9 @@ class Societe extends nosqlDocument {
 	var $remise_client;  // TODO obsolete
 	var $mode_reglement; // TODO obsolete
 	var $cond_reglement; // TODO obsolete
-	var $client;	 // 0=no customer, 1=customer, 2=prospect, 3=customer and prospect
-	var $prospect;	 // 0=no prospect, 1=prospect
-	var $fournisseur;	// 0=no supplier, 1=supplier
+	var $client;  // 0=no customer, 1=customer, 2=prospect, 3=customer and prospect
+	var $prospect;  // 0=no prospect, 1=prospect
+	var $fournisseur; // 0=no supplier, 1=supplier
 	var $code_client;
 	var $code_fournisseur;
 	var $code_compta;
@@ -119,7 +119,7 @@ class Societe extends nosqlDocument {
 	 *
 	 *    @param	DoliDB		$db		Database handler
 	 */
-	public function __construct($db) {
+	public function __construct($db = null) {
 		parent::__construct($db);
 
 		$this->fk_extrafields = new ExtraFields($db);
@@ -247,6 +247,15 @@ class Societe extends nosqlDocument {
 			}
 		}
 
+		/* Verify code_client must be unique */
+		if ($this->code_client) {
+			$result = $this->getView("code_client", array("key" => $this->code_client));
+			if (count($result->rows) && $result->rows[0]->id != $this->id) {
+				$this->errors[] = 'ErrorCustomerCodeAlreadyUsed';
+				$result = -3;
+			}
+		}
+
 		if ($this->fournisseur && $this->codefournisseur_modifiable()) {
 			// On ne verifie le code fournisseur que si la societe est un fournisseur et que le code est modifiable
 			// Si il n'est pas modifiable il n'est pas mis a jour lors de l'update
@@ -288,7 +297,7 @@ class Societe extends nosqlDocument {
 				$town = substr($town, 0, $pos);
 				//print $town;exit;
 			}
-			$apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" . urlencode($this->address . "," . $this->zip . "," . $this->town);
+			$apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" . urlencode($this->address . "," . $this->zip . "," . $town);
 			$c = curl_init();
 			curl_setopt($c, CURLOPT_URL, $apiUrl);
 			curl_setopt($c, CURLOPT_HEADER, false);
@@ -299,7 +308,7 @@ class Societe extends nosqlDocument {
 			curl_close($c);
 			if ($response->status == "OK") {
 				$this->gps = array($response->results[0]->geometry->location->lat,
-						$response->results[0]->geometry->location->lng);
+					$response->results[0]->geometry->location->lng);
 			} else {
 				unset($this->gps);
 			}
@@ -442,7 +451,7 @@ class Societe extends nosqlDocument {
 				// Actions on extra fields (by external module or standard code)
 				$hookmanager->initHooks(array('thirdpartydao'));
 				$parameters = array('socid' => $this->id);
-				$reshook = $hookmanager->executeHooks('insertExtraFields', $parameters, $this, $action);	// Note that $action and $object may have been modified by some hooks
+				$reshook = $hookmanager->executeHooks('insertExtraFields', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
 				if (empty($reshook)) {
 					$result = $this->insertExtraFields();
 					if ($result < 0) {
@@ -523,37 +532,37 @@ class Societe extends nosqlDocument {
 
 			return parent::delete();
 			/*
-			 // TODO Supprimer les contacts
-			// Remove contacts
-			if (!$error) {
-			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "socpeople";
-			$sql.= " WHERE fk_soc = " . $id;
-			if (!$this->db->query($sql)) {
-			$error++;
-			$this->error .= $this->db->lasterror();
-			}
-			}
+			  // TODO Supprimer les contacts
+			  // Remove contacts
+			  if (!$error) {
+			  $sql = "DELETE FROM " . MAIN_DB_PREFIX . "socpeople";
+			  $sql.= " WHERE fk_soc = " . $id;
+			  if (!$this->db->query($sql)) {
+			  $error++;
+			  $this->error .= $this->db->lasterror();
+			  }
+			  }
 
-			// Update link in member table
-			if (!$error) {
-			$sql = "UPDATE " . MAIN_DB_PREFIX . "adherent";
-			$sql.= " SET fk_soc = NULL WHERE fk_soc = " . $id;
-			if (!$this->db->query($sql)) {
-			$error++;
-			$this->error .= $this->db->lasterror();
-			}
-			}
+			  // Update link in member table
+			  if (!$error) {
+			  $sql = "UPDATE " . MAIN_DB_PREFIX . "adherent";
+			  $sql.= " SET fk_soc = NULL WHERE fk_soc = " . $id;
+			  if (!$this->db->query($sql)) {
+			  $error++;
+			  $this->error .= $this->db->lasterror();
+			  }
+			  }
 
-			// Remove ban
-			if (!$error) {
-			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe_rib";
-			$sql.= " WHERE fk_soc = " . $id;
-			if (!$this->db->query($sql)) {
-			$error++;
-			$this->error = $this->db->lasterror();
-			}
-			}
-			*/
+			  // Remove ban
+			  if (!$error) {
+			  $sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe_rib";
+			  $sql.= " WHERE fk_soc = " . $id;
+			  if (!$this->db->query($sql)) {
+			  $error++;
+			  $this->error = $this->db->lasterror();
+			  }
+			  }
+			 */
 			// Removed extrafields
 			//$result=$this->deleteExtraFields($this);
 			//if ($result < 0) $error++;
@@ -563,23 +572,23 @@ class Societe extends nosqlDocument {
 				$hookmanager->initHooks(array('thirdpartydao'));
 				$parameters = array();
 				$action = 'delete';
-				$reshook = $hookmanager->executeHooks('deleteThirdparty', $parameters, $this, $action);	// Note that $action and $object may have been modified by some hooks
+				$reshook = $hookmanager->executeHooks('deleteThirdparty', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
 				if (!empty($hookmanager->error)) {
 					$error++;
 					$this->error = $hookmanager->error;
 				}
 			}
 			/*
-			 // Remove third party
-			if (!$error) {
-			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe";
-			$sql.= " WHERE rowid = " . $id;
-			if (!$this->db->query($sql)) {
-			$error++;
-			$this->error = $this->db->lasterror();
-			}
-			}
-			*/
+			  // Remove third party
+			  if (!$error) {
+			  $sql = "DELETE FROM " . MAIN_DB_PREFIX . "societe";
+			  $sql.= " WHERE rowid = " . $id;
+			  if (!$this->db->query($sql)) {
+			  $error++;
+			  $this->error = $this->db->lasterror();
+			  }
+			  }
+			 */
 			if (!$error) {
 				// Appel des triggers
 				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
@@ -772,9 +781,9 @@ class Societe extends nosqlDocument {
 		$i = 0;
 		if ($num > 0)
 			foreach ($this->commerciaux as $aRow) {
-			$reparray[$i]['id'] = $aRow;
-			$i++;
-		}
+				$reparray[$i]['id'] = $aRow;
+				$i++;
+			}
 		return $reparray;
 	}
 
@@ -809,32 +818,25 @@ class Societe extends nosqlDocument {
 	}
 
 	/**
-	 *    	Return a link on thirdparty (with picto)
+	 * 	Return a link on thirdparty (with picto)
 	 *
-	 * 		@param	int		$withpicto		Add picto into link (0=No picto, 1=Include picto with link, 2=Picto only)
-	 * 		@param	string	$option			Target of link ('', 'customer', 'prospect', 'supplier')
-	 * 		@param	int		$maxlen			Max length of text
-	 * 		@return	string					String with URL
+	 * 	@param	int		$withpicto		Add picto into link (0=No picto, 1=Include picto with link, 2=Picto only)
+	 * 	@param	string	$picto			Picto name
+	 * 	@return	string					String with URL
 	 */
-	function getNomUrl($withpicto = 0, $option = '', $maxlen = 0) {
+	function getNomUrl($withpicto = 0, $picto = null) {
 		global $conf, $langs;
 
-		$name = $this->name;
-
 		$result = '';
-		$lien = $lienfin = '';
-
-		$lien = '<a href="' . DOL_URL_ROOT . '/societe/fiche.php?id=' . $this->id();
-
-		// Add type of canvas
-		$lien.=(!empty($this->canvas) ? '&amp;canvas=' . $this->canvas : '') . '">';
-		$lienfin = '</a>';
+		$name = $this->name;
+		$slink = '<a href="societe/fiche.php?id=' . $this->id() . '">';
+		$elink = '</a>';
 
 		if ($withpicto)
-			$result.=($lien . img_object($langs->trans("ShowCompany") . ': ' . $name, 'company') . $lienfin);
+			$result.= ($slink . img_object($langs->trans("ShowCompany") . ': ' . $name, 'company') . $elink);
 		if ($withpicto && $withpicto != 2)
 			$result.=' ';
-		$result.=$lien . ($maxlen ? dol_trunc($name, $maxlen) : $name) . $lienfin;
+		$result.=$slink . $name . $elink;
 
 		return $result;
 	}
@@ -1456,9 +1458,9 @@ class Societe extends nosqlDocument {
 			//Check NIF
 			if (preg_match('/(^[0-9]{8}[A-Z]{1}$)/', $string))
 				if ($num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr($string, 0, 8) % 23, 1))
-				return 1;
-			else
-				return -1;
+					return 1;
+				else
+					return -1;
 
 			//algorithm checking type code CIF
 			$sum = $num[2] + $num[4] + $num[6];
@@ -1469,30 +1471,30 @@ class Societe extends nosqlDocument {
 			//Chek special NIF
 			if (preg_match('/^[KLM]{1}/', $string))
 				if ($num[8] == chr(64 + $n) || $num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr($string, 1, 8) % 23, 1))
-				return 1;
-			else
-				return -1;
+					return 1;
+				else
+					return -1;
 
 			//Check CIF
 			if (preg_match('/^[ABCDEFGHJNPQRSUVW]{1}/', $string))
 				if ($num[8] == chr(64 + $n) || $num[8] == substr($n, strlen($n) - 1, 1))
-				return 2;
-			else
-				return -2;
+					return 2;
+				else
+					return -2;
 
 			//Check NIE T
 			if (preg_match('/^[T]{1}/', $string))
 				if ($num[8] == preg_match('/^[T]{1}[A-Z0-9]{8}$/', $string))
-				return 3;
-			else
-				return -3;
+					return 3;
+				else
+					return -3;
 
 			//Check NIE XYZ
 			if (preg_match('/^[XYZ]{1}/', $string))
 				if ($num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr(str_replace(array('X', 'Y', 'Z'), array('0', '1', '2'), $string), 0, 8) % 23, 1))
-				return 3;
-			else
-				return -3;
+					return 3;
+				else
+					return -3;
 
 			//Can not be verified
 			return -4;
@@ -1667,7 +1669,7 @@ class Societe extends nosqlDocument {
 			$name = $member->getFullName($langs);
 
 		// Positionne parametres
-		$this->nom = $name;	// TODO obsolete
+		$this->nom = $name; // TODO obsolete
 		$this->name = $name;
 		$this->adresse = $member->adresse; // TODO obsolete
 		$this->address = $member->adresse;
@@ -1679,11 +1681,11 @@ class Societe extends nosqlDocument {
 		$this->country_code = $member->country_code;
 		$this->pays_id = $member->country_id; // TODO obsolete
 		$this->country_id = $member->country_id;
-		$this->tel = $member->phone;	// deprecated
-		$this->phone = $member->phone;	   // Prof phone
+		$this->tel = $member->phone; // deprecated
+		$this->phone = $member->phone;	// Prof phone
 		$this->email = $member->email;
 
-		$this->client = 1;	// A member is a customer by default
+		$this->client = 1; // A member is a customer by default
 		$this->code_client = -1;
 		$this->code_fournisseur = -1;
 
@@ -1789,13 +1791,13 @@ class Societe extends nosqlDocument {
 
 		$this->id = 0;
 		$this->name = (!empty($conf->global->MAIN_INFO_SOCIETE_NOM)) ? $conf->global->MAIN_INFO_SOCIETE_NOM : '';
-		$this->nom = $this->name;		  // deprecated
+		$this->nom = $this->name;	// deprecated
 		$this->address = (!empty($conf->global->MAIN_INFO_SOCIETE_ADRESSE)) ? $conf->global->MAIN_INFO_SOCIETE_ADRESSE : '';
-		$this->adresse = $this->address;		// deprecated
+		$this->adresse = $this->address;  // deprecated
 		$this->zip = (!empty($conf->global->MAIN_INFO_SOCIETE_CP)) ? $conf->global->MAIN_INFO_SOCIETE_CP : '';
-		$this->cp = $this->zip;		  // deprecated
+		$this->cp = $this->zip;	// deprecated
 		$this->town = (!empty($conf->global->MAIN_INFO_SOCIETE_VILLE)) ? $conf->global->MAIN_INFO_SOCIETE_VILLE : '';
-		$this->ville = $this->town;		 // deprecated
+		$this->ville = $this->town;   // deprecated
 		$this->state_id = $conf->global->MAIN_INFO_SOCIETE_DEPARTEMENT;
 		$this->note = empty($conf->global->MAIN_INFO_SOCIETE_NOTE) ? '' : $conf->global->MAIN_INFO_SOCIETE_NOTE;
 
@@ -1807,7 +1809,7 @@ class Societe extends nosqlDocument {
 			if (!empty($tmp[1])) {   // If $conf->global->MAIN_INFO_SOCIETE_PAYS is "id:code:label"
 				$country_code = $tmp[1];
 				$country_label = $tmp[2];
-			} else {					// For backward compatibility
+			} else {	 // For backward compatibility
 				include_once DOL_DOCUMENT_ROOT . '/core/lib/company.lib.php';
 				$country_code = getCountry($country_id, 2, $db);  // This need a SQL request, but it's the old feature
 				$country_label = getCountry($country_id, 0, $db);  // This need a SQL request, but it's the old feature
@@ -1820,7 +1822,7 @@ class Societe extends nosqlDocument {
 		$this->country = $country_label;
 		if (is_object($langs))
 			$this->country = ($langs->trans('Country' . $country_code) != 'Country' . $country_code) ? $langs->trans('Country' . $country_code) : $country_label;
-		$this->pays = $this->country;	 // TODO deprecated
+		$this->pays = $this->country;  // TODO deprecated
 
 		$this->tel = empty($conf->global->MAIN_INFO_SOCIETE_TEL) ? '' : $conf->global->MAIN_INFO_SOCIETE_TEL;   // TODO deprecated
 		$this->phone = empty($conf->global->MAIN_INFO_SOCIETE_TEL) ? '' : $conf->global->MAIN_INFO_SOCIETE_TEL;
@@ -1851,8 +1853,8 @@ class Societe extends nosqlDocument {
 
 	/*
 	 * Graph comptes by status
-	*
-	*/
+	 *
+	 */
 
 	function graphPieStatus($json = false) {
 		global $user, $conf, $langs;
@@ -1901,92 +1903,91 @@ class Societe extends nosqlDocument {
 			$total = 0;
 			$i = 0;
 			?>
-<div
-	id="pie-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
-<script type="text/javascript">
-			$(document).ready(function() {
-				(function($){ // encapsulate jQuery
+			<div
+				id="pie-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
+			<script type="text/javascript">
+				$(document).ready(function() {
+					(function($) { // encapsulate jQuery
 
-					$(function() {
-						var seriesOptions = [],
-						yAxisOptions = [],
-						seriesCounter = 0,
-						colors = Highcharts.getOptions().colors;
+						$(function() {
+							var seriesOptions = [],
+									yAxisOptions = [],
+									seriesCounter = 0,
+									colors = Highcharts.getOptions().colors;
 
-						$.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphPieStatus&class=<?php echo get_class($this); ?>&callback=?',	function(data) {
+							$.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphPieStatus&class=<?php echo get_class($this); ?>&callback=?', function(data) {
 
-							seriesOptions = data;
+								seriesOptions = data;
 
-							createChart();
+								createChart();
 
-						});
+							});
 
 
-						// create the chart when all data is loaded
-						function createChart() {
-							var chart;
+							// create the chart when all data is loaded
+							function createChart() {
+								var chart;
 
-							chart = new Highcharts.Chart({
-								chart: {
-									renderTo: "pie-status",
-									//defaultSeriesType: "bar",
-									margin: 0,
-									plotBackgroundColor: null,
-									plotBorderWidth: null,
-									plotShadow: false
-								},
-								legend: {
-									layout: "vertical", backgroundColor: Highcharts.theme.legendBackgroundColor || "#FFFFFF", align: "left", verticalAlign: "bottom", x: 0, y: 20, floating: true, shadow: true,
-									enabled: false
-								},
-								title: {
-									text: null
-								},
-
-								tooltip: {
-									enabled:true,
-									pointFormat: '{series.name}: <b>{point.percentage}%</b>',
-									percentageDecimals: 2
-								},
-								navigator: {
-									margin: 30
-								},
-								plotOptions: {
-									pie: {
-										allowPointSelect: true,
-										cursor: 'pointer',
-										dataLabels: {
-											enabled: true,
-											color: '#FFF',
-											connectorColor: '#FFF',
-											distance : 30,
-											formatter: function() {
-												return '<b>'+ this.point.name +'</b><br> '+ Math.round(this.percentage) +' %';
+								chart = new Highcharts.Chart({
+									chart: {
+										renderTo: "pie-status",
+										//defaultSeriesType: "bar",
+										margin: 0,
+										plotBackgroundColor: null,
+										plotBorderWidth: null,
+										plotShadow: false
+									},
+									legend: {
+										layout: "vertical", backgroundColor: Highcharts.theme.legendBackgroundColor || "#FFFFFF", align: "left", verticalAlign: "bottom", x: 0, y: 20, floating: true, shadow: true,
+										enabled: false
+									},
+									title: {
+										text: null
+									},
+									tooltip: {
+										enabled: true,
+										pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+										percentageDecimals: 2
+									},
+									navigator: {
+										margin: 30
+									},
+									plotOptions: {
+										pie: {
+											allowPointSelect: true,
+											cursor: 'pointer',
+											dataLabels: {
+												enabled: true,
+												color: '#FFF',
+												connectorColor: '#FFF',
+												distance: 30,
+												formatter: function() {
+													return '<b>' + this.point.name + '</b><br> ' + Math.round(this.percentage) + ' %';
+												}
 											}
 										}
-									}
-								},
-								series: [{
-										type: "pie",
-										name: "<?php echo $langs->trans("Quantity"); ?>",
-										size: 100,
-										data: seriesOptions
-									}]
-							});
-						}
+									},
+									series: [{
+											type: "pie",
+											name: "<?php echo $langs->trans("Quantity"); ?>",
+											size: 100,
+											data: seriesOptions
+										}]
+								});
+							}
 
-					});
-				})(jQuery);
-			});
+						});
+					})(jQuery);
+				});
 			</script>
-<?php
+			<?php
 		}
 	}
 
 	/*
 	 * Graph comptes by status
-	*
-	*/
+	 *
+	 */
 
 	function graphBarStatus($json = false) {
 		global $user, $conf, $langs;
@@ -2027,17 +2028,17 @@ class Societe extends nosqlDocument {
 			$total = 0;
 			$i = 0;
 			?>
-<div
-	id="bar-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
-<script type="text/javascript">
-			$(document).ready(function() {
-				(function($){ // encapsulate jQuery
+			<div
+				id="bar-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
+			<script type="text/javascript">
+				$(document).ready(function() {
+					(function($) { // encapsulate jQuery
 
-					$(function() {
-						var seriesOptions = [],
-						yAxisOptions = [],
-						seriesCounter = 0,
-						names = [<?php
+						$(function() {
+							var seriesOptions = [],
+									yAxisOptions = [],
+									seriesCounter = 0,
+									names = [<?php
 			if ($user->rights->societe->client->voir) { // See ALL
 				$params = array('group' => true, 'group_level' => 1);
 				$result = $this->getView("commercial_status", $params);
@@ -2056,10 +2057,10 @@ class Societe extends nosqlDocument {
 				}
 			}
 			?>],
-							colors = Highcharts.getOptions().colors;
+									colors = Highcharts.getOptions().colors;
 							$.each(names, function(i, name) {
 
-								$.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphBarStatus&class=<?php echo get_class($this); ?>&name='+ name.toString() +'&callback=?',	function(data) {
+								$.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphBarStatus&class=<?php echo get_class($this); ?>&name=' + name.toString() + '&callback=?', function(data) {
 
 									seriesOptions[i] = {
 										name: name,
@@ -2089,7 +2090,7 @@ class Societe extends nosqlDocument {
 										marginBottom: 30
 									},
 									credits: {
-										enabled:false
+										enabled: false
 									},
 									xAxis: {
 										categories: [<?php
@@ -2108,46 +2109,46 @@ class Societe extends nosqlDocument {
 				}
 			}
 			?>],
-											maxZoom: 1
-											//labels: {rotation: 90, align: "left"}
-										},
-										yAxis: {
-											title: {text: "Total"},
-											allowDecimals: false,
-											min: 0
-										},
-										title: {
-											//text: "<?php echo $langs->trans("SalesRepresentatives"); ?>"
-											text: null
-										},
-										legend: {
-											layout: 'vertical',
-											align: 'right',
-											verticalAlign: 'top',
-											x: -5,
-											y: 5,
-											floating: true,
-											borderWidth: 1,
-											backgroundColor: Highcharts.theme.legendBackgroundColor || '#FFFFFF',
-											shadow: true
-										},
-										tooltip: {
-											enabled:true,
-											formatter: function() {
-												//return this.point.name + ' : ' + this.y;
-												return '<b>'+ this.x +'</b><br/>'+
-													this.series.name +': '+ this.y;
-											}
-										},
-										series: seriesOptions
-									});
-								}
+										maxZoom: 1
+												//labels: {rotation: 90, align: "left"}
+									},
+									yAxis: {
+										title: {text: "Total"},
+										allowDecimals: false,
+										min: 0
+									},
+									title: {
+										//text: "<?php echo $langs->trans("SalesRepresentatives"); ?>"
+										text: null
+									},
+									legend: {
+										layout: 'vertical',
+										align: 'right',
+										verticalAlign: 'top',
+										x: -5,
+										y: 5,
+										floating: true,
+										borderWidth: 1,
+										backgroundColor: Highcharts.theme.legendBackgroundColor || '#FFFFFF',
+										shadow: true
+									},
+									tooltip: {
+										enabled: true,
+										formatter: function() {
+											//return this.point.name + ' : ' + this.y;
+											return '<b>' + this.x + '</b><br/>' +
+													this.series.name + ': ' + this.y;
+										}
+									},
+									series: seriesOptions
+								});
+							}
 
-							});
-						})(jQuery);
-			});
+						});
+					})(jQuery);
+				});
 			</script>
-<?php
+			<?php
 		}
 	}
 

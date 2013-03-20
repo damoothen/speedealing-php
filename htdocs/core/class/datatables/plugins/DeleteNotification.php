@@ -48,9 +48,11 @@ class DeleteNotification implements PluginInterface {
 							url: '/core/ajax/deleteinplace.php',
 							data: 'json=trash&class={$object_class}&id=' + aData['_id'],
 							success: function(msg){
+								// delete row
 								{$var_name}.fnDeleteRow(aPos[0]);
-								// for test
-								$('span.shortcut-trash-empty').removeClass('shortcut-trash-empty').addClass('shortcut-trash-full');
+								// change trash status
+								var trash = $('#shortcuts li.trashList a.shortcut-trash-empty');
+								trash.removeClass('shortcut-trash-empty').addClass('shortcut-trash-full');
 							}
 						});
 					},

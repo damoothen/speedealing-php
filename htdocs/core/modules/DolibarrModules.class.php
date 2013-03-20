@@ -551,7 +551,7 @@ class DolibarrModules extends nosqlDocument {
 
 		$var_dbuser = array("_design/_auth");
 
-		$var_dbsystem = array("_design/User", "_desgin/UserGroup");
+		$var_dbsystem = array("_design/User", "_design/UserGroup");
 
 		$list_db = $this->couchdb->listDatabases();
 		$no_upgradeDB = array("_users", "system", "_replicator", "mips");
@@ -604,10 +604,10 @@ class DolibarrModules extends nosqlDocument {
 
 									if (!empty($result)) {
 										if ($result->class == "extrafields") {
-											if (isset($obj->shortList))
+											/*if (isset($obj->shortList))
 												$obj->shortList = $result->shortList;
 											if (isset($obj->longList))
-												$obj->longList = $result->longList;
+												$obj->longList = $result->longList;*/
 
 											foreach ($result->fields as $key => $aRow) {
 												if ($aRow->optional) //specific extrafields
@@ -1085,7 +1085,7 @@ class DolibarrModules extends nosqlDocument {
 				$obj = $this->couchdb->getDoc($id);
 				$menu[$id]->_rev = $obj->_rev;
 			} catch (Exception $e) {
-				
+
 			}
 		}
 
@@ -1121,7 +1121,7 @@ class DolibarrModules extends nosqlDocument {
 				$menu->enabled = false;
 				$this->couchdb->storeDoc($menu);
 			} catch (Exception $e) {
-				
+
 			}
 		}
 
@@ -1430,7 +1430,7 @@ class DolibarrModules extends nosqlDocument {
 				$result = $this->couchdb->getDoc($obj->_id);
 				$obj->_rev = $result->_rev;
 			} catch (Exception $e) {
-				
+
 			}
 
 			try {

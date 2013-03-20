@@ -22,6 +22,7 @@ $agenda = array(
 		'Agenda' => 'Gündem',
 		'Agendas' => 'Gündemler',
 		'Calendar' => 'Takvim',
+		'CalendarMeeting' => 'Calendar meeting',
 		'Calendars' => 'Takvimler',
 		'LocalAgenda' => 'Yerel takvim',
 		'AffectedTo' => 'Etkilenen',

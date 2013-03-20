@@ -125,7 +125,7 @@ class Product extends nosqlDocument {
      *
      *  @param      DoliDB		$db      Database handler
      */
-    function __construct($db) {
+    function __construct($db = null) {
         global $langs;
 
         parent::__construct($db);
@@ -187,7 +187,8 @@ class Product extends nosqlDocument {
         $this->name = dol_string_nospecial(trim($this->name));
         $this->label = trim($this->label);
 
-        $obj = $this->price[0];
+        //$obj = $this->price[0];
+        $obj = $this->price;
 
         $obj->price_ttc = price2num($obj->price_ttc);
         $obj->price = price2num($obj->price);
@@ -258,7 +259,8 @@ class Product extends nosqlDocument {
         $obj->ecotax = price2num($ecotax_ht);
         $obj->ecotax_ttc = price2num($ecotax_ttc);
 
-        $this->price[0] = $obj;
+        //$this->price[0] = $obj;
+        $this->price = $obj;
 
         $now = dol_now();
         $this->datec = $now;
@@ -274,9 +276,6 @@ class Product extends nosqlDocument {
             $this->error = 'ErrorWrongParameters';
             return -2;
         }
-
-        dol_syslog(get_class($this) . "::create ref=" . $this->name . " price=" . $this->price . " price_ttc=" . $this->price_ttc . " tva_tx=" . $this->tva_tx . " price_base_type=" . $this->price_base_type, LOG_DEBUG);
-
 
         $error = $this->update($id, $user, true);
         if ($error < 0) {
@@ -2422,7 +2421,7 @@ class Product extends nosqlDocument {
         global $langs, $conf, $user, $db, $bc;
 
         $titre = $langs->trans("SellingPrice");
-        print start_box($titre, "tweleve", "16-Money.png", false);
+        print start_box($titre, "tweleve", "icon-object-price", false);
 
         $i = 0;
         $obj = new stdClass();

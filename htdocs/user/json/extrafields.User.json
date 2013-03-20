@@ -1,8 +1,7 @@
 {
    "_id": "extrafields:User",
-   "_rev": "11-dfc38bab50072d3a24a6a712e372ee46",
    "class": "extrafields",
-   "ico": "16-User.png",
+   "ico": "icon-object-user",
    "langs": [
        "users",
        "admin"

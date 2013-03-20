@@ -12,9 +12,12 @@
    ],
    "longList": [
        "_id",
-       "name",
-       "Action",
-       "Checkbox"
+       "element",
+       "Checkbox",
+       "label",
+       "user",
+       "date",
+       "Action"
    ],
    "shortList": [
        "name"
@@ -28,21 +31,48 @@
                "static": true
            }
        },
-       "name": {
+       "element": {
            "type": "text",
-           "label": "Company",
-           "length": 60,
+           "enable": true,
+           "list": {
+               "visible": false,
+               "static": true
+           }
+       },
+       "label": {
+           "type": "text",
+           "class": "mixed",
+           "label": "Label",
+           "enable": true,
+           "list": {
+               "static": true
+           },
+           "render": {
+               "type": "url"
+           }
+       },
+       "user": {
+           "type": "text",
+           "class": "User",
+           "label": "TrashedBy",
            "enable": true,
            "list": {
                "static": true
            },
            "render": {
                "type": "url",
-               "ico": "16-Apartment-Building.png"
+               "ico": "icon-object-user"
+           }
+       },
+       "date": {
+           "type": "datetime",
+           "label": "TrashedDate",
+           "enable": true,
+           "list": {
+               "static": true
            },
-           "validate": {
-               "cssclass": "required",
-               "minlength": 3
+           "render": {
+               "type": "datetime"
            }
        },
        "Action": {
@@ -56,9 +86,9 @@
                "static": true
            },
            "action": {
-               "edit": {
-                   "label": "Edit",
-                   "cssclass": "icon edit"
+               "restore": {
+                   "label": "Restore",
+                   "cssclass": "icon restore restoreEnqBtn"
                },
                "delete": {
                    "label": "Delete",

@@ -104,6 +104,20 @@ $(document).ready(function() {
 					$('.syncuser').hide('blind');
 				}
 			});
+			// First check for search engine user
+			if ($('#couchdb_create_searchengineuser').prop('checked')) {
+				$('.searchengine').show();
+			} else {
+				$('.searchengine').hide();
+			}
+			// Check change for search engine user
+			$('#couchdb_create_searchengineuser').change(function() {
+				if ($(this).prop('checked')) {
+					$('.searchengine').show('blind');
+				} else {
+					$('.searchengine').hide('blind');
+				}
+			});
 			// First check for replication
 			if ($('#couchdb_replication').prop('checked')) {
 				$('.remotebase').show();
@@ -146,7 +160,7 @@ $(document).ready(function() {
 					addUsersync();
 				} else {
 					setProgressBar('set_conf', 100);
-					addDatabase();
+					addSystemDatabase();
 				}
 			} else {
 				return false;
@@ -179,7 +193,7 @@ $(document).ready(function() {
 		function(value) {
 			if (value.status == 'ok') {
 				setProgressBar('set_database', 15);
-				addDatabase();
+				addEntityDatabase();
 			} else {
 				return false;
 			}
@@ -187,56 +201,43 @@ $(document).ready(function() {
 	}
 	
 	// Add database
-	function addDatabase() {
+	function addEntityDatabase() {
 		$.post("install/ajax/install.php", {
-    		action: 'create_database',
+    		action: 'create_entity_database',
     		couchdb_name: $('#couchdb_name').val()
 		},
 		function(value) {
 			if (value.status == 'ok') {
 				setProgressBar('set_database', 30);
-				populateDatabase();
+				populateSystemDatabase();
 			} else {
 				return false;
 			}
 		}, "json");
 	}
 	
-	// Populate database
-	function populateDatabase() {
+	// Populate system database
+	function populateSystemDatabase() {
 		if ($('#couchdb_replication').prop('checked')) {
 			// Sync database
 			// TODO add sync progress here
 		} else {
-			// Populate local database
-			var progress_value = 30;
-			var step = Math.round((75 / numfiles) + 1);
-			var files = $.parseJSON(jsonfiles);
-			$.each(files, function(name, path) {
-				$.post("install/ajax/install.php", {
-					couchdb_name: $('#couchdb_name').val(),
-					action: 'populate_database',
-		    		filename: name,
-		    		filepath: path
-				},
-				function(value) {
-					if (value.status == 'ok') {
-						progress_value = progress_value + step;
-						progress_value = (progress_value < 100 ? progress_value : 100)
-						setProgressBar('set_database', progress_value);
-					} else {
-						// Break
-						return false;
-					}
-				}, 'json');
-			});
-			addSuperadmin();
+			$.post("install/ajax/install.php", {
+				action: 'populate_system_database'
+			},
+			function(value) {
+				if (value.status == 'ok') {
+					setProgressBar('set_database', 100);
+					addSuperadmin();
+				} else {
+					return false;
+				}
+			}, 'json');
 		}
 	}
 	
 	// Create superadmin
 	function addSuperadmin() {
-		var result;
 		$.post("install/ajax/install.php", {
     		action: 'create_admin',
     		couchdb_name: $('#couchdb_name').val(),
@@ -258,11 +259,37 @@ $(document).ready(function() {
 		$.post("install/ajax/install.php", {
     		action: 'create_user',
 			couchdb_name: $('#couchdb_name').val(),
+			couchdb_user_root: $('#couchdb_user_root').val(),
+    		couchdb_pass_root: $('#couchdb_pass_root').val(),
     		couchdb_user_firstname: $('#couchdb_user_firstname').val(),
     		couchdb_user_lastname: $('#couchdb_user_lastname').val(),
-    		couchdb_user_pseudo: $('#couchdb_user_pseudo').val(),
-    		couchdb_user_email: $('#couchdb_user_email').val(),
+    		couchdb_user_login: $('#couchdb_user_login').val(),
     		couchdb_user_pass: $('#couchdb_user_pass').val()
+		},
+		function(value) {
+			if (value.status == 'ok') {
+				if ($('#couchdb_create_searchengineuser').prop('checked')) {
+					setProgressBar('set_security', 75);
+					addSearchEngineUser();
+				} else {
+					setProgressBar('set_security', 100);
+					lockInstall();
+				}
+			} else {
+				return false;
+			}
+		}, 'json');
+	}
+	
+	// Create user
+	function addSearchEngineUser() {
+		$.post("install/ajax/install.php", {
+    		action: 'create_searchengine_user',
+			couchdb_name: $('#couchdb_name').val(),
+			couchdb_user_root: $('#couchdb_user_root').val(),
+    		couchdb_pass_root: $('#couchdb_pass_root').val(),
+    		couchdb_searchengine_login: $('#couchdb_searchengine_login').val(),
+    		couchdb_searchengine_pass: $('#couchdb_searchengine_pass').val()
 		},
 		function(value) {
 			if (value.status == 'ok') {
@@ -277,7 +304,10 @@ $(document).ready(function() {
 	// Add lock file
 	function lockInstall() {
 		$.post("install/ajax/install.php", {
-    		action: 'lock_install'
+    		action: 'lock_install',
+    		couchdb_name: $('#couchdb_name').val(),
+    		couchdb_user_root: $('#couchdb_user_root').val(),
+    		couchdb_pass_root: $('#couchdb_pass_root').val()
 		},
 		function(value) {
 			if (value.status == 'ok') {

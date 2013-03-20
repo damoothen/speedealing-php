@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2012	Regis Houssin	<regis.houssin@capnetworks.com>
+/* Copyright (C) 2012-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012-2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,14 +60,18 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Rebuda',
 		'StatusOrderCanceled' => 'Anul-lada',
 		'StatusOrderDraft' => 'Esborrany (a validar)',
-		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
+		'StatusOrderNeedQuotes' => 'Draft (needs manual quotes)',
+		'StatusOrderNew' => 'New order (needs to be validated)',
+		'StatusOrderProcessing' => 'Processing',
 		'StatusOrderValidated' => 'Validada',
 		'StatusOrderOnProcess' => 'Pendent de rebre',
-		'StatusOrderProcessed' => 'Processada',
+		'StatusOrderSending' => 'Sending',
+		'StatusOrderClosed' => 'Closed (Shipped)',
 		'StatusOrderToBill' => 'A facturar',
 		'StatusOrderToBill2' => 'To bill',
 		'StatusOrderApproved' => 'Aprovada',
 		'StatusOrderRefused' => 'Rebutjada',
+		'StatusOrderError' => 'Error',
 		'StatusOrderReceivedPartially' => 'Rebuda parcialment',
 		'StatusOrderReceivedAll' => 'Rebuda',
 		'ShippingExist' => 'Existeix una expedició',
@@ -176,6 +181,7 @@ $orders = array(
 		'CloseProcessedOrdersAutomatically' => 'Classificar automàticament com "Processades" les comandes seleccionades.',
 		'MenuOrdersToBill2' => 'Comandes facturables',
 		'LinkedInvoices' => 'Linked invoices',
-		'LinkedProposals' => 'Linked proposals'
+		'LinkedProposals' => 'Linked proposals',
+		'ShippingHT' => 'Shipping cost'
 );
 ?>

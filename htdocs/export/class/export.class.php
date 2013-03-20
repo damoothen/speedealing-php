@@ -231,7 +231,10 @@ class Export {
                 $objmodel->write_title($this->array_export_fields[$indice], $array_selected, $outputlangs);
 
                 foreach ($result->rows as $aRow) {
-                    $objp = $aRow->value;
+					if(is_string($aRow->value))
+						$objp = $aRow->value;
+					else
+						$objp = "";
                     //$var = !$var;
 
                     // Process special operations

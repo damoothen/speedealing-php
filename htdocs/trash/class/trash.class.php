@@ -30,6 +30,9 @@ class Trash extends nosqlDocument {
 
 	function __construct() {
 		parent::__construct();
+
+		$this->fk_extrafields = new ExtraFields();
+		$this->fk_extrafields->fetch(get_class($this));
 	}
 }
 

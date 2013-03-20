@@ -1,7 +1,7 @@
 {
    "_id": "extrafields:Societe",
    "class": "extrafields",
-   "ico": "16-Apartment-Building.png",
+   "ico": "icon-object-company",
    "langs": [
        "companies",
        "bills",
@@ -23,13 +23,17 @@
        "town"
    ],
    "oldList": [
+       "code_client",
        "zip",
        "town",
+       "address",
        "zonegeo",
+       "phone",
        "idprof3"
    ],
    "longList": [
        "_id",
+       "Checkbox",
        "name",
        "code_client",
        "commercial_id",
@@ -43,11 +47,9 @@
        "Tag",
        "Status",
        "prospectlevel",
-       "Action",
-       "Checkbox"
+       "Action"
    ],
    "shortList": [
-       "name",
        "town",
        "phone"
    ],
@@ -70,7 +72,7 @@
            },
            "render": {
                "type": "url",
-               "ico": "16-Apartment-Building.png"
+               "ico": "icon-object-company"
            },
            "validate": {
                "cssclass": "required",
@@ -288,7 +290,7 @@
            },
            "render": {
                "type": "url",
-               "ico": "16-User.png"
+               "ico": "icon-object-user"
            }
        },
        "civilite_id": {
@@ -404,7 +406,7 @@
                },
                "delete": {
                    "label": "Delete",
-                   "cssclass": "icon delete"
+                   "cssclass": "icon delete delEnqBtn"
                }
            }
        },

@@ -75,7 +75,7 @@ class RenderStatus implements ElementInterface {
 		}*/
 
 		$output.= 'var ar = [];
-					ar[ar.length] = "<span class=\"tag " + status[data][1] + " glossy\">" + status[data][0] + "</span>";
+					ar[ar.length] = "<small class=\"tag " + status[data][1] + " glossy\">" + status[data][0] + "</small>";
 					return ar.join("");
 				}';
 

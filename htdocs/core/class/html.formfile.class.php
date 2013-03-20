@@ -168,7 +168,7 @@ class FormFile
 
         $this->numoffiles=0;
         $titre = $langs->trans("Documents");
-        print start_box($titre, "six", "16-Documents.png");
+        print start_box($titre, "six", "icon-object-documents");
         print $this->showdocuments($modulepart,$filename,$filedir,$urlsource,$genallowed,$delallowed,$modelselected,$allowgenifempty,$forcenomultilang,$iconPDF,$maxfilenamelength,$noform,$param,$title,$buttonlabel,$codelang);
         print end_box();
         return $this->numoffiles;

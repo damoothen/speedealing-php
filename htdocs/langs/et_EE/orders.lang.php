@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2012	Regis Houssin	<regis.houssin@capnetworks.com>
+/* Copyright (C) 2012-2013	Regis Houssin	<regis.houssin@capnetworks.com>
+ * Copyright (C) 2012-2013	Herve Prot		<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,14 +60,18 @@ $orders = array(
 		'StatusOrderReceivedAllShort' => 'Kõike sai',
 		'StatusOrderCanceled' => 'Tühistatud',
 		'StatusOrderDraft' => 'Eelnõu (tuleb kinnitada)',
-		'StatusOrderAuto' => 'Draft Internet (needs to be validated)',
+		'StatusOrderNeedQuotes' => 'Draft (needs manual quotes)',
+		'StatusOrderNew' => 'New order (needs to be validated)',
+		'StatusOrderProcessing' => 'Processing',
 		'StatusOrderValidated' => 'Valideeritud',
 		'StatusOrderOnProcess' => 'Ootan, et saada',
-		'StatusOrderProcessed' => 'Töödeldud',
+		'StatusOrderSending' => 'Sending',
+		'StatusOrderClosed' => 'Closed (Shipped)',
 		'StatusOrderToBill' => 'Arve',
 		'StatusOrderToBill2' => 'To bill',
 		'StatusOrderApproved' => 'Heaks',
 		'StatusOrderRefused' => 'Keeldus',
+		'StatusOrderError' => 'Error',
 		'StatusOrderReceivedPartially' => 'Osaliselt saanud',
 		'StatusOrderReceivedAll' => 'Kõike sai',
 		'ShippingExist' => 'Saadetis on olemas',
@@ -176,6 +181,7 @@ $orders = array(
 		'CloseProcessedOrdersAutomatically' => 'Classify "Processed" all selected orders.',
 		'MenuOrdersToBill2' => 'Orders to bill',
 		'LinkedInvoices' => 'Linked invoices',
-		'LinkedProposals' => 'Linked proposals'
+		'LinkedProposals' => 'Linked proposals',
+		'ShippingHT' => 'Shipping cost'
 );
 ?>

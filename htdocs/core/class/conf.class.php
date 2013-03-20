@@ -482,7 +482,7 @@ class Conf extends nosqlDocument {
      * Specific record for conf
      */
     function record() {
-        $result = dol_getcache("const");
+        $result = $this->load("const");
 
         unset($result->values); // reset old values
 		$result->values = new stdClass();

@@ -39,8 +39,6 @@ if (!class_exists('couchAdmin'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchAdmin.php';
 if (!class_exists('couchClient'))
 	require DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchClient.php';
-if (!class_exists('UserAdmin'))
-	require DOL_DOCUMENT_ROOT . '/useradmin/class/useradmin.class.php';
 if (!class_exists('User'))
 	require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
 
@@ -89,8 +87,11 @@ else {
 $main_url_root = preg_replace('/\/$/', '', $main_url_root);     // Remove the /
 $main_url_root = preg_replace('/\/index\.php$/', '', $main_url_root);  // Remove the /index.php
 $main_url_root = preg_replace('/\/phpinfo\.php$/', '', $main_url_root);   // Remove the /phpinfo.php
+$main_url_root = preg_replace('/\/prerequisite\.php$/', '', $main_url_root);   // Remove the /prerequisite.php
+$main_url_root = preg_replace('/\/ajax$/', '', $main_url_root);   // Remove the /ajax
 $main_url_root = preg_replace('/\/install$/', '', $main_url_root);   // Remove the /install
 $uri = preg_replace('/^http(s?):\/\//i', '', $main_url_root);	// $uri contains url without http*
+define('MAIN_SERVER_NAME', $uri);
 $suburi = strstr($uri, '/');       // $suburi contains url without domain
 if ($suburi == '/')
     $suburi = '';   // If $suburi is /, it is now ''
@@ -110,11 +111,18 @@ if (GETPOST('lang'))
 else
     $langs->setDefaultLang('auto');
 
-// Get json files list
-$jsonfiles = array();
-$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json', 'files');
-foreach($fileslist as $file) {
-	$jsonfiles[$file['name']] = $file['fullname'];
+if (!empty($_SESSION['db_json_files'])) {
+	$jsonfiles = $_SESSION['db_json_files'];
+} else {
+	// Get json files list
+	$jsonfiles = array();
+	// Get dict files
+	$fileslist = dol_dir_list(DOL_DOCUMENT_ROOT . '/install/couchdb/json', 'files');
+	foreach($fileslist as $file) {
+			$jsonfiles[$file['name']] = $file['fullname'];
+	}
+	// Stock in session for best performance
+	$_SESSION['db_json_files'] = $jsonfiles;
 }
 
 // Now we load forced value from install.forced.php file.
@@ -160,7 +168,7 @@ function pFooter() {
 function write_conf_file() {
 	global $conf, $langs;
 	global $couchdb_host, $couchdb_port, $force_https;
-	global $memcached_host, $memcached_port, $force_install_urlrewrite;
+	global $memcached_host, $memcached_port, $useforcedwizard, $force_install_urlrewrite;
 	global $conffile, $conffiletoshowshort;
 
 	$key = md5(uniqid(mt_rand(), TRUE)); // Generate random hash
@@ -235,7 +243,7 @@ function write_conf_file() {
 
 		/* URL rewriting (multicompany) */
 
-		if (!empty($force_install_urlrewrite)) {
+		if ($useforcedwizard && !empty($force_install_urlrewrite)) {
 			fputs($fp, '// URL rewriting');
 			fputs($fp, "\n");
 

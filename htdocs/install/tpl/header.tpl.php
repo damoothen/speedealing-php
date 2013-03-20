@@ -61,12 +61,6 @@
 
 	<!-- JavaScript at bottom except for Modernizr -->
 	<script src="<?php echo DOL_URL_ROOT; ?>/includes/js/modernizr.custom.js"></script>
-
-	<!-- Json files for database -->
-	<script type="text/javascript">
-		var numfiles = '<?php echo count($jsonfiles); ?>';
-		var jsonfiles = '<?php echo json_encode($jsonfiles); ?>';
-	</script>
 </head>
 
 <body class="full-page-wizard">

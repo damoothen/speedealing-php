@@ -41,22 +41,22 @@ class Agenda extends nosqlDocument {
 	var $usermod;  // Object user that modified action
 	var $datep;   // Date action start (datep)
 	var $datef;   // Date action end (datep2)
-	var $durationp = -1;	  // -1=Unkown duration
-	var $fulldayevent = 0;	// 1=Event on full day
-	var $punctual = 1;		// Milestone
-	var $percentage;	// Percentage
-	var $location;	  // Location
-	var $priority;	  // Free text ('' By default)
-	var $notes;		  // Description
+	var $durationp = -1;   // -1=Unkown duration
+	var $fulldayevent = 0; // 1=Event on full day
+	var $punctual = 1;  // Milestone
+	var $percentage; // Percentage
+	var $location;   // Location
+	var $priority;   // Free text ('' By default)
+	var $notes;	// Description
 	var $usertodo;  // Object user that must do action
 	var $userdone;   // Object user that did action
 	var $societe;  // Company linked to action (optionnal)
 	var $contact;  // Contact linked tot action (optionnal)
 	var $fk_project; // Id of project (optionnal)
 	var $fk_lead; // Id of lead (optionnal)
-	var $fk_task;	   // Id of mother task (optionnal)
+	var $fk_task;	// Id of mother task (optionnal)
 	// Properties for links to other objects
-	var $fk_element;	// Id of record
+	var $fk_element; // Id of record
 	var $elementtype;   // Type of record. This if property ->element of object linked to.
 	// Ical
 	var $icalname;
@@ -360,7 +360,7 @@ class Agenda extends nosqlDocument {
 		} else {
 			unset($this->contact->name);
 		}
-		
+
 		if (!empty($this->usertodo->id)) {
 			$object = new User($this->db);
 			$object->load($this->usertodo->id);
@@ -368,7 +368,7 @@ class Agenda extends nosqlDocument {
 		} else {
 			unset($this->usertodo->name);
 		}
-		
+
 		if (!empty($this->userdone->id)) {
 			$object = new User($this->db);
 			$object->load($this->userdone->id);
@@ -932,7 +932,33 @@ class Agenda extends nosqlDocument {
 		$langs->load("agenda");
 
 		$titre = $langs->trans("Actions");
-		print start_box($titre, "twelve", "16-Mail.png", true, $head);
+		//print start_box($titre, "twelve", "16-Mail.png", true, $head);
+		
+		$h = 0;
+		if ($user->rights->agenda->myactions->write || $user->rights->agenda->allactions->write) {
+			$head[$h] = new stdClass();
+			$head[$h]->href = 'agenda/fiche.php?action=create&socid=' . $id;
+			$head[$h]->title = $langs->trans("NewAction");
+			$head[$h]->icon = "icon-pencil";
+			$h++;
+		}
+		$head[$h] = new stdClass();
+		$head[$h]->href = "#";
+		$head[$h]->title = $langs->trans("StatusActionToDo");
+		$head[$h]->id = "TODO";
+		$head[$h]->onclick="var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax('". DOL_URL_ROOT ."/core/ajax/listdatatables.php?json=actionsTODO&class=Agenda&key=".$id."'); return false;";
+		$head[$h]->icon = "icon-clock";
+		$h++;
+		$head[$h] = new stdClass();
+		$head[$h]->href = "#";
+		$head[$h]->title = $langs->trans("StatusActionDone");
+		$head[$h]->id = "DONE";
+		$head[$h]->onclick="var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax('". DOL_URL_ROOT ."/core/ajax/listdatatables.php?json=actionsDONE&class=Agenda&key=".$id."'); return false;";
+		$head[$h]->icon = "icon-calendar";
+		$h++;
+
+		print column_start("six");
+		print show_title($titre, "icon-calendar", $head);
 
 		$i = 0;
 		$obj = new stdClass();
@@ -944,16 +970,6 @@ class Agenda extends nosqlDocument {
 		 */
 
 		//print $this->datatablesEdit("actions_datatable", $langs->trans("NewAction"));
-
-		if ($user->rights->agenda->myactions->write || $user->rights->agenda->allactions->write) {
-			print '<p class="button-height right">';
-			print '<span class="button-group">';
-			print '<a class="button compact icon-star" href="agenda/fiche.php?action=create&socid=' . $id . '">' . $langs->trans("NewAction") . '</a>';
-			print "</span>";
-			print "</p>";
-		}
-
-		//https://crm.symeos.com/symeos/comm/action/fiche.php?action=create&socid=573
 
 		print '<table class="display dt_act" id="actions_datatable" >';
 		// Ligne des titres
@@ -1024,17 +1040,18 @@ class Agenda extends nosqlDocument {
 		$obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actionsTODO&class=" . get_class($this) . "&key=" . $id;
 		$this->datatablesCreate($obj, "actions_datatable", true);
 
-		foreach ($head as $aRow) {
+		/*foreach ($head as $aRow) {
 			?>
 			<script>
 				$(document).ready(function() {
-					var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actions" . $aRow[2] . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
-					$("#<?php echo $aRow[2]; ?>").attr("onclick", js);
-				} );
+					var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actions" . $aRow->id . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
+					$("#<?php echo $aRow->id; ?>").attr("onclick", js);
+				});
 			</script>
 			<?php
-		}
-		print end_box();
+		}*/
+		print column_end();
+		//print end_box();
 	}
 
 	/**
@@ -1125,7 +1142,8 @@ class Agenda extends nosqlDocument {
 					if ($events->rows[$cursor]->key[1] >= $dayTimestamp && $events->rows[$cursor]->key[1] < $dayTimestamp + 3600 * 24) {
 						print '<li><a href="agenda/fiche.php?id=' . $events->rows[$cursor]->id . '" >' . "[" . $events->rows[$cursor]->value->societe->name . "] " . $events->rows[$cursor]->value->label . '</a></li>';
 						$cursor++;
-					} else
+					}
+					else
 						break;
 				}
 			}
@@ -1232,7 +1250,8 @@ class Agenda extends nosqlDocument {
 						print $events->rows[$cursor]->value->label;
 						print '</a>';
 						$cursor++;
-					} else
+					}
+					else
 						break;
 				}
 			}
@@ -1256,8 +1275,8 @@ class Agenda extends nosqlDocument {
 
 		if ($json) {
 			// For Data see viewgraph.php
-			$params = array('startkey' => array($user->id, date("c",mktime(0, 0, 0, date("m") - 1, date("d"), date("Y")))),
-				'endkey' => array($user->id, date("c",mktime(0, 0, 0, date("m") + 1, date("d"), date("Y")))));
+			$params = array('startkey' => array($user->id, date("c", mktime(0, 0, 0, date("m") - 1, date("d"), date("Y")))),
+				'endkey' => array($user->id, date("c", mktime(0, 0, 0, date("m") + 1, date("d"), date("Y")))));
 			$result = $this->getView("list" . $_GET["name"], $params);
 
 			//error_log(print_r($result,true));
@@ -1270,7 +1289,6 @@ class Agenda extends nosqlDocument {
 
 					$obj = new stdClass();
 					$obj->x = strtotime($aRow->value->datep) * 1000;
-					error_log($obj->x);
 					$obj->y = $priority;
 					$obj->name = $aRow->value->label;
 					$obj->id = $aRow->value->_id;
@@ -1291,20 +1309,20 @@ class Agenda extends nosqlDocument {
 			<div id="eisenhower" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
 			<script type="text/javascript">
 				$(document).ready(function() {
-					(function($){ // encapsulate jQuery
+					(function($) { // encapsulate jQuery
 
 						$(function() {
 							var seriesOptions = [],
-							yAxisOptions = [],
-							seriesCounter = 0,
-							names = ['MyTasks','MyDelegatedTasks'],
-							colors = Highcharts.getOptions().colors;
+									yAxisOptions = [],
+									seriesCounter = 0,
+									names = ['MyTasks', 'MyDelegatedTasks'],
+									colors = Highcharts.getOptions().colors;
 							var translate = [];
 							translate['MyTasks'] = "<?php echo $langs->trans('MyTasks'); ?>";
 							translate['MyDelegatedTasks'] = "<?php echo $langs->trans('MyDelegatedTasks'); ?>";
 							$.each(names, function(i, name) {
 
-								$.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphEisenhower&class=<?php echo get_class($this); ?>&name='+ name.toString() +'&callback=?',	function(data) {
+								$.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphEisenhower&class=<?php echo get_class($this); ?>&name=' + name.toString() + '&callback=?', function(data) {
 
 									seriesOptions[i] = {
 										type: 'scatter',
@@ -1334,7 +1352,7 @@ class Agenda extends nosqlDocument {
 										marginBottom: 35
 									},
 									credits: {
-										enabled:false
+										enabled: false
 									},
 									xAxis: {
 										title: {text: "Urgence"},
@@ -1355,12 +1373,12 @@ class Agenda extends nosqlDocument {
 												color: "#edc9c9"
 											}],
 										plotLines: [{
-											value: <?php echo (strtotime(dol_now()) * 1000); ?>,
+												value: <?php echo (strtotime(dol_now()) * 1000); ?>,
 												width: 4,
 												color: "red",
 												label: {
 													text: Highcharts.dateFormat("%e. %b %H:%M",<?php echo (strtotime(dol_now()) * 1000); ?>),
-													style: { color: "white" }
+													style: {color: "white"}
 												}
 											}]
 									},
@@ -1381,15 +1399,17 @@ class Agenda extends nosqlDocument {
 										text: null
 									},
 									tooltip: {
-										enabled:true,
+										enabled: true,
 										formatter: function() {
-											return '<b>' + this.point.soc + "</b><br><i>" + this.point.name + "</i><br>" + Highcharts.dateFormat("%e. %b",this.x) + "<br><i>" + this.point.usertodo + "</i>";
+											return '<b>' + this.point.soc + "</b><br><i>" + this.point.name + "</i><br>" + Highcharts.dateFormat("%e. %b", this.x) + "<br><i>" + this.point.usertodo + "</i>";
 										}
 									},
 									plotOptions: {
-										series: { cursor: "pointer",
+										series: {cursor: "pointer",
 											point: {
-												events: {click: function() {location.href = 'agenda/fiche.php?id=' + this.options.id;}}
+												events: {click: function() {
+														location.href = 'agenda/fiche.php?id=' + this.options.id;
+													}}
 											}
 										}
 									},
@@ -1403,7 +1423,7 @@ class Agenda extends nosqlDocument {
 										borderWidth: 1,
 										backgroundColor: Highcharts.theme.legendBackgroundColor || '#FFFFFF',
 										shadow: true,
-										enabled:true
+										enabled: true
 									},
 									series: seriesOptions
 								});
