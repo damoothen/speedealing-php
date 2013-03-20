@@ -185,50 +185,7 @@ if ($action == 'add' && $user->rights->commande->creer) {
 			dol_syslog("Try to find source object origin=" . $object->origin . " originid=" . $object->origin_id . " to add lines");
 			$result = $srcobject->fetch($object->origin_id);
 			if (!empty($result)) {
-				$lines = $srcobject->lines;
-				if (empty($lines) && method_exists($srcobject, 'fetch_lines'))
-					$lines = $srcobject->fetch_lines();
-
-				$fk_parent_line = 0;
-				$num = count($lines);
-
-				for ($i = 0; $i < $num; $i++) {
-					$desc = ($lines[$i]->description ? $lines[$i]->description : $lines[$i]->libelle);
-					$product_type = ($lines[$i]->product_type ? $lines[$i]->product_type : 0);
-
-					// Dates
-					// TODO mutualiser
-					$date_start = $lines[$i]->date_debut_prevue;
-					if ($lines[$i]->date_debut_reel)
-						$date_start = $lines[$i]->date_debut_reel;
-					if ($lines[$i]->date_start)
-						$date_start = $lines[$i]->date_start;
-					$date_end = $lines[$i]->date_fin_prevue;
-					if ($lines[$i]->date_fin_reel)
-						$date_end = $lines[$i]->date_fin_reel;
-					if ($lines[$i]->date_end)
-						$date_end = $lines[$i]->date_end;
-
-					// Reset fk_parent_line for no child products and special product
-					if (($lines[$i]->product_type != 9 && empty($lines[$i]->fk_parent_line)) || $lines[$i]->product_type == 9) {
-						$fk_parent_line = 0;
-					}
-
-					$result = $object->addline(
-							$id, $desc, $lines[$i]->subprice, $lines[$i]->qty, $lines[$i]->tva_tx, $lines[$i]->localtax1_tx, $lines[$i]->localtax2_tx, $lines[$i]->fk_product, $lines[$i]->remise_percent, $lines[$i]->info_bits, $lines[$i]->fk_remise_except, 'HT', 0, $datestart, $dateend, $product_type, $lines[$i]->rang, $lines[$i]->special_code, $fk_parent_line
-					);
-
-					if ($result < 0) {
-						$error++;
-						break;
-					}
-
-					// Defined the new fk_parent_line
-					if ($result > 0 && $lines[$i]->product_type == 9) {
-						$fk_parent_line = $result;
-					}
-				}
-
+				
 				// Hooks
 				$parameters = array('objFrom' => $srcobject);
 				$reshook = $hookmanager->executeHooks('createFrom', $parameters, $object, $action);	// Note that $action and $object may have been modified by hook

@@ -98,6 +98,41 @@ if (!empty($id)) {
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 $hookmanager->initHooks(array('propalcard'));
 
+if (!empty($_GET['json'])) {
+	$output = array(
+		"sEcho" => intval($_GET['sEcho']),
+		"iTotalRecords" => 0,
+		"iTotalDisplayRecords" => 0,
+		"aaData" => array()
+	);
+
+//    $keystart[0] = $user->id;
+//    $keyend[0] = $user->id;
+//    $keyend[1] = new stdClass();
+
+	/* $params = array('startkey' => array($user->id, mktime(0, 0, 0, date("m") - 1, date("d"), date("Y"))),
+	  'endkey' => array($user->id, mktime(0, 0, 0, date("m") + 1, date("d"), date("Y")))); */
+
+	try {
+		$result = $object->getView($_GET["json"], array('key' => $id));
+	} catch (Exception $exc) {
+		print $exc->getMessage();
+	}
+
+	$iTotal = count($result->rows);
+	$output["iTotalRecords"] = $iTotal;
+	$output["iTotalDisplayRecords"] = $iTotal;
+	$i = 0;
+	foreach ($result->rows as $aRow) {
+		$output["aaData"][] = $aRow->value;
+	}
+
+	header('Content-type: application/json');
+	echo json_encode($output);
+	exit;
+}
+
+
 
 /*
  * Actions
@@ -1483,48 +1518,7 @@ print end_box();
  * Lines
  */
 
-print start_box($langs->trans('ProposalLines'), "twelve", $object->fk_extrafields->ico, false);
-
-if (!empty($conf->use_javascript_ajax) && $object->statut == 0) {
-    include DOL_DOCUMENT_ROOT . '/core/tpl/ajaxrow.tpl.php';
-}
-
-print '<table id="tablelines" class="noborder" width="100%">';
-
-// Show object lines
-$result = $object->getLinesArray();
-if (!empty($object->lines))
-    $ret = $object->printObjectLines($action, $mysoc, $soc, $lineid);
-
-// Form to add new line
-if ($object->Status == "DRAFT" && $user->rights->propal->creer) {
-    if ($action != 'editline') {
-        $var = true;
-
-        if ($conf->global->MAIN_FEATURES_LEVEL > 1) {
-            // Add free or predefined products/services
-            $object->formAddObjectLine(0, $mysoc, $soc);
-        } else {
-            // Add free products/services
-            $object->formAddFreeProduct(0, $mysoc, $soc);
-
-            // Add predefined products/services
-            if (!empty($conf->product->enabled) || !empty($conf->service->enabled)) {
-                $var = !$var;
-                $object->formAddPredefinedProduct(0, $mysoc, $soc);
-            }
-        }
-
-        $parameters = array();
-        $reshook = $hookmanager->executeHooks('formAddObjectLine', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-    }
-}
-
-print '</table>';
-
-
-
-print end_box();
+$object->showLines();
 
 if ($action == 'statut') {
     /*

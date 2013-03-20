@@ -422,10 +422,11 @@ class FormFile
 
             // Button
             $out.= '<th align="center" colspan="'.($delallowed?'2':'1').'" class="formdocbutton liste_titre">';
-            $out.= '<input class="button" id="'.$forname.'_generatebutton"';
-            $out.= ' type="submit" value="'.$buttonlabel.'"';
-            if (! $allowgenifempty && ! is_array($modellist) && empty($modellist)) $out.= ' disabled="disabled"';
-            $out.= '>';
+//            $out.= '<input class="button" id="'.$forname.'_generatebutton"';
+//            $out.= ' type="submit" value="'.$buttonlabel.'"';
+//            if (! $allowgenifempty && ! is_array($modellist) && empty($modellist)) $out.= ' disabled="disabled"';
+//            $out.= '>';
+            $out .= '<a href="'.$urlsource.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc').'&action=builddoc" class="button" >' . $buttonlabel . '</a>';
             if ($allowgenifempty && ! is_array($modellist) && empty($modellist) && $modulepart != 'unpaid')
             {
                 $langs->load("errors");
