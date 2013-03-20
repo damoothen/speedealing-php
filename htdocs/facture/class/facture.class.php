@@ -3592,7 +3592,13 @@ public function showPayments(){
         require_once(DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php');
         $facture = new Facture($this->db);
 
-        print start_box($langs->trans("Bills"), "twelve", $this->fk_extrafields->ico);
+        //print start_box($langs->trans("Bills"), "twelve", $this->fk_extrafields->ico);
+		//print column_start("six");
+		print '<dt>';
+		print show_title($langs->trans("Bills"), "icon-chat no-margin-bottom");
+		print '</dt>';
+		
+		print '<dd><div class="with-mid-padding">';
         print '<table class="display dt_act" id="listfactures" >';
         // Ligne des titres
 
@@ -3651,7 +3657,8 @@ public function showPayments(){
         $obj->iDisplayLength = $max;
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listBySociete&class=" . get_class($this) . "&key=" . $id;
         $this->datatablesCreate($obj, "listfactures", true);
-        print end_box();
+        //print end_box();
+		print '</div></dd>';
     }
 
 

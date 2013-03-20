@@ -104,6 +104,7 @@
 
 	<script src="theme/symeos/js/developr.navigable.min.js"></script>
 	<script src="theme/symeos/js/developr.scroll.min.js"></script>
+	<script src="theme/symeos/js/developr.accordions.js"></script>
 
 	<!--<script src="theme/symeos/js/s_scripts.js"></script>-->
 

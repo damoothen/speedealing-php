@@ -752,12 +752,6 @@ abstract class nosqlDocument extends CommonObject {
 				oTable.fnDraw(false);
 						return true;
 				},
-						oAddNewRowButtonOptions: {
-				icons: { primary: 'ui-icon-plus' }
-				},
-						oDeleteRowButtonOptions: {
-				icons: { primary: 'ui-icon-trash' }
-				},
 						oAddNewRowOkButtonOptions: {
 				label: "<?php echo $langs->trans("Create"); ?>",
 						icons: { primary: 'ui-icon-check' },

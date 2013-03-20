@@ -712,10 +712,14 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
+
+
 		
 // If date undefined or "", we return ""
 	if (dol_strlen($time) == 0)
 		return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
+
+
 
 
 
@@ -2294,18 +2298,24 @@ function column_end() {
 	return "</div>";
 }
 
-function show_title($title, $icon, $menu = array()) {
+function show_title($title, $cssClass, $menu = array()) {
 	if (!empty($title)) {
-		$rtr = '<h4 class="red underline left-icon ' . $icon . '">' . $title;
+		$rtr = "";
+		$rtr.= '<h4 class="red underline left-icon ' . $cssClass . '">' . $title;
 		if (count($menu) > 0)
 			if (count($menu) == 1)
-				$rtr.= '<a href="' . $menu[0]->href. '" class="absolute-right compact button ' . $menu[0]->icon . '">' . $menu[0]->title . '</a>';
+				$rtr.= '<a href="' . $menu[0]->href . '" class="absolute-right compact button ' . $menu[0]->icon . '" id="' . $menu[0]->id . '" onclick="' . $menu[0]->onclick . '">' . $menu[0]->title . '</a>';
 			else {
-				$rtr.= '<div class="button-group absolute-right compact">
-						<a href="#" class="button icon-pencil">Edit</a>
-						<a href="#" class="button icon-gear with-tooltip" title="Other actions"></a>
-						<a href="#" class="button icon-trash with-tooltip confirm" title="Delete"></a>
-					</div>';
+				$rtr.= '<div class="button-group absolute-right compact">';
+				foreach ($menu as $aRow)
+					if (isset($aRow->onclick))
+						$rtr.= '<a href="' . $aRow->href . '" class="button ' . $aRow->icon . '" id="' . $aRow->id . '"  onclick="' . $aRow->onclick . '">' . $aRow->title . '</a>';
+					else
+						$rtr.= '<a href="' . $aRow->href . '" class="button ' . $aRow->icon . '" id="' . $aRow->id . '" >' . $aRow->title . '</a>';
+				/* <a href="#" class="button icon-pencil">Edit</a>
+				  <a href="#" class="button icon-gear with-tooltip" title="Other actions"></a>
+				  <a href="#" class="button icon-trash with-tooltip confirm" title="Delete"></a> */
+				$rtr.='</div>';
 			}
 		$rtr.= '</h4>';
 	}
@@ -2665,6 +2675,8 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
 			$nbofdectoround = $conf->global->MAIN_MAX_DECIMALS_SHOWN;
 		elseif (is_numeric($rounding))
 			$nbofdectoround = $rounding;  // For admin info page
+
+
 
 
 
@@ -3071,6 +3083,8 @@ function dol_mkdir($dir, $dataroot = '') {
 			$ccdir .= $cdir[$i];
 		if (preg_match("/^.:$/", $ccdir, $regs))
 			continue; // Si chemin Windows incomplet, on poursuit par rep suivant
+
+
 
 
 

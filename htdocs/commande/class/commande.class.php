@@ -2904,7 +2904,13 @@ class Commande extends AbstractInvoice {
 		require_once(DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php');
 		$commande = new Commande($this->db);
 
-		print start_box($langs->trans("Orders"), "twelve", $this->fk_extrafields->ico);
+		//print start_box($langs->trans("Orders"), "twelve", $this->fk_extrafields->ico);
+		//print column_start("six");
+		print '<dt>';
+		print show_title($langs->trans("Orders"), "icon-chat no-margin-bottom");
+		print '</dt>';
+		
+		print '<dd><div class="with-mid-padding">';
 		print '<table class="display dt_act" id="listcommandes" >';
 		// Ligne des titres
 
@@ -2963,7 +2969,8 @@ class Commande extends AbstractInvoice {
 		$obj->iDisplayLength = $max;
 		$obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listBySociete&class=" . get_class($this) . "&key=" . id;
 		$this->datatablesCreate($obj, "listcommandes", true);
-		print end_box();
+		//print column_end();
+		print '</div></dd>';
 	}
 
 }

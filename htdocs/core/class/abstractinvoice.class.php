@@ -114,14 +114,23 @@ class AbstractInvoice extends nosqlDocument {
 			}
 			print '</form>';
 
-			if ($user->rights->$class->edit || $user->rights->$class->creer)
-				print '<button id="' . $ref_css . '_btnAddNewRow">' . $langs->trans("Add") . '</button> ';
+			if ($user->rights->$class->edit || $user->rights->$class->creer) {
+				//print '<button id="' . $ref_css . '_btnAddNewRow">' . $langs->trans("Add") . '</button> ';
+				$head[0] = new stdClass();
+				$head[0]->title = $langs->trans("Add");
+				$head[0]->id = $ref_css . '_btnAddNewRow';
+				$head[0]->href = "#";
+				$head[0]->icon = "icon-pencil";
+				$head[0]->onclick = "return false;";
+			}
 		}
 
 		/* if ($user->rights->$class->delete)
 		  print '<button id="' . $ref_css . '_btnDeleteRow">' . $langs->trans("Delete") . '</button>'; */
 
-		print '<p class="button-height "></p>';
+		//print '<p class="button-height "></p>';
+
+		return $head;
 	}
 
 	public function showLines() {
@@ -131,9 +140,10 @@ class AbstractInvoice extends nosqlDocument {
 
 		require_once(DOL_DOCUMENT_ROOT . '/product/class/product.class.php');
 
-		print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
-
-		print $this->datatablesEditLine("listlines", $langs->trans("Lines"));
+		//print start_box(, "twelve", $object->fk_extrafields->ico, false);
+		//print show_title($langs->trans('OrderLines'));
+		$head = $this->datatablesEditLine("listlines", $langs->trans("Lines"));
+		print show_title($langs->trans('OrderLines'), "icon-bag", $head);
 
 		$i = 0;
 		print '<table class="display dt_act" id="listlines" >';
@@ -305,8 +315,6 @@ class AbstractInvoice extends nosqlDocument {
 		$obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=lines&id=" . $this->id;
 
 		$this->datatablesCreate($obj, "listlines", true, true);
-
-		print end_box();
 	}
 
 	/**
@@ -317,8 +325,7 @@ class AbstractInvoice extends nosqlDocument {
 	function showAmounts($edit = true) {
 		global $conf, $user, $langs;
 
-		if ($edit) {
-			$out.= '<table class="simple-table responsive-table" id="table-amount">
+		$out.= '<table class="simple-table responsive-table" id="table-amount">
 				<thead>
 					<tr>
 						<th scope="col"><div class="no-margin-bottom red left-icon icon-bag"><h4 class="no-margin-bottom">' . $langs->trans("Summary") . '</h4></div></th>
@@ -327,39 +334,34 @@ class AbstractInvoice extends nosqlDocument {
 					</tr>
 				</thead>
 				<tbody>';
-			foreach ($this->fk_extrafields->amountsBox as $aRow) {
-				$out.= '<tr>
+		foreach ($this->fk_extrafields->amountsBox as $aRow) {
+			$out.= '<tr>
 						<th scope="row">';
-				if (isset($this->fk_extrafields->fields->$aRow->icon))
-					$out.= '<span class="left-icon ' . $this->fk_extrafields->fields->$aRow->icon . '">' . $langs->trans($this->fk_extrafields->fields->$aRow->label) . '</span>';
-				else
-					$out.= $langs->trans($this->fk_extrafields->fields->$aRow->label);
-				$out.= '</th>
+			if (isset($this->fk_extrafields->fields->$aRow->icon))
+				$out.= '<span class="left-icon ' . $this->fk_extrafields->fields->$aRow->icon . '">' . $langs->trans($this->fk_extrafields->fields->$aRow->label) . '</span>';
+			else
+				$out.= $langs->trans($this->fk_extrafields->fields->$aRow->label);
+			$out.= '</th>
 						<td align="right">';
-				if (isset($this->fk_extrafields->fields->$aRow->cssClass))
-					$out.= '<span class="' . $this->fk_extrafields->fields->$aRow->cssClass . '">';
-				if ($this->fk_extrafields->fields->$aRow->price)
-					$out.= price($this->$aRow);
-				else
-					$out.= $this->$aRow;
-				if (isset($this->fk_extrafields->fields->$aRow->cssClass))
-					$out.= '</span>';
-				$out.='</td>
+			if (isset($this->fk_extrafields->fields->$aRow->cssClass))
+				$out.= '<span class="' . $this->fk_extrafields->fields->$aRow->cssClass . '">';
+			if ($this->fk_extrafields->fields->$aRow->price)
+				$out.= price($this->$aRow);
+			else
+				$out.= $this->$aRow;
+			if (isset($this->fk_extrafields->fields->$aRow->cssClass))
+				$out.= '</span>';
+			$out.='</td>
 						<td>';
-				if ($this->fk_extrafields->fields->$aRow->mode == "absolute")
-					$out.= $langs->trans('Currency' . $conf->currency);
-				else
-					$out.= "%";
+			if ($this->fk_extrafields->fields->$aRow->mode == "absolute")
+				$out.= $langs->trans('Currency' . $conf->currency);
+			else
+				$out.= "%";
 
-				$out.='</td>
+			$out.='</td>
 					</tr>';
-			}
-			$out.='</tbody>
-
-			</table>';
 		}
-		else
-			$out.= $this->notes;
+		$out.='</tbody></table>';
 
 		return $out;
 	}
